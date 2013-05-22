@@ -25,7 +25,7 @@ Nevertheless, we are going to achieve 100% compatibility before releasing
 version 1.0.
 
 If something does not work for you, just `let us know
-<http://sourceforge.net/tracker/?func=add&group_id=151578&atid=781406>`_.
+<http://sourceforge.net/p/pybtex/bugs/new/>`_.
 
 
 But why should I use it instead of BibTeX?
@@ -72,6 +72,6 @@ Pybtex can be also installed with Easy Install:
 But you won't get any documentation this way.
 
 If something goes wrong, please `file a bug report
-<http://sourceforge.net/tracker/?func=add&group_id=151578&atid=781406>`_.
+<http://sourceforge.net/p/pybtex/bugs/new/>`_.
 
 Have fun!
