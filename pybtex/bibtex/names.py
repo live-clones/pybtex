@@ -27,13 +27,18 @@ de~la Vallee~Poussin, C.~L. X.~J.
 >>> name = 'abc'
 >>> print format_name(name, '{vv~}{ll}{, jj}{, f.}')
 abc
+>>> name = 'Jean-Pierre Hansen'
+>>> print format_name(name, '{ff~}{vv~}{ll}{, jj}')
+Jean-Pierre Hansen
+>>> print format_name(name, '{f.~}{vv~}{ll}{, jj}')
+J.-P. Hansen
 """
 
 import re
 
 from pybtex.database import Person
-from pybtex.bibtex.utils import bibtex_len, bibtex_first_letter
 from pybtex.utils import deprecated
+from pybtex.bibtex.utils import bibtex_len, bibtex_abbreviate
 from pybtex.scanner import (
     Scanner, Pattern, Literal,
     PybtexSyntaxError, PrematureEOF
@@ -121,7 +126,7 @@ class NamePart(object):
             return ''
 
         if self.abbreviate:
-            names = [bibtex_first_letter(name) for name in names]
+            names = [bibtex_abbreviate(name) for name in names]
         if self.delimiter is None:
             if self.abbreviate:
                 names = join(names, '.~', '. ')

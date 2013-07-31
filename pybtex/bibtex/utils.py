@@ -447,3 +447,25 @@ def bibtex_first_letter(string):
         elif char.isalpha():
             return char
     return ''
+
+
+def bibtex_abbreviate(string, sep='-'):
+    """
+    Abbreviate string.
+
+    >>> print bibtex_abbreviate('Andrew Blake')
+    A
+    >>> print bibtex_abbreviate('Jean-Pierre')
+    J.-P
+    >>> print bibtex_abbreviate('Jean--Pierre')
+    J.-P
+    
+    """
+
+    def _bibtex_abbreviate():
+        for token in split_tex_string(string, sep=sep):
+            letter = bibtex_first_letter(token)
+            if letter:
+                yield letter
+    abbr_sep = '.' + sep
+    return abbr_sep.join(_bibtex_abbreviate())
