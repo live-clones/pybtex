@@ -49,14 +49,20 @@ class TestParser(Parser):
 
 
 class ParserTest(object):
-    input = None
+    input_string = None
+    input_strings = []
     correct_result = None
     parser_options = {}
     errors = []
 
+    def setUp(self):
+        if not self.input_strings:
+            self.input_strings = [self.input_string]
+
     def test_parser(self):
         parser = TestParser(encoding='UTF-8', **self.parser_options)
-        parser.parse_stream(StringIO(self.input))
+        for input_string in self.input_strings:
+            parser.parse_stream(StringIO(input_string))
         result = parser.data
         correct_result = self.correct_result
         assert result == correct_result
@@ -66,12 +72,12 @@ class ParserTest(object):
     
 
 class EmptyDataTest(ParserTest, TestCase):
-    input = u''
+    input_string = u''
     correct_result = BibliographyData()
 
 
 class BracesTest(ParserTest, TestCase):
-    input = u"""@ARTICLE{
+    input_string = u"""@ARTICLE{
                 test,
                 title={Polluted
                     with {DDT}.
@@ -81,7 +87,7 @@ class BracesTest(ParserTest, TestCase):
 
 
 class BracesAndQuotesTest(ParserTest, TestCase):
-    input = u'''@ARTICLE{
+    input_string = u'''@ARTICLE{
                 test,
                 title="Nested braces  and {"quotes"}",
         }'''
@@ -89,7 +95,7 @@ class BracesAndQuotesTest(ParserTest, TestCase):
 
 
 class EntryInStringTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         @article{Me2010, author="Brett, Matthew", title="An article
         @article{something, author={Name, Another}, title={not really an article}}
         "}
@@ -112,7 +118,7 @@ class EntryInStringTest(ParserTest, TestCase):
 
 
 class EntryInCommentTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         Both the articles register despite the comment block
         @Comment{
         @article{Me2010, title="An article"}
@@ -133,7 +139,7 @@ class EntryInCommentTest(ParserTest, TestCase):
 
 class AtTest(ParserTest, TestCase):
     # FIXME: check warnings
-    input = u"""
+    input_string = u"""
         The @ here parses fine in both cases
         @article{Me2010,
             title={An @tey article}}
@@ -148,7 +154,7 @@ class AtTest(ParserTest, TestCase):
     ]
 
 class EntryTypesTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         Testing what are allowed for entry types
 
         These are OK
@@ -180,7 +186,7 @@ class EntryTypesTest(ParserTest, TestCase):
 
 
 class FieldNamesTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         Check for characters allowed in field names
         Here the cite key is fine, but the field name is not allowed:
         ``You are missing a field name``
@@ -219,7 +225,7 @@ class FieldNamesTest(ParserTest, TestCase):
 
 
 class InlineCommentTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         "some text" causes an error like this
         ``You're missing a field name---line 6 of file bibs/inline_comment.bib``
         for all 3 of the % some text occurences below; in each case the parser keeps
@@ -250,7 +256,7 @@ class InlineCommentTest(ParserTest, TestCase):
 
 
 class SimpleEntryTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         % maybe the simplest possible
         % just a comment and one reference
 
@@ -290,7 +296,7 @@ class SimpleEntryTest(ParserTest, TestCase):
 
 
 class KeyParsingTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         # will not work as expected
         @article(test(parens1))
 
@@ -316,7 +322,7 @@ class KeyParsingTest(ParserTest, TestCase):
 
 class KeylessEntriesTest(ParserTest, TestCase):
     parser_options = {'keyless_entries': True}
-    input = u"""
+    input_string = u"""
         @BOOK(
             title="I Am Jackie Chan: My Life in Action",
             year=1999
@@ -338,7 +344,7 @@ class KeylessEntriesTest(ParserTest, TestCase):
 
 
 class MacrosTest(ParserTest, TestCase):
-    input = u"""
+    input_string = u"""
         @String{and = { and }}
         @String{etal = and # { {et al.}}}
         @Article(
@@ -361,7 +367,7 @@ class MacrosTest(ParserTest, TestCase):
 
 class WantedEntriesTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': ['GSL']}
-    input = u"""
+    input_string = u"""
         @Article(
             gsl,
         )
@@ -373,7 +379,7 @@ class WantedEntriesTest(ParserTest, TestCase):
 
 class CrossrefTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': ['GSL', 'GSL2']}
-    input = u"""
+    input_string = u"""
         @Article(gsl, crossref="the_journal")
         @Article(gsl2, crossref="The_Journal")
         @Journal{the_journal,}
@@ -387,7 +393,7 @@ class CrossrefTest(ParserTest, TestCase):
 
 class UnusedEntryTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': []}
-    input = u"""
+    input_string = u"""
         @Article(
             gsl,
             author = nobody,
