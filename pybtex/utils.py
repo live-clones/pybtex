@@ -28,6 +28,20 @@ from collections import Sequence, MutableMapping
 from types import GeneratorType
 
 
+def deprecated(since, reason=None):
+    def decorator(f):
+        @wraps(f)
+        def new_f(*args, **kwargs):
+            import warnings
+            message = u'{0}() is deprecated since {1}'.format(f.__name__, since)
+            if reason:
+                message += ': {0}'.format(reason)
+            warnings.warn(message, DeprecationWarning)
+            return f(*args, **kwargs)
+        return new_f
+    return decorator
+
+
 def memoize(f):
     memory = {}
     @wraps(f)
