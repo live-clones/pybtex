@@ -56,7 +56,7 @@ class Backend(BaseBackend):
         return ur'<%s>%s</%s>' % (tag, text, tag)
     
     def format_href(self, url, text):
-        return ur'<href url="%s">%s</href>' % (url, text)
+        return ur'<a href="%s">%s</a>' % (url, text)
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()
