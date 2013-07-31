@@ -33,7 +33,7 @@ from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import memoize
 from pybtex.bibtex import utils
 from pybtex.database import Person
-from pybtex.bibtex.names import format as format_bibtex_name
+from pybtex.bibtex.names import format_name as format_bibtex_name
 
 
 def print_warning(msg):

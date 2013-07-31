@@ -22,10 +22,10 @@
 """BibTeX-like name formatting.
 
 >>> name = 'Charles Louis Xavier Joseph de la Vallee Poussin'
->>> print format(name, '{vv~}{ll}{, jj}{, f.}')
+>>> print format_name(name, '{vv~}{ll}{, jj}{, f.}')
 de~la Vallee~Poussin, C.~L. X.~J.
 >>> name = 'abc'
->>> print format(name, '{vv~}{ll}{, jj}{, f.}')
+>>> print format_name(name, '{vv~}{ll}{, jj}{, f.}')
 abc
 """
 
@@ -33,6 +33,7 @@ import re
 
 from pybtex.database import Person
 from pybtex.bibtex.utils import bibtex_len, bibtex_first_letter
+from pybtex.utils import deprecated
 from pybtex.scanner import (
     Scanner, Pattern, Literal,
     PybtexSyntaxError, PrematureEOF
@@ -260,8 +261,14 @@ def join(words, tie='~', space=' '):
                 space.join(words[1:-1]) +
                 tie + words[-1])
 
-def format(name, format):
+
+def format_name(name, format):
     return NameFormat(format).format(name)
+
+
+@deprecated('0.16', 'use format_name() instead')
+def format(name, format):
+    return format_name(name, format)
 
 
 class UnbalancedBraceError(PybtexSyntaxError):
