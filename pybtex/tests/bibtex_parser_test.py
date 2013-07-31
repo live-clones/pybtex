@@ -400,3 +400,23 @@ class UnusedEntryTest(ParserTest, TestCase):
         )
     """
     correct_result = BibliographyData()
+
+
+class CrossFileMacrosTest(ParserTest, TestCase):
+    input_strings = [
+        u'@string{jackie = "Jackie Chan"}',
+        u""",
+            @Book{
+                i_am_jackie,
+                author = jackie,
+                title = "I Am " # jackie # ": My Life in Action",
+            }
+        """,
+    ]
+    correct_result = BibliographyData({
+        'i_am_jackie': Entry('book', 
+            fields={'title': 'I Am Jackie Chan: My Life in Action'},
+            persons={'author': [Person(u'Chan, Jackie')]}
+        ),
+    })
+

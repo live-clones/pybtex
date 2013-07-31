@@ -130,7 +130,7 @@ class BibTeXEntryIterator(Scanner):
     def __init__(self, text, keyless_entries=False, macros=month_names, handle_error=None, want_entry=None, filename=None):
         super(BibTeXEntryIterator, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
-        self.macros = dict(macros)
+        self.macros = macros
         if handle_error:
             self.handle_error = handle_error
         if want_entry:
