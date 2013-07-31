@@ -21,6 +21,7 @@
 
 import pybtex.io
 from pybtex.plugin import Plugin
+from pybtex.utils import deprecated
 
 
 available_plugins = ('latex', 'html', 'plaintext', 'doctree')
@@ -75,10 +76,6 @@ class BaseBackend(Plugin):
             self.write_entry(entry.key, entry.label, entry.text.render(self))
         self.write_epilogue()
 
+    @deprecated('0.15', 'use write_to_file() instead')
     def write_bibliography(self, formatted_bibliography, filename):
-        import warnings
-        warnings.warn(
-            'write_bibliography() is deprecated, use write_to_file() insted.',
-            DeprecationWarning,
-        )
         self.write_to_file(formatted_bibliography, filename)
