@@ -8,7 +8,6 @@ from tempfile import mkdtemp
 
 from pybtex import io
 from pybtex import errors
-from pybtex import bibtex
 from pybtex.tests import diff
 
 
@@ -43,23 +42,34 @@ def write_aux(aux_name, bib_name, bst_name):
         aux_file.write(u'\\bibdata{{{0}}}\n'.format(bib_name))
 
 
-def check_make_bibliography(bib_name, bst_name):
+def check_make_bibliography(engine, bib_name, bst_name):
     with cd_tempdir() as tempdir:
         copy_files(bib_name, bst_name)
         write_aux('test.aux', bib_name, bst_name)
         with errors.capture() as stderr:  # FIXME check error messages
-            bibtex.make_bibliography('test.aux')
+            engine.make_bibliography('test.aux')
         with io.open_unicode('test.bbl', 'r') as result_file:
             result = result_file.read()
-        correct_result_name = '{0}_{1}.bbl'.format(bib_name, bst_name)
+        engine_name = engine.__name__.rsplit('.', 1)[-1]
+        correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, bst_name, engine_name)
         correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name).decode(io.get_default_encoding())
         assert result == correct_result, diff(correct_result, result)
 
 
 def test_bibtex_engine():
+    from pybtex import bibtex
     for bib_name, bst_name in [
         ('xampl', 'unsrt'),
         ('xampl', 'plain'),
         ('cyrillic', 'unsrt'),
     ]:
-        yield check_make_bibliography, bib_name, bst_name
+        yield check_make_bibliography, bibtex, bib_name, bst_name
+
+
+def test_pybte_engine():
+    import pybtex
+    for bib_name, bst_name in [
+        ('cyrillic', 'unsrt'),
+        ('cyrillic', 'plain'),
+    ]:
+        yield check_make_bibliography, pybtex, bib_name, bst_name
