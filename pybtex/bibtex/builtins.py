@@ -309,9 +309,8 @@ def while_(i):
 
 @builtin('width$')
 def width(i):
-    #FIXME need to investigate bibtex' source
     s = i.pop()
-    i.push(utils.bibtex_len(s))
+    i.push(utils.bibtex_width(s))
 
 @builtin('write$')
 def write(i):
