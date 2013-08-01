@@ -293,7 +293,7 @@ class HRef(Text):
     >>> print href.render(latex.Backend())
     \href{http://www.example.com}{hyperlinked text}
     >>> print href.render(html.Backend())
-    <href url="http://www.example.com">hyperlinked text</href>
+    <a href="http://www.example.com">hyperlinked text</a>
     >>> print href.render(doctree.Backend())
     <reference refuri="http://www.example.com"><inline>hyperlinked text</inline></reference>
     >>> print href.render(plaintext.Backend())

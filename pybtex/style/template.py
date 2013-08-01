@@ -316,9 +316,9 @@ def href(children, data):
     >>> import pybtex.backends.html
     >>> html = pybtex.backends.html.Backend()
     >>> print href ['www.test.org', 'important'].format().render(html)
-    <href url="www.test.org">important</href>
+    <a href="www.test.org">important</a>
     >>> print sentence ['ready', 'set', href ['www.test.org', 'go']].format().render(html)
-    Ready, set, <href url="www.test.org">go</href>.
+    Ready, set, <a href="www.test.org">go</a>.
     """
     parts = _format_list(children, data)
     return richtext.HRef(*parts)
