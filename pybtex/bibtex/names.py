@@ -32,6 +32,14 @@ abc
 Jean-Pierre Hansen
 >>> print format_name(name, '{f.~}{vv~}{ll}{, jj}')
 J.-P. Hansen
+
+>>> name = 'F. Phidias Phony-Baloney'
+>>> print format_name(name, '{v{}}{l}')
+P.-B
+>>> print format_name(name, '{v{}}{l.}')
+P.-B.
+>>> print format_name(name, '{v{}}{l{}}')
+PB
 """
 
 import re
@@ -126,7 +134,7 @@ class NamePart(object):
             return ''
 
         if self.abbreviate:
-            names = [bibtex_abbreviate(name) for name in names]
+            names = [bibtex_abbreviate(name, self.delimiter) for name in names]
         if self.delimiter is None:
             if self.abbreviate:
                 names = join(names, '.~', '. ')

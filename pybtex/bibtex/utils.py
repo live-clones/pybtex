@@ -449,7 +449,7 @@ def bibtex_first_letter(string):
     return ''
 
 
-def bibtex_abbreviate(string, sep='-'):
+def bibtex_abbreviate(string, delimiter=None, separator='-'):
     """
     Abbreviate string.
 
@@ -463,9 +463,11 @@ def bibtex_abbreviate(string, sep='-'):
     """
 
     def _bibtex_abbreviate():
-        for token in split_tex_string(string, sep=sep):
+        for token in split_tex_string(string, sep=separator):
             letter = bibtex_first_letter(token)
             if letter:
                 yield letter
-    abbr_sep = '.' + sep
-    return abbr_sep.join(_bibtex_abbreviate())
+
+    if delimiter is None:
+        delimiter = '.-'
+    return delimiter.join(_bibtex_abbreviate())
