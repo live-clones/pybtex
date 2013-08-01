@@ -61,7 +61,9 @@ def test_bibtex_engine():
     for bib_name, bst_name in [
         ('xampl', 'unsrt'),
         ('xampl', 'plain'),
+        ('xampl', 'alpha'),
         ('cyrillic', 'unsrt'),
+        ('cyrillic', 'alpha'),
     ]:
         yield check_make_bibliography, bibtex, bib_name, bst_name
 
@@ -71,5 +73,6 @@ def test_pybte_engine():
     for bib_name, bst_name in [
         ('cyrillic', 'unsrt'),
         ('cyrillic', 'plain'),
+        ('cyrillic', 'alpha'),
     ]:
         yield check_make_bibliography, pybtex, bib_name, bst_name
