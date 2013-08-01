@@ -59,7 +59,7 @@ def make_bibliography(aux_filename,
             abbreviate_names=kwargs.get('abbreviate_names'),
     )
     citations = bib_data.add_extra_citations(aux_data.citations, min_crossrefs)
-    entries = (bib_data.entries[key] for key in citations)
+    entries = [bib_data.entries[key] for key in citations]
     formatted_entries = style.format_entries(entries)
     del entries
     formatted_bibliography = FormattedBibliography(formatted_entries, style)
