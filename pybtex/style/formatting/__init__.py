@@ -62,5 +62,5 @@ class BaseStyle(Plugin):
         citations = bib_data.add_extra_citations(citations, self.min_crossrefs)
         entries = [bib_data.entries[key] for key in citations]
         formatted_entries = self.format_entries(entries)
-        formatted_bibliography = FormattedBibliography(formatted_entries, style=self)
+        formatted_bibliography = FormattedBibliography(formatted_entries, style=self, preamble=bib_data.get_preamble())
         return formatted_bibliography
