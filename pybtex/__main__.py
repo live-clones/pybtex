@@ -47,14 +47,18 @@ It is also possible to define bibliography formatting styles in Python.
     options = (
         (None, (
             make_option(
-                '--min-crossrefs',
-                type='int', dest='min_crossrefs',
-                help='include item after NUMBER crossrefs; default 2',
-                metavar='NUMBER',
+                '--strict', dest='strict', action='store_true',
+                help='turn warnings into errors',
             ),
             make_option(
                 '--terse', dest='verbose', action='store_false',
                 help='ignored for compatibility with BibTeX',
+            ),
+            make_option(
+                '--min-crossrefs',
+                type='int', dest='min_crossrefs',
+                help='include item after NUMBER crossrefs; default 2',
+                metavar='NUMBER',
             ),
             make_option(
                 '-f', '--bibliography-format', dest='bib_format',
@@ -121,6 +125,10 @@ It is also possible to define bibliography formatting styles in Python.
     legacy_options = '-help', '-version', '-min-crossrefs', '-terse'
 
     def run(self, options, args):
+        if options.strict:
+            from pybtex.errors import enable_strict_mode
+            enable_strict_mode()
+
         from pybtex.plugin import find_plugin
 
         filename = args[0]
