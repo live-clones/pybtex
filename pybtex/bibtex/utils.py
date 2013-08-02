@@ -253,6 +253,8 @@ def bibtex_width(string):
     r"""
     Determine the width of the given string, in relative units.
 
+    >>> bibtex_width('')
+    0
     >>> bibtex_width('abc')
     1500
     >>> bibtex_width('ab{c}')
