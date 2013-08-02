@@ -40,6 +40,8 @@ class Backend(BaseBackend):
         return ur'\href{%s}{%s}' % (url, text)
     
     def write_prologue(self):
+        self.output(self.formatted_bibliography.preamble + u'\n')
+
         longest_label = self.formatted_bibliography.get_longest_label()
         self.output(u'\\begin{thebibliography}{%s}' % longest_label)
 
