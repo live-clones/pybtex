@@ -136,8 +136,6 @@ It is also possible to define bibliography formatting styles in Python.
         else:
             self.opt_parser.error('unknown style language %s' % options.style_language)
 
-        from pybtex.plugin import find_plugin
-
         filename = args[0]
         ext = path.splitext(filename)[1]
         if ext != '.aux':
