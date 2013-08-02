@@ -83,3 +83,27 @@ def normalize_whitespace(string):
     """
 
     return whitespace_re.sub(' ', string.strip())
+
+def width(string):
+    r"""
+    Get the width of the typeset string, in relative units.  Similar to
+    BibTeX's width$, but does not care about any "special characters".
+    
+    >>> width('')
+    0
+    >>> width('abc')
+    1500
+    >>> width('ab{c}')
+    2500
+    >>> width(r"ab{\'c}")
+    3278
+    >>> width(r"ab{\'c{}}")
+    4278
+    >>> width(r"ab{\'c{}")
+    3778
+    >>> width(r"ab{\'c{d}}")
+    4834
+    """
+
+    from pybtex.charwidths import charwidths
+    return sum(charwidths.get(char, 0) for char in string)
