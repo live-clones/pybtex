@@ -25,6 +25,7 @@ from collections import Mapping
 
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
+    deprecated,
     OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
 )
 from pybtex.bibtex.utils import split_tex_string
@@ -70,7 +71,11 @@ class BibliographyData(object):
     def add_to_preamble(self, *values):
         self._preamble.extend(values)
 
+    @deprecated('0.17', 'use get_preamble instead')
     def preamble(self):
+        return self.get_preamble()
+
+    def get_preamble(self):
         return ''.join(self._preamble)
 
     def want_entry(self, key):

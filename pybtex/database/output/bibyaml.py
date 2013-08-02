@@ -54,7 +54,7 @@ class Writer(BaseWriter):
                 yield key, fields
 
         data = {'entries': dict(process_entries(bib_data.entries))}
-        preamble = bib_data.preamble()
+        preamble = bib_data.get_preamble()
         if preamble:
             data['preamble'] = preamble
         yaml.safe_dump(data, stream, allow_unicode=True, encoding='UTF-8', default_flow_style=False, indent=4)

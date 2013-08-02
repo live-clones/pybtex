@@ -239,7 +239,7 @@ def pop(i):
 
 @builtin('preamble$')
 def preamble(i):
-    i.push(i.bib_data.preamble())
+    i.push(i.bib_data.get_preamble())
 
 @builtin('purify$')
 def purify(i):
