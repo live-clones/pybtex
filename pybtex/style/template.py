@@ -242,7 +242,8 @@ class FieldIsMissing(PybtexError):
     def __init__(self, field_name, entry):
         self.field_name = field_name
         super(FieldIsMissing, self).__init__(
-            'missing field: %s in %s' % (field_name, entry))
+            u'missing {0} in {1}'.format(field_name, entry.key)
+        )
 
 @node
 def field(children, data, name, apply_func=None):
