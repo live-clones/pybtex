@@ -129,6 +129,13 @@ It is also possible to define bibliography formatting styles in Python.
             from pybtex.errors import enable_strict_mode
             enable_strict_mode()
 
+        if options.style_language == 'bibtex':
+            from pybtex import bibtex as engine
+        elif options.style_language == 'python':
+            import pybtex as engine
+        else:
+            self.opt_parser.error('unknown style language %s' % options.style_language)
+
         from pybtex.plugin import find_plugin
 
         filename = args[0]
@@ -149,13 +156,6 @@ It is also possible to define bibliography formatting styles in Python.
                     self.opt_parser.error(
                         '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported
                     )
-
-        if options.style_language == 'bibtex':
-            from pybtex import bibtex as engine
-        elif options.style_language == 'python':
-            import pybtex as engine
-        else:
-            self.opt_parser.error('unknown style language %s' % options.style_language)
 
         for encoding_option in 'bib_encoding', 'bst_encoding', 'output_encoding':
             if not getattr(options, encoding_option):
