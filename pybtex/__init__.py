@@ -38,12 +38,10 @@ def make_bibliography(aux_filename,
     from os import path
     from pybtex import auxfile
     from pybtex.plugin import find_plugin
-    from pybtex.style import FormattedBibliography
 
     filename = path.splitext(aux_filename)[0]
     aux_data = auxfile.parse_file(aux_filename, output_encoding)
 
-    output_backend = find_plugin('pybtex.backends', output_backend)
     bib_parser = find_plugin('pybtex.database.input', bib_format)
     bib_data = bib_parser(
         encoding=bib_encoding,
@@ -57,12 +55,10 @@ def make_bibliography(aux_filename,
             name_style=kwargs.get('name_style'),
             sorting_style=kwargs.get('sorting_style'),
             abbreviate_names=kwargs.get('abbreviate_names'),
+            min_crossrefs=min_crossrefs,
     )
-    citations = bib_data.add_extra_citations(aux_data.citations, min_crossrefs)
-    entries = [bib_data.entries[key] for key in citations]
-    formatted_entries = style.format_entries(entries)
-    del entries
-    formatted_bibliography = FormattedBibliography(formatted_entries, style)
+    formatted_bibliography = style.format_bibliography(bib_data, aux_data.citations)
 
+    output_backend = find_plugin('pybtex.backends', output_backend)
     output_filename = filename + output_backend.get_default_suffix()
     output_backend(output_encoding).write_to_file(formatted_bibliography, output_filename)
