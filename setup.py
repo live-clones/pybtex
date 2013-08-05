@@ -59,6 +59,10 @@ if sys.version_info >= (3, 0):
 else:
     extra = {}
 
+install_requires = ['PyYAML>=3.01', 'docutils>=0.11']
+if sys.version_info < (2, 7):
+    install_requires += ['Counter>=1.0.0']
+
 setup(name=progname,
     version=version,
     description='A BibTeX-compatible bibliography processor in Python',
@@ -79,9 +83,7 @@ setup(name=progname,
         'Topic :: Text Processing :: Markup :: LaTeX',
         'Topic :: Text Processing :: Markup :: XML'
     ],
-    install_requires = [
-        'PyYAML>=3.01'
-    ],
+    install_requires = install_requires,
     packages=find_packages(exclude=['docs']),
     scripts=[os.path.join('scripts', progname), os.path.join('scripts', progname + "-convert")],
     include_package_data=True,
