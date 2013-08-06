@@ -22,7 +22,12 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from collections import Counter
+import sys
+if sys.version_info < (2, 7):
+   from counter import Counter
+else:
+   from collections import Counter
+
 import re
 import string
 import unicodedata
