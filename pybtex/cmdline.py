@@ -56,6 +56,14 @@ def standard_option(name):
 
 
 make_standard_option(
+    '-f', '--bibliography-format', dest='bib_format',
+    help='bibliograpy format (%plugin_choices)',
+    type='load_plugin',
+    plugin_group='pybtex.database.input',
+    metavar='FORMAT',
+)
+
+make_standard_option(
     '-b', '--output-backend', dest='output_backend',
     help='output backend (%plugin_choices)',
     type='load_plugin',

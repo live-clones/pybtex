@@ -27,7 +27,7 @@ from pybtex.plugin import find_plugin
 
 
 def format_database(from_filename, to_filename,
-        from_format=None, output_backend=None,
+        bib_format=None, output_backend=None,
         input_encoding=None, output_encoding=None,
         parser_options=None,
         min_crossrefs=2,
@@ -35,7 +35,7 @@ def format_database(from_filename, to_filename,
     ):
     if parser_options is None:
         parser_options = {}
-    input_format = find_plugin('pybtex.database.input', name=from_format, filename=from_filename)
+    input_format = find_plugin('pybtex.database.input', name=bib_format, filename=from_filename)
     output_backend = find_plugin('pybtex.backends', output_backend, filename=to_filename)
     
     bib_data = input_format(input_encoding, **parser_options).parse_file(from_filename)
