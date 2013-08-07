@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from pybtex.cmdline import CommandLine, make_option
+from pybtex.cmdline import CommandLine, make_option, standard_option
 
 class PybtexConvertCommandLine(CommandLine):
     prog = 'pybtex-convert'
@@ -49,29 +49,12 @@ pybtex-convert converts bibliography database files between supported formats
                 help='output format (%plugin_choices)', metavar='FORMAT',
                 type='load_plugin', plugin_group='pybtex.database.output',
             ),
-            make_option(
-                '--keyless-bibtex-entries',
-                action='store_true', dest='keyless_entries',
-                help='allow BibTeX entries without keys and generate unnamed-<number> keys for them'
-            ),
+            standard_option('keyless_entries'),
         )),
         ('encoding options', (
-            make_option(
-                '-e', '--encoding',
-                action='store', type='string', dest='encoding',
-                help='default encoding',
-                metavar='ENCODING',
-            ),
-            make_option(
-                '--input-encoding',
-                action='store', type='string', dest='input_encoding',
-                metavar='ENCODING',
-            ),
-            make_option(
-                '--output-encoding',
-                action='store', type='string', dest='output_encoding',
-                metavar='ENCODING',
-            ),
+            standard_option('encoding'),
+            standard_option('input_encoding'),
+            standard_option('output_encoding'),
         )),
     )
     option_defaults = {

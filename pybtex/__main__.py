@@ -23,7 +23,7 @@
 
 from os import path
 
-from pybtex.cmdline import CommandLine, make_option
+from pybtex.cmdline import CommandLine, make_option, standard_option
 
 
 class PybtexCommandLine(CommandLine):
@@ -54,12 +54,7 @@ It is also possible to define bibliography formatting styles in Python.
                 '--terse', dest='verbose', action='store_false',
                 help='ignored for compatibility with BibTeX',
             ),
-            make_option(
-                '--min-crossrefs',
-                type='int', dest='min_crossrefs',
-                help='include item after NUMBER crossrefs; default 2',
-                metavar='NUMBER',
-            ),
+            standard_option('min_crossrefs'),
             make_option(
                 '-f', '--bibliography-format', dest='bib_format',
                 help='bibliograpy format (%plugin_choices)',
@@ -67,13 +62,7 @@ It is also possible to define bibliography formatting styles in Python.
                 plugin_group='pybtex.database.input',
                 metavar='FORMAT',
             ),
-            make_option(
-                '-b', '--output-backend', dest='output_backend',
-                help='output backend (%plugin_choices)',
-                type='load_plugin',
-                plugin_group='pybtex.backends',
-                metavar='BACKEND',
-            ),
+            standard_option('output_backend'),
             make_option(
                 '-l', '--style-language', dest='style_language',
                 help='style definition language to use (bibtex or python)',
@@ -81,41 +70,16 @@ It is also possible to define bibliography formatting styles in Python.
             ),
         )),
         ('Pythonic style options', (
-            make_option(
-                '--label-style', dest='label_style',
-                help='label formatting style (%plugin_choices)',
-                type='load_plugin',
-                plugin_group='pybtex.style.labels',
-                metavar='STYLE',
-            ),
-            make_option(
-                '--name-style', dest='name_style',
-                help='name formatting style (%plugin_choices)',
-                type='load_plugin',
-                plugin_group='pybtex.style.names',
-                metavar='STYLE',
-            ),
-            make_option(
-                '--sorting-style', dest='sorting_style',
-                help='sorting style (%plugin_choices)',
-                type='load_plugin',
-                plugin_group='pybtex.style.sorting',
-                metavar='STYLE',
-            ),
-            make_option(
-                '--abbreviate-names',
-                action='store_true', dest='abbreviate_names',
-                help='use abbreviated name formatting style',
-            ),
+            standard_option('label_style'),
+            standard_option('name_style'),
+            standard_option('sorting_style'),
+            standard_option('abbreviate_names'),
         )),
         ('Encoding options', (
-            make_option(
-                '-e', '--encoding', dest='encoding', metavar='ENCODING',
-                help='default encoding',
-            ),
+            standard_option('encoding'),
             make_option('--bibtex-encoding', dest='bib_encoding', metavar='ENCODING'),
             make_option('--bst-encoding', dest='bst_encoding', metavar='ENCODING'),
-            make_option('--output-encoding', dest='output_encoding', metavar='ENCODING'),
+            standard_option('output_encoding'),
         )),
     )
     option_defaults = {

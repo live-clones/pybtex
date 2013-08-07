@@ -55,6 +55,77 @@ def standard_option(name):
     return PybtexOption.STANDARD_OPTIONS[name]
 
 
+make_standard_option(
+    '-b', '--output-backend', dest='output_backend',
+    help='output backend (%plugin_choices)',
+    type='load_plugin',
+    plugin_group='pybtex.backends',
+    metavar='BACKEND',
+)
+
+make_standard_option(
+    '--min-crossrefs',
+    type='int', dest='min_crossrefs',
+    help='include item after NUMBER crossrefs; default 2',
+    metavar='NUMBER',
+)
+
+make_standard_option(
+    '--keyless-bibtex-entries',
+    action='store_true', dest='keyless_entries',
+    help='allow BibTeX entries without keys and generate unnamed-<number> keys for them'
+)
+
+make_standard_option(
+    '--label-style', dest='label_style',
+    help='label formatting style (%plugin_choices)',
+    type='load_plugin',
+    plugin_group='pybtex.style.labels',
+    metavar='STYLE',
+)
+
+make_standard_option(
+    '--name-style', dest='name_style',
+    help='name formatting style (%plugin_choices)',
+    type='load_plugin',
+    plugin_group='pybtex.style.names',
+    metavar='STYLE',
+)
+
+make_standard_option(
+    '--sorting-style', dest='sorting_style',
+    help='sorting style (%plugin_choices)',
+    type='load_plugin',
+    plugin_group='pybtex.style.sorting',
+    metavar='STYLE',
+)
+
+make_standard_option(
+    '--abbreviate-names',
+    action='store_true', dest='abbreviate_names',
+    help='use abbreviated name formatting style',
+)
+
+make_standard_option(
+    '-e', '--encoding',
+    action='store', type='string', dest='encoding',
+    help='default encoding',
+    metavar='ENCODING',
+)
+
+make_standard_option(
+    '--input-encoding',
+    action='store', type='string', dest='input_encoding',
+    metavar='ENCODING',
+)
+
+make_standard_option(
+    '--output-encoding',
+    action='store', type='string', dest='output_encoding',
+    metavar='ENCODING',
+)
+
+
 BaseHelpFormatter = optparse.IndentedHelpFormatter
 class PybtexHelpFormatter(BaseHelpFormatter):
     def get_plugin_choices(self, plugin_group):
