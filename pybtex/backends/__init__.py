@@ -24,7 +24,7 @@ from pybtex.plugin import Plugin
 from pybtex.utils import deprecated
 
 
-available_plugins = ('latex', 'html', 'plaintext', 'doctree')
+available_plugins = ('latex', 'html', 'plaintext')
 
 
 class BaseBackend(Plugin):
