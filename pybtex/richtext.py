@@ -289,13 +289,11 @@ class HRef(Text):
     or \href{URL}{some text} in LaTeX.
 
     >>> href = HRef('http://www.example.com', 'hyperlinked text')
-    >>> from pybtex.backends import latex, html, doctree, plaintext
+    >>> from pybtex.backends import latex, html, plaintext
     >>> print href.render(latex.Backend())
     \href{http://www.example.com}{hyperlinked text}
     >>> print href.render(html.Backend())
     <a href="http://www.example.com">hyperlinked text</a>
-    >>> print href.render(doctree.Backend())
-    <reference refuri="http://www.example.com"><inline>hyperlinked text</inline></reference>
     >>> print href.render(plaintext.Backend())
     hyperlinked text
     """
