@@ -39,6 +39,20 @@ class PybtexOption(optparse.Option):
     ATTRS = optparse.Option.ATTRS + ['plugin_group']
     TYPES = optparse.Option.TYPES + ('load_plugin',)
     TYPE_CHECKER = dict(optparse.Option.TYPE_CHECKER, load_plugin=check_plugin)
+    STANDARD_OPTIONS = {}
+
+
+make_option = PybtexOption
+
+
+def make_standard_option(*args, **kwargs):
+    option = make_option(*args, **kwargs)
+    PybtexOption.STANDARD_OPTIONS[option.dest] = option
+    return option
+
+
+def standard_option(name):
+    return PybtexOption.STANDARD_OPTIONS[name]
 
 
 BaseHelpFormatter = optparse.IndentedHelpFormatter
@@ -54,7 +68,6 @@ class PybtexHelpFormatter(BaseHelpFormatter):
         return result
 
 
-make_option = PybtexOption
 
 
 class CommandLine(object):
