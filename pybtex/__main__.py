@@ -83,22 +83,21 @@ It is also possible to define bibliography formatting styles in Python.
     }
     legacy_options = '-help', '-version', '-min-crossrefs', '-terse'
 
-    def run(self, options, args):
-        if options.strict:
+    def run(self,
+        filename,
+        strict, verbose, style_language, encoding,
+        **options
+    ):
+        if strict:
             from pybtex.errors import enable_strict_mode
             enable_strict_mode()
 
-        if options.style_language == 'bibtex':
+        if style_language == 'bibtex':
             from pybtex import bibtex as engine
-        elif options.style_language == 'python':
+        elif style_language == 'python':
             import pybtex as engine
         else:
-            self.opt_parser.error('unknown style language %s' % options.style_language)
-
-        filename = args[0]
-        ext = path.splitext(filename)[1]
-        if ext != '.aux':
-            filename = path.extsep.join([filename, 'aux'])
+            self.opt_parser.error('unknown style language %s' % style_language)
 
         not_supported_by_bibtex = {
             'output_backend': 'output backends',
@@ -107,24 +106,21 @@ It is also possible to define bibliography formatting styles in Python.
             'sorting_style': 'sorting styles',
             'abbreviate_names': 'abbreviated names',
         }
-        if options.style_language != 'python':
+        if style_language != 'python':
             for option, what_is_not_supported in not_supported_by_bibtex.iteritems():
-                if getattr(options, option):
+                if options[option]:
                     self.opt_parser.error(
                         '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported
                     )
 
         for encoding_option in 'bib_encoding', 'bst_encoding', 'output_encoding':
-            if not getattr(options, encoding_option):
-                setattr(options, encoding_option, options.encoding)
+            if not options[encoding_option]:
+                options[encoding_option] = encoding
 
-        kwargs = {}
-        uninteresting_options = 'verbose', 'style_language'
-        kwargs = dict(
-            (key, value) for (key, value) in options.__dict__.iteritems()
-            if key not in uninteresting_options
-        )
-        engine.make_bibliography(filename, **kwargs)
+        ext = path.splitext(filename)[1]
+        if ext != '.aux':
+            filename = path.extsep.join([filename, 'aux'])
+        engine.make_bibliography(filename, **options)
 
 main = PybtexCommandLine()
 

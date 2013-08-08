@@ -52,17 +52,20 @@ pybtex-format formats bibliography database as human-readable text.
         'keyless_entries': False,
     }
 
-    def run(self, options, args):
+    def run(
+        self, from_filename, to_filename,
+        encoding, input_encoding, output_encoding,
+        keyless_entries,
+        **options
+    ):
         from pybtex.database.format import format_database
 
-        format_database(args[0], args[1],
-                options.bib_format,
-                options.output_backend,
-                input_encoding=options.input_encoding or options.encoding,
-                output_encoding=options.output_encoding or options.encoding,
-                parser_options = {'keyless_entries': options.keyless_entries},
-                min_crossrefs=options.min_crossrefs,
-                style=options.style,
+        format_database(
+            from_filename, to_filename,
+            input_encoding=input_encoding or encoding,
+            output_encoding=output_encoding or encoding,
+            parser_options={'keyless_entries': keyless_entries},
+            **options
         )
 
 

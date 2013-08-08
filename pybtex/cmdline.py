@@ -205,12 +205,19 @@ class CommandLine(object):
             for arg in args
         ]
 
+    def _extract_kwargs(self, options):
+        return dict(
+            (option.dest, getattr(options, option.dest))
+            for option_group, option_list in self.options
+            for option in option_list
+        )
+
     def main(self):
-        args = self.recognize_legacy_optons(sys.argv[1:])
-        options, args = self.opt_parser.parse_args(args)
+        argv = self.recognize_legacy_optons(sys.argv[1:])
+        options, args = self.opt_parser.parse_args(argv)
         if len(args) != self.num_args:
             self.opt_parser.print_help()
             sys.exit(1)
-
-        self.run(options, args)
+        kwargs = self._extract_kwargs(options)
+        self.run(*args, **kwargs)
         sys.exit(errors.error_code)

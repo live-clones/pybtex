@@ -61,15 +61,20 @@ pybtex-convert converts bibliography database files between supported formats
         'keyless_entries': False,
     }
 
-    def run(self, options, args):
+    def run(
+        self, from_filename, to_filename,
+        encoding, input_encoding, output_encoding,
+        keyless_entries,
+        **options
+    ):
         from pybtex.database.convert import convert, ConvertError
 
-        convert(args[0], args[1],
-                options.from_format,
-                options.to_format,
-                input_encoding=options.input_encoding or options.encoding,
-                output_encoding=options.output_encoding or options.encoding,
-                parser_options = {'keyless_entries': options.keyless_entries})
+        convert(from_filename, to_filename,
+            input_encoding=input_encoding or encoding,
+            output_encoding=output_encoding or encoding,
+            parser_options = {'keyless_entries': keyless_entries},
+            **options
+        )
 
 main = PybtexConvertCommandLine()
 
