@@ -31,6 +31,7 @@ def format_database(from_filename, to_filename,
         input_encoding=None, output_encoding=None,
         parser_options=None,
         min_crossrefs=2,
+        style=None,
         **kwargs
     ):
     if parser_options is None:
@@ -39,7 +40,7 @@ def format_database(from_filename, to_filename,
     output_backend = find_plugin('pybtex.backends', output_backend, filename=to_filename)
     
     bib_data = input_format(input_encoding, **parser_options).parse_file(from_filename)
-    style_cls = find_plugin('pybtex.style.formatting') #, aux_data.style)
+    style_cls = find_plugin('pybtex.style.formatting', style)
     style = style_cls(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),

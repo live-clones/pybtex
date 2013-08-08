@@ -40,6 +40,7 @@ pybtex-format formats bibliography database as human-readable text.
             standard_option('output_backend'),
             standard_option('min_crossrefs'),
             standard_option('keyless_entries'),
+            standard_option('style'),
         )),
         ('encoding options', (
             standard_option('encoding'),
@@ -60,7 +61,8 @@ pybtex-format formats bibliography database as human-readable text.
                 input_encoding=options.input_encoding or options.encoding,
                 output_encoding=options.output_encoding or options.encoding,
                 parser_options = {'keyless_entries': options.keyless_entries},
-                min_crossrefs=options.min_crossrefs
+                min_crossrefs=options.min_crossrefs,
+                style=options.style,
         )
 
 
