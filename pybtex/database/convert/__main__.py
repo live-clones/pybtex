@@ -51,7 +51,7 @@ pybtex-convert converts bibliography database files between supported formats
             ),
             standard_option('keyless_entries'),
         )),
-        ('encoding options', (
+        ('Encoding options', (
             standard_option('encoding'),
             standard_option('input_encoding'),
             standard_option('output_encoding'),
