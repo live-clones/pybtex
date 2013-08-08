@@ -207,7 +207,7 @@ def if_(i):
 def int_to_chr(i):
     n = i.pop()
     try:
-        char = chr(n)
+        char = unichr(n)
     except ValueError:
         raise BibTeXError('%i passed to int.to.chr$', n)
     i.push(char)
