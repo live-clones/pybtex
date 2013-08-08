@@ -85,6 +85,11 @@ make_standard_option(
 )
 
 make_standard_option(
+    '-s', '--style',
+    type='string', dest='style', help='bibliography formatting style',
+)
+
+make_standard_option(
     '--label-style', dest='label_style',
     help='label formatting style (%plugin_choices)',
     type='load_plugin',
@@ -145,8 +150,6 @@ class PybtexHelpFormatter(BaseHelpFormatter):
             plugin_choices = self.get_plugin_choices(option.plugin_group)
             result = result.replace('%plugin_choices', plugin_choices)
         return result
-
-
 
 
 class CommandLine(object):

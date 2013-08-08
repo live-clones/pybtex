@@ -57,6 +57,7 @@ It is also possible to define bibliography formatting styles in Python.
             standard_option('min_crossrefs'),
             standard_option('bib_format'),
             standard_option('output_backend'),
+            standard_option('style'),
             make_option(
                 '-l', '--style-language', dest='style_language',
                 help='style definition language to use (bibtex or python)',

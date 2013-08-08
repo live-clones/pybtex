@@ -29,6 +29,7 @@ def make_bibliography(aux_filename,
         output_encoding=None,
         output_backend=None,
         min_crossrefs=2,
+        style=None,
         **kwargs
         ):
     """This functions extracts all nessessary information from .aux file
@@ -49,7 +50,9 @@ def make_bibliography(aux_filename,
         min_crossrefs=min_crossrefs,
     ).parse_files(aux_data.data, bib_parser.get_default_suffix())
 
-    style_cls = find_plugin('pybtex.style.formatting', aux_data.style)
+    if style is None:
+        style = aux_data.style
+    style_cls = find_plugin('pybtex.style.formatting', style)
     style = style_cls(
             label_style=kwargs.get('label_style'),
             name_style=kwargs.get('name_style'),

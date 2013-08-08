@@ -29,6 +29,7 @@ def make_bibliography(aux_filename,
         output_encoding=None,
         bst_encoding=None,
         min_crossrefs=2,
+        style=None,
         **kwargs
     ):
 
@@ -43,7 +44,9 @@ def make_bibliography(aux_filename,
     if bib_format is None:
         from pybtex.database.input.bibtex import Parser as bib_format
     aux_data = auxfile.parse_file(aux_filename, output_encoding)
-    bst_filename = aux_data.style + path.extsep + 'bst'
+    if style is None:
+        style = aux_data.style
+    bst_filename = style + path.extsep + 'bst'
     bst_script = bst.parse_file(bst_filename, bst_encoding)
     base_filename = path.splitext(aux_filename)[0]
     bbl_filename = base_filename + path.extsep + 'bbl'
