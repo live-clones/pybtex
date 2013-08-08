@@ -42,6 +42,12 @@ pybtex-format formats bibliography database as human-readable text.
             standard_option('keyless_entries'),
             standard_option('style'),
         )),
+        ('Pythonic style options', (
+            standard_option('label_style'),
+            standard_option('name_style'),
+            standard_option('sorting_style'),
+            standard_option('abbreviate_names'),
+        )),
         ('encoding options', (
             standard_option('encoding'),
             standard_option('input_encoding'),
