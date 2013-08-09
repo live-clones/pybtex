@@ -44,8 +44,10 @@ plugin_registry = {
         "class_name": "Backend", 
         "suffixes": {
             ".html": "html", 
+            ".latex": "latex", 
             ".txt": "plaintext", 
-            ".bbl": "latex"
+            ".bbl": "latex", 
+            ".tex": "latex"
         }, 
         "aliases": {
             "text": "plaintext"

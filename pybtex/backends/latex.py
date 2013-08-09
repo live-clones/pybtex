@@ -24,7 +24,7 @@ from pybtex.backends import BaseBackend
 
 class Backend(BaseBackend):
     name = 'latex'
-    suffixes = '.bbl',
+    suffixes = '.bbl', '.tex', '.latex'
 
     symbols = {
         'ndash': u'--',
