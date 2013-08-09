@@ -23,7 +23,6 @@ from xml.sax.saxutils import escape
 from pybtex.backends import BaseBackend
 import pybtex.io
 
-file_extension = 'html'
 
 PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>

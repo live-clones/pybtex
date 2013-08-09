@@ -21,7 +21,6 @@
 
 from pybtex.backends import BaseBackend
 
-file_extension = 'txt'
 
 class Backend(BaseBackend):
     name = 'plaintext'
