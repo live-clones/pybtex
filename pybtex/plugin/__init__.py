@@ -65,12 +65,61 @@ class Plugin(object):
 
 
 class PluginLoader(object):
-    def find_plugin(plugin_group, name):
+    def find_plugin(plugin_group, name=None, filename=None):
         raise NotImplementedError
 
     def enumerate_plugin_names(self, plugin_group):
         raise NotImplementedError
 
+
+class PluginRegistryLoader(PluginLoader):
+    """A simple plugin loader to support plugins to be registered from
+    external code.
+    """
+    def __init__(self):
+        self.plugin_registry = {
+            plugin_group: {} for plugin_group in [
+                "pybtex.database.output",
+                "pybtex.style.formatting",
+                "pybtex.style.labels",
+                "pybtex.backends",
+                "pybtex.database.input",
+                "pybtex.style.names",
+                "pybtex.style.sorting",
+                ]
+            }
+
+    def register_name(self, plugin_group, name, class_name):
+        self.plugin_registry[plugin_group][name] = class_name
+
+    def get_group_info(self, plugin_group):
+        try:
+            return self.plugin_registry[plugin_group]
+        except KeyError:
+            raise PluginGroupNotFound(plugin_group)
+
+    def find_plugin(self, plugin_group, name=None, filename=None):
+        plugin_group_info = self.get_group_info(plugin_group)
+        if name:
+            try:
+                return plugin_group_info[name]
+            except KeyError:
+                raise PluginNotFound(plugin_group, name)
+        elif filename:
+            # not implemented by this loader
+            raise PluginNotFound(plugin_group, filename=filename)
+        else:
+            # default plugin: this is delegated to the builtin loader
+            raise PluginNotFound(plugin_group)
+
+    def enumerate_plugin_names(self, plugin_group):
+        try:
+            plugin_group = self.plugin_registry[plugin_group]
+        except KeyError:
+            return
+        return plugin_group.iterkeys()
+
+plugin_registry_loader = PluginRegistryLoader()
 
 class BuiltInPluginLoader(PluginLoader):
     def get_group_info(self, plugin_group):
@@ -144,7 +193,9 @@ class EntryPointPluginLoader(PluginLoader):
         return [entry_point.name for entry_point in entry_points]
 
 
-plugin_loaders = [EntryPointPluginLoader(), BuiltInPluginLoader()]
+# first try registry, then entry points, then builtin
+plugin_loaders = [
+    plugin_registry_loader, EntryPointPluginLoader(), BuiltInPluginLoader()]
 
 
 def find_plugin(plugin_group, name=None, filename=None):
