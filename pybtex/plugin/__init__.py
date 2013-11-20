@@ -65,17 +65,6 @@ class Plugin(object):
 
 
 class PluginLoader(object):
-    # map plugin_group to class_name
-    plugin_types = {
-        'pybtex.database.input': 'Parser',
-        'pybtex.database.output': 'Writer',
-        'pybtex.backends': 'Backend',
-        'pybtex.style.labels': 'LabelStyle',
-        'pybtex.style.names': 'NameStyle',
-        'pybtex.style.sorting': 'SortingStyle',
-        'pybtex.style.formatting': 'Style',
-        }
-
     def find_plugin(plugin_group, name=None, filename=None):
         raise NotImplementedError
 
@@ -89,11 +78,31 @@ class PluginRegistryLoader(PluginLoader):
     """
     def __init__(self):
         self.plugin_registry = {
-            plugin_group: {} for plugin_group in self.plugin_types
+            plugin_group: {
+                # name of the class usually used for plugins in this group
+                "class_name": class_name,
+                # map from suffixes to plugin names
+                "suffixes": {},
+                # aliases of plugin names
+                "aliases": {},
+                # name of default plugin
+                "default_plugin": "",
+                # map plugin names to actual python classes
+                "plugins": {},
+                }
+            for plugin_group, class_name in (
+                ("pybtex.database.input", "Parser"),
+                ("pybtex.database.output", "Writer"),
+                ("pybtex.backends", "Backend"),
+                ("pybtex.style.labels", "LabelStyle"),
+                ("pybtex.style.names", "NameStyle"),
+                ("pybtex.style.sorting", "SortingStyle"),
+                ("pybtex.style.formatting", "Style"),
+                )
             }
 
     def register_name(self, plugin_group, name, class_name):
-        self.plugin_registry[plugin_group][name] = class_name
+        self.plugin_registry[plugin_group]["plugins"][name] = class_name
 
     def get_group_info(self, plugin_group):
         try:
@@ -105,7 +114,7 @@ class PluginRegistryLoader(PluginLoader):
         plugin_group_info = self.get_group_info(plugin_group)
         if name:
             try:
-                return plugin_group_info[name]
+                return plugin_group_info["plugins"][name]
             except KeyError:
                 raise PluginNotFound(plugin_group, name)
         elif filename:
@@ -117,7 +126,7 @@ class PluginRegistryLoader(PluginLoader):
 
     def enumerate_plugin_names(self, plugin_group):
         try:
-            plugin_group = self.plugin_registry[plugin_group]
+            plugin_group = self.plugin_registry[plugin_group]["plugins"]
         except KeyError:
             return
         return plugin_group.iterkeys()
