@@ -65,6 +65,17 @@ class Plugin(object):
 
 
 class PluginLoader(object):
+    # map plugin_group to class_name
+    plugin_types = {
+        'pybtex.database.input': 'Parser',
+        'pybtex.database.output': 'Writer',
+        'pybtex.backends': 'Backend',
+        'pybtex.style.labels': 'LabelStyle',
+        'pybtex.style.names': 'NameStyle',
+        'pybtex.style.sorting': 'SortingStyle',
+        'pybtex.style.formatting': 'Style',
+        }
+
     def find_plugin(plugin_group, name=None, filename=None):
         raise NotImplementedError
 
@@ -78,15 +89,7 @@ class PluginRegistryLoader(PluginLoader):
     """
     def __init__(self):
         self.plugin_registry = {
-            plugin_group: {} for plugin_group in [
-                "pybtex.database.output",
-                "pybtex.style.formatting",
-                "pybtex.style.labels",
-                "pybtex.backends",
-                "pybtex.database.input",
-                "pybtex.style.names",
-                "pybtex.style.sorting",
-                ]
+            plugin_group: {} for plugin_group in self.plugin_types
             }
 
     def register_name(self, plugin_group, name, class_name):
