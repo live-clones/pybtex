@@ -90,6 +90,8 @@ class PluginRegistryLoader(PluginLoader):
     external code.
     """
     def __init__(self):
+        # data structure
+        # do not manipulate directly: use the register_xxx methods
         self.plugin_registry = {
             plugin_group: {
                 #: name of the class usually used for plugins in this group
@@ -114,25 +116,44 @@ class PluginRegistryLoader(PluginLoader):
                 )
             }
 
-    def get_group_info(self, plugin_group):
+    def _get_group_info(self, plugin_group, check_plugin_name=None):
+        """Get plugin group info. Raises PluginGroupNotFound if
+        *plugin_group* does not exist. If *check_plugin_name* is
+        specified, also raise PluginNotFound if no such plugin exists.
+        (This is used a lot by the register methods.)
+        """
         # note: always use this, don't use self.plugin_registry[plugin_group]
         # this ensures consistent exceptions are raised
         try:
-            return self.plugin_registry[plugin_group]
+            plugin_group_info = self.plugin_registry[plugin_group]
         except KeyError:
             raise PluginGroupNotFound(plugin_group)
+        if check_plugin_name:
+            if check_plugin_name not in plugin_group_info["plugins"]:
+                raise PluginNotFound(plugin_group, check_plugin_name)
+        return plugin_group_info
+            
 
     def register_plugin(self, plugin_group, name, klass):
-        self.get_group_info(plugin_group)["plugins"][name] = klass
+        self._get_group_info(plugin_group)["plugins"][name] = klass
 
     def register_suffix(self, plugin_group, suffix, plugin_name):
-        plugin_group_info = self.get_group_info(plugin_group)
-        if plugin_name not in plugin_group_info["plugins"]:
-            raise PluginNotFound(plugin_group, plugin_name)
+        plugin_group_info = self._get_group_info(
+            plugin_group, check_plugin_name=plugin_name)
         plugin_group_info["suffixes"][suffix] = plugin_name
 
+    def register_alias(self, plugin_group, alias_name, plugin_name):
+        plugin_group_info = self._get_group_info(
+            plugin_group, check_plugin_name=plugin_name)
+        plugin_group_info["aliases"][alias_name] = plugin_name
+
+    def register_default(self, plugin_group, plugin_name):
+        plugin_group_info = self._get_group_info(
+            plugin_group, check_plugin_name=plugin_name)
+        plugin_group_info["default"] = plugin_name
+
     def find_plugin(self, plugin_group, name=None, filename=None):
-        plugin_group_info = self.get_group_info(plugin_group)
+        plugin_group_info = self._get_group_info(plugin_group)
         if name:
             if name in plugin_group_info['plugins']:
                 return plugin_group_info['plugins'][name]
@@ -156,7 +177,7 @@ class PluginRegistryLoader(PluginLoader):
                 raise PluginNotFound(plugin_group)
 
     def enumerate_plugin_names(self, plugin_group):
-        return self.get_group_info(plugin_group)["plugins"].iterkeys()
+        return self._get_group_info(plugin_group)["plugins"].iterkeys()
 
 plugin_registry_loader = PluginRegistryLoader()
 
@@ -232,7 +253,9 @@ class EntryPointPluginLoader(PluginLoader):
         return [entry_point.name for entry_point in entry_points]
 
 
-# first try registry, then entry points, then builtin
+# first builtin, then entry points (entry points might not be
+# controlled by the user; i.e. we want to support the scenario where a
+# user wants to override an entry point)
 plugin_loaders = [
     plugin_registry_loader, EntryPointPluginLoader(), BuiltInPluginLoader()]
 
