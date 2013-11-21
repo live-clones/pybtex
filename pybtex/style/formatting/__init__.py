@@ -30,8 +30,11 @@ def toplevel(children, data):
     return join(sep=Symbol('newblock')) [children].format_data(data)
 
 
+# first is default
+builtin_plugins = ("plain", "unsrtalpha", "unsrt", "alpha")
+
+
 class BaseStyle(Plugin):
-    builtin_plugins = ("plain", "unsrtalpha", "unsrt", "alpha")
     default_name_style = None
     default_label_style = None
     default_sorting_style = None

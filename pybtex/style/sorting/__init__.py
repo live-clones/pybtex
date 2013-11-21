@@ -22,9 +22,11 @@
 from pybtex.plugin import Plugin
 
 
-class BaseSortingStyle(Plugin):
-    builtin_plugins = ('none', 'author_year_title')
+# first is default
+builtin_plugins = ('none', 'author_year_title')
 
+
+class BaseSortingStyle(Plugin):
     def sorting_key(self, entry):
         raise NotImplementedError
 

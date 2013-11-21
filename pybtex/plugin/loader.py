@@ -168,7 +168,7 @@ class PluginLoader(object):
     def _get_builtin_plugins(self, plugin_group, class_name):
         base_module = importlib.import_module(plugin_group)
         base_plugin = getattr(base_module, "Base" + class_name)
-        for plugin_name in base_plugin.builtin_plugins:
+        for plugin_name in base_module.builtin_plugins:
             plugin_module = importlib.import_module(
                 plugin_group + "." + plugin_name)
             klass = getattr(plugin_module, class_name)

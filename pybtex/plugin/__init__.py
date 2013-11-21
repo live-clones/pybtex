@@ -26,19 +26,6 @@ class Plugin(object):
     name = None
     aliases = ()
     suffixes = ()  # first is default
-    builtin_plugins = ()  # first is default
-
-    @property
-    @deprecated('0.17', 'use get_default_plugin() instead')
-    def default_plugin(self):
-        return self.get_default_plugin()
-
-    @classmethod
-    def get_default_plugin(self):
-        if cls.builtin_plugins:
-            return cls.builtin_plugins[0]
-        else:
-            return None
 
     @classmethod
     def get_default_suffix(cls):

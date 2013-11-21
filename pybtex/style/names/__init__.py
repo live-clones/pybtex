@@ -27,9 +27,11 @@ from pybtex.richtext import Symbol, Text, nbsp
 from pybtex.style.template import join, together, node, _format_list
 
 
-class BaseNameStyle(Plugin):
-    builtin_plugins = ('plain', 'lastfirst')
+# first is default
+builtin_plugins = ('plain', 'lastfirst')
 
+
+class BaseNameStyle(Plugin):
     def format(self, person, abbr=False):
         raise NotImplementedError
 

@@ -29,10 +29,12 @@ from pybtex.database import BibliographyData
 from pybtex.exceptions import PybtexError
 
 
-class BaseParser(Plugin):
-    builtin_plugins = ('bibtex', 'bibtexml', 'bibyaml')
-    filename = '<INPUT>'
+# first is default
+builtin_plugins = ('bibtex', 'bibtexml', 'bibyaml')
 
+
+class BaseParser(Plugin):
+    filename = '<INPUT>'
     unicode_io = False
 
     def __init__(self, encoding=None, wanted_entries=None, min_crossrefs=2, **kwargs):
