@@ -71,7 +71,7 @@ class PluginLoader(object):
 
     def __init__(self):
         # data structure
-        # do not manipulate directly: use the register_xxx methods
+        # do not manipulate directly: use the register_plugin method
         self._plugin_registry = {
             plugin_group: {
                 #: map plugin names to plugin classes
