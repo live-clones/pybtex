@@ -25,8 +25,8 @@ from pybtex.utils import deprecated
 class Plugin(object):
     name = None
     aliases = ()
-    suffixes = (None,)  # first is default
-    builtin_plugins = (None,)  # first is default
+    suffixes = ()  # first is default
+    builtin_plugins = ()  # first is default
 
     @property
     @deprecated('0.17', 'use get_default_plugin() instead')
@@ -35,11 +35,17 @@ class Plugin(object):
 
     @classmethod
     def get_default_plugin(self):
-        return cls.builtin_plugins[0]
+        if cls.builtin_plugins:
+            return cls.builtin_plugins[0]
+        else:
+            return None
 
     @classmethod
     def get_default_suffix(cls):
-        return cls.suffixes[0]
+        if cls.suffixes:
+            return cls.suffixes[0]
+        else:
+            return None
 
 
 def find_plugin(plugin_group, name=None, filename=None):
