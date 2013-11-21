@@ -44,3 +44,8 @@ def find_plugin(plugin_group, name=None, filename=None):
 def enumerate_plugin_names(plugin_group):
     from pybtex.plugin.loader import plugin_loader
     return plugin_loader.enumerate_plugin_names(plugin_group)
+
+
+def register_plugin(plugin_group, plugin_class):
+    from pybtex.plugin.loader import plugin_loader
+    return plugin_loader.register_plugin(plugin_group, plugin_class)
