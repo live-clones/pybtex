@@ -99,14 +99,13 @@ class PluginLoader(object):
             raise PluginGroupNotFound(plugin_group)
         return plugin_group_info
 
-    def register_plugin(self, plugin_group, name, klass):
+    def register_plugin(self, plugin_group, klass):
         plugin_group_info = self._get_group_info(plugin_group)
-        assert name == klass.name
-        if name in plugin_group_info["plugins"]:
+        if klass.name in plugin_group_info["plugins"]:
             # XXX could raise an exception
-            print("Warning: plugin {name} already registered in group {plugin_group}".format(name=name, plugin_group=plugin_group))
+            print("Warning: plugin {name} already registered in group {plugin_group}".format(name=klass.name, plugin_group=plugin_group))
             return
-        plugin_group_info["plugins"][name] = klass
+        plugin_group_info["plugins"][klass.name] = klass
         if not plugin_group_info["default_plugin"]:
             plugin_group_info["default_plugin"] = klass
         for suffix in klass.suffixes:
@@ -161,9 +160,8 @@ class PluginLoader(object):
             )
         assert set(grp for grp, kls in BUILTIN_PLUGINS) == set(self.PLUGIN_GROUPS)
         for plugin_group, class_name in BUILTIN_PLUGINS:
-            for plugin_name, plugin in self._get_builtin_plugins(
-                    plugin_group, class_name):
-                self.register_plugin(plugin_group, plugin_name, plugin)
+            for plugin in self._get_builtin_plugins(plugin_group, class_name):
+                self.register_plugin(plugin_group, plugin)
 
     def _get_builtin_plugins(self, plugin_group, class_name):
         base_module = importlib.import_module(plugin_group)
@@ -171,7 +169,9 @@ class PluginLoader(object):
         for plugin_name in base_plugin.builtin_plugins:
             plugin_module = importlib.import_module(
                 plugin_group + "." + plugin_name)
-            yield plugin_name, getattr(plugin_module, class_name)
+            klass = getattr(plugin_module, class_name)
+            assert klass.name == plugin_name
+            yield klass
 
     def _register_entry_point_plugins(self):
         try:
@@ -181,7 +181,6 @@ class PluginLoader(object):
         for plugin_group in self.PLUGIN_GROUPS:
             for entry_point in pkg_resources.iter_entry_points(plugin_group):
                 klass = entry_point.load()
-                print plugin_group, klass.name
-                self.register_plugin(plugin_group, klass.name, klass)
+                self.register_plugin(plugin_group, klass)
 
 plugin_loader = PluginLoader()
