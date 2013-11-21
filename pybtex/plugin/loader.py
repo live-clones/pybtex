@@ -105,8 +105,8 @@ class PluginLoader(object):
             # XXX could raise an exception
             print("Warning: plugin {name} already registered in group {plugin_group}".format(name=klass.name, plugin_group=plugin_group))
             return
-        if not isinstance(klass, Plugin):
-            raise TypeError("{name}: expected Plugin class but got {klass}".format(name=klass.name, klass=klass.__name__))
+        if not issubclass(klass, Plugin):
+            raise TypeError("{plugin_group}, {name}: expected Plugin class but got {klass}".format(name=klass.name, plugin_group=plugin_group, klass=klass.__name__))
         plugin_group_info["plugins"][klass.name] = klass
         if not plugin_group_info["default_plugin"]:
             plugin_group_info["default_plugin"] = klass
