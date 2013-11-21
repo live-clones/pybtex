@@ -19,11 +19,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import importlib
+import importlib  # import_module (to load builtin plugins)
 import os.path  # splitext
-from itertools import chain
 
 from pybtex.exceptions import PybtexError
+from pybtex.plugin import Plugin
 
 
 class PluginGroupNotFound(PybtexError):
@@ -105,6 +105,8 @@ class PluginLoader(object):
             # XXX could raise an exception
             print("Warning: plugin {name} already registered in group {plugin_group}".format(name=klass.name, plugin_group=plugin_group))
             return
+        if not isinstance(klass, Plugin):
+            raise TypeError("{name}: expected Plugin class but got {klass}".format(name=klass.name, klass=klass.__name__))
         plugin_group_info["plugins"][klass.name] = klass
         if not plugin_group_info["default_plugin"]:
             plugin_group_info["default_plugin"] = klass
