@@ -30,7 +30,7 @@ from pybtex.exceptions import PybtexError
 
 
 class BaseParser(Plugin):
-    default_plugin = 'bibtex'
+    builtin_plugins = ('bibtex', 'bibtexml', 'bibyaml')
     filename = '<INPUT>'
 
     unicode_io = False

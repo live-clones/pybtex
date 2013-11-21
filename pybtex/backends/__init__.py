@@ -24,11 +24,8 @@ from pybtex.plugin import Plugin
 from pybtex.utils import deprecated
 
 
-available_plugins = ('latex', 'html', 'plaintext')
-
-
 class BaseBackend(Plugin):
-    default_plugin = 'latex'
+    builtin_plugins = ('latex', 'html', 'plaintext')
     RenderType = basestring #: the result of render and render_sequence
 
     def __init__(self, encoding=None):

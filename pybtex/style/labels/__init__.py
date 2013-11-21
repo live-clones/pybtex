@@ -22,11 +22,9 @@
 from pybtex.plugin import Plugin
 from pybtex.textutils import width
 
-available_plugins = ('number', 'alpha')
-
 
 class BaseLabelStyle(Plugin):
-    default_plugin = 'number'
+    builtin_plugins = ('number', 'alpha')
 
     def get_longest_label(self, formatted_entries):
         labels = (entry.label for entry in formatted_entries)
