@@ -48,7 +48,9 @@ class PluginNotFound(PybtexError):
                 filename=filename,
             )
         else:
-            message = u'' # FIXME
+            message = u'plugin group {plugin_group} has no default'.format(
+                plugin_group=plugin_group,
+            )
 
         super(PluginNotFound, self).__init__(message)
 
@@ -66,9 +68,20 @@ class Plugin(object):
 
 class PluginLoader(object):
     def find_plugin(plugin_group, name=None, filename=None):
+        """Find a :class:`Plugin` class within *plugin_group* which
+        matches *name*, or *filename* if *name* is not specified, or
+        the default plugin if neither *name* nor *filename* is
+        specified.
+
+        If *name* is specified, return the :class:`Plugin` class
+        registered under *name*. If *filename* is specified, look at
+        its suffix (i.e. extension) and return the :class:`Plugin`
+        class registered for this suffix.
+        """
         raise NotImplementedError
 
     def enumerate_plugin_names(self, plugin_group):
+        """Enumerate all plugin names for the given *plugin_group*."""
         raise NotImplementedError
 
 
@@ -79,15 +92,15 @@ class PluginRegistryLoader(PluginLoader):
     def __init__(self):
         self.plugin_registry = {
             plugin_group: {
-                # name of the class usually used for plugins in this group
+                #: name of the class usually used for plugins in this group
                 "class_name": class_name,
-                # map from suffixes to plugin names
+                #: map from suffixes to plugin names
                 "suffixes": {},
-                # aliases of plugin names
+                #: aliases of plugin names
                 "aliases": {},
-                # name of default plugin
+                #: name of default plugin
                 "default_plugin": "",
-                # map plugin names to actual python classes
+                #: map plugin names to actual python :class:`Plugin` classes
                 "plugins": {},
                 }
             for plugin_group, class_name in (
@@ -101,35 +114,49 @@ class PluginRegistryLoader(PluginLoader):
                 )
             }
 
-    def register_name(self, plugin_group, name, class_name):
-        self.plugin_registry[plugin_group]["plugins"][name] = class_name
-
     def get_group_info(self, plugin_group):
+        # note: always use this, don't use self.plugin_registry[plugin_group]
+        # this ensures consistent exceptions are raised
         try:
             return self.plugin_registry[plugin_group]
         except KeyError:
             raise PluginGroupNotFound(plugin_group)
 
+    def register_plugin(self, plugin_group, name, klass):
+        self.get_group_info(plugin_group)["plugins"][name] = klass
+
+    def register_suffix(self, plugin_group, suffix, plugin_name):
+        plugin_group_info = self.get_group_info(plugin_group)
+        if plugin_name not in plugin_group_info["plugins"]:
+            raise PluginNotFound(plugin_group, plugin_name)
+        plugin_group_info["suffixes"][suffix] = plugin_name
+
     def find_plugin(self, plugin_group, name=None, filename=None):
         plugin_group_info = self.get_group_info(plugin_group)
         if name:
-            try:
-                return plugin_group_info["plugins"][name]
-            except KeyError:
-                raise PluginNotFound(plugin_group, name)
+            if name in plugin_group_info['plugins']:
+                return plugin_group_info['plugins'][name]
+            elif name in plugin_group_info['aliases']:
+                return find_plugin(
+                    plugin_group, name=plugin_group_info['aliases'][name])
+            else:
+                raise PluginNotFound(plugin_group, name=name)
         elif filename:
-            # not implemented by this loader
-            raise PluginNotFound(plugin_group, filename=filename)
+            suffix = os.path.splitext(filename)[1]
+            if suffix in plugin_group_info['suffixes']:
+                return find_plugin(
+                    plugin_group, plugin_group_info['suffixes'][suffix])
+            else:
+                raise PluginNotFound(plugin_group, filename=filename)
         else:
-            # default plugin: this is delegated to the builtin loader
-            raise PluginNotFound(plugin_group)
+            name = plugin_group_info['default_plugin']
+            if name:  # prevents infinite recursion
+                return find_plugin(plugin_group, name=name)
+            else:
+                raise PluginNotFound(plugin_group)
 
     def enumerate_plugin_names(self, plugin_group):
-        try:
-            plugin_group = self.plugin_registry[plugin_group]["plugins"]
-        except KeyError:
-            return
-        return plugin_group.iterkeys()
+        return self.get_group_info(plugin_group)["plugins"].iterkeys()
 
 plugin_registry_loader = PluginRegistryLoader()
 
