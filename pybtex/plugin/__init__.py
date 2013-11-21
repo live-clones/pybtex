@@ -92,7 +92,7 @@ class PluginRegistryLoader(PluginLoader):
     def __init__(self):
         # data structure
         # do not manipulate directly: use the register_xxx methods
-        self.plugin_registry = {
+        self._plugin_registry = {
             plugin_group: {
                 #: name of the class usually used for plugins in this group
                 "class_name": class_name,
@@ -122,10 +122,10 @@ class PluginRegistryLoader(PluginLoader):
         specified, also raise PluginNotFound if no such plugin exists.
         (This is used a lot by the register methods.)
         """
-        # note: always use this, don't use self.plugin_registry[plugin_group]
+        # note: always use this, don't use self._plugin_registry[plugin_group]
         # this ensures consistent exceptions are raised
         try:
-            plugin_group_info = self.plugin_registry[plugin_group]
+            plugin_group_info = self._plugin_registry[plugin_group]
         except KeyError:
             raise PluginGroupNotFound(plugin_group)
         if check_plugin_name:
