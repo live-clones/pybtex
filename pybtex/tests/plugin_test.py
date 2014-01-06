@@ -39,7 +39,14 @@ def test_register_plugin_2():
     nose.tools.assert_is_not(plugin, TestPlugin2)
     nose.tools.assert_is(plugin, pybtex.style.formatting.plain.Style)
 
-def test_bad_plugin_group():
+def test_bad_plugin():
     nose.tools.assert_raises(
         pybtex.plugin.loader.PluginGroupNotFound,
-        lambda: pybtex.plugin.find_plugin("pybtex.invalid.group", "oops"))
+        lambda: pybtex.plugin.find_plugin("pybtex.invalid.group", "__oops"))
+    nose.tools.assert_raises(
+        pybtex.plugin.loader.PluginNotFound,
+        lambda: pybtex.plugin.find_plugin("pybtex.style.formatting", "__oops"))
+    nose.tools.assert_raises(
+        pybtex.plugin.loader.PluginNotFound,
+        lambda: pybtex.plugin.find_plugin("pybtex.style.formatting",
+                                          filename="oh.__oops"))
