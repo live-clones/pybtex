@@ -29,7 +29,18 @@ import importlib  # import_module (to load builtin plugins)
 import os.path  # splitext
 
 from pybtex.exceptions import PybtexError
-from pybtex.plugin import Plugin, PLUGIN_GROUPS
+
+
+#: list of all pybtex plugin groups
+PLUGIN_GROUPS = (
+    "pybtex.database.input",
+    "pybtex.database.output",
+    "pybtex.backends",
+    "pybtex.style.labels",
+    "pybtex.style.names",
+    "pybtex.style.sorting",
+    "pybtex.style.formatting",
+    )
 
 
 #: Registration data of a plugin class.
@@ -144,10 +155,6 @@ class LazyPlugin(object):
         """
         if self._klass is None:
             self._klass = self.load()
-        if not issubclass(self._klass, Plugin):
-            raise TypeError(
-                "expected Plugin class but got {klass}"
-                .format(klass=self._klass.__name__))
         return self._klass
 
 
@@ -228,7 +235,8 @@ class PluginLoader(object):
         if plugin_data.plugin_name in plugin_group_info["plugins"]:
             # XXX could raise an exception
             print("Warning: plugin {name} already registered in group {plugin_group}"
-                  .format(name=plugin_data.plugin_name, plugin_group=plugin_group))
+                  .format(name=plugin_data.plugin_name,
+                          plugin_group=plugin_data.plugin_group))
             return
         plugin_group_info["plugins"][plugin_data.plugin_name] = lazy_plugin
         if not plugin_group_info["default_plugin"]:
@@ -295,5 +303,3 @@ class PluginLoader(object):
             for entry_point in pkg_resources.iter_entry_points(plugin_group + ".suffixes"):
                 lazy_plugin = LazyEntryPointPlugin(entry_point)
                 plugin_group_info["suffixes"][entry_point.name] = lazy_plugin
-
-plugin_loader = PluginLoader()

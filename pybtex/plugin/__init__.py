@@ -20,16 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#: list of all pybtex plugin groups
-PLUGIN_GROUPS = (
-    "pybtex.database.input",
-    "pybtex.database.output",
-    "pybtex.backends",
-    "pybtex.style.labels",
-    "pybtex.style.names",
-    "pybtex.style.sorting",
-    "pybtex.style.formatting",
-    )
+from pybtex.plugin.loader import PluginLoader
 
 
 class Plugin(object):
@@ -45,17 +36,7 @@ class Plugin(object):
             return None
 
 
-def find_plugin(plugin_group, name=None, filename=None):
-    from pybtex.plugin.loader import plugin_loader
-    return plugin_loader.find_plugin(
-        plugin_group, name=name, filename=filename)
-
-
-def enumerate_plugin_names(plugin_group):
-    from pybtex.plugin.loader import plugin_loader
-    return plugin_loader.enumerate_plugin_names(plugin_group)
-
-
-def register_plugin(plugin_group, plugin_data):
-    from pybtex.plugin.loader import plugin_loader
-    return plugin_loader.register_plugin(plugin_group, plugin_data)
+plugin_loader = PluginLoader()
+find_plugin = plugin_loader.find_plugin
+enumerate_plugin_names = plugin_loader.enumerate_plugin_names
+register_plugin = plugin_loader.register_plugin
