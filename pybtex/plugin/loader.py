@@ -246,7 +246,7 @@ class PluginLoader(object):
         for alias in plugin_data.aliases:
             if alias in plugin_group_info["plugins"]:
                 print("Warning: plugin {name} already registered in group {plugin_group}"
-                      .format(name=alias, plugin_group=plugin_group))
+                      .format(name=alias, plugin_group=plugin_data.plugin_group))
             else:
                 plugin_group_info["plugins"][alias] = lazy_plugin
 

@@ -27,6 +27,10 @@ class TestPlugin1(pybtex.plugin.Plugin):
 class TestPlugin2(pybtex.plugin.Plugin):
     name = 'plain'
 
+class TestPlugin3(pybtex.plugin.Plugin):
+    name = 'yippikayeetoo'
+    aliases = ('plain',)
+
 def test_register_plugin_1():
     pybtex.plugin.register_plugin('pybtex.style.formatting', TestPlugin1)
     nose.tools.assert_is(
@@ -37,6 +41,12 @@ def test_register_plugin_2():
     pybtex.plugin.register_plugin('pybtex.style.formatting', TestPlugin2)
     plugin = pybtex.plugin.find_plugin('pybtex.style.formatting', 'plain')
     nose.tools.assert_is_not(plugin, TestPlugin2)
+    nose.tools.assert_is(plugin, pybtex.style.formatting.plain.Style)
+
+def test_register_plugin_3():
+    pybtex.plugin.register_plugin('pybtex.style.formatting', TestPlugin3)
+    plugin = pybtex.plugin.find_plugin('pybtex.style.formatting', 'plain')
+    nose.tools.assert_is_not(plugin, TestPlugin3)
     nose.tools.assert_is(plugin, pybtex.style.formatting.plain.Style)
 
 def test_bad_plugin():
