@@ -1,10 +1,10 @@
 import importlib
 import nose.tools
 
+import pybtex.database.input.bibtex
 import pybtex.plugin
 import pybtex.plugin.loader
 import pybtex.style.formatting.plain
-
 
 def test_plugin_loader():
     """Check that all enumerated plugins can be imported."""
@@ -60,3 +60,8 @@ def test_bad_plugin():
         pybtex.plugin.loader.PluginNotFound,
         lambda: pybtex.plugin.find_plugin("pybtex.style.formatting",
                                           filename="oh.__oops"))
+
+def test_plugin_suffix():
+    plugin = pybtex.plugin.find_plugin(
+        "pybtex.database.input", filename="test.bib")
+    nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
