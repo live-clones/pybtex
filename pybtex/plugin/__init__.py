@@ -19,7 +19,17 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.utils import deprecated
+
+#: list of all pybtex plugin groups
+PLUGIN_GROUPS = (
+    "pybtex.database.input",
+    "pybtex.database.output",
+    "pybtex.backends",
+    "pybtex.style.labels",
+    "pybtex.style.names",
+    "pybtex.style.sorting",
+    "pybtex.style.formatting",
+    )
 
 
 class Plugin(object):
@@ -46,6 +56,6 @@ def enumerate_plugin_names(plugin_group):
     return plugin_loader.enumerate_plugin_names(plugin_group)
 
 
-def register_plugin(plugin_group, plugin_class):
+def register_plugin(plugin_group, plugin_data):
     from pybtex.plugin.loader import plugin_loader
-    return plugin_loader.register_plugin(plugin_group, plugin_class)
+    return plugin_loader.register_plugin(plugin_group, plugin_data)
