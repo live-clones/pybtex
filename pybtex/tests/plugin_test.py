@@ -73,10 +73,17 @@ def test_entry_point():
     dist = pkg_resources.get_distribution('pybtex')
     ep_map = pkg_resources.get_entry_map(dist)
     assert "pybtex.database.input" not in ep_map
-    ep_map["pybtex.database.input"] = {}
-    ep_map["pybtex.database.input"]["woohahaha"] = pkg_resources.EntryPoint(
-        "woohahaha", "pybtex.database.input.bibtex",
-        attrs=("Parser",), dist=dist)
+    ep_map["pybtex.database.input"] = {
+        "woohahaha": pkg_resources.EntryPoint(
+            "woohahaha", "pybtex.database.input.bibtex",
+            attrs=("Parser",), dist=dist)}
+    assert "pybtex.database.input.suffixes" not in ep_map
+    ep_map["pybtex.database.input.suffixes"] = {
+        ".woo": pkg_resources.EntryPoint(
+            ".woo", "pybtex.database.input.bibtex",
+            attrs=("Parser",), dist=dist)}
     pybtex.plugin.plugin_loader._register_entry_point_plugins()
-    plugin = pybtex.plugin.find_plugin("pybtex.database.input", "woohahaha")
-    nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
+    p1 = pybtex.plugin.find_plugin("pybtex.database.input", "woohahaha")
+    nose.tools.assert_is(p1, pybtex.database.input.bibtex.Parser)
+    p2 = pybtex.plugin.find_plugin("pybtex.database.input", filename="t.woo")
+    nose.tools.assert_is(p2, pybtex.database.input.bibtex.Parser)
