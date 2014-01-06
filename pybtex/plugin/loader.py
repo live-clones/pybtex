@@ -214,13 +214,13 @@ class PluginLoader(object):
         return plugin_group_info
 
     def register_plugin(self, plugin_group, plugin_class):
-        register_lazy_plugin(
+        self.register_lazy_plugin(
             LazyClassPlugin(plugin_class),
             PluginData(
                 plugin_group=plugin_group,
                 plugin_name=plugin_class.name,
-                plugin_suffixes=plugin_class.suffixes,
-                plugin_aliases=plugin_class.aliases,
+                suffixes=plugin_class.suffixes,
+                aliases=plugin_class.aliases,
                 ))
 
     def register_lazy_plugin(self, lazy_plugin, plugin_data):

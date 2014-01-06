@@ -19,3 +19,13 @@ def test_builtin_plugin_module_class_datas():
         nose.tools.assert_equal(plugin_data.plugin_name, plugin.name)
         nose.tools.assert_equal(plugin_data.suffixes, plugin.suffixes)
         nose.tools.assert_equal(plugin_data.aliases, plugin.aliases)
+
+def test_register_plugin():
+
+    class Test(pybtex.plugin.Plugin):
+        name = 'yippikayee'
+
+    pybtex.plugin.register_plugin('pybtex.style.formatting', Test)
+    nose.tools.assert_is(
+        Test, pybtex.plugin.find_plugin(
+            'pybtex.style.formatting', 'yippikayee'))
