@@ -65,3 +65,18 @@ def test_plugin_suffix():
     plugin = pybtex.plugin.find_plugin(
         "pybtex.database.input", filename="test.bib")
     nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
+
+def test_entry_point():
+    # create artificial entry point and re-register just for testing;
+    # in practice you would not do this in real production code
+    import pkg_resources
+    dist = pkg_resources.get_distribution('pybtex')
+    ep_map = pkg_resources.get_entry_map(dist)
+    assert "pybtex.database.input" not in ep_map
+    ep_map["pybtex.database.input"] = {}
+    ep_map["pybtex.database.input"]["woohahaha"] = pkg_resources.EntryPoint(
+        "woohahaha", "pybtex.database.input.bibtex",
+        attrs=("Parser",), dist=dist)
+    pybtex.plugin.plugin_loader._register_entry_point_plugins()
+    plugin = pybtex.plugin.find_plugin("pybtex.database.input", "woohahaha")
+    nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
