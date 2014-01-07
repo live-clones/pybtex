@@ -103,7 +103,7 @@ def enumerate_plugin_names(plugin_group):
     return (entry_point.name
             for entry_point in pkg_resources.iter_entry_points(plugin_group))
 
-class FakeEntryPoint(pkg_resources.EntryPoint):
+class _FakeEntryPoint(pkg_resources.EntryPoint):
     def __init__(self, name, klass):
         self.name = name
         self.klass = klass
@@ -113,7 +113,7 @@ class FakeEntryPoint(pkg_resources.EntryPoint):
 
     def __repr__(self):
         return (
-            "FakeEntryPoint(name=%r, klass=%s)"
+            "_FakeEntryPoint(name=%r, klass=%s)"
             % (self.name, self.klass.__name__))
 
     def load(self, require=True, env=None, installer=None):
@@ -144,4 +144,4 @@ def register_plugin(plugin_group, name, klass):
         # XXX could also raise exception
         print "%s already registered in group %s" % (name, plugin_group)
     else:
-        ep_map[plugin_group][name] = FakeEntryPoint(name, klass)
+        ep_map[plugin_group][name] = _FakeEntryPoint(name, klass)
