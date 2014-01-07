@@ -48,7 +48,7 @@ def make_bibliography(aux_filename,
         encoding=bib_encoding,
         wanted_entries=aux_data.citations,
         min_crossrefs=min_crossrefs,
-    ).parse_files(aux_data.data, bib_parser.get_default_suffix())
+    ).parse_files(aux_data.data, bib_parser.default_suffix)
 
     if style is None:
         style = aux_data.style
@@ -63,5 +63,5 @@ def make_bibliography(aux_filename,
     formatted_bibliography = style.format_bibliography(bib_data, aux_data.citations)
 
     output_backend = find_plugin('pybtex.backends', output_backend)
-    output_filename = filename + output_backend.get_default_suffix()
+    output_filename = filename + output_backend.default_suffix
     output_backend(output_encoding).write_to_file(formatted_bibliography, output_filename)

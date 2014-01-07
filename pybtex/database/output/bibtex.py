@@ -28,8 +28,6 @@ from pybtex.database.output import BaseWriter
 class Writer(BaseWriter):
     """Outputs BibTeX markup"""
 
-    name = 'bibtex'
-    suffixes = '.bib',
     unicode_io = True
 
     def quote(self, s):

@@ -32,8 +32,7 @@ def remove_ns(s):
         return s[len(bibtexns):]
 
 class Parser(BaseParser):
-    name = 'bibtexml'
-    suffixes = '.xml', '.bibtexml'
+    default_suffix = '.xml'
 
     def parse_stream(self, stream):
         t = ET.parse(stream)

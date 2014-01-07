@@ -25,9 +25,7 @@ from pybtex.database import Entry, Person
 
 
 class Parser(BaseParser):
-    name = 'bibyaml'
-    aliases = 'yaml',
-    suffixes = '.yaml', '.bibyaml'
+    default_suffix = '.yaml'
 
     def parse_stream(self, stream):
         t = yaml.safe_load(stream)

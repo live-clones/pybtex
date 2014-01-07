@@ -28,16 +28,7 @@ from pybtex.exceptions import PybtexError
 
 
 class Plugin(object):
-    name = None
-    aliases = ()
-    suffixes = ()  # first is default
-
-    @classmethod
-    def get_default_suffix(cls):
-        if cls.suffixes:
-            return cls.suffixes[0]
-        else:
-            return None
+    pass
 
 
 #: default pybtex plugins

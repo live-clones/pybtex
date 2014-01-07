@@ -296,8 +296,7 @@ class BibTeXEntryIterator(Scanner):
 
 
 class Parser(BaseParser):
-    name = 'bibtex'
-    suffixes = '.bib',
+    default_suffix = '.bib'
     unicode_io = True
 
     macros = None

@@ -29,11 +29,8 @@ from pybtex.database import BibliographyData
 from pybtex.exceptions import PybtexError
 
 
-# first is default
-builtin_plugins = ('bibtex', 'bibtexml', 'bibyaml')
-
-
 class BaseParser(Plugin):
+    default_suffix = None
     filename = '<INPUT>'
     unicode_io = False
 
