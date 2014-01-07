@@ -59,9 +59,11 @@ class PluginNotFound(PybtexError):
             )
         else:
             assert plugin_group.endswith('.suffixes')
-            message = u'plugin {plugin_group} for suffix {suffix} not found'.format(
-                plugin_group=plugin_group,
-                suffix=name,
+            message = (
+                u'plugin {plugin_group} for suffix {suffix} not found'.format(
+                    plugin_group=plugin_group,
+                    suffix=name,
+                    )
             )
 
         super(PluginNotFound, self).__init__(message)
@@ -75,6 +77,7 @@ def _load_entry_point(group, name):
         raise PluginNotFound(group, name)
     else:
         return entry_point.load()
+
 
 def find_plugin(plugin_group, name=None, filename=None):
     """Find a :class:`Plugin` class within *plugin_group* which
@@ -97,10 +100,12 @@ def find_plugin(plugin_group, name=None, filename=None):
     else:
         return _load_entry_point(plugin_group, _DEFAULT_PLUGINS[plugin_group])
 
+
 def enumerate_plugin_names(plugin_group):
     """Enumerate all plugin names for the given *plugin_group*."""
     return (entry_point.name
             for entry_point in pkg_resources.iter_entry_points(plugin_group))
+
 
 class _FakeEntryPoint(pkg_resources.EntryPoint):
     def __init__(self, name, klass):
