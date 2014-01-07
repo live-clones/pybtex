@@ -61,7 +61,7 @@ else:
 
 install_requires = ['PyYAML>=3.01']
 if sys.version_info < (2, 7):
-    install_requires += ['Counter>=1.0.0', 'importlib>=1.0.1']
+    install_requires += ['Counter>=1.0.0']
 
 setup(name=progname,
     version=version,

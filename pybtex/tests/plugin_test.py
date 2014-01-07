@@ -1,4 +1,3 @@
-import importlib
 import nose.tools
 
 import pybtex.database.input.bibtex
