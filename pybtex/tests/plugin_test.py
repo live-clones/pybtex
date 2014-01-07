@@ -57,6 +57,10 @@ def test_bad_register_plugin():
         pybtex.plugin.PluginGroupNotFound,
         lambda: pybtex.plugin.register_plugin(
             "pybtex.invalid.group", "__oops", TestPlugin1))
+    nose.tools.assert_raises(
+        pybtex.plugin.PluginGroupNotFound,
+        lambda: pybtex.plugin.register_plugin(
+            "pybtex.invalid.group.suffixes", ".__oops", TestPlugin1))
     # suffixes must start with a dot
     nose.tools.assert_raises(
         ValueError,
