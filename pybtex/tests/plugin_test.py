@@ -20,22 +20,37 @@ class TestPlugin3(pybtex.plugin.Plugin):
     pass
 
 def test_register_plugin_1():
-    pybtex.plugin.register_plugin(
-        'pybtex.style.formatting', 'yippikayee', TestPlugin1)
+    nose.tools.assert_true(
+        pybtex.plugin.register_plugin(
+            'pybtex.style.formatting', 'yippikayee', TestPlugin1))
     nose.tools.assert_is(
         TestPlugin1, pybtex.plugin.find_plugin(
             'pybtex.style.formatting', 'yippikayee'))
+    nose.tools.assert_false(
+        pybtex.plugin.register_plugin(
+            'pybtex.style.formatting', 'yippikayee', TestPlugin2))
+    nose.tools.assert_is(
+        TestPlugin1, pybtex.plugin.find_plugin(
+            'pybtex.style.formatting', 'yippikayee'))
+    nose.tools.assert_true(
+        pybtex.plugin.register_plugin(
+            'pybtex.style.formatting', 'yippikayee', TestPlugin2, force=True))
+    nose.tools.assert_is(
+        TestPlugin2, pybtex.plugin.find_plugin(
+            'pybtex.style.formatting', 'yippikayee'))
 
 def test_register_plugin_2():
-    pybtex.plugin.register_plugin(
-        'pybtex.style.formatting', 'plain', TestPlugin2)
+    nose.tools.assert_false(
+        pybtex.plugin.register_plugin(
+            'pybtex.style.formatting', 'plain', TestPlugin2))
     plugin = pybtex.plugin.find_plugin('pybtex.style.formatting', 'plain')
     nose.tools.assert_is_not(plugin, TestPlugin2)
     nose.tools.assert_is(plugin, pybtex.style.formatting.plain.Style)
 
 def test_register_plugin_3():
-    pybtex.plugin.register_plugin(
-        'pybtex.style.formatting.suffixes', '.woo', TestPlugin3)
+    nose.tools.assert_true(
+        pybtex.plugin.register_plugin(
+            'pybtex.style.formatting.suffixes', '.woo', TestPlugin3))
     plugin = pybtex.plugin.find_plugin(
         'pybtex.style.formatting', filename='test.woo')
     nose.tools.assert_is(plugin, TestPlugin3)

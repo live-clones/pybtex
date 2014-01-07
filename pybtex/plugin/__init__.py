@@ -127,7 +127,24 @@ class _FakeEntryPoint(pkg_resources.EntryPoint):
         pass
 
 
-def register_plugin(plugin_group, name, klass):
+def register_plugin(plugin_group, name, klass, force=False):
+    """Register a plugin on the fly.
+
+    This works by adding *klass* as a pybtex entry point, under entry
+    point group *plugin_group* and entry point name *name*.
+
+    To register a suffix, append ".suffixes" to the plugin group, and
+    *name* is then simply the suffix, which should start with a
+    period.
+
+    If *force* is ``False``, then existing entry points are not
+    overwritten. If an entry point with the given group and name
+    already exists, then returns ``False``, otherwise returns
+    ``True``.
+
+    If *force* is ``True``, then existing entry points are
+    overwritten, and the function always returns ``True``.
+    """
     if not plugin_group.endswith(".suffixes"):
         # registering a name
         if plugin_group not in _DEFAULT_PLUGINS:
@@ -144,8 +161,8 @@ def register_plugin(plugin_group, name, klass):
     ep_map = pkg_resources.get_entry_map(dist)
     if plugin_group not in ep_map:
         ep_map[plugin_group] = {}
-    if name in ep_map[plugin_group]:
-        # XXX could also raise exception
-        print "%s already registered in group %s" % (name, plugin_group)
+    if name in ep_map[plugin_group] and not force:
+        return False
     else:
         ep_map[plugin_group][name] = _FakeEntryPoint(name, klass)
+        return True
