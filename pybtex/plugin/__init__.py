@@ -20,7 +20,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-import collections
 import os.path  # splitext
 import pkg_resources
 
