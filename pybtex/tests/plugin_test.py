@@ -4,20 +4,25 @@ import pybtex.database.input.bibtex
 import pybtex.plugin
 import pybtex.style.formatting.plain
 
+
 def test_plugin_loader():
     """Check that all enumerated plugins can be imported."""
     for group in pybtex.plugin._DEFAULT_PLUGINS:
         for name in pybtex.plugin.enumerate_plugin_names(group):
             pybtex.plugin.find_plugin(group, name)
 
+
 class TestPlugin1(pybtex.plugin.Plugin):
     pass
+
 
 class TestPlugin2(pybtex.plugin.Plugin):
     pass
 
+
 class TestPlugin3(pybtex.plugin.Plugin):
     pass
+
 
 def test_register_plugin_1():
     nose.tools.assert_true(
@@ -39,6 +44,7 @@ def test_register_plugin_1():
         TestPlugin2, pybtex.plugin.find_plugin(
             'pybtex.style.formatting', 'yippikayee'))
 
+
 def test_register_plugin_2():
     nose.tools.assert_false(
         pybtex.plugin.register_plugin(
@@ -47,6 +53,7 @@ def test_register_plugin_2():
     nose.tools.assert_is_not(plugin, TestPlugin2)
     nose.tools.assert_is(plugin, pybtex.style.formatting.plain.Style)
 
+
 def test_register_plugin_3():
     nose.tools.assert_true(
         pybtex.plugin.register_plugin(
@@ -54,6 +61,7 @@ def test_register_plugin_3():
     plugin = pybtex.plugin.find_plugin(
         'pybtex.style.formatting', filename='test.woo')
     nose.tools.assert_is(plugin, TestPlugin3)
+
 
 def test_bad_find_plugin():
     nose.tools.assert_raises(
@@ -66,6 +74,7 @@ def test_bad_find_plugin():
         pybtex.plugin.PluginNotFound,
         lambda: pybtex.plugin.find_plugin("pybtex.style.formatting",
                                           filename="oh.__oops"))
+
 
 def test_bad_register_plugin():
     nose.tools.assert_raises(
@@ -81,6 +90,7 @@ def test_bad_register_plugin():
         ValueError,
         lambda: pybtex.plugin.register_plugin(
             "pybtex.style.formatting.suffixes", "notasuffix", TestPlugin1))
+
 
 def test_plugin_suffix():
     plugin = pybtex.plugin.find_plugin(

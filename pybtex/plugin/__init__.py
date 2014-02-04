@@ -39,10 +39,11 @@ _DEFAULT_PLUGINS = {
     "pybtex.style.names": "plain",
     "pybtex.style.sorting": "none",
     "pybtex.style.formatting": "unsrt",
-    }
+}
 
 
 class PluginGroupNotFound(PybtexError):
+
     def __init__(self, group_name):
         message = u'plugin group {group_name} not found'.format(
             group_name=group_name,
@@ -51,6 +52,7 @@ class PluginGroupNotFound(PybtexError):
 
 
 class PluginNotFound(PybtexError):
+
     def __init__(self, plugin_group, name):
         if not name.startswith('.'):
             message = u'plugin {plugin_group}.{name} not found'.format(
@@ -63,7 +65,7 @@ class PluginNotFound(PybtexError):
                 u'plugin {plugin_group} for suffix {suffix} not found'.format(
                     plugin_group=plugin_group,
                     suffix=name,
-                    )
+                )
             )
 
         super(PluginNotFound, self).__init__(message)
@@ -108,6 +110,7 @@ def enumerate_plugin_names(plugin_group):
 
 
 class _FakeEntryPoint(pkg_resources.EntryPoint):
+
     def __init__(self, name, klass):
         self.name = name
         self.klass = klass
