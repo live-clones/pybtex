@@ -27,10 +27,6 @@ from pybtex.database.output import BaseWriter
 class Writer(BaseWriter):
     """Outputs YAML markup"""
 
-    name = 'bibyaml'
-    aliases = 'yaml',
-    suffixes = '.yaml', '.bibyaml'
-
     def write_stream(self, bib_data, stream):
         def process_person_roles(entry):
             for role, persons in entry.persons.iteritems():

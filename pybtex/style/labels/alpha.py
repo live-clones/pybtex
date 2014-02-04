@@ -51,7 +51,6 @@ def _strip_nonalnum(parts):
     return _nonalnum_pattern.sub(u'', _strip_accents(s))
 
 class LabelStyle(BaseLabelStyle):
-    name = 'alpha'
 
     def format_labels(self, sorted_entries):
         labels = [self.format_label(entry) for entry in sorted_entries]

@@ -92,6 +92,66 @@ setup(name=progname,
     ],
     include_package_data=True,
     cmdclass={'sdist' : Sdist},
+    entry_points={
+        'pybtex.database.input': [
+            'bibtex = pybtex.database.input.bibtex:Parser',
+            'bibtexml = pybtex.database.input.bibtexml:Parser',
+            'bibyaml = pybtex.database.input.bibyaml:Parser',
+            'yaml = pybtex.database.input.bibyaml:Parser',
+            ],
+        'pybtex.database.input.suffixes': [
+            '.bib = pybtex.database.input.bibtex:Parser',
+            '.xml = pybtex.database.input.bibtexml:Parser',
+            '.bibtexml = pybtex.database.input.bibtexml:Parser',
+            '.bibyaml = pybtex.database.input.bibyaml:Parser',
+            '.yaml = pybtex.database.input.bibyaml:Parser',
+            ],
+        'pybtex.database.output': [
+            'bibtex = pybtex.database.output.bibtex:Writer',
+            'bibtexml = pybtex.database.output.bibtexml:Writer',
+            'bibyaml = pybtex.database.output.bibyaml:Writer',
+            'yaml = pybtex.database.output.bibyaml:Writer',
+            ],
+        'pybtex.database.output.suffixes': [
+            '.bib = pybtex.database.output.bibtex:Writer',
+            '.xml = pybtex.database.output.bibtexml:Writer',
+            '.bibtexml = pybtex.database.output.bibtexml:Writer',
+            '.bibyaml = pybtex.database.output.bibyaml:Writer',
+            '.yaml = pybtex.database.output.bibyaml:Writer',
+            ],
+        'pybtex.backends': [
+            'latex = pybtex.backends.latex:Backend',
+            'html = pybtex.backends.html:Backend',
+            'plaintext = pybtex.backends.plaintext:Backend',
+            'text = pybtex.backends.plaintext:Backend',
+            ],
+        'pybtex.backends.suffixes': [
+            '.bbl = pybtex.backends.latex:Backend',
+            '.tex = pybtex.backends.latex:Backend',
+            '.latex = pybtex.backends.latex:Backend',
+            '.html = pybtex.backends.html:Backend',
+            '.txt = pybtex.backends.plaintext:Backend',
+            ],
+        'pybtex.style.labels': [
+            'number = pybtex.style.labels.number:LabelStyle',
+            'alpha = pybtex.style.labels.alpha:LabelStyle',
+            ],
+        'pybtex.style.names': [
+            'plain = pybtex.style.names.plain:NameStyle',
+            'lastfirst = pybtex.style.names.lastfirst:NameStyle',
+            'last_first = pybtex.style.names.lastfirst:NameStyle',
+            ],
+        'pybtex.style.sorting': [
+            'none = pybtex.style.sorting.none:SortingStyle',
+            'author_year_title = pybtex.style.sorting.author_year_title:SortingStyle',
+            ],
+        'pybtex.style.formatting': [
+            'plain = pybtex.style.formatting.plain:Style',
+            'unsrt = pybtex.style.formatting.unsrt:Style',
+            'alpha = pybtex.style.formatting.alpha:Style',
+            'unsrtalpha = pybtex.style.formatting.unsrtalpha:Style',
+            ],
+        },
     zip_safe=True,
     **extra
     )

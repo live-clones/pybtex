@@ -23,10 +23,7 @@ from pybtex.backends import BaseBackend
 
 
 class Backend(BaseBackend):
-    name = 'plaintext'
-    aliases = 'text',
-    suffixes = '.txt',
-
+    default_suffix = '.txt'
     symbols = {
         'ndash': u'-',
         'newblock': u' ',

@@ -22,12 +22,8 @@
 from pybtex.plugin import Plugin
 from pybtex.textutils import width
 
-available_plugins = ('number', 'alpha')
-
 
 class BaseLabelStyle(Plugin):
-    default_plugin = 'number'
-
     def get_longest_label(self, formatted_entries):
         labels = (entry.label for entry in formatted_entries)
         return max(labels, key=width)

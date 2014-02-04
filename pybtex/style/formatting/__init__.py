@@ -31,7 +31,6 @@ def toplevel(children, data):
 
 
 class BaseStyle(Plugin):
-    default_plugin = 'unsrt'
     default_name_style = None
     default_label_style = None
     default_sorting_style = None
