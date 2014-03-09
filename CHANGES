@@ -1,3 +1,41 @@
+Version 0.17
+------------
+
+- Added ``pybtex-format`` utility for formatting bibliography files as HTML,
+  LaTeX, and other supported human-readable formats.
+
+- Added ``--strict`` command line option (all warnings become errors).
+
+- Added ``alpha`` label style, and alpha and unsrtalpha formatting styles.
+
+- Added support for ``url``, ``eprint``, ``doi``, and ``pubmed`` fields in ``unsrt`` style.
+
+- Names with hyphens are now abbreviated correctly ("Jean-Baptiste" becomes "J.-B.").
+
+- ``width$`` now uses cmr10 font metrics, like in BibTeX. Non-latin characters are also supported.
+
+- Pythonic style engine now supports ``@preamble`` commands.
+
+- Warning on missing fields are now more human-readable.
+
+- When writing BibTeX files, put entry key on the same line with entry type. Fixes warnings in Jabref.
+
+- When using multiple ``.bib`` files, macros defined in earlier files are available in subsequent ones (like in BibTeX).
+
+- Fixed parsing ``.bst`` files with lines consisting of a single % character.
+
+- Fixed sorting entries without author in ``author_year_title`` sorting style.
+
+- Fixed broken ``CaseInsensitiveDict.get()``.
+
+- ``CaseInsensitiveDict`` is now pickleable.
+
+- Added support for registering plugins at runtime with
+  ``pybtex.plugin.register_plugin()`` - useful for using pybtex as a library.
+
+Many thanks to Matthias C. M. Troffaes for his numerous fixes and improvements!
+
+
 Version 0.16
 ------------
 (released on March 17, 2012)
