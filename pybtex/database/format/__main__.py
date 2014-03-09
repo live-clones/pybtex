@@ -27,7 +27,7 @@ from pybtex.cmdline import CommandLine, make_option, standard_option
 class PybtexFormatCommandLine(CommandLine):
     prog = 'pybtex-format'
     args = '[options] in_filename out_filename'
-    description = 'convert between bibliography database formats'
+    description = 'format bibliography database as human-readable text'
     long_description = """
 
 pybtex-format formats bibliography database as human-readable text.
