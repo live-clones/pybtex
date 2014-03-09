@@ -24,7 +24,6 @@
 
 import sys
 import os
-from glob import glob1
 from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
 from distutils.dep_util import newer
