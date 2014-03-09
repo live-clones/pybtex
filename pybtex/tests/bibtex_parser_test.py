@@ -420,3 +420,20 @@ class CrossFileMacrosTest(ParserTest, TestCase):
         ),
     })
 
+class AtCharacterTest(ParserTest, TestCase):
+    input_strings = [
+        ur""",
+            @proceedings{acc,
+                title = {Proc.\@ of the American Control Conference},
+                notes = "acc@example.org"
+            }
+        """,
+    ]
+    correct_result = BibliographyData({
+        'acc': Entry('proceedings', 
+            fields={
+                'title': r'Proc.\@ of the American Control Conference',
+                'notes': 'acc@example.org'
+            },
+        ),
+    })
