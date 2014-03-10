@@ -1,5 +1,6 @@
 Version 0.17
 ------------
+(released on March 10, 2014)
 
 - Added ``pybtex-format`` utility for formatting bibliography files as HTML,
   LaTeX, and other supported human-readable formats.
