@@ -160,6 +160,9 @@ class BibTeXEntryIterator(Scanner):
     def want_entry(self, key):
         return True
 
+    def want_current_entry(self):
+        return self.current_entry_key is None or self.want_entry(self.current_entry_key)
+
     def parse_bibliography(self):
         while True:
             if not self.skip_to([self.AT]):
@@ -215,9 +218,9 @@ class BibTeXEntryIterator(Scanner):
         if not self.keyless_entries:
             key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
             self.current_entry_key = self.required([key_pattern]).value
-            if not self.want_entry(self.current_entry_key):
-                raise SkipEntry
         self.parse_entry_fields()
+        if not self.want_current_entry():
+            raise SkipEntry
 
     def parse_entry_fields(self):
         while True:
@@ -273,7 +276,8 @@ class BibTeXEntryIterator(Scanner):
         try:
             return self.macros[name.lower()]
         except KeyError:
-            self.handle_error(UndefinedMacro(name, self))
+            if self.want_current_entry():
+                self.handle_error(UndefinedMacro(name, self))
             return ''
 
     def parse_string(self, string_end, level=0):
