@@ -89,14 +89,6 @@ month_names = {
 }
 
 
-class Macro(object):
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return 'Macro({0})'.format(self.name)
-
-
 class SkipEntry(Exception):
     pass
 
