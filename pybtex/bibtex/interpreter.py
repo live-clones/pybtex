@@ -19,6 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from pybtex.utils import CaseInsensitiveDict
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import builtins, print_warning
 from pybtex.bibtex.utils import wrap
@@ -176,7 +177,7 @@ class Interpreter(object):
         self.bib_format = bib_format
         self.bib_encoding = bib_encoding
         self.stack = []
-        self.vars = dict(builtins)
+        self.vars = CaseInsensitiveDict(builtins)
         #FIXME is 10000 OK?
         self.add_variable('global.max$', Integer(10000))
         self.add_variable('entry.max$', Integer(10000))
