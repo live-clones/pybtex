@@ -63,6 +63,7 @@ from string import ascii_letters, digits
 
 import re
 import pybtex.io
+from pybtex.utils import CaseInsensitiveDict
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
@@ -201,10 +202,10 @@ class BibTeXEntryIterator(Scanner):
         self.parse_value()
 
     def parse_string_body(self, body_end):
-        self.current_field_name = self.required([self.NAME]).value.lower()
+        self.current_field_name = self.required([self.NAME]).value
         self.required([self.EQUALS])
         self.parse_value()
-        self.macros[self.current_field_name.lower()] = ''.join(self.current_value)
+        self.macros[self.current_field_name] = ''.join(self.current_value)
 
     def parse_entry_body(self, body_end):
         if not self.keyless_entries:
@@ -266,7 +267,7 @@ class BibTeXEntryIterator(Scanner):
 
     def substitute_macro(self, name):
         try:
-            return self.macros[name.lower()]
+            return self.macros[name]
         except KeyError:
             if self.want_current_entry():
                 self.handle_error(UndefinedMacro(name, self))
@@ -306,7 +307,7 @@ class Parser(BaseParser):
         ):
         BaseParser.__init__(self, encoding, **kwargs)
 
-        self.macros = dict(macros)
+        self.macros = CaseInsensitiveDict(macros)
         self.person_fields = person_fields
         self.keyless_entries = keyless_entries
 
