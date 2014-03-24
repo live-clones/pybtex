@@ -210,18 +210,22 @@ class BibliographyData(object):
         return expanded_citations + crossrefs
 
 
-class FieldDict(dict):
+class FieldDict(OrderedCaseInsensitiveDict):
     def __init__(self, parent, *args, **kwargw):
         self.parent = parent
-        dict.__init__(self, *args, **kwargw)
-    def __missing__(self, key):
-        if key in self.parent.persons:
-            persons = self.parent.persons[key]
-            return ' and '.join(unicode(person) for person in persons)
-        elif 'crossref' in self:
-            return self.parent.get_crossref().fields[key]
-        else:
-            raise KeyError(key)
+        super(FieldDict, self).__init__(*args, **kwargw)
+
+    def __getitem__(self, key):
+        try:
+            return super(FieldDict, self).__getitem__(key)
+        except KeyError:
+            if key in self.parent.persons:
+                persons = self.parent.persons[key]
+                return ' and '.join(unicode(person) for person in persons)
+            elif 'crossref' in self:
+                return self.parent.get_crossref().fields[key]
+            else:
+                raise KeyError(key)
 
 
 class Entry(object):
