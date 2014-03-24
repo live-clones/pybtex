@@ -26,6 +26,7 @@ def copy_resource(package, resource):
     filename = posixpath.basename(resource)
     data = pkgutil.get_data(package, resource).decode(io.get_default_encoding())
     with io.open_unicode(filename, 'w') as data_file:
+        print filename
         data_file.write(data)
 
 
@@ -77,6 +78,7 @@ def test_bibtex_engine():
         ('xampl.bib', 'alpha.bst'),
         ('cyrillic.bib', 'unsrt.bst'),
         ('cyrillic.bib', 'alpha.bst'),
+        ('xampl_mixed.bib', 'unsrt_mixed.bst', 'xampl_mixed_unsrt_mixed.aux'),
     ]:
         yield check_make_bibliography, bibtex, filenames
 
