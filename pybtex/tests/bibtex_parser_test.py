@@ -451,3 +451,24 @@ class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
         """,
     ]
     correct_result = BibliographyData()
+
+
+class CaseSensitivityTest(ParserTest, TestCase):
+    input_strings = [
+        ur""",
+            @Article{CamelCase,
+                Title = {To CamelCase or Under score},
+                year = 2009,
+                NOTES = "none"
+            }
+        """,
+    ]
+    correct_result = BibliographyData({
+        'CamelCase': Entry('article', 
+            fields={
+                'Title': 'To CamelCase or Under score',
+                'year': '2009',
+                'NOTES': 'none',
+            },
+        ),
+    })

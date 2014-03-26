@@ -230,7 +230,7 @@ class BibTeXEntryIterator(Scanner):
         name = self.optional([self.NAME])
         if not name:
             return
-        self.current_field_name = name.value.lower()
+        self.current_field_name = name.value
         self.required([self.EQUALS])
         self.parse_value()
 
