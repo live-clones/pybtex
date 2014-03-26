@@ -47,7 +47,12 @@
 ...   eprint =       "http://www.sciencemag.org/cgi/reprint/276/5315/1109.pdf",
 ... }
 ... '''))
->>> rief97b = parser.data.entries['rief97b']
+
+# entry keys are case-insensitive
+>>> bib_data.entries['rief97b'] == bib_data.entries['RIEF97B']
+True
+
+>>> rief97b = bib_data.entries['rief97b']
 >>> authors = rief97b.persons['author']
 >>> for author in authors:
 ...     print unicode(author)
@@ -56,6 +61,12 @@ Gautel, Mathias
 Oesterhelt, Filipp
 Fernandez, Julio M.
 Gaub, Hermann E.
+
+# field names are case-insensitive
+>>> print rief97b.fields['URL']
+http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
+>>> print rief97b.fields['url']
+http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 
 """
 
