@@ -1,3 +1,14 @@
+Version 0.17.1
+--------------
+
+- All identifiers in ``.bst`` files are now case-insensitife (like in BibTeX).
+  Fixes errors with IEEEtran style.
+
+- Fixed parsing unused entries with @ characters.
+
+- Added missing pybtex-format manpage.
+
+
 Version 0.17
 ------------
 (released on March 10, 2014)
