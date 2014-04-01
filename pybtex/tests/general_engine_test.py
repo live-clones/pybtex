@@ -26,7 +26,6 @@ def copy_resource(package, resource):
     filename = posixpath.basename(resource)
     data = pkgutil.get_data(package, resource).decode(io.get_default_encoding())
     with io.open_unicode(filename, 'w') as data_file:
-        print filename
         data_file.write(data)
 
 
