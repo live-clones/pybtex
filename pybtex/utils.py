@@ -24,7 +24,7 @@
 
 
 from functools import wraps
-from collections import Sequence, MutableMapping
+from collections import Sequence, MutableMapping, MutableSet
 from types import GeneratorType
 
 
@@ -262,7 +262,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
         return [(key, self[key]) for key in self.order]
 
 
-class CaseInsensitiveSet(set):
+class CaseInsensitiveSet(MutableSet):
     """A very basic case-insensitive set.
 
     >>> s = CaseInsensitiveSet()
@@ -271,10 +271,9 @@ class CaseInsensitiveSet(set):
     >>> 'a' in s
     False
 
-    >>> list(CaseInsensitiveSet(['aaa', 'Aaa', 'AAA']))
-    ['aaa']
-
     >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
+    >>> s
+    CaseInsensitiveSet(['Aaa', 'Bbb'])
     >>> len(s)
     2
     >>> 'aaa' in s
@@ -287,6 +286,8 @@ class CaseInsensitiveSet(set):
     True
     >>> 'Bbb' in s
     True
+    >>> 'abc' in s
+    False
     >>> s.add('ccc')
     >>> len(s)
     3
@@ -300,17 +301,45 @@ class CaseInsensitiveSet(set):
     >>> 'aaa' in s
     False
 
+    >>> bool(CaseInsensitiveSet(['a']))
+    True
+    >>> bool(CaseInsensitiveSet([]))
+    False
+    >>> bool(CaseInsensitiveSet())
+    False
+
     """
 
-    def __init__(self, *args, **kwargs):
-        initial_data = set(*args, **kwargs)
-        super(CaseInsensitiveSet, self).__init__(item.lower() for item in initial_data)
+    def __init__(self, iterable=()):
+        self._set = set()
+        self._keys = dict()
+        for item in iterable:
+            self.add(item)
 
-    def __contains__(self, item):
-        return super(CaseInsensitiveSet, self).__contains__(item.lower())
+    def __contains__(self, key):
+        return key.lower() in self._set
 
-    def add(self, item):
-        super(CaseInsensitiveSet, self).add(item.lower())
+    def __iter__(self):
+        return __iter__(self._set)
 
-    def remove(self, item):
-        super(CaseInsensitiveSet, self).remove(item.lower())
+    def __len__(self):
+        return len(self._set)
+
+    def __repr__(self):
+        """A caselessDict version of __repr__ """
+        return '{0}({1})'.format(
+            type(self).__name__, repr(sorted(self._keys.values()))
+        )
+
+    def add(self, key):
+        key_lower = key.lower()
+        self._set.add(key_lower)
+        self._keys[key_lower] = key
+
+    def discard(self, key):
+        key_lower = key.lower()
+        self._set.discard(key_lower)
+        self._keys.pop(key_lower, None)
+
+    def get_canonical_key(self, key):
+        return self._keys[key.lower()]
