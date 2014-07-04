@@ -100,10 +100,8 @@ class BibliographyData(object):
         except KeyError:
             pass
         else:
-            self.crossref_count[crossref] += 1
-            if self.crossref_count[crossref] >= self.min_crossrefs:
-                if self.wanted_entries is not None:
-                    self.wanted_entries.add(crossref)
+            if self.wanted_entries is not None:
+                self.wanted_entries.add(crossref)
 
     def add_entries(self, entries):
         for key, entry in entries:
