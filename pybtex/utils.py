@@ -57,7 +57,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     >>> d = CaseInsensitiveDict(TesT='passed')
     >>> d
-    CaseInsensitiveDict({'TesT': 'passed'})
+    CaseInsensitiveDict({'test': 'passed'})
     >>> print d['TesT']
     passed
     >>> print d['test']
@@ -73,6 +73,8 @@ class CaseInsensitiveDict(MutableMapping):
     >>> print d['test']
     passed again
     >>> 'test' in d
+    True
+    >>> 'Test' in d
     True
     >>> print d.keys()
     ['Test']
@@ -111,45 +113,38 @@ class CaseInsensitiveDict(MutableMapping):
     """
 
     def __init__(self, *args, **kwargs):
-        self._dict = dict(*args, **kwargs)
-        self._keys = dict((key.lower(), key) for key in self)
+        initial = dict(*args, **kwargs)
+        self._dict = dict((key.lower(), value) for key, value in initial.iteritems())
+        self._keys = dict((key.lower(), key) for key in initial)
 
     def __len__(self):
         return len(self._dict)
 
     def __iter__(self):
-        return iter(self._dict)
+        return iter(self._keys.values())
 
     def __setitem__(self, key, value):
         """To implement lowercase keys."""
         key_lower = key.lower()
-        try:
-            existing_key = self._keys[key_lower]
-        except KeyError:
-            pass
-        else:
-            del self._dict[existing_key]
-        self._dict[key] = value
+        self._dict[key_lower] = value
         self._keys[key_lower] = key
 
     def __getitem__(self, key):
-        existing_key = self._keys[key.lower()]
-        return self._dict[existing_key]
+        return self._dict[key.lower()]
 
     def __delitem__(self, key):
         key_lower = key.lower()
-        existing_key = self._keys[key_lower]
-        del self._dict[existing_key]
+        del self._dict[key_lower]
         del self._keys[key_lower]
+
+    def __contains__(self, key):
+        return key.lower() in self._dict
 
     def __deepcopy__(self, memo):
         from copy import deepcopy
         return CaseInsensitiveDict(
             (key, deepcopy(value, memo)) for key, value in self.iteritems()
         )
-
-    def __contains__(self, key):
-        return key.lower() in self._keys
 
     def __repr__(self):
         """A caselessDict version of __repr__ """
