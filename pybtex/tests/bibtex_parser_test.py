@@ -373,7 +373,7 @@ class WantedEntriesTest(ParserTest, TestCase):
         )
     """
     correct_result = BibliographyData(entries={
-        'gsl': Entry('article'),
+        'GSL': Entry('article'),
     })
 
 
@@ -385,9 +385,25 @@ class CrossrefTest(ParserTest, TestCase):
         @Journal{the_journal,}
     """
     correct_result = BibliographyData(entries={
-        'gsl': Entry('article', {'crossref': 'the_journal'}),
-        'gsl2': Entry('article', {'crossref': 'The_Journal'}),
+        'GSL': Entry('article', {'crossref': 'the_journal'}),
+        'GSL2': Entry('article', {'crossref': 'The_Journal'}),
         'the_journal': Entry('journal'),
+    })
+
+
+class CrossrefWantedTest(ParserTest, TestCase):
+    """When cross-referencing an explicitly cited, the key from .aux file should be used."""
+
+    parser_options = {'wanted_entries': ['GSL', 'GSL2', 'The_Journal']}
+    input_string = u"""
+        @Article(gsl, crossref="the_journal")
+        @Article(gsl2, crossref="The_Journal")
+        @Journal{the_journal,}
+    """
+    correct_result = BibliographyData(entries={
+        'GSL': Entry('article', {'crossref': 'the_journal'}),
+        'GSL2': Entry('article', {'crossref': 'The_Journal'}),
+        'The_Journal': Entry('journal'),
     })
 
 

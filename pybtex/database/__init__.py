@@ -44,8 +44,10 @@ class BibliographyData(object):
         self._preamble = []
         if wanted_entries is not None:
             self.wanted_entries = CaseInsensitiveSet(wanted_entries)
+            self.citations = CaseInsensitiveSet(wanted_entries)
         else:
             self.wanted_entries = None
+            self.citations = CaseInsensitiveSet()
         if entries:
             if isinstance(entries, Mapping):
                 entries = entries.iteritems()
@@ -85,6 +87,12 @@ class BibliographyData(object):
             or '*' in self.wanted_entries
         )
 
+    def get_canonical_key(self, key):
+        if key in self.citations:
+            return self.citations.get_canonical_key(key)
+        else:
+            return key
+
     def add_entry(self, key, entry):
         if not self.want_entry(key):
             return
@@ -92,9 +100,8 @@ class BibliographyData(object):
             report_error(BibliographyDataError('repeated bibliograhpy entry: %s' % key))
             return
         entry.collection = self
-        entry.key = key
-        entry.key = key
-        self.entries[key] = entry
+        entry.key = self.get_canonical_key(key)
+        self.entries[entry.key] = entry
         try:
             crossref = entry.fields['crossref']
         except KeyError:
@@ -151,7 +158,9 @@ class BibliographyData(object):
                 crossref = entry.fields['crossref']
             except KeyError:
                 continue
-            if crossref not in self.entries:
+            try:
+                crossref_entry = self.entries[crossref]
+            except KeyError:
                 report_error(BibliographyDataError(
                     'bad cross-reference: entry "{key}" refers to '
                     'entry "{crossref}" which does not exist.'.format(
@@ -159,10 +168,12 @@ class BibliographyData(object):
                     )
                 ))
                 continue
-            crossref_count[crossref] += 1
-            if crossref_count[crossref] >= min_crossrefs and crossref not in citation_set:
-                citation_set.add(crossref)
-                yield crossref
+
+            canonical_crossref = crossref_entry.key
+            crossref_count[canonical_crossref] += 1
+            if crossref_count[canonical_crossref] >= min_crossrefs and canonical_crossref not in citation_set:
+                citation_set.add(canonical_crossref)
+                yield canonical_crossref
 
     def expand_wildcard_citations(self, citations):
         """
