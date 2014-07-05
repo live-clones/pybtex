@@ -52,7 +52,7 @@ def format_error(exception, prefix='ERROR: '):
     context = exception.get_context()
     if context:
         lines += (context.splitlines())
-    lines.append(u'{0}{1}'.format(prefix, capfirst(add_period(unicode(exception)))))
+    lines.append(u'{0}{1}'.format(prefix, unicode(exception)))
     filename = exception.get_filename()
     if filename:
         lines = (
