@@ -31,31 +31,55 @@ import pybtex.io
 
 
 class AuxDataError(PybtexError):
-    pass
+    def __init__(self, message, context):
+        super(AuxDataError, self).__init__(message, context.filename)
+        self.context = context
+    
+    def get_context(self):
+        marker = '^' * len(self.context.line)
+        return self.context.line + '\n' + marker
+
+    def __unicode__(self):
+        base_message = super(AuxDataError, self).__unicode__()
+        return u'{message} in line {lineno}'.format(
+            message=base_message,
+            lineno=self.context.lineno,
+        )
 
 
-class AuxData:
+class AuxDataContext(object):
+    lineno = None
+    line = None
+    filename = None
+
+    def __init__(self, filename):
+        self.filename = filename
+
+
+class AuxData(object):
     command_re = re.compile(r'\\(citation|bibdata|bibstyle|@input){(.*)}')
+    context = None
+    style = None
+    data = None
+    citations = None
+
     def __init__(self, encoding):
-        self.filename = None
         self.encoding = encoding
-        self.style = None
-        self.data = None
         self.citations = []
 
-    def handle_citation(self, s):
-        for c in s.split(','):
-            if not c in self.citations:
-                self.citations.append(c)
+    def handle_citation(self, keys):
+        for key in keys.split(','):
+            if not key in self.citations:
+                self.citations.append(key)
 
     def handle_bibstyle(self, style):
         if self.style is not None:
-            raise AuxDataError(r'illegal, another \bibstyle command in %s' % self.filename)
+            raise AuxDataError(r'illegal, another \bibstyle command', self.context)
         self.style = style
 
     def handle_bibdata(self, bibdata):
         if self.data is not None:
-            raise AuxDataError(r'illegal, another \bibdata command in %s' % self.filename)
+            raise AuxDataError(r'illegal, another \bibdata command', self.context)
         self.data = bibdata.split(',')
 
     def handle_input(self, filename):
@@ -66,15 +90,18 @@ class AuxData:
         action(value)
 
     def parse_file(self, filename):
-        previous_filename = self.filename
-        self.filename = filename
+        previous_context = self.context
+        self.context = AuxDataContext(filename)
 
-        with pybtex.io.open_unicode(filename, encoding=self.encoding) as f:
-            s = f.read()
-        for command, value in self.command_re.findall(s):
-            self.handle(command, value)
-
-        self.filename = previous_filename
+        with pybtex.io.open_unicode(filename, encoding=self.encoding) as aux_file:
+            for lineno, line in enumerate(aux_file):
+                self.context.lineno = lineno + 1
+                self.context.line = line.strip()
+                match = self.command_re.match(line)
+                if match:
+                    command, value = match.groups()
+                    self.handle(command, value)
+        self.context = previous_context
 
 
 def parse_file(filename, encoding):
