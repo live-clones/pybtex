@@ -26,8 +26,9 @@ from __future__ import with_statement
 
 import re
 
-from pybtex.exceptions import PybtexError
 import pybtex.io
+from pybtex.exceptions import PybtexError
+from pybtex.errors import report_error
 
 
 class AuxDataError(PybtexError):
@@ -74,13 +75,15 @@ class AuxData(object):
 
     def handle_bibstyle(self, style):
         if self.style is not None:
-            raise AuxDataError(r'illegal, another \bibstyle command', self.context)
-        self.style = style
+            report_error(AuxDataError(r'illegal, another \bibstyle command', self.context))
+        else:
+            self.style = style
 
     def handle_bibdata(self, bibdata):
         if self.data is not None:
-            raise AuxDataError(r'illegal, another \bibdata command', self.context)
-        self.data = bibdata.split(',')
+            report_error(AuxDataError(r'illegal, another \bibdata command', self.context))
+        else:
+            self.data = bibdata.split(',')
 
     def handle_input(self, filename):
         self.parse_file(filename)
