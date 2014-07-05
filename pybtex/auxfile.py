@@ -99,18 +99,22 @@ class AuxData(object):
         action = getattr(self, 'handle_%s' % command.lstrip('@'))
         action(value)
 
+    def parse_line(self, line, lineno):
+        self.context.lineno = lineno
+        self.context.line = line.strip()
+        match = self.command_re.match(line)
+        if match:
+            command, value = match.groups()
+            self.handle(command, value)
+
     def parse_file(self, filename):
         previous_context = self.context
         self.context = AuxDataContext(filename)
 
         with pybtex.io.open_unicode(filename, encoding=self.encoding) as aux_file:
-            for lineno, line in enumerate(aux_file):
-                self.context.lineno = lineno + 1
-                self.context.line = line.strip()
-                match = self.command_re.match(line)
-                if match:
-                    command, value = match.groups()
-                    self.handle(command, value)
+            for lineno, line in enumerate(aux_file, 1):
+                self.parse_line(line, lineno)
+
         if previous_context:
             self.context = previous_context
         else:
