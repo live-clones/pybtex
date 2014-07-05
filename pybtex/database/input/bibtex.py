@@ -106,7 +106,7 @@ class SkipEntry(Exception):
 
 
 class UndefinedMacro(PybtexSyntaxError):
-    error_type = 'Undefined string'
+    error_type = 'undefined string'
 
 class BibTeXEntryIterator(Scanner):
     NAME_CHARS = ascii_letters + u'@!$&*+-./:;<>?[\\]^_`|~\x7f'

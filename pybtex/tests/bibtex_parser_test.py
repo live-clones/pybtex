@@ -150,7 +150,7 @@ class AtTest(ParserTest, TestCase):
         'Me2009': Entry('article', {'title': 'A @tey short story'}),
     })
     errors = [
-        "Syntax error in line 2: '(' or '{' expected",
+        "syntax error in line 2: '(' or '{' expected",
     ]
 
 class EntryTypesTest(ParserTest, TestCase):
@@ -178,10 +178,10 @@ class EntryTypesTest(ParserTest, TestCase):
         'aa2_id': Entry('_t'),
     })
     errors = [
-        "Syntax error in line 12: a valid name expected",
-        "Syntax error in line 13: '(' or '{' expected",
-        "Syntax error in line 14: '(' or '{' expected",
-        "Syntax error in line 15: '(' or '{' expected",
+        "syntax error in line 12: a valid name expected",
+        "syntax error in line 13: '(' or '{' expected",
+        "syntax error in line 14: '(' or '{' expected",
+        "syntax error in line 15: '(' or '{' expected",
     ]
 
 
@@ -218,9 +218,9 @@ class FieldNamesTest(ParserTest, TestCase):
         '2017': Entry('article', {'@name': 'Myself'}),
     })
     errors = [
-        "Syntax error in line 5: '}' expected",
-        "Syntax error in line 11: '=' expected",
-        'Syntax error in line 14: \'}\' expected',
+        "syntax error in line 5: '}' expected",
+        "syntax error in line 11: '=' expected",
+        'syntax error in line 14: \'}\' expected',
     ]
 
 
@@ -250,8 +250,8 @@ class InlineCommentTest(ParserTest, TestCase):
         'Me2013': Entry('article'),
     })
     errors = [
-        "Syntax error in line 10: '}' expected",
-        "Syntax error in line 12: '}' expected",
+        "syntax error in line 10: '}' expected",
+        "syntax error in line 12: '}' expected",
     ]
 
 
@@ -316,7 +316,7 @@ class KeyParsingTest(ParserTest, TestCase):
         'test(braces2)': Entry('article'),
     })
     errors = [
-        "Syntax error in line 5: ')' expected",
+        "syntax error in line 5: ')' expected",
     ]
 
 
@@ -361,7 +361,7 @@ class MacrosTest(ParserTest, TestCase):
         'gsl': Entry('article', persons={u'author': [Person(u'Gough, Brian'), Person(u'{et al.}')]}),
     })
     errors = [
-        'Undefined string in line 6: nobody',
+        'undefined string in line 6: nobody',
     ]
 
 
