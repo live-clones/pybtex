@@ -42,7 +42,7 @@ class AuxDataError(PybtexError):
 
     def __unicode__(self):
         base_message = super(AuxDataError, self).__unicode__()
-        return u'{message} in line {lineno}'.format(
+        return u'in line {lineno}: {message}'.format(
             message=base_message,
             lineno=self.context.lineno,
         )
@@ -67,11 +67,18 @@ class AuxData(object):
     def __init__(self, encoding):
         self.encoding = encoding
         self.citations = []
+        self._canonical_keys = {}
 
     def handle_citation(self, keys):
         for key in keys.split(','):
-            if not key in self.citations:
-                self.citations.append(key)
+            key_lower = key.lower()
+            if key_lower in self._canonical_keys:
+                existing_key = self._canonical_keys[key_lower]
+                if key != existing_key:
+                    msg = 'case mismatch error between cite keys {0} and {1}'
+                    report_error(AuxDataError(msg.format(key, existing_key), self.context))
+            self.citations.append(key)
+            self._canonical_keys[key_lower] = key
 
     def handle_bibstyle(self, style):
         if self.style is not None:
