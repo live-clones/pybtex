@@ -28,7 +28,7 @@ from pybtex.textutils import capfirst, add_period
 
 strict = False
 error_code = 0
-stderr = pybtex.io.stderr
+captured_errors = None
 
 
 def enable_strict_mode(enable=True):
@@ -38,13 +38,14 @@ def enable_strict_mode(enable=True):
 
 @contextmanager
 def capture():
-    global stderr
-    orig_stderr = stderr
-    stderr = StringIO()
+    """Capture exceptions for debug purposes."""
+
+    global captured_errors
+    captured_errors = []
     try:
-        yield stderr
+        yield captured_errors
     finally:
-        stderr = orig_stderr
+        captured_errors = None
 
 
 def format_error(exception, prefix='ERROR: '):
@@ -63,11 +64,15 @@ def format_error(exception, prefix='ERROR: '):
 
 
 def print_error(exception, prefix='ERROR: '):
-    print >>stderr, format_error(exception, prefix)
+    print >>pybtex.io.stderr, format_error(exception, prefix)
 
 
 def report_error(exception):
     global error_code
+
+    if captured_errors is not None:
+        captured_errors.append(exception)
+        return
 
     if strict:
         raise exception

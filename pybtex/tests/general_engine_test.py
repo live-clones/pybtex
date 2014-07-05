@@ -59,7 +59,7 @@ def check_make_bibliography(engine, filenames):
         if not '.aux' in filenames_by_ext:
             write_aux('test.aux', bib_name, bst_name)
             filenames_by_ext['.aux'] = 'test.aux'
-        with errors.capture() as stderr:  # FIXME check error messages
+        with errors.capture() as captured_errors:  # FIXME check error messages
             engine.make_bibliography(filenames_by_ext['.aux'])
         result_name = posixpath.splitext(filenames_by_ext['.aux'])[0] + '.bbl'
         with io.open_unicode(result_name) as result_file:
