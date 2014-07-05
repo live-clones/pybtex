@@ -44,7 +44,7 @@ class AuxDataError(PybtexError):
     def __unicode__(self):
         base_message = super(AuxDataError, self).__unicode__()
         lineno = self.context.lineno
-        location = 'lin line {0}: '.format(lineno) if lineno else ''
+        location = 'in line {0}: '.format(lineno) if lineno else ''
         return location + base_message
 
 
