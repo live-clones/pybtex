@@ -32,20 +32,20 @@ from pybtex.errors import report_error
 
 
 class AuxDataError(PybtexError):
-    def __init__(self, message, context):
+    def __init__(self, message, context=None):
         super(AuxDataError, self).__init__(message, context.filename)
         self.context = context
     
     def get_context(self):
-        marker = '^' * len(self.context.line)
-        return self.context.line + '\n' + marker
+        if self.context.line:
+            marker = '^' * len(self.context.line)
+            return self.context.line + '\n' + marker
 
     def __unicode__(self):
         base_message = super(AuxDataError, self).__unicode__()
-        return u'in line {lineno}: {message}'.format(
-            message=base_message,
-            lineno=self.context.lineno,
-        )
+        lineno = self.context.lineno
+        location = 'lin line {0}: '.format(lineno) if lineno else ''
+        return location + base_message
 
 
 class AuxDataContext(object):
@@ -111,7 +111,11 @@ class AuxData(object):
                 if match:
                     command, value = match.groups()
                     self.handle(command, value)
-        self.context = previous_context
+        if previous_context:
+            self.context = previous_context
+        else:
+            self.context.line = None
+            self.context.lineno = None
 
 
 def parse_file(filename, encoding):
@@ -119,8 +123,12 @@ def parse_file(filename, encoding):
 
     data = AuxData(encoding)
     data.parse_file(filename)
+
+    # these errors are fatal - always raise an exception instead of using
+    # erorrs.report_error()
     if data.data is None:
-        raise AuxDataError(r'found no \bibdata command in %s' % filename)
+        raise AuxDataError(r'found no \bibdata command', data.context)
     if data.style is None:
-        raise AuxDataError(r'found no \bibstyle command in %s' % filename)
+        raise AuxDataError(r'found no \bibstyle command', data.context)
+
     return data
