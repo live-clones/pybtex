@@ -59,7 +59,7 @@ make_standard_option(
     '--strict', dest='strict',
     help='turn warnings into errors',
     action='callback',
-    callback=lambda option, opt, value, parser: errors.enable_strict_mode()
+    callback=lambda option, opt, value, parser: errors.set_strict_mode(True)
 )
 
 make_standard_option(
@@ -220,6 +220,7 @@ class CommandLine(object):
         )
 
     def main(self):
+        errors.set_strict_mode(False)
         argv = self.recognize_legacy_optons(sys.argv[1:])
         options, args = self.opt_parser.parse_args(argv)
         if len(args) != self.num_args:

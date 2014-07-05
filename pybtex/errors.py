@@ -26,12 +26,12 @@ import pybtex.io
 from pybtex.textutils import capfirst, add_period
 
 
-strict = False
+strict = True
 error_code = 0
 captured_errors = None
 
 
-def enable_strict_mode(enable=True):
+def set_strict_mode(enable=True):
     global strict
     strict = enable
 
