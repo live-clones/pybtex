@@ -95,7 +95,7 @@ class AuxData(object):
     def handle_input(self, filename):
         self.parse_file(filename)
 
-    def handle(self, command, value):
+    def handle_command(self, command, value):
         action = getattr(self, 'handle_%s' % command.lstrip('@'))
         action(value)
 
@@ -105,7 +105,7 @@ class AuxData(object):
         match = self.command_re.match(line)
         if match:
             command, value = match.groups()
-            self.handle(command, value)
+            self.handle_command(command, value)
 
     def parse_file(self, filename):
         previous_context = self.context
