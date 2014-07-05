@@ -56,6 +56,13 @@ def standard_option(name):
 
 
 make_standard_option(
+    '--strict', dest='strict',
+    help='turn warnings into errors',
+    action='callback',
+    callback=lambda option, opt, value, parser: errors.enable_strict_mode()
+)
+
+make_standard_option(
     '-f', '--bibliography-format', dest='bib_format',
     help='bibliograpy format (%plugin_choices)',
     type='load_plugin',

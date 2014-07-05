@@ -36,6 +36,7 @@ pybtex-format formats bibliography database as human-readable text.
 
     options = (
         (None, (
+            standard_option('strict'),
             standard_option('bib_format'),
             standard_option('output_backend'),
             standard_option('min_crossrefs'),

@@ -32,7 +32,9 @@ class ConvertError(PybtexError):
 def convert(from_filename, to_filename,
         from_format=None, to_format=None,
         input_encoding=None, output_encoding=None,
-        parser_options=None):
+        parser_options=None,
+        **kwargs
+        ):
     if parser_options is None:
         parser_options = {}
     input_format = find_plugin('pybtex.database.input', name=from_format, filename=from_filename)

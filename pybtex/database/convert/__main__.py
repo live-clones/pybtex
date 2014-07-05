@@ -39,6 +39,7 @@ pybtex-convert converts bibliography database files between supported formats
 
     options = (
         (None, (
+            standard_option('strict'),
             make_option(
                 '-f', '--from', dest='from_format',
                 help='input format (%plugin_choices)', metavar='FORMAT',

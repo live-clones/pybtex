@@ -46,10 +46,7 @@ It is also possible to define bibliography formatting styles in Python.
 
     options = (
         (None, (
-            make_option(
-                '--strict', dest='strict', action='store_true',
-                help='turn warnings into errors',
-            ),
+            standard_option('strict'),
             make_option(
                 '--terse', dest='verbose', action='store_false',
                 help='ignored for compatibility with BibTeX',
@@ -83,15 +80,7 @@ It is also possible to define bibliography formatting styles in Python.
     }
     legacy_options = '-help', '-version', '-min-crossrefs', '-terse'
 
-    def run(self,
-        filename,
-        strict, verbose, style_language, encoding,
-        **options
-    ):
-        if strict:
-            from pybtex.errors import enable_strict_mode
-            enable_strict_mode()
-
+    def run(self, filename, style_language, encoding, **options):
         if style_language == 'bibtex':
             from pybtex import bibtex as engine
         elif style_language == 'python':
