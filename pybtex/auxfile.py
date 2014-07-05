@@ -117,18 +117,17 @@ class AuxData(object):
             self.context.line = None
             self.context.lineno = None
 
+        # these errors are fatal - always raise an exception instead of using
+        # erorrs.report_error()
+        if self.data is None:
+            raise AuxDataError(r'found no \bibdata command', self.context)
+        if self.style is None:
+            raise AuxDataError(r'found no \bibstyle command', self.context)
+
 
 def parse_file(filename, encoding):
     """Parse a file and return an AuxData object."""
 
     data = AuxData(encoding)
     data.parse_file(filename)
-
-    # these errors are fatal - always raise an exception instead of using
-    # erorrs.report_error()
-    if data.data is None:
-        raise AuxDataError(r'found no \bibdata command', data.context)
-    if data.style is None:
-        raise AuxDataError(r'found no \bibstyle command', data.context)
-
     return data
