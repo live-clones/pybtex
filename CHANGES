@@ -9,6 +9,8 @@ Version 0.17.1
 
 - Fixed parsing unused bibliography entries with strings containing @ characters.
 
+- ``entry.max$`` constant is now set to 250, ``global.max$`` is set to 20000, like in BibTeX.
+
 - Added ``--strict`` option to ``pybtex-convert`` and ``pybtex-format`` (turns
   warning to errors).
 

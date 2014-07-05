@@ -178,9 +178,8 @@ class Interpreter(object):
         self.bib_encoding = bib_encoding
         self.stack = []
         self.vars = CaseInsensitiveDict(builtins)
-        #FIXME is 10000 OK?
-        self.add_variable('global.max$', Integer(10000))
-        self.add_variable('entry.max$', Integer(10000))
+        self.add_variable('global.max$', Integer(20000))  # constants taken from
+        self.add_variable('entry.max$', Integer(250))     # BibTeX 0.99d (TeX Live 2012)
         self.add_variable('sort.key$', EntryString(self, 'sort.key$'))
         self.macros = {}
         self.output_buffer = []
