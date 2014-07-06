@@ -74,7 +74,7 @@ from string import ascii_letters, digits
 
 import re
 import pybtex.io
-from pybtex.utils import CaseInsensitiveDict
+from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
@@ -319,7 +319,7 @@ class Parser(BaseParser):
         BaseParser.__init__(self, encoding, **kwargs)
 
         self.macros = CaseInsensitiveDict(macros)
-        self.person_fields = person_fields
+        self.person_fields = CaseInsensitiveSet(person_fields)
         self.keyless_entries = keyless_entries
 
     def process_entry(self, entry_type, key, fields):
