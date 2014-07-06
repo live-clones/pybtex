@@ -187,31 +187,63 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     """ An (incomplete) ordered case-insensitive dict.
 
     >>> d = OrderedCaseInsensitiveDict([
-    ...     ('uno', 1),
-    ...     ('dos', 2),
-    ...     ('tres', 3),
+    ...     ('Uno', 1),
+    ...     ('Dos', 2),
+    ...     ('Tres', 3),
     ... ])
     >>> d.keys()
-    ['uno', 'dos', 'tres']
+    ['Uno', 'Dos', 'Tres']
     >>> d.items()
-    [('uno', 1), ('dos', 2), ('tres', 3)]
+    [('Uno', 1), ('Dos', 2), ('Tres', 3)]
     >>> d.values()
     [1, 2, 3]
-    >>> d['cuatro'] = 4
+    >>> d['Cuatro'] = 4
     >>> d.keys()
-    ['uno', 'dos', 'tres', 'cuatro']
+    ['Uno', 'Dos', 'Tres', 'Cuatro']
     >>> d.items()
-    [('uno', 1), ('dos', 2), ('tres', 3), ('cuatro', 4)]
+    [('Uno', 1), ('Dos', 2), ('Tres', 3), ('Cuatro', 4)]
     >>> d.values()
     [1, 2, 3, 4]
     >>> list(d)
-    ['uno', 'dos', 'tres', 'cuatro']
+    ['Uno', 'Dos', 'Tres', 'Cuatro']
     >>> list(d.iterkeys()) == d.keys()
     True
     >>> list(d.itervalues()) == d.values()
     True
     >>> list(d.iteritems()) == d.items()
     True
+    >>> 'Uno' in d
+    True
+    >>> 'uno' in d
+    True
+    >>> d['Uno']
+    1
+    >>> d['uno']
+    1
+    >>> d['UNO']
+    1
+    >>> 'Cuatro' in d
+    True
+    >>> 'CUATRO' in d
+    True
+    >>> d['Cuatro']
+    4
+    >>> d['cuatro']
+    4
+    >>> d['UNO'] = 'one'
+    >>> d['uno']
+    'one'
+    >>> d['Uno']
+    'one'
+    >>> d.keys()
+    ['Uno', 'Dos', 'Tres', 'Cuatro']
+    >>> d['cuatro'] = 'four'
+    >>> d['Cuatro']
+    'four'
+    >>> d['cuatro']
+    'four'
+    >>> d.keys()
+    ['Uno', 'Dos', 'Tres', 'Cuatro']
 
     """
 
