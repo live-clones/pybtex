@@ -102,6 +102,6 @@ produce:
 Support for other formats can be added easily. If you really need it,
 please `file a feature request`_.
 
-.. _file a feature request: http://sourceforge.net/tracker/?group_id=151578&atid=781409
+.. _file a feature request: http://sourceforge.net/p/pybtex/bugs/new/
 
 
