@@ -72,14 +72,12 @@ class PluginNotFound(PybtexError):
         super(PluginNotFound, self).__init__(message)
 
 
-def _load_entry_point(group, name):
-    entry_points = pkg_resources.iter_entry_points(group, name)
-    try:
-        entry_point = entry_points.next()
-    except StopIteration:
-        raise PluginNotFound(group, name)
-    else:
-        return entry_point.load()
+def _load_entry_point(group, name, use_aliases=False):
+    groups = [group, group + '.aliases'] if use_aliases else [group]
+    for search_group in groups:
+        for entry_point in pkg_resources.iter_entry_points(search_group, name):
+            return entry_point.load()
+    raise PluginNotFound(group, name)
 
 
 def find_plugin(plugin_group, name=None, filename=None):
@@ -104,7 +102,7 @@ def find_plugin(plugin_group, name=None, filename=None):
     if plugin_group not in _DEFAULT_PLUGINS:
         raise PluginGroupNotFound(plugin_group)
     if name:
-        return _load_entry_point(plugin_group, name)
+        return _load_entry_point(plugin_group, name, use_aliases=True)
     elif filename:
         suffix = os.path.splitext(filename)[1]
         return _load_entry_point(plugin_group + '.suffixes', suffix)
@@ -149,6 +147,11 @@ def register_plugin(plugin_group, name, klass, force=False):
     *name* is then simply the suffix, which should start with a
     period.
 
+    To register an alias plugin name, append ".aliases" to the plugin group.
+    Aliases work just as real names, but are not returned by
+    :function:`enumerate_plugin_names` and not advertised in the command line
+    help.
+
     If *force* is ``False``, then existing entry points are not
     overwritten. If an entry point with the given group and name
     already exists, then returns ``False``, otherwise returns
@@ -156,19 +159,19 @@ def register_plugin(plugin_group, name, klass, force=False):
 
     If *force* is ``True``, then existing entry points are
     overwritten, and the function always returns ``True``.
+
     """
-    if not plugin_group.endswith(".suffixes"):
-        # registering a name
-        if plugin_group not in _DEFAULT_PLUGINS:
-            raise PluginGroupNotFound(plugin_group)
-    else:
-        # registering a suffix
-        group, _1, _2 = plugin_group.rpartition(".suffixes")
-        assert _1 == ".suffixes" and _2 == ""
+    if plugin_group.endswith(".suffixes"):
+        base_group, _ = plugin_group.rsplit(".", 1)
         if not name.startswith('.'):
             raise ValueError("a suffix must start with a period")
-        if group not in _DEFAULT_PLUGINS:
-            raise PluginGroupNotFound(group)
+    elif plugin_group.endswith(".aliases"):
+        base_group, _ = plugin_group.rsplit(".", 1)
+    else:
+        base_group = plugin_group
+    if base_group not in _DEFAULT_PLUGINS:
+        raise PluginGroupNotFound(base_group)
+
     dist = pkg_resources.get_distribution('pybtex')
     ep_map = pkg_resources.get_entry_map(dist)
     if plugin_group not in ep_map:

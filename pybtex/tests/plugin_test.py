@@ -45,6 +45,10 @@ class TestPlugin3(pybtex.plugin.Plugin):
     pass
 
 
+class TestPlugin4(pybtex.plugin.Plugin):
+    pass
+
+
 def test_register_plugin_1():
     nose.tools.assert_true(
         pybtex.plugin.register_plugin(
@@ -117,6 +121,23 @@ def test_plugin_suffix():
     plugin = pybtex.plugin.find_plugin(
         "pybtex.database.input", filename="test.bib")
     nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
+
+
+def test_plugin_alias():
+    pybtex.plugin._DEFAULT_PLUGINS['pybtex.legacy.input'] = 'punchcard'
+    nose.tools.assert_true(
+        pybtex.plugin.register_plugin(
+            'pybtex.legacy.input', 'punchcard', TestPlugin4))
+    nose.tools.assert_true(
+        pybtex.plugin.register_plugin(
+            'pybtex.legacy.input.aliases', 'punchedcard', TestPlugin4))
+    nose.tools.assert_equal(
+        list(pybtex.plugin.enumerate_plugin_names('pybtex.legacy.input')),
+        ['punchcard']
+    )
+    plugin = pybtex.plugin.find_plugin("pybtex.legacy.input", 'punchedcard')
+    nose.tools.assert_equal(plugin, TestPlugin4)
+    del pybtex.plugin._DEFAULT_PLUGINS['pybtex.legacy.input']
 
 
 def test_plugin_class():
