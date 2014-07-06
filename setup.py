@@ -97,8 +97,10 @@ setup(name=progname,
         'pybtex.database.input': [
             'bibtex = pybtex.database.input.bibtex:Parser',
             'bibtexml = pybtex.database.input.bibtexml:Parser',
-            'bibyaml = pybtex.database.input.bibyaml:Parser',
             'yaml = pybtex.database.input.bibyaml:Parser',
+            ],
+        'pybtex.database.input.aliases': [
+            'bibyaml = pybtex.database.input.bibyaml:Parser',
             ],
         'pybtex.database.input.suffixes': [
             '.bib = pybtex.database.input.bibtex:Parser',
@@ -110,8 +112,10 @@ setup(name=progname,
         'pybtex.database.output': [
             'bibtex = pybtex.database.output.bibtex:Writer',
             'bibtexml = pybtex.database.output.bibtexml:Writer',
-            'bibyaml = pybtex.database.output.bibyaml:Writer',
             'yaml = pybtex.database.output.bibyaml:Writer',
+            ],
+        'pybtex.database.output.aliases': [
+            'bibyaml = pybtex.database.output.bibyaml:Writer',
             ],
         'pybtex.database.output.suffixes': [
             '.bib = pybtex.database.output.bibtex:Writer',
@@ -124,6 +128,8 @@ setup(name=progname,
             'latex = pybtex.backends.latex:Backend',
             'html = pybtex.backends.html:Backend',
             'plaintext = pybtex.backends.plaintext:Backend',
+            ],
+        'pybtex.backends.aliases': [
             'text = pybtex.backends.plaintext:Backend',
             ],
         'pybtex.backends.suffixes': [
