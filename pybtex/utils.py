@@ -57,7 +57,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     >>> d = CaseInsensitiveDict(TesT='passed')
     >>> d
-    CaseInsensitiveDict({'test': 'passed'})
+    CaseInsensitiveDict({'TesT': 'passed'})
     >>> print d['TesT']
     passed
     >>> print d['test']
@@ -148,8 +148,9 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         """A caselessDict version of __repr__ """
+        dct = dict((key, self[key]) for key in self)
         return '{0}({1})'.format(
-            type(self).__name__, self._dict.__repr__()
+            type(self).__name__, repr(dct),
         )
 
 
