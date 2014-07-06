@@ -53,14 +53,13 @@ To get the very latest Pybtex from the trunk:
 .. sourcecode:: bash
 
     bzr branch lp:pybtex
-    cd pybtex
-    python setup.py develop
 
-And do not forget to run the tests (need `nose
-<http://nose.readthedocs.org/>`_):
+To run the tests (need `nose <http://nose.readthedocs.org/>`_):
 
 .. sourcecode:: bash
 
+    cd pybtex
+    python setup.py egg_info  # or python setup.py develop
     python setup.py nosetests
 
 Pybtex can be also installed with Easy Install:
