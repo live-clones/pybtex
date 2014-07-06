@@ -21,7 +21,6 @@
 
 import pybtex.io
 from pybtex.plugin import Plugin
-from pybtex.utils import deprecated
 
 
 class BaseBackend(Plugin):
@@ -36,10 +35,6 @@ class BaseBackend(Plugin):
 
     def write_epilogue(self):
         pass
-
-    @deprecated('0.17', 'use format_str instead')
-    def format_text(self, text):
-        return self.format_str(text)
 
     def format_str(self, str_):
         """Format the given string *str_*.
@@ -87,7 +82,3 @@ class BaseBackend(Plugin):
         for entry in formatted_bibliography:
             self.write_entry(entry.key, entry.label, entry.text.render(self))
         self.write_epilogue()
-
-    @deprecated('0.15', 'use write_to_file() instead')
-    def write_bibliography(self, formatted_bibliography, filename):
-        self.write_to_file(formatted_bibliography, filename)

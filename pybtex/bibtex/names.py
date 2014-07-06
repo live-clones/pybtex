@@ -45,7 +45,6 @@ PB
 import re
 
 from pybtex.database import Person
-from pybtex.utils import deprecated
 from pybtex.bibtex.utils import bibtex_len, bibtex_abbreviate
 from pybtex.scanner import (
     Scanner, Pattern, Literal,
@@ -277,11 +276,6 @@ def join(words, tie='~', space=' '):
 
 def format_name(name, format):
     return NameFormat(format).format(name)
-
-
-@deprecated('0.16', 'use format_name() instead')
-def format(name, format):
-    return format_name(name, format)
 
 
 class UnbalancedBraceError(PybtexSyntaxError):
