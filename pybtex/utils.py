@@ -270,7 +270,8 @@ class CaseInsensitiveSet(MutableSet):
     0
     >>> 'a' in s
     False
-
+    >>> list(CaseInsensitiveSet(['aaa', 'Aaa', 'AAA']))
+    ['aaa']
     >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
     >>> s
     CaseInsensitiveSet(['Aaa', 'Bbb'])
@@ -320,7 +321,7 @@ class CaseInsensitiveSet(MutableSet):
         return key.lower() in self._set
 
     def __iter__(self):
-        return __iter__(self._set)
+        return iter(self._set)
 
     def __len__(self):
         return len(self._set)
