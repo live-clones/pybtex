@@ -1,5 +1,6 @@
-Version 0.17.1
---------------
+Version 0.18
+------------
+(released on July 6, 2014)
 
 - Pybtex is now fully case-insensitive (like BibTeX). As a consequence, IEEEtran styles now work corretly.
 
