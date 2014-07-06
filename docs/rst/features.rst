@@ -23,8 +23,9 @@ example:
     }
 
 
-For the detailed description of the BibTeX format please refer to the
-`BibTeX documentation <http://www.ctan.org/get/info/tex-references/html/bibtex-bib-files.html>`_.
+Here is a `more detailed description of the BibTeX format`_.
+
+.. _more detailed description of the BibTeX format: http://www.miwie.org/tex-refs/html/bibtex-bib-files.html
 
 BibTeXML
 --------
