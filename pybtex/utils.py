@@ -58,6 +58,8 @@ class CaseInsensitiveDict(MutableMapping):
     >>> d = CaseInsensitiveDict(TesT='passed')
     >>> d
     CaseInsensitiveDict({'TesT': 'passed'})
+    >>> d.lower()
+    CaseInsensitiveDict({'test': 'passed'})
     >>> print d['TesT']
     passed
     >>> print d['test']
@@ -153,6 +155,12 @@ class CaseInsensitiveDict(MutableMapping):
             type(self).__name__, repr(dct),
         )
 
+    def iteritems_lower(self):
+        return ((key.lower(), value) for key, value in self.iteritems())
+
+    def lower(self):
+        return type(self)(self.iteritems_lower())
+
 
 class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
     """CaseInseisitiveDict with default factory, like collections.defaultdict
@@ -192,6 +200,10 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     ...     ('Dos', 2),
     ...     ('Tres', 3),
     ... ])
+    >>> d
+    OrderedCaseInsensitiveDict([('Uno', 1), ('Dos', 2), ('Tres', 3)])
+    >>> d.lower()
+    OrderedCaseInsensitiveDict([('uno', 1), ('dos', 2), ('tres', 3)])
     >>> d.keys()
     ['Uno', 'Dos', 'Tres']
     >>> d.items()
@@ -294,6 +306,11 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     def items(self):
         return [(key, self[key]) for key in self.order]
 
+    def __repr__(self):
+        return '{0}({1})'.format(
+            type(self).__name__, repr(self.items())
+        )
+
 
 class CaseInsensitiveSet(MutableSet):
     """A very basic case-insensitive set.
@@ -308,6 +325,8 @@ class CaseInsensitiveSet(MutableSet):
     >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
     >>> s
     CaseInsensitiveSet(['Aaa', 'Bbb'])
+    >>> s.lower()
+    CaseInsensitiveSet(['aaa', 'bbb'])
     >>> len(s)
     2
     >>> 'aaa' in s
@@ -377,3 +396,6 @@ class CaseInsensitiveSet(MutableSet):
 
     def get_canonical_key(self, key):
         return self._keys[key.lower()]
+
+    def lower(self):
+        return type(self)(self._set)
