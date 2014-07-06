@@ -45,7 +45,7 @@ class Writer(BaseWriter):
         def process_entries(bib_data):
             for key, entry in bib_data.iteritems():
                 fields = dict(entry.fields)
-                fields['type'] = entry.type
+                fields['type'] = entry.original_type
                 fields.update(process_person_roles(entry))
                 yield key, fields
 
