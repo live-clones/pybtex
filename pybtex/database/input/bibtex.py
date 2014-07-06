@@ -363,10 +363,11 @@ class Parser(BaseParser):
             macros=self.macros,
         )
         for entry in entry_iterator:
-            entry_type = entry[0].lower()
-            if entry_type == 'string':
+            entry_type = entry[0]
+            entry_type_lower = entry_type.lower()
+            if entry_type_lower == 'string':
                 pass
-            elif entry_type == 'preamble':
+            elif entry_type_lower == 'preamble':
                 self.process_preamble(*entry[1])
             else:
                 self.process_entry(entry_type, *entry[1])
