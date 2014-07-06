@@ -3,7 +3,7 @@ Version 0.17.1
 
 - Pybtex is now fully case-insensitive (like BibTeX). As a consequence, IEEEtran styles now work corretly.
 
-- ``pybtex-convert`` now preserves case of entry keys and fields.
+- Added ``--preserve-case`` optoin to ``pybtex-convert`` (by default all identifiers are converted to lower case).
 
 - An erorr is reported if two citations have the same key but different case, like in BibTeX. (Example: ddt1999 and DDT1999).
 

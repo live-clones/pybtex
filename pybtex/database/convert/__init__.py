@@ -33,6 +33,7 @@ def convert(from_filename, to_filename,
         from_format=None, to_format=None,
         input_encoding=None, output_encoding=None,
         parser_options=None,
+        preserve_case=True,
         **kwargs
         ):
     if parser_options is None:
@@ -44,4 +45,6 @@ def convert(from_filename, to_filename,
         raise ConvertError('input and output file can not be the same')
 
     bib_data = input_format(input_encoding, **parser_options).parse_file(from_filename)
+    if not preserve_case:
+        bib_data = bib_data.lower()
     output_format(output_encoding).write_file(bib_data, to_filename)

@@ -51,6 +51,11 @@ pybtex-convert converts bibliography database files between supported formats
                 type='load_plugin', plugin_group='pybtex.database.output',
             ),
             standard_option('keyless_entries'),
+            make_option(
+                '--preserve-case', dest='preserve_case',
+                action='store_true',
+                help='do not convert identifiers to lower case',
+            ),
         )),
         ('Encoding options', (
             standard_option('encoding'),
@@ -60,6 +65,7 @@ pybtex-convert converts bibliography database files between supported formats
     )
     option_defaults = {
         'keyless_entries': False,
+        'preserve_case': False,
     }
 
     def run(
