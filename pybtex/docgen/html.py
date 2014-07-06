@@ -113,15 +113,12 @@ class DownloadLinks(Directive):
         pybtex_xx = nodes.reference('', 'Pybtex %s' % version,
             name='Pybtex %s' % version,
             refuri=tarball_uri)
-        download = nodes.reference('', 'download', name='download',
-            refname='download')
         see_whats_new = nodes.reference('', "see what's new",
             name="see what's new", refuri='history.txt')
         content = (
             current_version_is,
             pybtex_xx,
             nodes.Text(' ('),
-            download, nodes.Text(', '),
             see_whats_new,
             nodes.Text(')')
         )
