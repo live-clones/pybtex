@@ -117,3 +117,10 @@ def test_plugin_suffix():
     plugin = pybtex.plugin.find_plugin(
         "pybtex.database.input", filename="test.bib")
     nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
+
+
+def test_plugin_class():
+    """If a plugin class is passed to find_plugin(), it shoud be returned back."""
+    plugin = pybtex.plugin.find_plugin("pybtex.database.input", 'bibtex')
+    plugin2 = pybtex.plugin.find_plugin("pybtex.database.input", plugin)
+    nose.tools.assert_equal(plugin, plugin2)

@@ -92,7 +92,15 @@ def find_plugin(plugin_group, name=None, filename=None):
     registered under *name*. If *filename* is specified, look at
     its suffix (i.e. extension) and return the :class:`Plugin`
     class registered for this suffix.
+
+    If *name* is not a string, but a plugin class, just return it back.
+    (Used to make functions like :function:`make_bibliography` accept already
+    loaded plugins as well as plugin names.
+
     """
+    if isinstance(name, type) and issubclass(name, Plugin):
+        return name
+
     if plugin_group not in _DEFAULT_PLUGINS:
         raise PluginGroupNotFound(plugin_group)
     if name:
