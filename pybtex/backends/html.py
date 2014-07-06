@@ -1,3 +1,5 @@
+# vim: fileencoding=utf-8
+
 # Copyright (c) 2008, 2009, 2010, 2011, 2012  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -35,6 +37,13 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 """
 
 class Backend(BaseBackend):
+    u"""
+    >>> from pybtex.richtext import Text, Tag, Symbol
+    >>> print Tag('emph', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
+    <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
+
+    """
+
     default_suffix = '.html'
     symbols = {
         'ndash': u'&ndash;',
@@ -45,7 +54,7 @@ class Backend(BaseBackend):
          'emph': u'em',
     }
     
-    def format_text(self, text):
+    def format_str(self, text):
         return escape(text)
 
     def format_tag(self, tag_name, text):
