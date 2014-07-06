@@ -180,28 +180,28 @@ class BibTeXEntryIterator(Scanner):
                 pass
 
     def parse_command(self):
-        self.current_command = None
         self.current_entry_key = None
         self.current_fields = []
         self.current_field_name = None
         self.current_value = []
 
         name = self.required([self.NAME])
-        self.current_command = name.value.lower()
+        command = name.value
         body_start = self.required([self.LPAREN, self.LBRACE])
         body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
 
-        if self.current_command == 'string':
+        command_lower = command.lower()
+        if command_lower == 'string':
             parse_body = self.parse_string_body
-            make_result = lambda: (self.current_command, (self.current_field_name, self.current_value))
-        elif self.current_command == 'preamble':
+            make_result = lambda: (command, (self.current_field_name, self.current_value))
+        elif command_lower == 'preamble':
             parse_body = self.parse_preamble_body
-            make_result = lambda: (self.current_command, (self.current_value,))
-        elif self.current_command == 'comment':
+            make_result = lambda: (command, (self.current_value,))
+        elif command_lower == 'comment':
             raise SkipEntry
         else:
             parse_body = self.parse_entry_body
-            make_result = lambda: (self.current_command, (self.current_entry_key, self.current_fields))
+            make_result = lambda: (command, (self.current_entry_key, self.current_fields))
         try:
             parse_body(body_end)
             self.required([body_end])
@@ -363,7 +363,7 @@ class Parser(BaseParser):
             macros=self.macros,
         )
         for entry in entry_iterator:
-            entry_type = entry[0]
+            entry_type = entry[0].lower()
             if entry_type == 'string':
                 pass
             elif entry_type == 'preamble':

@@ -248,7 +248,8 @@ class Entry(object):
             fields = {}
         if persons is None:
             persons = {}
-        self.type = type_
+        self.type = type_.lower()
+        self.original_type = type_
         self.fields = FieldDict(self, fields)
         self.persons = dict(persons)
         self.collection = collection
