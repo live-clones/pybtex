@@ -1,3 +1,4 @@
+# vim: fileencoding=utf-8
 # Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011, 2012  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -218,6 +219,37 @@ class BibliographyData(object):
         crossrefs = list(self.get_crossreferenced_citations(expanded_citations, min_crossrefs))
         return expanded_citations + crossrefs
 
+    def lower(self):
+        u"""
+        Return another BibliographyData with all identifiers converted to lowercase.
+
+        >>> data = BibliographyData([
+        ...     ('Obrazy', Entry('Book', [('Title', u'Obrazy z Rus')], [('Author', u'Karel Havlíček Borovský')])),
+        ...     ('Elegie', Entry('BOOK', [('TITLE', u'Tirolské elegie')], [('AUTHOR', u'Karel Havlíček Borovský')])),
+        ... ]).lower()
+        >>> data.entries.keys()
+        ['obrazy', 'elegie']
+        >>> for entry in data.entries.values():
+        ...     entry.key
+        ...     entry.persons.keys()
+        ...     entry.fields.keys()
+        'obrazy'
+        ['author']
+        ['title']
+        'elegie'
+        ['author']
+        ['title']
+
+        """
+
+        entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.iteritems())
+        return type(self)(
+            entries=entries_lower,
+            preamble=self._preamble,
+            wanted_entries=self.wanted_entries,
+            min_crossrefs=self.min_crossrefs,
+        )
+
 
 class FieldDict(OrderedCaseInsensitiveDict):
     def __init__(self, parent, *args, **kwargw):
@@ -235,6 +267,10 @@ class FieldDict(OrderedCaseInsensitiveDict):
                 return self.parent.get_crossref().fields[key]
             else:
                 raise KeyError(key)
+    
+    def lower(self):
+        lower_dict = super(FieldDict, self).lower()
+        return type(self)(self.parent, self.iteritems_lower())
 
 
 class Entry(object):
@@ -278,6 +314,15 @@ class Entry(object):
 
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
+
+    def lower(self):
+        return type(self)(
+            self.type,
+            fields=self.fields.lower(),
+            persons=self.persons.lower(),
+            collection=self.collection,
+        )
+
 
 
 class Person(object):
