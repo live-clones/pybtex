@@ -251,7 +251,7 @@ class Entry(object):
         self.type = type_.lower()
         self.original_type = type_
         self.fields = FieldDict(self, fields)
-        self.persons = dict(persons)
+        self.persons = OrderedCaseInsensitiveDict(persons)
         self.collection = collection
 
         # for BibTeX interpreter
