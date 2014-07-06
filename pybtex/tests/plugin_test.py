@@ -19,6 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import re
 import nose.tools
 
 import pybtex.database.input.bibtex
@@ -92,8 +93,9 @@ def test_bad_find_plugin():
     nose.tools.assert_raises(
         pybtex.plugin.PluginGroupNotFound,
         lambda: pybtex.plugin.find_plugin("pybtex.invalid.group", "__oops"))
-    nose.tools.assert_raises(
+    nose.tools.assert_raises_regexp(
         pybtex.plugin.PluginNotFound,
+        re.escape('plugin pybtex.style.formatting.__oops not found'),
         lambda: pybtex.plugin.find_plugin("pybtex.style.formatting", "__oops"))
     nose.tools.assert_raises(
         pybtex.plugin.PluginNotFound,
