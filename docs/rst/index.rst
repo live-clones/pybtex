@@ -57,7 +57,7 @@ To get the very latest Pybtex from the trunk:
     python setup.py develop
 
 And do not forget to run the tests (need `nose
-<http://somethingaboutorange.com/mrl/projects/nose/>`_):
+<http://nose.readthedocs.org/>`_):
 
 .. sourcecode:: bash
 
