@@ -122,8 +122,7 @@ class DownloadLinks(Directive):
             see_whats_new,
             nodes.Text(')')
         )
-        paragraph = nodes.paragraph('', '', *content)
-        link_block = nodes.block_quote('', paragraph, classes=["pull-quote"])
+        link_block = nodes.paragraph('', '', *content, classes=['pull-quote'])
         return [link_block]
 
 class NoopDirective(Directive):
