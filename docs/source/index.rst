@@ -2,7 +2,7 @@
 Pybtex!
 =======
 
-.. download-links::
+Current version is |download_url|_ (:doc:`see what's new <history>`)
 
 
 Pybtex is a drop-in replacement for BibTeX written in Python.
@@ -11,8 +11,19 @@ You can start using it right now by simply typing ``pybtex`` where you would hav
 Please note that the correct spelling is just *Pybtex*, without any camel-casing,
 which we considered too annoying to type.
 
-We also suggest reading `the Friendly Manual <manual.txt>`_, although it is
+We also suggest reading :doc:`the Friendly Manual <manual>`, although it is
 still incomplete.
+
+
+.. toctree::
+    :maxdepth: 2
+
+    history
+    features
+    manual
+    plugins
+    style_api
+
 
 Oh! Is it really BibTeX-compatible?
 ===================================
@@ -35,9 +46,9 @@ You probably should not if you ask. But still, Pybtex has Unicode inside.
 It supports BibTeXML and YAML. It can write HTML and plain text.
 It is extensible and fun to hack. It comes with a free database conversion utility.
 And designing new bibliography styles is no more a pain with Pybtex'
-brand new `pythonic style API <style_api.txt>`_.
+brand new :doc:`pythonic style API <style_api>`.
 
-You can see the `feature overview <features.txt>`_ for more details.
+You can see the :doc:`feature overview <features>` for more details.
 
 Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
