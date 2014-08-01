@@ -18,11 +18,11 @@ still incomplete.
 .. toctree::
     :maxdepth: 2
 
-    history
     features
     manual
     plugins
     style_api
+    history
 
 
 Oh! Is it really BibTeX-compatible?
