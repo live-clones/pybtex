@@ -7,6 +7,6 @@ Pybtex User's Guide
     :maxdepth: 2
 
     cmdline
-    features
+    formats
     style_api
     plugins

@@ -1,6 +1,6 @@
-======================
-The Features of Pybtex
-======================
+=================
+Supported formats
+=================
 
 Bibliography formats
 ====================

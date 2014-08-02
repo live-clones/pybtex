@@ -49,8 +49,6 @@ It is extensible and fun to hack. It comes with a free database conversion utili
 And designing new bibliography styles is no more a pain with Pybtex'
 brand new :doc:`pythonic style API <style_api>`.
 
-You can see the :doc:`feature overview <features>` for more details.
-
 Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
 .. _download:
