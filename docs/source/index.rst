@@ -18,10 +18,11 @@ still incomplete.
 .. toctree::
     :maxdepth: 2
 
-    features
     manual
-    plugins
-    style_api
+
+.. toctree::
+    :hidden:
+
     history
 
 
