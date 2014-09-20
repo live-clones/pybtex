@@ -36,6 +36,8 @@ class Backend(BaseBackend):
     More information:
     http://www.michelf.com/projects/php-markdown/extra/#def-list
 
+
+
     """
 
     def __init__(self, encoding=None, php_extra=False):
@@ -44,13 +46,38 @@ class Backend(BaseBackend):
 
     default_suffix = '.md'
     symbols = {
-        'ndash': u'-',# or 'ndash': u'–',
+        'ndash': u'&ndash',# or 'ndash': u'–',
         'newblock': u'\n',
         'nbsp': u' '
     }
     tags = {
          'emph': u'*',
     }
+
+    def format_str(self, str_):
+        """Format the given string *str_*.
+        Escapes special markdown control characters.
+        """
+        table = {
+          ord(u'\\'): u'\\\\',  # backslash
+          ord(u'`') : u'\\`',   # backtick
+          ord(u'*') : u'\\*',   # asterisk
+          ord(u'_') : u'\\_',   # underscore
+          ord(u'{') : u'\\{',   # curly braces
+          ord(u'}') : u'\\}',   # curly braces
+          ord(u'[') : u'\\[',   # square brackets
+          ord(u']') : u'\\]',   # square brackets
+          ord(u'(') : u'\\(',   # parentheses
+          ord(u')') : u'\\)',   # parentheses
+          ord(u'#') : u'\\#',   # hash mark
+          ord(u'+') : u'\\+',   # plus sign
+          ord(u'-') : u'\\-',   # minus sign (hyphen)
+          ord(u'.') : u'\\.',   # dot
+          ord(u'!') : u'\\!',   # exclamation mark
+          #ord(u'&') : u'&amp;', # ampersand
+          #ord(u'<') : u'&lt;',  # left angle bracket
+        }
+        return str_.translate(table)
 
     def format_tag(self, tag_name, text):
         tag = self.tags[tag_name]
@@ -67,9 +94,3 @@ class Backend(BaseBackend):
         else:
             self.output(u'[%s] ' % label)
             self.output(u'%s  \n' % text)
-
-
-
-
-
-
