@@ -45,7 +45,7 @@ class Backend(BaseBackend):
 
     default_suffix = '.md'
     symbols = {
-        'ndash': u'&ndash',# or 'ndash': u'–',
+        'ndash': u'&ndash;',# or 'ndash': u'–',
         'newblock': u'\n',
         'nbsp': u' '
     }
