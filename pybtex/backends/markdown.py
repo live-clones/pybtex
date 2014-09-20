@@ -22,7 +22,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.backends import BaseBackend
-import markdown
 
 
 class Backend(BaseBackend):
