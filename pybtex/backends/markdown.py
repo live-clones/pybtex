@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.backends import BaseBackend
+import markdown
 
 
 class Backend(BaseBackend):
@@ -35,8 +36,6 @@ class Backend(BaseBackend):
 
     More information:
     http://www.michelf.com/projects/php-markdown/extra/#def-list
-
-
 
     """
 
@@ -59,25 +58,27 @@ class Backend(BaseBackend):
         Escapes special markdown control characters.
         """
         table = {
-          ord(u'\\'): u'\\\\',  # backslash
-          ord(u'`') : u'\\`',   # backtick
-          ord(u'*') : u'\\*',   # asterisk
-          ord(u'_') : u'\\_',   # underscore
-          ord(u'{') : u'\\{',   # curly braces
-          ord(u'}') : u'\\}',   # curly braces
-          ord(u'[') : u'\\[',   # square brackets
-          ord(u']') : u'\\]',   # square brackets
-          ord(u'(') : u'\\(',   # parentheses
-          ord(u')') : u'\\)',   # parentheses
-          ord(u'#') : u'\\#',   # hash mark
-          ord(u'+') : u'\\+',   # plus sign
-          ord(u'-') : u'\\-',   # minus sign (hyphen)
-          ord(u'.') : u'\\.',   # dot
-          ord(u'!') : u'\\!',   # exclamation mark
-          #ord(u'&') : u'&amp;', # ampersand
-          #ord(u'<') : u'&lt;',  # left angle bracket
+          u'\\': u'\\\\',  # backslash
+          u'`' : u'\\`',   # backtick
+          u'*' : u'\\*',   # asterisk
+          u'_' : u'\\_',   # underscore
+          u'{' : u'\\{',   # curly braces
+          u'}' : u'\\}',   # curly braces
+          u'[' : u'\\[',   # square brackets
+          u']' : u'\\]',   # square brackets
+          u'(' : u'\\(',   # parentheses
+          u')' : u'\\)',   # parentheses
+          u'#' : u'\\#',   # hash mark
+          u'+' : u'\\+',   # plus sign
+          u'-' : u'\\-',   # minus sign (hyphen)
+          u'.' : u'\\.',   # dot
+          u'!' : u'\\!',   # exclamation mark
+          #u'&' : u'&amp;', # ampersand
+          #u'<' : u'&lt;',  # left angle bracket
         }
-        return str_.translate(table)
+        for i in table:
+            str_ = str_.replace(i, table[i])
+        return str_
 
     def format_tag(self, tag_name, text):
         tag = self.tags[tag_name]
