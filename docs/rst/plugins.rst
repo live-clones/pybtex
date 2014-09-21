@@ -41,7 +41,7 @@ For example, if you are writing a JSON input plugin for Pybtex, you entry points
 -------------------
 
 This entry point is for adding new markup types for Pythonic bibliography
-styles. Existing plugins are ``latex``, ``html``, and ``plaintext``.
+styles. Existing plugins are ``latex``, ``html``, ``markdown``, and ``plaintext``.
 
 
 ``pybtex.style.labels``
