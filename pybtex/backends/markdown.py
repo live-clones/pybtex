@@ -92,5 +92,5 @@ class Backend(BaseBackend):
             self.output(u'%s\n' % label)
             self.output(u':   %s\n\n' % text)
         else:
-            self.output(u'[%s] ' % label)
+            self.output(u'[%s]\n' % label)
             self.output(u'%s  \n' % text)
