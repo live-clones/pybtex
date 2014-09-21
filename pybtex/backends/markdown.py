@@ -49,7 +49,11 @@ class Backend(BaseBackend):
         'nbsp': u' '
     }
     tags = {
-         'emph': u'*',
+        'emph': u'*',    # emphasize text
+        'strong': u'**', # emphasize text even more
+        'textit': u'*',  # italicize text: be careful, textit is not semantic
+        'textbf': u'**', # embolden text: be careful, textbf is not semantic
+        'texttt': u'`',  # make text appear as code (typically typewriter text), a little hacky
     }
 
     def format_str(self, str_):

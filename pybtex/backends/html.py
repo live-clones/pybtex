@@ -51,16 +51,20 @@ class Backend(BaseBackend):
         'nbsp': u'&nbsp;'
     }
     tags = {
-         'emph': u'em',
+        'emph': u'em',       # emphasize text
+        'strong': u'strong', # emphasize text even more
+        'textit': u'i',      # italicize text: be careful, textit is not semantic
+        'textbf': u'b',      # embolden text: be careful, textbf is not semantic
+        'texttt': u'tt',     # typewrite text: be careful, texttt is not semantic
     }
-    
+
     def format_str(self, text):
         return escape(text)
 
     def format_tag(self, tag_name, text):
         tag = self.tags[tag_name]
         return ur'<%s>%s</%s>' % (tag, text, tag)
-    
+
     def format_href(self, url, text):
         return ur'<a href="%s">%s</a>' % (url, text)
 
