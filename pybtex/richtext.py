@@ -60,10 +60,12 @@ one~two~\emph{three}
 one<nbsp>two<nbsp>three
 """
 
+
 from copy import deepcopy
 from pybtex import textutils
 import string
 import warnings
+
 
 class Text(list):
     """
@@ -274,6 +276,7 @@ class Text(list):
         else:
             return self
 
+
 class Tag(Text):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
@@ -313,6 +316,7 @@ class Tag(Text):
         text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
 
+
 class HRef(Text):
     """A href is somethins like <href url="URL">some text</href> in HTML
     or \href{URL}{some text} in LaTeX.
@@ -339,6 +343,7 @@ class HRef(Text):
     def render(self, backend):
         text = super(HRef, self).render(backend)
         return backend.format_href(self.url, text)
+
 
 class Symbol(object):
     """A special symbol.
@@ -367,5 +372,6 @@ class Symbol(object):
 
     def render(self, backend):
         return backend.symbols[self.name]
+
 
 nbsp = Symbol('nbsp')
