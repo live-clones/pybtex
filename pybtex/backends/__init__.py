@@ -24,11 +24,21 @@ from pybtex.plugin import Plugin
 
 
 class BaseBackend(Plugin):
-    RenderType = basestring  #: the result of render and render_sequence
-    default_suffix = None  #: the default suffix for an output file
+    RenderType     = basestring  #: the result of render and render_sequence
+    default_suffix = None        #: the default suffix for an output file
 
     def __init__(self, encoding=None):
-        self.encoding = encoding
+        self.encoding       = encoding    #: the default encoding of the output string
+        self.symbols = {} #: the symbols to implement
+        #self.symbols[u'ndash']    = None
+        #self.symbols[u'newblock'] = None
+        #self.symbols[u'nbsp']     = None
+        self.tags = {} #: the tags to implement
+        #self.tags[u'em']     = None # emphasize text
+        #self.tags[u'strong'] = None # emphasize text even more
+        #self.tags[u'i']      = None # italicize text, not semantic
+        #self.tags[u'b']      = None # embolden text, not semantic
+        #self.tags[u'tt']     = None # typewrite text, not semantic
 
     def write_prologue(self):
         pass
@@ -65,7 +75,7 @@ class BaseBackend(Plugin):
         the strings in rendered_list.
         Override this method for non-string backends.
         """
-        return "".join(rendered_list)
+        return u"".join(rendered_list)
 
     def write_entry(self, label, key, text):
         raise NotImplementedError

@@ -23,19 +23,30 @@ from pybtex.backends import BaseBackend
 
 
 class Backend(BaseBackend):
-    default_suffix = '.bbl'
-    symbols = {
-        'ndash': u'--',
-        'newblock': u'\n\\newblock ',
-        'nbsp': u'~'
-    }
-    
+
+    default_suffix = u'.bbl'
+
+    def __init__(self, encoding=None):
+        super(Backend, self).__init__(encoding=encoding)
+        self.symbols[u'ndash']    = u'--'
+        self.symbols[u'newblock'] = u'\n\\newblock '
+        self.symbols[u'nbsp']     = u'~'
+        self.tags[u'em']     = u'emph'
+        #self.tags[u'strong'] = None
+        self.tags[u'i']      = u'textit'
+        self.tags[u'b']      = u'textbf'
+        self.tags[u'tt']     = u'texttt'
+
     def format_tag(self, tag_name, text):
-        return ur'\%s{%s}' % (tag_name, text)
+        tag = self.tags.get(tag_name)
+        if tag is None:
+            return ur'{%s}' % text
+        else:
+            return ur'\%s{%s}' % (tag, text)
 
     def format_href(self, url, text):
         return ur'\href{%s}{%s}' % (url, text)
-    
+
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
             self.output(self.formatted_bibliography.preamble + u'\n')

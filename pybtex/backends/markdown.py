@@ -38,23 +38,20 @@ class Backend(BaseBackend):
 
     """
 
+    default_suffix = u'.md'
+
     def __init__(self, encoding=None, php_extra=False):
         super(Backend, self).__init__(encoding=encoding)
+        self.symbols[u'ndash']    = u'&ndash;' # or 'ndash': u'–',
+        self.symbols[u'newblock'] = u'\n'
+        self.symbols[u'nbsp']     = u' '
+        self.tags[u'em']     = u'*'
+        self.tags[u'strong'] = u'**'
+        self.tags[u'i']      = u'*'
+        self.tags[u'b']      = u'**'
+        self.tags[u'tt']     = u'`' # make text appear as code (typically typewriter text), a little hacky
         self.php_extra = php_extra
 
-    default_suffix = '.md'
-    symbols = {
-        'ndash': u'&ndash;',# or 'ndash': u'–',
-        'newblock': u'\n',
-        'nbsp': u' '
-    }
-    tags = {
-        'emph': u'*',    # emphasize text
-        'strong': u'**', # emphasize text even more
-        'textit': u'*',  # italicize text: be careful, textit is not semantic
-        'textbf': u'**', # embolden text: be careful, textbf is not semantic
-        'texttt': u'`',  # make text appear as code (typically typewriter text), a little hacky
-    }
 
     def format_str(self, str_):
         """Format the given string *str_*.
@@ -84,8 +81,11 @@ class Backend(BaseBackend):
         return str_
 
     def format_tag(self, tag_name, text):
-        tag = self.tags[tag_name]
-        return ur'%s%s%s' % (tag, text, tag)
+        tag = self.tags.get(tag_name)
+        if tag is None:
+            return ur'%s' % text
+        else:
+            return ur'%s%s%s' % (tag, text, tag)
 
     def format_href(self, url, text):
         return ur'[%s](%s)' % (text, url)

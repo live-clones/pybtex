@@ -21,7 +21,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from xml.sax.saxutils import escape
 from pybtex.backends import BaseBackend
 import pybtex.io
 
@@ -39,30 +38,28 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 class Backend(BaseBackend):
     u"""
     >>> from pybtex.richtext import Text, Tag, Symbol
-    >>> print Tag('emph', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
+    >>> print Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
     <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
 
     """
 
-    default_suffix = '.html'
-    symbols = {
-        'ndash': u'&ndash;',
-        'newblock': u'\n',
-        'nbsp': u'&nbsp;'
-    }
-    tags = {
-        'emph': u'em',       # emphasize text
-        'strong': u'strong', # emphasize text even more
-        'textit': u'i',      # italicize text: be careful, textit is not semantic
-        'textbf': u'b',      # embolden text: be careful, textbf is not semantic
-        'texttt': u'tt',     # typewrite text: be careful, texttt is not semantic
-    }
+    default_suffix = u'.html'
+
+    def __init__(self, encoding=None):
+        super(Backend, self).__init__(encoding=encoding)
+        self.symbols[u'ndash']    = u'&ndash;'
+        self.symbols[u'newblock'] = u'\n'
+        self.symbols[u'nbsp']     = u'&nbsp;'
 
     def format_str(self, text):
-        return escape(text)
+        #encoding = self.encoding or pybtex.io.get_default_encoding()
+        #return text.encode(encoding, 'xmlcharrefreplace')
+        text = text.replace(u"&", u"&amp;")
+        text = text.replace(u">", u"&gt;")
+        text = text.replace(u"<", u"&lt;")
+        return text
 
-    def format_tag(self, tag_name, text):
-        tag = self.tags[tag_name]
+    def format_tag(self, tag, text):
         return ur'<%s>%s</%s>' % (tag, text, tag)
 
     def format_href(self, url, text):

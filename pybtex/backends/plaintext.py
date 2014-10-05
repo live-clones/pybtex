@@ -23,19 +23,21 @@ from pybtex.backends import BaseBackend
 
 
 class Backend(BaseBackend):
-    default_suffix = '.txt'
-    symbols = {
-        'ndash': u'-',
-        'newblock': u' ',
-        'nbsp': u' '
-    }
-    
+
+    default_suffix = u'.txt'
+
+    def __init__(self, encoding=None):
+        super(Backend, self).__init__(encoding=encoding)
+        self.symbols[u'ndash']    = u'-'
+        self.symbols[u'newblock'] = u' '
+        self.symbols[u'nbsp']     = u' '
+
     def format_tag(self, tag_name, text):
         return text
 
     def format_href(self, url, text):
         return text
-    
+
     def write_entry(self, key, label, text):
         self.output(u"[%s] " % label)
         self.output(text)
