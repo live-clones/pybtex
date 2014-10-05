@@ -68,7 +68,36 @@ from pybtex import textutils
 from pybtex.utils import deprecated
 
 
-class Text(list):
+class BaseText(object):
+    def __getitem__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __reversed__(self):
+        raise NotImplementedError
+
+    def render(self, backend):
+        raise NotImplementedError
+
+    def upper(self):
+        raise NotImplementedError
+
+    def lower(self):
+        raise NotImplementedError
+
+    def capfirst(self):
+        raise NotImplementedError
+
+    def add_period(self):
+        raise NotImplementedError
+
+
+class Text(BaseText):
     """
     Rich text is basically a list of:
 
@@ -81,12 +110,12 @@ class Text(list):
 
     >>> Text()
     []
-    >>> Text('a', '', 'c')
-    ['a', 'c']
-    >>> Text('a', Text(), 'c')
-    ['a', 'c']
-    >>> Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd')
-    ['a', ['b', 'c'], ['x'], Symbol('nbsp'), 'd']
+    >>> print unicode(Text('a', '', 'c'))
+    ac
+    >>> print unicode(Text('a', Text(), 'c'))
+    ac
+    >>> print unicode(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+    abcx<nbsp>d
     >>> Text({}) # doctest: +ELLIPSIS
     Traceback (most recent call last):
         ...
@@ -101,7 +130,13 @@ class Text(list):
                    for part in parts):
             raise TypeError(
                 "parts must be str, Text or Symbol")
-        list.__init__(self, [part for part in parts if part])
+        self._parts = [part for part in parts if part]
+
+    def __iter__(self):
+        return iter(self._parts)
+
+    def __repr__(self):
+        return repr(self._parts)
 
     def __len__(self):
         """Return the number of characters in this Text."""
@@ -120,9 +155,7 @@ class Text(list):
         a
         """
 
-        if isinstance(other, basestring):
-            other = [other]
-        return self.from_list(super(Text, self).__add__(other))
+        return Text(self, other)
 
     def from_list(self, lst):
         return Text(*lst)
@@ -151,6 +184,7 @@ class Text(list):
         assert all(isinstance(item, backend.RenderType)
                    for item in rendered_list)
         return backend.render_sequence(rendered_list)
+
 
     def enumerate(self):
         for n, child in enumerate(self):
@@ -197,7 +231,7 @@ class Text(list):
         except StopIteration:
             pass
         else:
-            return l[i]
+            return l._parts[i]
 
     def get_end(self):
         try:
@@ -205,7 +239,7 @@ class Text(list):
         except StopIteration:
             pass
         else:
-            return l[i]
+            return l._parts[i]
 
     def join(self, parts):
         """Join a list using this text (like string.join)
@@ -218,13 +252,13 @@ class Text(list):
         a<nbsp>b<nbsp>c
         """
 
-        joined = Text()
         if not parts:
-            return joined
+            return Text()
+        joined = []
         for part in parts[:-1]:
             joined.extend([part, deepcopy(self)])
         joined.append(parts[-1])
-        return joined
+        return Text(*joined)
 
     @deprecated('0.19', 'use __unicode__() instead')
     def plaintext(self):
@@ -236,8 +270,11 @@ class Text(list):
     def capfirst(self):
         """Capitalize the first letter of the text.
 
-        >>> Text(Text(), Text('mary ', 'had ', 'a little lamb')).capfirst()
-        [['Mary ', 'had ', 'a little lamb']]
+        >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
+        >>> print unicode(text)
+        mary had a little lamb
+        >>> print unicode(text.capfirst())
+        Mary had a little lamb
 
         """
         return self.apply_to_start(textutils.capfirst)
@@ -277,7 +314,7 @@ class Text(list):
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
-            return self + period
+            return self.from_list(self._parts + [period])
         else:
             return self
 
@@ -312,9 +349,8 @@ class Tag(Text):
         if not isinstance(name, (basestring, Text)):
             raise TypeError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
-        name = unicode(name)
-        self.name = self.__check_name(name)
-        Text.__init__(self, *args)
+        self.name = self.__check_name(unicode(name))
+        super(Tag, self).__init__(*args)
 
     def render(self, backend):
         text = super(Tag, self).render(backend)
@@ -347,7 +383,7 @@ class HRef(Text):
         return backend.format_href(self.url, text)
 
 
-class Symbol(object):
+class Symbol(BaseText):
     """A special symbol.
 
     Examples of special symbols are non-breaking spaces and dashes.
