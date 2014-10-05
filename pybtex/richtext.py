@@ -68,6 +68,16 @@ from pybtex import textutils
 from pybtex.utils import deprecated
 
 
+def ensure_text(value):
+    if isinstance(value, basestring):
+        return String(value)
+    elif isinstance(value, BaseText):
+        return value
+    else:
+        bad_type = type(value).__name__
+        raise TypeError('parts must be strings or BaseText instances, not ' + bad_type)
+
+
 class BaseText(object):
     def __getitem__(self):
         raise NotImplementedError
@@ -95,6 +105,31 @@ class BaseText(object):
 
     def add_period(self):
         raise NotImplementedError
+
+
+class String(unicode, BaseText):
+    def capfirst(self):
+        """
+        Capitalize the first letter.
+
+        >>> print String('').capfirst()
+        <BLANKLINE>
+        >>> print String('november').capfirst()
+        November
+        """
+
+        try:
+            first_char = self[0]
+        except IndexError:
+            return self
+        else:
+            return first_char.upper() + self[1:]
+
+    def add_period(self):
+        return self + '.'
+
+    def render(self, backend):
+        return backend.format_str(self)
 
 
 class Text(BaseText):
@@ -125,11 +160,7 @@ class Text(BaseText):
 
     def __init__(self, *parts):
         """Create a Text consisting of one or more parts."""
-
-        if not all(isinstance(part, (basestring, Text, Symbol))
-                   for part in parts):
-            raise TypeError(
-                "parts must be str, Text or Symbol")
+        parts = [ensure_text(part) for part in parts]
         self._parts = [part for part in parts if part]
 
     def __iter__(self):
@@ -174,17 +205,10 @@ class Text(BaseText):
     def render(self, backend):
         """Return backend-dependent textual representation of this Text."""
 
-        rendered_list = []
-        for item in self:
-            if isinstance(item, basestring):
-                rendered_list.append(backend.format_str(item))
-            else:
-                assert isinstance(item, (Text, Symbol))
-                rendered_list.append(item.render(backend))
+        rendered_list = [item.render(backend) for item in self]
         assert all(isinstance(item, backend.RenderType)
                    for item in rendered_list)
         return backend.render_sequence(rendered_list)
-
 
     def enumerate(self):
         for n, child in enumerate(self):
