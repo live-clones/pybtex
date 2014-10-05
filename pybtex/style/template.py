@@ -36,9 +36,9 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 >>> book_format = sentence(sep=', ') [
 ...     field('title'), field('year'), optional [field('sdf')]
 ... ]
->>> print book_format.format_data(e).plaintext()
+>>> print unicode(book_format.format_data(e))
 The Book, 2000.
->>> print words ['one', 'two', words ['three', 'four']].format_data(e).plaintext()
+>>> print unicode(words ['one', 'two', words ['three', 'four']].format_data(e))
 one two three four
 """
 
@@ -163,13 +163,13 @@ def node(f):
 @node
 def join(children, data, sep='', sep2=None, last_sep=None):
     """Join text fragments together.
-    >>> print join.format().plaintext()
+    >>> print unicode(join.format())
     <BLANKLINE>
-    >>> print join ['a', 'b', 'c', 'd', 'e'].format().plaintext()
+    >>> print unicode(join ['a', 'b', 'c', 'd', 'e'].format())
     abcde
-    >>> print join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format().plaintext()
+    >>> print unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format())
     Tom and Jerry
-    >>> print join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format().plaintext()
+    >>> print unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format())
     Billy, Willy, and Dilly
     """
 
@@ -198,9 +198,9 @@ def together(children, data, last_tie=True):
     """
     Try to keep words together, like BibTeX does.
 
-    >>> print together ['very', 'long', 'road'].format().plaintext()
+    >>> print unicode(together ['very', 'long', 'road'].format())
     very long<nbsp>road
-    >>> print together ['a', 'very', 'long', 'road'].format().plaintext()
+    >>> print unicode(together ['a', 'very', 'long', 'road'].format())
     a<nbsp>very long<nbsp>road
     """
     from pybtex.bibtex.names import tie_or_space
@@ -222,11 +222,11 @@ def together(children, data, last_tie=True):
 def sentence(children, data, capfirst=True, add_period=True, sep=', '):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
-    >>> print sentence.format().plaintext()
+    >>> print unicode(sentence.format())
     <BLANKLINE>
-    >>> print sentence(sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format().plaintext()
+    >>> print unicode(sentence(sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format())
     Mary had a little lamb.
-    >>> print sentence(capfirst=False, add_period=False) ['uno', 'dos', 'tres'].format().plaintext()
+    >>> print unicode(sentence(capfirst=False, add_period=False) ['uno', 'dos', 'tres'].format())
     uno, dos, tres
     """
 

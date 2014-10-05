@@ -33,17 +33,17 @@ class NameStyle(BaseNameStyle):
         >>> from pybtex.database import Person
         >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
         >>> plain = NameStyle().format
-        >>> print plain(name).format().plaintext()
+        >>> print unicode(plain(name).format())
         Charles Louis Xavier<nbsp>Joseph de<nbsp>la Vall{\'e}e<nbsp>Poussin
-        >>> print plain(name, abbr=True).format().plaintext()
+        >>> print unicode(plain(name, abbr=True).format())
         C.<nbsp>L. X.<nbsp>J. de<nbsp>la Vall{\'e}e<nbsp>Poussin
 
         >>> name = Person(first='First', last='Last', middle='Middle')
-        >>> print plain(name).format().plaintext()
+        >>> print unicode(plain(name).format())
         First<nbsp>Middle Last
-        >>> print plain(name, abbr=True).format().plaintext()
+        >>> print unicode(plain(name, abbr=True).format())
         F.<nbsp>M. Last
-        >>> print plain(Person('de Last, Jr., First Middle')).format().plaintext()
+        >>> print unicode(plain(Person('de Last, Jr., First Middle')).format())
         First<nbsp>Middle de<nbsp>Last, Jr.
         """
         return join [

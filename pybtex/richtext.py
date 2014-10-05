@@ -28,43 +28,44 @@ Usage:
 >>> t = Text('this ', 'is a ', Tag('em', 'very'), Text(' rich', ' text'))
 >>> print t.render(backend)
 this is a \emph{very} rich text
->>> print t.plaintext()
+>>> print unicode(t)
 this is a very rich text
 >>> t = t.capfirst().add_period()
 >>> print t.render(backend)
 This is a \emph{very} rich text.
->>> print t.plaintext()
+>>> print unicode(t)
 This is a very rich text.
 >>> print Symbol('ndash').render(backend)
 --
 >>> t = Text('Some ', Tag('em', Text('nested ', Tag('tt', 'Text', Text(' objects')))), '.')
 >>> print t.render(backend)
 Some \emph{nested \texttt{Text objects}}.
->>> print t.plaintext()
+>>> print unicode(t)
 Some nested Text objects.
 >>> t = t.map(lambda string: string.upper())
 >>> print t.render(backend)
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
->>> print t.plaintext()
+>>> print unicode(t)
 SOME NESTED TEXT OBJECTS.
 
 >>> t = Text(', ').join(['one', 'two', Tag('em', 'three')])
 >>> print t.render(backend)
 one, two, \emph{three}
->>> print t.plaintext()
+>>> print unicode(t)
 one, two, three
 >>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('em', 'three')])
 >>> print t.render(backend)
 one~two~\emph{three}
->>> print t.plaintext()
+>>> print unicode(t)
 one<nbsp>two<nbsp>three
 """
 
 
-from copy import deepcopy
-from pybtex import textutils
 import string
 import warnings
+from copy import deepcopy
+from pybtex import textutils
+from pybtex.utils import deprecated
 
 
 class Text(list):
@@ -111,11 +112,11 @@ class Text(list):
         Concatenate this Text with another Text or string.
 
         >>> t = Text('a')
-        >>> print (t + 'b').plaintext()
+        >>> print unicode(t + 'b')
         ab
-        >>> print (t + t).plaintext()
+        >>> print unicode(t + t)
         aa
-        >>> print t.plaintext()
+        >>> print unicode(t)
         a
         """
 
@@ -209,11 +210,11 @@ class Text(list):
     def join(self, parts):
         """Join a list using this text (like string.join)
 
-        >>> print Text(' ').join([]).plaintext()
+        >>> print unicode(Text(' ').join([]))
         <BLANKLINE>
-        >>> print Text(' ').join(['a', 'b', 'c']).plaintext()
+        >>> print unicode(Text(' ').join(['a', 'b', 'c']))
         a b c
-        >>> print Text(nbsp).join(['a', 'b', 'c']).plaintext()
+        >>> print unicode(Text(nbsp).join(['a', 'b', 'c']))
         a<nbsp>b<nbsp>c
         """
 
@@ -225,8 +226,12 @@ class Text(list):
         joined.append(parts[-1])
         return joined
 
+    @deprecated('0.19', 'use __unicode__() instead')
     def plaintext(self):
-        return ''.join(unicode(l[i]) for l, i in self.enumerate())
+        return unicode(self)
+
+    def __unicode__(self):
+        return ''.join(unicode(part) for part in self)
 
     def capfirst(self):
         """Capitalize the first letter of the text.
@@ -244,7 +249,7 @@ class Text(list):
         >>> html = pybtex.backends.html.Backend()
 
         >>> text = Text("That's all, folks")
-        >>> print text.add_period().plaintext()
+        >>> print unicode(text.add_period())
         That's all, folks.
 
         >>> text = Tag('em', Text("That's all, folks"))
@@ -307,8 +312,7 @@ class Tag(Text):
         if not isinstance(name, (basestring, Text)):
             raise TypeError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
-        if isinstance(name, Text):
-            name = name.plaintext()
+        name = unicode(name)
         self.name = self.__check_name(name)
         Text.__init__(self, *args)
 
@@ -335,9 +339,7 @@ class HRef(Text):
         if not isinstance(url, (basestring, Text)):
             raise TypeError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
-        if isinstance(url, Text):
-            url = url.plaintext()
-        self.url = url
+        self.url = unicode(url)
         Text.__init__(self, *args)
 
     def render(self, backend):
