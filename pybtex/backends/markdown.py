@@ -39,17 +39,21 @@ class Backend(BaseBackend):
     """
 
     default_suffix = u'.md'
+    symbols = {
+        'ndash': u'&ndash;',# or 'ndash': u'–',
+        'newblock': u'\n',
+        'nbsp': u' '
+    }
+    tags = {
+        'em'    : u'*',    # emphasize text
+        'strong': u'**', # emphasize text even more
+        'i'     : u'*',  # italicize text: be careful, textit is not semantic
+        'b'     : u'**', # embolden text: be careful, textbf is not semantic
+        'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
+    }
 
     def __init__(self, encoding=None, php_extra=False):
         super(Backend, self).__init__(encoding=encoding)
-        self.symbols[u'ndash']    = u'&ndash;' # or 'ndash': u'–',
-        self.symbols[u'newblock'] = u'\n'
-        self.symbols[u'nbsp']     = u' '
-        self.tags[u'em']     = u'*'
-        self.tags[u'strong'] = u'**'
-        self.tags[u'i']      = u'*'
-        self.tags[u'b']      = u'**'
-        self.tags[u'tt']     = u'`' # make text appear as code (typically typewriter text), a little hacky
         self.php_extra = php_extra
 
 
@@ -81,7 +85,7 @@ class Backend(BaseBackend):
         return str_
 
     def format_tag(self, tag_name, text):
-        tag = self.tags.get(tag_name)
+        tag = self.__class__.tags.get(tag_name)
         if tag is None:
             return ur'%s' % text
         else:

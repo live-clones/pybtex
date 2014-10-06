@@ -24,21 +24,26 @@ from pybtex.plugin import Plugin
 
 
 class BaseBackend(Plugin):
-    RenderType     = basestring  #: the result of render and render_sequence
-    default_suffix = None        #: the default suffix for an output file
+    """This is the base class for the backends. We encourage
+    you to implement as many of the symbols and tags as
+    possible when you create a new plugin.
+
+    symbols[u'ndash']    : Used to separate pages
+    symbols[u'newblock'] : Used to separate entries in the bibliography
+    symbols[u'nbsp']     : A non-breakable space
+
+    tags[u'em']          : emphasize text
+    tags[u'strong']      : emphasize text even more
+    tags[u'i']           : italicize text, not semantic
+    tags[u'b']           : embolden text, not semantic
+    tags[u'tt']          : typewrite text, not semantic
+    """
+
+    RenderType = basestring  #: the result of render and render_sequence
+    default_suffix = None  #: the default suffix for an output file
 
     def __init__(self, encoding=None):
-        self.encoding       = encoding    #: the default encoding of the output string
-        self.symbols = {} #: the symbols to implement
-        #self.symbols[u'ndash']    = None
-        #self.symbols[u'newblock'] = None
-        #self.symbols[u'nbsp']     = None
-        self.tags = {} #: the tags to implement
-        #self.tags[u'em']     = None # emphasize text
-        #self.tags[u'strong'] = None # emphasize text even more
-        #self.tags[u'i']      = None # italicize text, not semantic
-        #self.tags[u'b']      = None # embolden text, not semantic
-        #self.tags[u'tt']     = None # typewrite text, not semantic
+        self.encoding = encoding
 
     def write_prologue(self):
         pass
@@ -75,7 +80,7 @@ class BaseBackend(Plugin):
         the strings in rendered_list.
         Override this method for non-string backends.
         """
-        return u"".join(rendered_list)
+        return "".join(rendered_list)
 
     def write_entry(self, label, key, text):
         raise NotImplementedError

@@ -21,6 +21,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from xml.sax.saxutils import escape
 from pybtex.backends import BaseBackend
 import pybtex.io
 
@@ -43,21 +44,15 @@ class Backend(BaseBackend):
 
     """
 
-    default_suffix = u'.html'
-
-    def __init__(self, encoding=None):
-        super(Backend, self).__init__(encoding=encoding)
-        self.symbols[u'ndash']    = u'&ndash;'
-        self.symbols[u'newblock'] = u'\n'
-        self.symbols[u'nbsp']     = u'&nbsp;'
+    default_suffix = '.html'
+    symbols = {
+        'ndash': u'&ndash;',
+        'newblock': u'\n',
+        'nbsp': u'&nbsp;'
+    }
 
     def format_str(self, text):
-        #encoding = self.encoding or pybtex.io.get_default_encoding()
-        #return text.encode(encoding, 'xmlcharrefreplace')
-        text = text.replace(u"&", u"&amp;")
-        text = text.replace(u">", u"&gt;")
-        text = text.replace(u"<", u"&lt;")
-        return text
+        return escape(text)
 
     def format_tag(self, tag, text):
         return ur'<%s>%s</%s>' % (tag, text, tag)

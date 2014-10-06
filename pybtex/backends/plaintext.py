@@ -25,12 +25,11 @@ from pybtex.backends import BaseBackend
 class Backend(BaseBackend):
 
     default_suffix = u'.txt'
-
-    def __init__(self, encoding=None):
-        super(Backend, self).__init__(encoding=encoding)
-        self.symbols[u'ndash']    = u'-'
-        self.symbols[u'newblock'] = u' '
-        self.symbols[u'nbsp']     = u' '
+    symbols = {
+        'ndash': u'-',
+        'newblock': u' ',
+        'nbsp': u' '
+    }
 
     def format_tag(self, tag_name, text):
         return text

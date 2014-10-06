@@ -23,22 +23,22 @@ from pybtex.backends import BaseBackend
 
 
 class Backend(BaseBackend):
-
-    default_suffix = u'.bbl'
-
-    def __init__(self, encoding=None):
-        super(Backend, self).__init__(encoding=encoding)
-        self.symbols[u'ndash']    = u'--'
-        self.symbols[u'newblock'] = u'\n\\newblock '
-        self.symbols[u'nbsp']     = u'~'
-        self.tags[u'em']     = u'emph'
-        #self.tags[u'strong'] = None
-        self.tags[u'i']      = u'textit'
-        self.tags[u'b']      = u'textbf'
-        self.tags[u'tt']     = u'texttt'
+    default_suffix = '.bbl'
+    symbols = {
+        'ndash': u'--',
+        'newblock': u'\n\\newblock ',
+        'nbsp': u'~'
+    }
+    tags = {
+        u'em'     : u'emph',
+        u'strong' : None,
+        u'i'      : u'textit',
+        u'b'      : u'textbf',
+        u'tt'     : u'texttt'
+    }
 
     def format_tag(self, tag_name, text):
-        tag = self.tags.get(tag_name)
+        tag = self.__class__.tags.get(tag_name)
         if tag is None:
             return ur'{%s}' % text
         else:

@@ -224,7 +224,7 @@ class Text(list):
         return joined
 
     def plaintext(self):
-        return u''.join(unicode(l[i]) for l, i in self.enumerate())
+        return ''.join(unicode(l[i]) for l, i in self.enumerate())
 
     def capfirst(self):
         """Capitalize the first letter of the text.
@@ -360,7 +360,7 @@ class Symbol(object):
         return 1
 
     def __repr__(self):
-        return u"Symbol('%s')" % self.name
+        return "Symbol('%s')" % self.name
 
     def __unicode__(self):
         return u'<%s>' % self.name
