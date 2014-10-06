@@ -38,7 +38,11 @@ class Backend(BaseBackend):
 
     """
 
-    default_suffix = u'.md'
+    def __init__(self, encoding=None, php_extra=False):
+        super(Backend, self).__init__(encoding=encoding)
+        self.php_extra = php_extra
+
+    default_suffix = '.md'
     symbols = {
         'ndash': u'&ndash;',# or 'ndash': u'–',
         'newblock': u'\n',
@@ -51,11 +55,6 @@ class Backend(BaseBackend):
         'b'     : u'**', # embolden text: be careful, textbf is not semantic
         'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
     }
-
-    def __init__(self, encoding=None, php_extra=False):
-        super(Backend, self).__init__(encoding=encoding)
-        self.php_extra = php_extra
-
 
     def format_str(self, str_):
         """Format the given string *str_*.
@@ -100,5 +99,5 @@ class Backend(BaseBackend):
             self.output(u'%s\n' % label)
             self.output(u':   %s\n\n' % text)
         else:
-            self.output(u'[%s]\n' % label)
+            self.output(u'[%s] ' % label)
             self.output(u'%s  \n' % text)

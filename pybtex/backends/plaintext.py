@@ -24,7 +24,7 @@ from pybtex.backends import BaseBackend
 
 class Backend(BaseBackend):
 
-    default_suffix = u'.txt'
+    default_suffix = '.txt'
     symbols = {
         'ndash': u'-',
         'newblock': u' ',
