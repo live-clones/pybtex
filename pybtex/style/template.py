@@ -281,8 +281,8 @@ def optional(children, data):
 
     >>> from pybtex.database import Entry
     >>> template = optional [field('volume'), optional['(', field('number'), ')']]
-    >>> print template.format_data(Entry('article'))
-    []
+    >>> template.format_data(Entry('article'))
+    Text()
 
     """
 

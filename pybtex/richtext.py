@@ -144,7 +144,7 @@ class Text(BaseText):
     being rendered to to HTML or LaTeX markup or whatever in the end.
 
     >>> Text()
-    []
+    Text()
     >>> print unicode(Text('a', '', 'c'))
     ac
     >>> print unicode(Text('a', Text(), 'c'))
@@ -168,7 +168,7 @@ class Text(BaseText):
         return iter(self._parts)
 
     def __repr__(self):
-        return repr(self._parts)
+        return 'Text({})'.format(', '.join(repr(part) for part in self._parts))
 
     def __len__(self):
         """Return the number of characters in this Text."""
@@ -497,6 +497,10 @@ class Tag(Text):
         self.name = self.__check_name(unicode(name))
         super(Tag, self).__init__(*args)
 
+    def __repr__(self):
+        repr_parts = ', '.join(repr(part) for part in self._parts)
+        return 'Tag({}, {})'.format(repr(self.name), repr_parts)
+
     def render(self, backend):
         text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
@@ -548,7 +552,7 @@ class Symbol(BaseText):
         return 1
 
     def __repr__(self):
-        return "Symbol('%s')" % self.name
+        return "Symbol(%s)" % repr(self.name)
 
     def __unicode__(self):
         return u'<%s>' % self.name
