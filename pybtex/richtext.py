@@ -162,6 +162,7 @@ class Text(BaseText):
         """Create a Text consisting of one or more parts."""
         parts = [ensure_text(part) for part in parts]
         self._parts = [part for part in parts if part]
+        self.length = sum(len(part) for part in self._parts)
 
     def __iter__(self):
         return iter(self._parts)
@@ -171,7 +172,7 @@ class Text(BaseText):
 
     def __len__(self):
         """Return the number of characters in this Text."""
-        return sum(len(part) for part in self)
+        return self.length
 
     def __add__(self, other):
         """
