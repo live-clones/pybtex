@@ -475,6 +475,14 @@ class Tag(Text):
     \emph{emphasized text}
     >>> print emph.render(html.Backend())
     <em>emphasized text</em>
+
+    >>> t = Tag(u'emph', u'123', Tag(u'emph', u'456', Text(u'78'), u'9'), u'0')
+    >>> print t[:2].render(html.Backend())
+    <em>12</em>
+    >>> print t[2:4].render(html.Backend())
+    <em>3<em>4</em></em>
+    >>> print t[4:].render(html.Backend())
+    <em><em>56789</em>0</em>
     """
 
     def from_list(self, lst):
