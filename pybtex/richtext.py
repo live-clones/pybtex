@@ -189,6 +189,126 @@ class Text(BaseText):
 
         return Text(self, other)
 
+    def __getitem__(self, key):
+        """
+        >>> t = Text('123', Text('456', Text('78'), '9'), '0')
+        >>> print unicode(t)
+        1234567890
+        >>> print unicode(t[:0])
+        <BLANKLINE>
+        >>> print unicode(t[:1])
+        1
+        >>> print unicode(t[:3])
+        123
+        >>> print unicode(t[:5])
+        12345
+        >>> print unicode(t[:7])
+        1234567
+        >>> print unicode(t[:10])
+        1234567890
+        >>> print unicode(t[:100])
+        1234567890
+
+        >>> print unicode(t[:-100])
+        <BLANKLINE>
+        >>> print unicode(t[:-10])
+        <BLANKLINE>
+        >>> print unicode(t[:-9])
+        1
+        >>> print unicode(t[:-7])
+        123
+        >>> print unicode(t[:-5])
+        12345
+        >>> print unicode(t[:-3])
+        1234567
+
+        >>> print unicode(t[-100:])
+        1234567890
+        >>> print unicode(t[-10:])
+        1234567890
+        >>> print unicode(t[-9:])
+        234567890
+        >>> print unicode(t[-7:])
+        4567890
+        >>> print unicode(t[-5:])
+        67890
+        >>> print unicode(t[-3:])
+        890
+
+        >>> print unicode(t[1:])
+        234567890
+        >>> print unicode(t[3:])
+        4567890
+        >>> print unicode(t[5:])
+        67890
+        >>> print unicode(t[7:])
+        890
+        >>> print unicode(t[10:])
+        <BLANKLINE>
+        >>> print unicode(t[100:])
+        <BLANKLINE>
+
+        >>> print unicode(t[0:10])
+        1234567890
+        >>> print unicode(t[0:100])
+        1234567890
+        >>> print unicode(t[2:3])
+        3
+        >>> print unicode(t[2:4])
+        34
+        >>> print unicode(t[3:7])
+        4567
+        >>> print unicode(t[4:7])
+        567
+        >>> print unicode(t[4:7])
+        567
+        >>> print unicode(t[7:9])
+        89
+        >>> print unicode(t[100:200])
+        <BLANKLINE>
+
+        """
+
+        if isinstance(key, long):
+            start = key
+            end = key + 1
+        elif isinstance(key, slice):
+            start, end, step = key.indices(len(self))
+            if step != 1:
+                raise NotImplementedError
+        else:
+            raise ValueError(key)
+
+        if start < 0:
+            start = len(self) + start
+        if end < 0:
+            end = len(self) + end
+        return self._slice_end(len(self) - start)._slice_beginning(end - start)
+
+    def _slice_beginning(self, slice_length):
+        parts = []
+        length = 0
+        for part in self._parts:
+            if length + len(part) > slice_length:
+                parts.append(part[:slice_length - length])
+                break
+            else:
+                parts.append(part)
+                length += len(part)
+        return self.from_list(parts)
+
+    def _slice_end(self, slice_length):
+        parts = []
+        length = 0
+        for part in reversed(self._parts):
+            if length + len(part) > slice_length:
+                parts.append(part[len(part) -(slice_length - length):])
+                break
+            else:
+                parts.append(part)
+                length += len(part)
+        return self.from_list(reversed(parts))
+
     def from_list(self, lst):
         return Text(*lst)
 
