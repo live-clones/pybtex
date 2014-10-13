@@ -49,7 +49,11 @@ class Backend(BaseBackend):
         'nbsp': u' '
     }
     tags = {
-         'emph': u'*',
+        'em'    : u'*',  # emphasize text
+        'strong': u'**', # emphasize text even more
+        'i'     : u'*',  # italicize text: be careful, i is not semantic
+        'b'     : u'**', # embolden text: be careful, b is not semantic
+        'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
     }
 
     def format_str(self, str_):
@@ -80,8 +84,11 @@ class Backend(BaseBackend):
         return str_
 
     def format_tag(self, tag_name, text):
-        tag = self.tags[tag_name]
-        return ur'%s%s%s' % (tag, text, tag)
+        tag = self.__class__.tags.get(tag_name)
+        if tag is None:
+            return ur'%s' % text
+        else:
+            return ur'%s%s%s' % (tag, text, tag)
 
     def format_href(self, url, text):
         return ur'[%s](%s)' % (text, url)

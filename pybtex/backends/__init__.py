@@ -24,6 +24,21 @@ from pybtex.plugin import Plugin
 
 
 class BaseBackend(Plugin):
+    """This is the base class for the backends. We encourage
+    you to implement as many of the symbols and tags as
+    possible when you create a new plugin.
+
+    symbols[u'ndash']    : Used to separate pages
+    symbols[u'newblock'] : Used to separate entries in the bibliography
+    symbols[u'nbsp']     : A non-breakable space
+
+    tags[u'em']          : emphasize text
+    tags[u'strong']      : emphasize text even more
+    tags[u'i']           : italicize text, not semantic
+    tags[u'b']           : embolden text, not semantic
+    tags[u'tt']          : typewrite text, not semantic
+    """
+
     RenderType = basestring  #: the result of render and render_sequence
     default_suffix = None  #: the default suffix for an output file
 
