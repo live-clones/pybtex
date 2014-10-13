@@ -49,10 +49,10 @@ class Backend(BaseBackend):
         'nbsp': u' '
     }
     tags = {
-        'em'    : u'*',    # emphasize text
+        'em'    : u'*',  # emphasize text
         'strong': u'**', # emphasize text even more
-        'i'     : u'*',  # italicize text: be careful, textit is not semantic
-        'b'     : u'**', # embolden text: be careful, textbf is not semantic
+        'i'     : u'*',  # italicize text: be careful, i is not semantic
+        'b'     : u'**', # embolden text: be careful, b is not semantic
         'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
     }
 
