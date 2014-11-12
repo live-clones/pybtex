@@ -93,7 +93,7 @@ class AuxData(object):
             self.data = bibdata.split(',')
 
     def handle_input(self, filename):
-        self.parse_file(filename)
+        self.parse_file(filename, toplevel=False)
 
     def handle_command(self, command, value):
         action = getattr(self, 'handle_%s' % command.lstrip('@'))
@@ -107,7 +107,7 @@ class AuxData(object):
             command, value = match.groups()
             self.handle_command(command, value)
 
-    def parse_file(self, filename):
+    def parse_file(self, filename, toplevel=True):
         previous_context = self.context
         self.context = AuxDataContext(filename)
 
@@ -123,9 +123,9 @@ class AuxData(object):
 
         # these errors are fatal - always raise an exception instead of using
         # erorrs.report_error()
-        if self.data is None:
+        if toplevel and self.data is None:
             raise AuxDataError(r'found no \bibdata command', self.context)
-        if self.style is None:
+        if toplevel and self.style is None:
             raise AuxDataError(r'found no \bibstyle command', self.context)
 
 
