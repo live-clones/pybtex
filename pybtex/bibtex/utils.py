@@ -386,6 +386,10 @@ def split_name_list(string):
 
     >>> split_name_list('Johnson and Peterson')
     ['Johnson', 'Peterson']
+    >>> split_name_list('Johnson AND Peterson')
+    ['Johnson', 'Peterson']
+    >>> split_name_list('Johnson AnD Peterson')
+    ['Johnson', 'Peterson']
     >>> split_name_list('Armand and Peterson')
     ['Armand', 'Peterson']
     >>> split_name_list('Armand and anderssen')
@@ -395,7 +399,7 @@ def split_name_list(string):
     >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
     ['What a Strange and{ }Bizzare Name!', 'Peterson']
     """
-    return split_tex_string(string, ' and ')
+    return split_tex_string(string, ' [Aa][Nn][Dd] ')
 
 
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
