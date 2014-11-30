@@ -394,6 +394,8 @@ def split_name_list(string):
     ['Armand', 'Peterson']
     >>> split_name_list('Armand and anderssen')
     ['Armand', 'anderssen']
+    >>> split_name_list('{Armand and Anderssen}')
+    ['{Armand and Anderssen}']
     >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
     ['What a Strange{ }and Bizzare Name!', 'Peterson']
     >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
