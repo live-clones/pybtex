@@ -135,25 +135,10 @@ class Style(BaseStyle):
         ]
 
     def format_title(self, e, which_field, as_sentence=True):
-
-        def protected_capitalize(x):
-            """Capitalize string, but protect {...} parts."""
-            result = ""
-            level = 0
-            for pos, c in enumerate(x):
-                if c == '{':
-                    level += 1
-                elif c == '}':
-                    level -= 1
-                elif pos == 0:
-                    c = c.upper()
-                elif level <= 0:
-                    c = c.lower()
-                result += c
-            return result
+        from pybtex.bibtex.utils import change_case
 
         formatted_title = field(
-            which_field, apply_func=protected_capitalize)
+            which_field, apply_func=lambda text: change_case(text, 't'))
         if as_sentence:
             return sentence(capfirst=False) [ formatted_title ]
         else:
