@@ -79,7 +79,7 @@ def ensure_text(value):
 
 
 class BaseText(object):
-    def __getitem__(self):
+    def __getitem__(self, key):
         raise NotImplementedError
 
     def __len__(self):
@@ -107,72 +107,19 @@ class BaseText(object):
         raise NotImplementedError
 
 
-class String(unicode, BaseText):
-    def capfirst(self):
-        """
-        Capitalize the first letter.
-
-        >>> print String('').capfirst()
-        <BLANKLINE>
-        >>> print String('november').capfirst()
-        November
-        """
-
-        try:
-            first_char = self[0]
-        except IndexError:
-            return self
-        else:
-            return first_char.upper() + self[1:]
-
-    def add_period(self):
-        return self + '.'
-
-    def render(self, backend):
-        return backend.format_str(self)
-
-
-class Text(BaseText):
-    """
-    Rich text is basically a list of:
-
-    - plain strings
-    - Text objects, including objects derived from Text (Tag, HRef, ...)
-    - Symbol objects
-
-    Text is used as an internal formatting language of Pybtex,
-    being rendered to to HTML or LaTeX markup or whatever in the end.
-
-    >>> Text()
-    Text()
-    >>> print unicode(Text('a', '', 'c'))
-    ac
-    >>> print unicode(Text('a', Text(), 'c'))
-    ac
-    >>> print unicode(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
-    abcx<nbsp>d
-    >>> Text({}) # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-        ...
-    TypeError: ...
-
-    """
-
+class BaseMultipartText(BaseText):
     def __init__(self, *parts):
-        """Create a Text consisting of one or more parts."""
+        """Create a text object consisting of one or more parts."""
         parts = [ensure_text(part) for part in parts]
         self._parts = [part for part in parts if part]
         self.length = sum(len(part) for part in self._parts)
 
-    def __iter__(self):
-        return iter(self._parts)
-
-    def __repr__(self):
-        return 'Text({})'.format(', '.join(repr(part) for part in self._parts))
-
     def __len__(self):
         """Return the number of characters in this Text."""
         return self.length
+
+    def __iter__(self):
+        return iter(self._parts)
 
     def __add__(self, other):
         """
@@ -269,7 +216,7 @@ class Text(BaseText):
 
         """
 
-        if isinstance(key, long):
+        if isinstance(key, (int, long)):
             start = key
             end = key + 1
         elif isinstance(key, slice):
@@ -277,7 +224,7 @@ class Text(BaseText):
             if step != 1:
                 raise NotImplementedError
         else:
-            raise ValueError(key)
+            raise ValueError(key, type(key))
 
         if start < 0:
             start = len(self) + start
@@ -308,20 +255,6 @@ class Text(BaseText):
                 parts.append(part)
                 length += len(part)
         return self.from_list(reversed(parts))
-
-    def from_list(self, lst):
-        return Text(*lst)
-
-    def append(self, item):
-        """Appends some text or something.
-        Empty strings and similar things are ignored.
-        """
-        if item:
-            list.append(self, item)
-
-    def extend(self, list_):
-        for item in list_:
-            self.append(item)
 
     def render(self, backend):
         """Return backend-dependent textual representation of this Text."""
@@ -464,7 +397,76 @@ class Text(BaseText):
             return self
 
 
-class Tag(Text):
+class String(unicode, BaseText):
+    def capfirst(self):
+        """
+        Capitalize the first letter.
+
+        >>> print String('').capfirst()
+        <BLANKLINE>
+        >>> print String('november').capfirst()
+        November
+        """
+
+        try:
+            first_char = self[0]
+        except IndexError:
+            return self
+        else:
+            return first_char.upper() + self[1:]
+
+    def add_period(self):
+        return self + '.'
+
+    def render(self, backend):
+        return backend.format_str(self)
+
+
+class Text(BaseMultipartText):
+    """
+    Rich text is basically a list of:
+
+    - plain strings
+    - Text objects, including objects derived from Text (Tag, HRef, ...)
+    - Symbol objects
+
+    Text is used as an internal formatting language of Pybtex,
+    being rendered to to HTML or LaTeX markup or whatever in the end.
+
+    >>> Text()
+    Text()
+    >>> print unicode(Text('a', '', 'c'))
+    ac
+    >>> print unicode(Text('a', Text(), 'c'))
+    ac
+    >>> print unicode(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+    abcx<nbsp>d
+    >>> Text({}) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    TypeError: ...
+
+    """
+
+    def __repr__(self):
+        return 'Text({})'.format(', '.join(repr(part) for part in self._parts))
+
+    def from_list(self, lst):
+        return Text(*lst)
+
+    def append(self, item):
+        """Appends some text or something.
+        Empty strings and similar things are ignored.
+        """
+        if item:
+            list.append(self, item)
+
+    def extend(self, list_):
+        for item in list_:
+            self.append(item)
+
+
+class Tag(BaseMultipartText):
     """A tag is somethins like <foo>some text</foo> in HTML
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
@@ -514,7 +516,7 @@ class Tag(Text):
         return backend.format_tag(self.name, text)
 
 
-class HRef(Text):
+class HRef(BaseMultipartText):
     """A href is somethins like <href url="URL">some text</href> in HTML
     or \href{URL}{some text} in LaTeX.
 
@@ -533,7 +535,7 @@ class HRef(Text):
             raise TypeError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
         self.url = unicode(url)
-        Text.__init__(self, *args)
+        super(HRef, self).__init__(*args)
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
