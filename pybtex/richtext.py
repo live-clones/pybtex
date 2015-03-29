@@ -95,6 +95,9 @@ class BaseText(object):
     def _flatten(self):
         yield self
 
+    def _typeinfo(self):
+        return None, ()
+
     def render(self, backend):
         raise NotImplementedError
 
@@ -112,6 +115,8 @@ class BaseText(object):
 
 
 class BaseMultipartText(BaseText):
+    info = ()
+
     def __init__(self, *parts):
         """Create a text object consisting of one or more parts.
 
@@ -121,12 +126,20 @@ class BaseMultipartText(BaseText):
         Text(u'Multi', u' ', Tag(u'em', u'part'), u' ', u'text!')
         >>> Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
         Tag(u'strong', u'Multi', u' ', Tag(u'em', u'part'), u' ', u'text!')
+
+        Similar objects are merged into one.
+
+        >>> Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
+        Text(u'Multi', Tag(u'em', u'part', u' ', u'text!'))
+        >>> Text('Please ', HRef('http://example.com/', 'click'), HRef('http://example.com/', ' here'), '.')
+        Text(u'Please ', HRef(u'http://example.com/', u'click', u' here'), u'.')
         """
 
         parts = [ensure_text(part) for part in parts]
         nonenpty_parts = [part for part in parts if part]
         flat_parts = itertools.chain(*(part._flatten() for part in parts))
-        self.parts = list(flat_parts)
+        merged_parts = self._merge(flat_parts)
+        self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
 
     def __len__(self):
@@ -270,6 +283,22 @@ class BaseMultipartText(BaseText):
                 parts.append(part)
                 length += len(part)
         return self.from_list(reversed(parts))
+
+    def _typeinfo(self):
+        return type(self), self.info
+
+    def _merge(self, parts):
+        groups = itertools.groupby(parts, lambda value: value._typeinfo())
+        for typeinfo, group in groups:
+            cls, info = typeinfo
+            group = list(group)
+            if cls and len(group) > 1:
+                group_parts = itertools.chain(*(text.parts for text in group))
+                args = list(info) + list(group_parts)
+                yield cls(*args)
+            else:
+                for text in group:
+                    yield text
 
     def render(self, backend):
         """Return backend-dependent textual representation of this Text."""
@@ -513,6 +542,7 @@ class Tag(BaseMultipartText):
             raise TypeError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
         self.name = self.__check_name(unicode(name))
+        self.info = self.name,
         super(Tag, self).__init__(*args)
 
     def __repr__(self):
@@ -543,7 +573,12 @@ class HRef(BaseMultipartText):
             raise TypeError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
         self.url = unicode(url)
+        self.info = self.url,
         super(HRef, self).__init__(*args)
+
+    def __repr__(self):
+        reprparts = ', '.join(repr(part) for part in self.parts)
+        return 'HRef({}, {})'.format(repr(self.url), reprparts)
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
@@ -565,6 +600,7 @@ class Symbol(BaseText):
 
     def __init__(self, name):
         self.name = name
+        self.info = self.name,
 
     def __len__(self):
         return 1
