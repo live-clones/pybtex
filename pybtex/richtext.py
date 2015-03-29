@@ -63,6 +63,7 @@ one<nbsp>two<nbsp>three
 
 import string
 import warnings
+import itertools
 from copy import deepcopy
 from pybtex import textutils
 from pybtex.utils import deprecated
@@ -91,6 +92,9 @@ class BaseText(object):
     def __reversed__(self):
         raise NotImplementedError
 
+    def _flatten(self):
+        yield self
+
     def render(self, backend):
         raise NotImplementedError
 
@@ -109,9 +113,20 @@ class BaseText(object):
 
 class BaseMultipartText(BaseText):
     def __init__(self, *parts):
-        """Create a text object consisting of one or more parts."""
+        """Create a text object consisting of one or more parts.
+
+        Text() objects are unpacked and their children are included directly.
+
+        >>> Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
+        Text(u'Multi', u' ', Tag(u'em', u'part'), u' ', u'text!')
+        >>> Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
+        Tag(u'strong', u'Multi', u' ', Tag(u'em', u'part'), u' ', u'text!')
+        """
+
         parts = [ensure_text(part) for part in parts]
-        self.parts = [part for part in parts if part]
+        nonenpty_parts = [part for part in parts if part]
+        flat_parts = itertools.chain(*(part._flatten() for part in parts))
+        self.parts = list(flat_parts)
         self.length = sum(len(part) for part in self.parts)
 
     def __len__(self):
@@ -259,13 +274,13 @@ class BaseMultipartText(BaseText):
     def render(self, backend):
         """Return backend-dependent textual representation of this Text."""
 
-        rendered_list = [item.render(backend) for item in self]
+        rendered_list = [part.render(backend) for part in self.parts]
         assert all(isinstance(item, backend.RenderType)
                    for item in rendered_list)
         return backend.render_sequence(rendered_list)
 
     def enumerate(self):
-        for n, child in enumerate(self):
+        for n, child in enumerate(self.parts):
             try:
                 for p in child.enumerate():
                     yield p
@@ -273,7 +288,7 @@ class BaseMultipartText(BaseText):
                 yield self, n
 
     def reversed(self):
-        for n, child in reversed(list(enumerate(self))):
+        for n, child in reversed(list(enumerate(self.parts))):
             try:
                 for p in child.reversed():
                     yield p
@@ -285,7 +300,7 @@ class BaseMultipartText(BaseText):
             condition = lambda index, length: True
         def iter_map_with_condition():
             length = len(self)
-            for index, child in enumerate(self):
+            for index, child in enumerate(self.parts):
                 if hasattr(child, 'map'):
                     yield child.map(f, condition) if condition(index, length) else child
                 else:
@@ -343,7 +358,7 @@ class BaseMultipartText(BaseText):
         return unicode(self)
 
     def __unicode__(self):
-        return ''.join(unicode(part) for part in self)
+        return ''.join(unicode(part) for part in self.parts)
 
     def capfirst(self):
         """Capitalize the first letter of the text.
@@ -450,6 +465,10 @@ class Text(BaseMultipartText):
 
     def __repr__(self):
         return 'Text({})'.format(', '.join(repr(part) for part in self.parts))
+
+    def _flatten(self):
+        for part in self.parts:
+            yield part
 
     def from_list(self, lst):
         return Text(*lst)
