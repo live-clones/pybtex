@@ -454,17 +454,6 @@ class Text(BaseMultipartText):
     def from_list(self, lst):
         return Text(*lst)
 
-    def append(self, item):
-        """Appends some text or something.
-        Empty strings and similar things are ignored.
-        """
-        if item:
-            list.append(self, item)
-
-    def extend(self, list_):
-        for item in list_:
-            self.append(item)
-
 
 class Tag(BaseMultipartText):
     """A tag is somethins like <foo>some text</foo> in HTML
