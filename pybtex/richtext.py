@@ -111,15 +111,15 @@ class BaseMultipartText(BaseText):
     def __init__(self, *parts):
         """Create a text object consisting of one or more parts."""
         parts = [ensure_text(part) for part in parts]
-        self._parts = [part for part in parts if part]
-        self.length = sum(len(part) for part in self._parts)
+        self.parts = [part for part in parts if part]
+        self.length = sum(len(part) for part in self.parts)
 
     def __len__(self):
         """Return the number of characters in this Text."""
         return self.length
 
     def __iter__(self):
-        return iter(self._parts)
+        return iter(self.parts)
 
     def __add__(self, other):
         """
@@ -235,7 +235,7 @@ class BaseMultipartText(BaseText):
     def _slice_beginning(self, slice_length):
         parts = []
         length = 0
-        for part in self._parts:
+        for part in self.parts:
             if length + len(part) > slice_length:
                 parts.append(part[:slice_length - length])
                 break
@@ -247,7 +247,7 @@ class BaseMultipartText(BaseText):
     def _slice_end(self, slice_length):
         parts = []
         length = 0
-        for part in reversed(self._parts):
+        for part in reversed(self.parts):
             if length + len(part) > slice_length:
                 parts.append(part[len(part) -(slice_length - length):])
                 break
@@ -309,7 +309,7 @@ class BaseMultipartText(BaseText):
         except StopIteration:
             pass
         else:
-            return l._parts[i]
+            return l.parts[i]
 
     def get_end(self):
         try:
@@ -317,7 +317,7 @@ class BaseMultipartText(BaseText):
         except StopIteration:
             pass
         else:
-            return l._parts[i]
+            return l.parts[i]
 
     def join(self, parts):
         """Join a list using this text (like string.join)
@@ -392,7 +392,7 @@ class BaseMultipartText(BaseText):
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
-            return self.from_list(self._parts + [period])
+            return self.from_list(self.parts + [period])
         else:
             return self
 
@@ -449,7 +449,7 @@ class Text(BaseMultipartText):
     """
 
     def __repr__(self):
-        return 'Text({})'.format(', '.join(repr(part) for part in self._parts))
+        return 'Text({})'.format(', '.join(repr(part) for part in self.parts))
 
     def from_list(self, lst):
         return Text(*lst)
@@ -497,8 +497,8 @@ class Tag(BaseMultipartText):
         super(Tag, self).__init__(*args)
 
     def __repr__(self):
-        repr_parts = ', '.join(repr(part) for part in self._parts)
-        return 'Tag({}, {})'.format(repr(self.name), repr_parts)
+        reprparts = ', '.join(repr(part) for part in self.parts)
+        return 'Tag({}, {})'.format(repr(self.name), reprparts)
 
     def render(self, backend):
         text = super(Tag, self).render(backend)
