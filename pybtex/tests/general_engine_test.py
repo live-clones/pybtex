@@ -52,7 +52,7 @@ def group_by_suffix(filenames):
     return filenames_by_suffix
 
 
-def check_format_string(engine, filenames):
+def check_format_from_string(engine, filenames):
     filenames_by_suffix = group_by_suffix(filenames)
     engine_name = engine.__name__.rsplit('.', 1)[-1]
 
@@ -72,7 +72,7 @@ def check_format_string(engine, filenames):
         bib_name = posixpath.splitext(filenames_by_suffix['.bib'])[0]
         bib_string = read_file(filenames_by_suffix['.bib'])
         with errors.capture() as captured_errors:  # FIXME check error messages
-            result = engine.format_string(bib_string, style=style, citations=citations)
+            result = engine.format_from_string(bib_string, style=style, citations=citations)
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, style, engine_name)
         correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name).decode(io.get_default_encoding())
         assert result == correct_result, diff(correct_result, result)
@@ -118,7 +118,7 @@ def test_bibtex_engine():
         ('IEEEtran.bib', 'IEEEtran.bst', 'IEEEtran.aux'),
     ]:
         yield check_make_bibliography, bibtex, filenames
-        yield check_format_string, bibtex, filenames
+        yield check_format_from_string, bibtex, filenames
 
 
 def test_pybtex_engine():
@@ -129,4 +129,4 @@ def test_pybtex_engine():
         ('cyrillic.bib', 'alpha.bst'),
     ]:
         yield check_make_bibliography, pybtex, filenames
-        yield check_format_string, pybtex, filenames
+        yield check_format_from_string, pybtex, filenames

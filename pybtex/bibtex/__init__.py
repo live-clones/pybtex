@@ -29,7 +29,7 @@ from pybtex import Engine
 
 class BibTeXEngine(Engine):
     @classmethod
-    def format_files(
+    def format_from_files(
         cls,
         bib_files_or_filenames,
         style,
@@ -72,17 +72,17 @@ def make_bibliography(*args, **kwargs):
     return BibTeXEngine().make_bibliography(*args, **kwargs)
 
 
-def format_file(*args, **kwargs):
-    return BibTeXEngine().format_file(*args, **kwargs)
+def format_from_file(*args, **kwargs):
+    return BibTeXEngine().format_from_file(*args, **kwargs)
 
 
-def format_files(*args, **kwargs):
-    return BibTeXEngine().format_files(*args, **kwargs)
+def format_from_files(*args, **kwargs):
+    return BibTeXEngine().format_from_files(*args, **kwargs)
 
 
-def format_string(*args, **kwargs):
-    return BibTeXEngine().format_string(*args, **kwargs)
+def format_from_string(*args, **kwargs):
+    return BibTeXEngine().format_from_string(*args, **kwargs)
 
 
-def format_strings(*args, **kwargs):
-    return BibTeXEngine().format_strings(*args, **kwargs)
+def format_from_strings(*args, **kwargs):
+    return BibTeXEngine().format_from_strings(*args, **kwargs)

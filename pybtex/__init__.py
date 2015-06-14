@@ -38,7 +38,7 @@ class Engine(object):
             style = aux_data.style
         base_filename = path.splitext(aux_filename)[0]
         bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
-        return cls.format_files(
+        return cls.format_from_files(
             bib_filenames,
             style=aux_data.style,
             citations=aux_data.citations,
@@ -48,27 +48,27 @@ class Engine(object):
         )
 
     @classmethod
-    def format_string(cls, bib_string, *args, **kwargs):
-        return cls.format_strings([bib_string], *args, **kwargs)
+    def format_from_string(cls, bib_string, *args, **kwargs):
+        return cls.format_from_strings([bib_string], *args, **kwargs)
 
     @classmethod
-    def format_strings(cls, bib_strings, *args, **kwargs):
+    def format_from_strings(cls, bib_strings, *args, **kwargs):
         from io import StringIO
         inputs = [StringIO(bib_string) for bib_string in bib_strings]
-        return cls.format_files(inputs, *args, **kwargs)
+        return cls.format_from_files(inputs, *args, **kwargs)
 
     @classmethod
-    def format_file(cls, filename, *args, **kwargs):
-        return cls.format_files([filename], *args, **kwargs)
+    def format_from_file(cls, filename, *args, **kwargs):
+        return cls.format_from_files([filename], *args, **kwargs)
 
     @classmethod
-    def format_files(*args, **kwargs):
+    def format_from_files(*args, **kwargs):
         raise NotImplementedError
 
 
 class PybtexEngine(Engine):
     @classmethod
-    def format_files(
+    def format_from_files(
         cls,
         bib_files_or_filenames,
         style,
@@ -114,17 +114,17 @@ def make_bibliography(*args, **kwargs):
     return PybtexEngine().make_bibliography(*args, **kwargs)
 
 
-def format_file(*args, **kwargs):
-    return PybtexEngine().format_file(*args, **kwargs)
+def format_from_file(*args, **kwargs):
+    return PybtexEngine().format_from_file(*args, **kwargs)
 
 
-def format_files(*args, **kwargs):
-    return PybtexEngine().format_files(*args, **kwargs)
+def format_from_files(*args, **kwargs):
+    return PybtexEngine().format_from_files(*args, **kwargs)
 
 
-def format_string(*args, **kwargs):
-    return PybtexEngine().format_string(*args, **kwargs)
+def format_from_string(*args, **kwargs):
+    return PybtexEngine().format_from_string(*args, **kwargs)
 
 
-def format_strings(*args, **kwargs):
-    return PybtexEngine().format_strings(*args, **kwargs)
+def format_from_strings(*args, **kwargs):
+    return PybtexEngine().format_from_strings(*args, **kwargs)
