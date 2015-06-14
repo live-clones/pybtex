@@ -23,35 +23,65 @@
 """
 
 
-def make_bibliography(aux_filename,
+from os import path
+
+
+def make_bibliography(aux_filename, bib_format=None, style=None, output_encoding=None, **kwargs):
+    from pybtex import auxfile
+    if bib_format is None:
+        from pybtex.database.input.bibtex import Parser as bib_format
+
+    aux_data = auxfile.parse_file(aux_filename, output_encoding)
+    if style is None:
+        style = aux_data.style
+    base_filename = path.splitext(aux_filename)[0]
+    bbl_filename = base_filename + path.extsep + 'bbl'
+    bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
+    return format_files(
+        bib_filenames,
+        style=aux_data.style,
+        citations=aux_data.citations,
+        output_filename=bbl_filename,
+        output_encoding=output_encoding,
+    )
+
+
+def format_files(
+        bib_files_or_filenames,
+        style,
+        citations='*',
         bib_format=None,
         bib_encoding=None,
         output_encoding=None,
         bst_encoding=None,
         min_crossrefs=2,
-        style=None,
+        output_filename=None,
         **kwargs
     ):
 
-    from os import path
-
+    from io import StringIO
     import pybtex.io
     from pybtex.bibtex import bst
     from pybtex.bibtex.interpreter import Interpreter
-    from pybtex import auxfile
-
 
     if bib_format is None:
         from pybtex.database.input.bibtex import Parser as bib_format
-    aux_data = auxfile.parse_file(aux_filename, output_encoding)
-    if style is None:
-        style = aux_data.style
     bst_filename = style + path.extsep + 'bst'
     bst_script = bst.parse_file(bst_filename, bst_encoding)
-    base_filename = path.splitext(aux_filename)[0]
-    bbl_filename = base_filename + path.extsep + 'bbl'
-    bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
     interpreter = Interpreter(bib_format, bib_encoding)
-    bbl_data = interpreter.run(bst_script, aux_data.citations, bib_filenames, min_crossrefs=min_crossrefs)
-    with pybtex.io.open_unicode(bbl_filename, 'w', encoding=output_encoding) as bbl_file:
-        bbl_file.write(bbl_data)
+    bbl_data = interpreter.run(bst_script, citations, bib_files_or_filenames, min_crossrefs=min_crossrefs)
+
+    if output_filename:
+        output_file = pybtex.io.open_unicode(output_filename, 'w', encoding=output_encoding) 
+    else:
+        output_file = StringIO()
+    with output_file:
+        output_file.write(bbl_data)
+        if isinstance(output_file, StringIO):
+            return output_file.getvalue()
+
+
+def format_string(bib_string, style, **kwargs):
+    from io import StringIO
+    bib_file = StringIO(bib_string)
+    return format_files([bib_file], style=style, **kwargs)
