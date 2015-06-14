@@ -22,46 +22,109 @@
 """bibliography processor
 """
 
+from __future__ import absolute_import
+from os import path
 
-def make_bibliography(aux_filename,
+
+class Engine(object):
+    @classmethod
+    def make_bibliography(cls, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs):
+        from pybtex import auxfile
+        if bib_format is None:
+            from pybtex.database.input.bibtex import Parser as bib_format
+
+        aux_data = auxfile.parse_file(aux_filename, output_encoding)
+        if style is None:
+            style = aux_data.style
+        base_filename = path.splitext(aux_filename)[0]
+        bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
+        return cls.format_files(
+            bib_filenames,
+            style=aux_data.style,
+            citations=aux_data.citations,
+            output_encoding=output_encoding,
+            output_filename=base_filename,
+            add_output_suffix=True,
+        )
+
+    @classmethod
+    def format_string(cls, bib_string, *args, **kwargs):
+        return cls.format_strings([bib_string], *args, **kwargs)
+
+    @classmethod
+    def format_strings(cls, bib_strings, *args, **kwargs):
+        from io import StringIO
+        inputs = [StringIO(bib_string) for bib_string in bib_strings]
+        return cls.format_files(inputs, *args, **kwargs)
+
+    @classmethod
+    def format_file(cls, filename, *args, **kwargs):
+        return cls.format_files([filename], *args, **kwargs)
+
+    @classmethod
+    def format_files(*args, **kwargs):
+        raise NotImplementedError
+
+
+class PybtexEngine(Engine):
+    @classmethod
+    def format_files(
+        cls,
+        bib_files_or_filenames,
+        style,
+        citations=['*'],
         bib_format=None,
         bib_encoding=None,
-        output_encoding=None,
         output_backend=None,
+        output_encoding=None,
         min_crossrefs=2,
-        style=None,
+        output_filename=None,
+        add_output_suffix=False,
         **kwargs
-        ):
-    """This functions extracts all nessessary information from .aux file
-    and writes the bibliography.
-    """
+    ):
+        from pybtex.plugin import find_plugin
 
-    from os import path
-    from pybtex import auxfile
-    from pybtex.plugin import find_plugin
-
-    filename = path.splitext(aux_filename)[0]
-    aux_data = auxfile.parse_file(aux_filename, output_encoding)
-
-    bib_parser = find_plugin('pybtex.database.input', bib_format)
-    bib_data = bib_parser(
-        encoding=bib_encoding,
-        wanted_entries=aux_data.citations,
-        min_crossrefs=min_crossrefs,
-    ).parse_files(aux_data.data, bib_parser.default_suffix)
-
-    if style is None:
-        style = aux_data.style
-    style_cls = find_plugin('pybtex.style.formatting', style)
-    style = style_cls(
-            label_style=kwargs.get('label_style'),
-            name_style=kwargs.get('name_style'),
-            sorting_style=kwargs.get('sorting_style'),
-            abbreviate_names=kwargs.get('abbreviate_names'),
+        bib_parser = find_plugin('pybtex.database.input', bib_format)
+        bib_data = bib_parser(
+            encoding=bib_encoding,
+            wanted_entries=citations,
             min_crossrefs=min_crossrefs,
-    )
-    formatted_bibliography = style.format_bibliography(bib_data, aux_data.citations)
+        ).parse_files(bib_files_or_filenames)
 
-    output_backend = find_plugin('pybtex.backends', output_backend)
-    output_filename = filename + output_backend.default_suffix
-    output_backend(output_encoding).write_to_file(formatted_bibliography, output_filename)
+        style_cls = find_plugin('pybtex.style.formatting', style)
+        style = style_cls(
+                label_style=kwargs.get('label_style'),
+                name_style=kwargs.get('name_style'),
+                sorting_style=kwargs.get('sorting_style'),
+                abbreviate_names=kwargs.get('abbreviate_names'),
+                min_crossrefs=min_crossrefs,
+        )
+        formatted_bibliography = style.format_bibliography(bib_data, citations)
+
+        output_backend = find_plugin('pybtex.backends', output_backend)
+        if add_output_suffix:
+            output_filename = output_filename + output_backend.default_suffix
+        if not output_filename:
+            import io
+            output_filename = io.StringIO()
+        return output_backend(output_encoding).write_to_file(formatted_bibliography, output_filename)
+
+
+def make_bibliography(*args, **kwargs):
+    return PybtexEngine().make_bibliography(*args, **kwargs)
+
+
+def format_file(*args, **kwargs):
+    return PybtexEngine().format_file(*args, **kwargs)
+
+
+def format_files(*args, **kwargs):
+    return PybtexEngine().format_files(*args, **kwargs)
+
+
+def format_string(*args, **kwargs):
+    return PybtexEngine().format_string(*args, **kwargs)
+
+
+def format_strings(*args, **kwargs):
+    return PybtexEngine().format_strings(*args, **kwargs)
