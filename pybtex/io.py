@@ -62,7 +62,11 @@ def _open_or_create(opener, filename, mode, environ, **kwargs):
         raise error
 
 
-def _open(opener, filename, mode, **kwargs):
+def _open(opener, filename_or_file, mode, default_suffix=None, **kwargs):
+    if hasattr(filename_or_file, 'read') and hasattr(filename_or_file, 'close'):
+        return filename_or_file
+    else:
+        filename = filename_or_file
     write_mode = 'w' in mode
     try:
         if write_mode:
