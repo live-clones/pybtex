@@ -129,7 +129,7 @@ class AuxData(object):
             raise AuxDataError(r'found no \bibstyle command', self.context)
 
 
-def parse_file(filename, encoding):
+def parse_file(filename, encoding=None):
     """Parse a file and return an AuxData object."""
 
     data = AuxData(encoding)
