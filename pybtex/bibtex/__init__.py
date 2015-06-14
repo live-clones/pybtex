@@ -28,9 +28,8 @@ from os import path
 from pybtex import Engine
 
 class BibTeXEngine(Engine):
-    @classmethod
     def format_from_files(
-        cls,
+        self,
         bib_files_or_filenames,
         style,
         citations='*',

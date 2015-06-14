@@ -27,8 +27,7 @@ from os import path
 
 
 class Engine(object):
-    @classmethod
-    def make_bibliography(cls, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs):
+    def make_bibliography(self, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs):
         from pybtex import auxfile
         if bib_format is None:
             from pybtex.database.input.bibtex import Parser as bib_format
@@ -38,7 +37,7 @@ class Engine(object):
             style = aux_data.style
         base_filename = path.splitext(aux_filename)[0]
         bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
-        return cls.format_from_files(
+        return self.format_from_files(
             bib_filenames,
             style=aux_data.style,
             citations=aux_data.citations,
@@ -47,29 +46,24 @@ class Engine(object):
             add_output_suffix=True,
         )
 
-    @classmethod
-    def format_from_string(cls, bib_string, *args, **kwargs):
-        return cls.format_from_strings([bib_string], *args, **kwargs)
+    def format_from_string(self, bib_string, *args, **kwargs):
+        return self.format_from_strings([bib_string], *args, **kwargs)
 
-    @classmethod
-    def format_from_strings(cls, bib_strings, *args, **kwargs):
+    def format_from_strings(self, bib_strings, *args, **kwargs):
         from io import StringIO
         inputs = [StringIO(bib_string) for bib_string in bib_strings]
-        return cls.format_from_files(inputs, *args, **kwargs)
+        return self.format_from_files(inputs, *args, **kwargs)
 
-    @classmethod
-    def format_from_file(cls, filename, *args, **kwargs):
-        return cls.format_from_files([filename], *args, **kwargs)
+    def format_from_file(self, filename, *args, **kwargs):
+        return self.format_from_files([filename], *args, **kwargs)
 
-    @classmethod
     def format_from_files(*args, **kwargs):
         raise NotImplementedError
 
 
 class PybtexEngine(Engine):
-    @classmethod
     def format_from_files(
-        cls,
+        self,
         bib_files_or_filenames,
         style,
         citations=['*'],
