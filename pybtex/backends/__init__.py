@@ -88,6 +88,8 @@ class BaseBackend(Plugin):
     def write_to_file(self, formatted_entries, filename):
         with pybtex.io.open_unicode(filename, "w", self.encoding) as stream:
             self.write_to_stream(formatted_entries, stream)
+            if hasattr(stream, 'getvalue'):
+                return stream.getvalue()
 
     def write_to_stream(self, formatted_bibliography, stream):
         self.output = stream.write
