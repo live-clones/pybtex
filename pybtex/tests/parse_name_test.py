@@ -137,8 +137,13 @@ sample_names = [
     (['Derik', 'Mamania', 'M.'], [], ['Johansen', 'Kyle'], [])),
 ]
 
+
+def parse_name(name, correct_result, errors=()):
+    person = Person(name)
+    result = (person.bibtex_first(), person.prelast(), person.last(), person.lineage())
+    assert result == correct_result
+
+
 def parse_name_test():
-    for name, correct_result in sample_names:
-        person = Person(name)
-        result = (person.bibtex_first(), person.prelast(), person.last(), person.lineage())
-        assert result == correct_result
+    for test_args in sample_names:
+        yield (parse_name,) + test_args
