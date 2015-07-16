@@ -44,14 +44,14 @@ bibliography as HTML or plain text:
 
 .. sourcecode:: bash
 
-    pybtex -e pybtex -b html foo
-    pybtex -e pybtex -b plaintext foo
+    pybtex -l python -b html foo
+    pybtex -l python -b plaintext foo
 
 Label and name styes are configurable:
 
 .. sourcecode:: bash
 
-    pybtex -e pybtex --label-style number --name-style last_first foo
+    pybtex -l python --label-style number --name-style last_first foo
 
 Label and name styles are defined in ``pybtex/style/labels.py`` and
 ``pybtex/style/names.py``, look there for details.
