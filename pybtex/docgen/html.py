@@ -31,6 +31,7 @@ import shutil
 from datetime import datetime
 from cgi import escape
 from glob import glob
+from subprocess import check_call
 
 from docutils import nodes
 from docutils.parsers.rst import directives, Directive
@@ -276,5 +277,4 @@ def generate_html(doc_dir, for_site=False, *sources):
 
 def generate_site(doc_dir):
     generate_html(doc_dir, for_site=True)
-    os.system('rsync -rv --delete --exclude hg/ %s ero-sennin,pybtex@web.sourceforge.net:/home/groups/p/py/pybtex/htdocs'
-            % os.path.join(doc_dir, 'site/'))
+    check_call(['surge', os.path.join(doc_dir, 'site/'), 'pybtex.org'])
