@@ -88,12 +88,6 @@ class BaseText(object):
     def __eq__(self, other):
         raise NotImplementedError
 
-    def __iter__(self):
-        raise NotImplementedError
-
-    def __reversed__(self):
-        raise NotImplementedError
-
     def __add__(self, other):
         """
         Concatenate this Text with another Text or string.
@@ -202,9 +196,6 @@ class BaseMultipartText(BaseText):
             self._typeinfo() == other._typeinfo() and
             self.parts == other.parts
         )
-
-    def __iter__(self):
-        return iter(self.parts)
 
     def __getitem__(self, key):
         """
