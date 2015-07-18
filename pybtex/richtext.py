@@ -107,11 +107,20 @@ class BaseText(object):
     def lower(self):
         raise NotImplementedError
 
-    def capfirst(self):
-        raise NotImplementedError
-
     def add_period(self):
         raise NotImplementedError
+
+    def capfirst(self):
+        """Capitalize the first letter of the text.
+
+        >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
+        >>> print unicode(text)
+        mary had a little lamb
+        >>> print unicode(text.capfirst())
+        Mary had a little lamb
+
+        """
+        return self[:1].upper() + self[1:]
 
 
 class BaseMultipartText(BaseText):
@@ -391,18 +400,6 @@ class BaseMultipartText(BaseText):
     def __unicode__(self):
         return ''.join(unicode(part) for part in self.parts)
 
-    def capfirst(self):
-        """Capitalize the first letter of the text.
-
-        >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
-        >>> print unicode(text)
-        mary had a little lamb
-        >>> print unicode(text.capfirst())
-        Mary had a little lamb
-
-        """
-        return self[:1].upper() + self[1:]
-
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary.
 
@@ -444,22 +441,14 @@ class BaseMultipartText(BaseText):
 
 
 class String(unicode, BaseText):
-    def capfirst(self):
-        """
-        Capitalize the first letter.
+    """
+    A single Python string wrapped into BaseText interface.
 
-        >>> print String('').capfirst()
-        <BLANKLINE>
-        >>> print String('november').capfirst()
-        November
-        """
-
-        try:
-            first_char = self[0]
-        except IndexError:
-            return self
-        else:
-            return first_char.upper() + self[1:]
+    >>> print String('').capfirst()
+    <BLANKLINE>
+    >>> print String('november').capfirst()
+    November
+    """
 
     def add_period(self):
         return self + '.'
