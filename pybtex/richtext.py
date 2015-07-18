@@ -85,6 +85,9 @@ class BaseText(object):
     def __len__(self):
         raise NotImplementedError
 
+    def __eq__(self, other):
+        raise NotImplementedError
+
     def __iter__(self):
         raise NotImplementedError
 
@@ -170,6 +173,12 @@ class BaseMultipartText(BaseText):
     def __len__(self):
         """Return the number of characters in this Text."""
         return self.length
+
+    def __eq__(self, other):
+        return (
+            self._typeinfo() == other._typeinfo() and
+            self.parts == other.parts
+        )
 
     def __iter__(self):
         return iter(self.parts)
@@ -624,6 +633,15 @@ class Symbol(BaseText):
 
     def __unicode__(self):
         return u'<%s>' % self.name
+
+    def __eq__(self, other):
+        """
+        >>> Symbol('nbsp') == Symbol('nbsp')
+        True
+        >>> Symbol('nbsp') == Symbol('ndash')
+        False
+        """
+        return self.name == other.name
 
     def __getitem__(self, index):
         """
