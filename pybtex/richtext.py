@@ -63,6 +63,7 @@ one<nbsp>two<nbsp>three
 
 import warnings
 import itertools
+from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from pybtex import textutils
 from pybtex.utils import deprecated
@@ -79,12 +80,17 @@ def ensure_text(value):
 
 
 class BaseText(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
     def __getitem__(self, key):
         raise NotImplementedError
 
+    @abstractmethod
     def __len__(self):
         raise NotImplementedError
 
+    @abstractmethod
     def __eq__(self, other):
         raise NotImplementedError
 
@@ -128,12 +134,15 @@ class BaseText(object):
 
         return None, ()
 
+    @abstractmethod
     def render(self, backend):
         raise NotImplementedError
 
+    @abstractmethod
     def upper(self):
         raise NotImplementedError
 
+    @abstractmethod
     def lower(self):
         raise NotImplementedError
 
