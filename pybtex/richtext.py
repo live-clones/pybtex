@@ -92,6 +92,21 @@ class BaseText(object):
     def __reversed__(self):
         raise NotImplementedError
 
+    def __add__(self, other):
+        """
+        Concatenate this Text with another Text or string.
+
+        >>> t = Text('a')
+        >>> print unicode(t + 'b')
+        ab
+        >>> print unicode(t + t)
+        aa
+        >>> print unicode(t)
+        a
+        """
+
+        return Text(self, other)
+
     def _flatten(self):
         yield self
 
@@ -108,7 +123,7 @@ class BaseText(object):
         raise NotImplementedError
 
     def add_period(self):
-        return self if textutils.is_terminated(unicode(self)) else Text(self, '.')
+        return self if textutils.is_terminated(unicode(self)) else self + '.'
 
     def capfirst(self):
         """Capitalize the first letter of the text.
@@ -157,21 +172,6 @@ class BaseMultipartText(BaseText):
 
     def __iter__(self):
         return iter(self.parts)
-
-    def __add__(self, other):
-        """
-        Concatenate this Text with another Text or string.
-
-        >>> t = Text('a')
-        >>> print unicode(t + 'b')
-        ab
-        >>> print unicode(t + t)
-        aa
-        >>> print unicode(t)
-        a
-        """
-
-        return Text(self, other)
 
     def __getitem__(self, key):
         """
