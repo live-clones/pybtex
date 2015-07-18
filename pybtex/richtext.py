@@ -150,17 +150,21 @@ class BaseMultipartText(BaseText):
 
         Text() objects are unpacked and their children are included directly.
 
-        >>> Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
-        Text(u'Multi', u' ', Tag(u'em', u'part'), u' ', u'text!')
-        >>> Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
-        Tag(u'strong', u'Multi', u' ', Tag(u'em', u'part'), u' ', u'text!')
+        >>> text = Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
+        >>> text == Text('Multi', ' ', Tag('em', 'part'), ' ', 'text!')
+        True
+        >>> text = Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
+        >>> text == Tag('strong', 'Multi', ' ', Tag('em', 'part'), ' ', 'text!')
+        True
 
         Similar objects are merged into one.
 
-        >>> Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
-        Text(u'Multi', Tag(u'em', u'part', u' ', u'text!'))
-        >>> Text('Please ', HRef('http://example.com/', 'click'), HRef('http://example.com/', ' here'), '.')
-        Text(u'Please ', HRef(u'http://example.com/', u'click', u' here'), u'.')
+        >>> text = Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
+        >>> text == Text('Multi', Tag('em', 'part', ' ', 'text!'))
+        True
+        >>> text = Text('Please ', HRef('http://example.com/', 'click'), HRef('http://example.com/', ' here'), '.')
+        >>> text == Text('Please ', HRef('http://example.com/', 'click', ' here'), '.')
+        True
         """
 
         parts = [ensure_text(part) for part in parts]
