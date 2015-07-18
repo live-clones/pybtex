@@ -109,10 +109,29 @@ class BaseText(object):
 
         return Text(self, other)
 
-    def _flatten(self):
+    def _unpack(self):
+        """
+        For Text object, iterate over all text parts.
+        Else, yield the object itself.
+
+        Used for unpacking Text objects passed as children to another Text object.
+        """
+
         yield self
 
     def _typeinfo(self):
+        """
+
+        Return the type of this object and its parameters
+        (not including the actual text content).
+
+        Used for:
+
+        - merging similar tags together (<em>A</em><em>B</em> -> <em>AB</em>),
+        - creating similar text objects with different text content.
+
+        """
+
         return None, ()
 
     def render(self, backend):
@@ -169,8 +188,8 @@ class BaseMultipartText(BaseText):
 
         parts = [ensure_text(part) for part in parts]
         nonenpty_parts = [part for part in parts if part]
-        flat_parts = itertools.chain(*(part._flatten() for part in parts))
-        merged_parts = self._merge(flat_parts)
+        flat_parts = itertools.chain(*(part._unpack() for part in parts))
+        merged_parts = self._merge_similar(flat_parts)
         self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
 
@@ -189,6 +208,9 @@ class BaseMultipartText(BaseText):
 
     def __getitem__(self, key):
         """
+        Slicing and extracting characters works like with regular strings,
+        formatting is preserved.
+
         >>> t = Text('123', Text('456', Text('78'), '9'), '0')
         >>> print unicode(t)
         1234567890
@@ -284,6 +306,11 @@ class BaseMultipartText(BaseText):
         return self._slice_end(len(self) - start)._slice_beginning(end - start)
 
     def _slice_beginning(self, slice_length):
+        """
+        Return a text consistng of the first slice_length characters
+        of this text (with formatting preserved).
+        """
+
         parts = []
         length = 0
         for part in self.parts:
@@ -296,6 +323,11 @@ class BaseMultipartText(BaseText):
         return self._create_similar(parts)
 
     def _slice_end(self, slice_length):
+        """
+        Return a text consistng of the last slice_length characters
+        of this text (with formatting preserved).
+        """
+
         parts = []
         length = 0
         for part in reversed(self.parts):
@@ -308,14 +340,40 @@ class BaseMultipartText(BaseText):
         return self._create_similar(reversed(parts))
 
     def _typeinfo(self):
+        """Return the type and the parameters used to create this text object.
+
+        >>> text = Tag('strong', 'Heavy rain!')
+        >>> text._typeinfo() == (Tag, ('strong',))
+        True
+
+        """
+
         return type(self), self.info
 
     def _create_similar(self, parts):
+        """
+        Create a new text object of the same type with the same parameters,
+        with different text content.
+
+        >>> text = Tag('strong', 'Bananas!')
+        >>> text._create_similar(['Apples!']) == Tag('strong', 'Apples!')
+        True
+        """
+
         cls, cls_args = self._typeinfo()
         args = list(cls_args) + list(parts)
         return cls(*args)
 
-    def _merge(self, parts):
+    def _merge_similar(self, parts):
+        """Merge adjacent text objects with the same type and parameters together.
+
+        >>> text = Text()
+        >>> parts = [Tag('em', 'Breaking'), Tag('em', ' '), Tag('em', 'news!')]
+        >>> merged_parts = list(text._merge_similar(parts))
+        >>> merged_parts == [Tag('em', 'Breaking', ' ', 'news!')]
+        True
+        """
+
         groups = itertools.groupby(parts, lambda value: value._typeinfo())
         for typeinfo, group in groups:
             cls, info = typeinfo
@@ -502,7 +560,7 @@ class Text(BaseMultipartText):
     def __repr__(self):
         return 'Text({})'.format(', '.join(repr(part) for part in self.parts))
 
-    def _flatten(self):
+    def _unpack(self):
         for part in self.parts:
             yield part
 
