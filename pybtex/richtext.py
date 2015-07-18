@@ -61,7 +61,6 @@ one<nbsp>two<nbsp>three
 """
 
 
-import string
 import warnings
 import itertools
 from copy import deepcopy
@@ -353,7 +352,7 @@ class BaseMultipartText(BaseText):
         return self._create_similar(iter_map_with_condition())
 
     def upper(self):
-        return self.map(string.upper)
+        return self._create_similar(part.upper() for part in self.parts)
 
     @deprecated('0.19', 'use slicing instead')
     def apply_to_start(self, f):
