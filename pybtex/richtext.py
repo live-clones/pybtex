@@ -613,6 +613,36 @@ class Symbol(BaseText):
     def __unicode__(self):
         return u'<%s>' % self.name
 
+    def __getitem__(self, index):
+        """
+        >>> import pybtex.backends.html
+        >>> html = pybtex.backends.html.Backend()
+
+        >>> symbol = Symbol('nbsp')
+        >>> symbol[0]
+        Symbol('nbsp')
+        >>> symbol[0:]
+        Symbol('nbsp')
+        >>> symbol[0:5]
+        Symbol('nbsp')
+        >>> print symbol[1:].render(html)
+        <BLANKLINE>
+        >>> print symbol[1:5].render(html)
+        <BLANKLINE>
+        >>> symbol[1]
+        Traceback (most recent call last):
+            ...
+        IndexError: richtext.Symbol index out of range
+        """
+
+        # mimic the behavior of a 1-element string
+        try:
+            result = 'a'[index]
+        except IndexError:
+            raise IndexError('richtext.Symbol index out of range')
+        else:
+            return self if result else String()
+
     def render(self, backend):
         return backend.symbols[self.name]
 
