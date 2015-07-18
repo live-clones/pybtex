@@ -521,6 +521,9 @@ class String(unicode, BaseText):
     November
     """
 
+    def __add__(self, other):
+        return BaseText.__add__(self, other)
+
     def render(self, backend):
         return backend.format_str(self)
 
