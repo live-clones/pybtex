@@ -279,7 +279,7 @@ class BaseMultipartText(BaseText):
             else:
                 parts.append(part)
                 length += len(part)
-        return self.from_list(parts)
+        return self._create_similar(parts)
 
     def _slice_end(self, slice_length):
         parts = []
@@ -291,12 +291,12 @@ class BaseMultipartText(BaseText):
             else:
                 parts.append(part)
                 length += len(part)
-        return self.from_list(reversed(parts))
+        return self._create_similar(reversed(parts))
 
     def _typeinfo(self):
         return type(self), self.info
 
-    def from_list(self, parts):
+    def _create_similar(self, parts):
         cls, cls_args = self._typeinfo()
         args = list(cls_args) + list(parts)
         return cls(*args)
@@ -348,7 +348,7 @@ class BaseMultipartText(BaseText):
                     yield child.map(f, condition) if condition(index, length) else child
                 else:
                     yield f(child) if condition(index, length) else child
-        return self.from_list(iter_map_with_condition())
+        return self._create_similar(iter_map_with_condition())
 
     def upper(self):
         return self.map(string.upper)
@@ -440,7 +440,7 @@ class BaseMultipartText(BaseText):
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
-            return self.from_list(self.parts + [period])
+            return self._create_similar(self.parts + [period])
         else:
             return self
 
