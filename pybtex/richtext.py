@@ -143,15 +143,8 @@ class BaseText(object):
         return self if textutils.is_terminated(unicode(self)) else self + period
 
     def capfirst(self):
-        """Capitalize the first letter of the text.
+        """Capitalize the first letter of the text."""
 
-        >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
-        >>> print unicode(text)
-        mary had a little lamb
-        >>> print unicode(text.capfirst())
-        Mary had a little lamb
-
-        """
         return self[:1].upper() + self[1:]
 
 
@@ -478,10 +471,18 @@ class BaseMultipartText(BaseText):
         >>> html = pybtex.backends.html.Backend()
 
         >>> text = Text("That's all, folks")
+        >>> print unicode(text.upper())
+        THAT'S ALL, FOLKS
+        >>> print unicode(text.lower())
+        that's all, folks
         >>> print unicode(text.add_period())
         That's all, folks.
 
         >>> text = Tag('em', Text("That's all, folks"))
+        >>> print text.upper().render(html)
+        <em>THAT'S ALL, FOLKS</em>
+        >>> print text.lower().render(html)
+        <em>that's all, folks</em>
         >>> print text.add_period().render(html)
         <em>That's all, folks.</em>
         >>> print text.add_period().add_period().render(html)
@@ -498,6 +499,10 @@ class BaseMultipartText(BaseText):
         That's all, <em>folks.</em>
 
         >>> text = Text("That's all, ", Tag('em', 'folks'))
+        >>> print text.upper().render(html)
+        THAT'S ALL, <em>FOLKS</em>
+        >>> print text.lower().render(html)
+        that's all, <em>folks</em>
         >>> print text.add_period('!').render(html)
         That's all, <em>folks</em>!
         >>> print text.add_period('!').add_period('.').render(html)
@@ -515,10 +520,33 @@ class String(unicode, BaseText):
     """
     A single Python string wrapped into BaseText interface.
 
-    >>> print String('').capfirst()
+    >>> print unicode(String('').upper())
     <BLANKLINE>
-    >>> print String('november').capfirst()
+    >>> print unicode(String('').lower())
+    <BLANKLINE>
+    >>> print unicode(String('').capfirst())
+    <BLANKLINE>
+    >>> print unicode(String('').add_period())
+    .
+    >>> print unicode(String('').add_period('!'))
+    !
+    >>> print unicode(String('').add_period().add_period())
+    .
+    >>> print unicode(String('').add_period().add_period('!'))
+    .
+    >>> print unicode(String('').add_period('!').add_period())
+    !
+
+    >>> print unicode(String('November').upper())
+    NOVEMBER
+    >>> print unicode(String('November').lower())
+    november
+    >>> print unicode(String('november').capfirst())
     November
+    >>> print unicode(String('November').capfirst())
+    November
+    >>> print unicode(String('November').add_period())
+    November.
     """
 
     def __add__(self, other):
@@ -552,6 +580,15 @@ class Text(BaseMultipartText):
         ...
     TypeError: ...
 
+    >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
+    >>> print unicode(text)
+    mary had a little lamb
+    >>> print unicode(text.capfirst())
+    Mary had a little lamb
+    >>> print unicode(text.upper())
+    MARY HAD A LITTLE LAMB
+    >>> print unicode(text.lower())
+    mary had a little lamb
     """
 
     def __repr__(self):
@@ -567,12 +604,16 @@ class Tag(BaseMultipartText):
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
 
-    >>> em = Tag('em', 'emphasized text')
+    >>> em = Tag('em', 'Emphasized text')
     >>> from pybtex.backends import latex, html
     >>> print em.render(latex.Backend())
+    \emph{Emphasized text}
+    >>> print em.upper().render(latex.Backend())
+    \emph{EMPHASIZED TEXT}
+    >>> print em.lower().render(latex.Backend())
     \emph{emphasized text}
     >>> print em.render(html.Backend())
-    <em>emphasized text</em>
+    <em>Emphasized text</em>
 
     >>> t = Tag(u'em', u'123', Tag(u'em', u'456', Text(u'78'), u'9'), u'0')
     >>> print t[:2].render(html.Backend())
@@ -582,6 +623,10 @@ class Tag(BaseMultipartText):
 
     >>> tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
     >>> print tag.render(html.Backend())
+    <em>mary had a little lamb</em>
+    >>> print tag.upper().render(html.Backend())
+    <em>MARY HAD A LITTLE LAMB</em>
+    >>> print tag.lower().render(html.Backend())
     <em>mary had a little lamb</em>
     >>> print tag.capfirst().render(html.Backend())
     <em>Mary had a little lamb</em>
@@ -622,24 +667,32 @@ class HRef(BaseMultipartText):
     """A href is somethins like <href url="URL">some text</href> in HTML
     or \href{URL}{some text} in LaTeX.
 
-    >>> href = HRef('http://www.example.com', 'hyperlinked text')
+    >>> href = HRef('http://www.example.com', 'Hyperlinked text.')
     >>> from pybtex.backends import latex, html, plaintext
+    >>> print href.upper().render(latex.Backend())
+    \href{http://www.example.com}{HYPERLINKED TEXT.}
+    >>> print href.lower().render(latex.Backend())
+    \href{http://www.example.com}{hyperlinked text.}
     >>> print href.render(latex.Backend())
-    \href{http://www.example.com}{hyperlinked text}
+    \href{http://www.example.com}{Hyperlinked text.}
     >>> print href.render(html.Backend())
-    <a href="http://www.example.com">hyperlinked text</a>
+    <a href="http://www.example.com">Hyperlinked text.</a>
     >>> print href.render(plaintext.Backend())
-    hyperlinked text
+    Hyperlinked text.
 
-    >>> tag = HRef('info.html', Text(), Text('mary ', 'had ', 'a little lamb'))
+    >>> tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
     >>> print tag.render(html.Backend())
+    <a href="info.html">Mary had a little lamb</a>
+    >>> print tag.upper().render(html.Backend())
+    <a href="info.html">MARY HAD A LITTLE LAMB</a>
+    >>> print tag.lower().render(html.Backend())
     <a href="info.html">mary had a little lamb</a>
-    >>> print tag.capfirst().render(html.Backend())
+    >>> print tag.lower().capfirst().render(html.Backend())
     <a href="info.html">Mary had a little lamb</a>
     >>> print tag.add_period().render(html.Backend())
-    <a href="info.html">mary had a little lamb.</a>
+    <a href="info.html">Mary had a little lamb.</a>
     >>> print tag.add_period().add_period().render(html.Backend())
-    <a href="info.html">mary had a little lamb.</a>
+    <a href="info.html">Mary had a little lamb.</a>
 
     """
 
@@ -673,6 +726,10 @@ class Symbol(BaseText):
     &nbsp;
 
     >>> print Text(nbsp).capfirst().render(html.Backend())
+    &nbsp;
+    >>> print nbsp.upper().render(html.Backend())
+    &nbsp;
+    >>> print nbsp.lower().render(html.Backend())
     &nbsp;
     >>> print nbsp.add_period().render(html.Backend())
     &nbsp;.
