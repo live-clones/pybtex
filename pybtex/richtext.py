@@ -296,6 +296,11 @@ class BaseMultipartText(BaseText):
     def _typeinfo(self):
         return type(self), self.info
 
+    def from_list(self, parts):
+        cls, cls_args = self._typeinfo()
+        args = list(cls_args) + list(parts)
+        return cls(*args)
+
     def _merge(self, parts):
         groups = itertools.groupby(parts, lambda value: value._typeinfo())
         for typeinfo, group in groups:
@@ -487,9 +492,6 @@ class Text(BaseMultipartText):
         for part in self.parts:
             yield part
 
-    def from_list(self, lst):
-        return Text(*lst)
-
 
 class Tag(BaseMultipartText):
     """A tag is somethins like <foo>some text</foo> in HTML
@@ -519,9 +521,6 @@ class Tag(BaseMultipartText):
     >>> print tag.add_period().add_period().render(html.Backend())
     <em>mary had a little lamb.</em>
     """
-
-    def from_list(self, lst):
-        return Tag(self.name, *lst)
 
     def __check_name(self, name):
         depr_map = {}
@@ -586,9 +585,6 @@ class HRef(BaseMultipartText):
     def __repr__(self):
         reprparts = ', '.join(repr(part) for part in self.parts)
         return 'HRef({}, {})'.format(repr(self.url), reprparts)
-
-    def from_list(self, lst):
-        return HRef(self.url, *lst)
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
