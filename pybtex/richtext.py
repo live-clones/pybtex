@@ -339,10 +339,12 @@ class BaseMultipartText(BaseText):
     def upper(self):
         return self.map(string.upper)
 
+    @deprecated('0.19', 'use slicing instead')
     def apply_to_start(self, f):
         """Apply a function to the last part of the text"""
         return self.map(f, lambda index, length: index == 0)
 
+    @deprecated('0.19', 'use slicing instead')
     def apply_to_end(self, f):
         """Apply a function to the last part of the text"""
         return self.map(f, lambda index, length: index == length - 1)
