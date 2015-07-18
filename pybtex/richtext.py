@@ -108,7 +108,7 @@ class BaseText(object):
         raise NotImplementedError
 
     def add_period(self):
-        raise NotImplementedError
+        return self if textutils.is_terminated(unicode(self)) else Text(self, '.')
 
     def capfirst(self):
         """Capitalize the first letter of the text.
@@ -450,9 +450,6 @@ class String(unicode, BaseText):
     November
     """
 
-    def add_period(self):
-        return self + '.'
-
     def render(self, backend):
         return backend.format_str(self)
 
@@ -512,11 +509,15 @@ class Tag(BaseMultipartText):
     >>> print t[2:4].render(html.Backend())
     <em>3<em>4</em></em>
 
-    >>> text = Text(Tag('em', Text(), Text('mary ', 'had ', 'a little lamb')))
-    >>> print text.render(html.Backend())
+    >>> tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+    >>> print tag.render(html.Backend())
     <em>mary had a little lamb</em>
-    >>> print text.capfirst().render(html.Backend())
+    >>> print tag.capfirst().render(html.Backend())
     <em>Mary had a little lamb</em>
+    >>> print tag.add_period().render(html.Backend())
+    <em>mary had a little lamb.</em>
+    >>> print tag.add_period().add_period().render(html.Backend())
+    <em>mary had a little lamb.</em>
     """
 
     def from_list(self, lst):
@@ -562,11 +563,15 @@ class HRef(BaseMultipartText):
     >>> print href.render(plaintext.Backend())
     hyperlinked text
 
-    >>> text = Text(HRef('info.html', Text(), Text('mary ', 'had ', 'a little lamb')))
-    >>> print text.render(html.Backend())
+    >>> tag = HRef('info.html', Text(), Text('mary ', 'had ', 'a little lamb'))
+    >>> print tag.render(html.Backend())
     <a href="info.html">mary had a little lamb</a>
-    >>> print text.capfirst().render(html.Backend())
+    >>> print tag.capfirst().render(html.Backend())
     <a href="info.html">Mary had a little lamb</a>
+    >>> print tag.add_period().render(html.Backend())
+    <a href="info.html">mary had a little lamb.</a>
+    >>> print tag.add_period().add_period().render(html.Backend())
+    <a href="info.html">mary had a little lamb.</a>
 
     """
 
@@ -604,7 +609,10 @@ class Symbol(BaseText):
 
     >>> print Text(nbsp).capfirst().render(html.Backend())
     &nbsp;
-
+    >>> print nbsp.add_period().render(html.Backend())
+    &nbsp;.
+    >>> print nbsp.add_period().add_period().render(html.Backend())
+    &nbsp;.
     """
 
     def __init__(self, name):
