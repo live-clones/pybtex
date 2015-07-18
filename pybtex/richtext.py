@@ -510,14 +510,14 @@ class Tag(BaseMultipartText):
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
 
-    >>> emph = Tag('em', 'emphasized text')
+    >>> em = Tag('em', 'emphasized text')
     >>> from pybtex.backends import latex, html
-    >>> print emph.render(latex.Backend())
+    >>> print em.render(latex.Backend())
     \emph{emphasized text}
-    >>> print emph.render(html.Backend())
+    >>> print em.render(html.Backend())
     <em>emphasized text</em>
 
-    >>> t = Tag(u'emph', u'123', Tag(u'emph', u'456', Text(u'78'), u'9'), u'0')
+    >>> t = Tag(u'em', u'123', Tag(u'em', u'456', Text(u'78'), u'9'), u'0')
     >>> print t[:2].render(html.Backend())
     <em>12</em>
     >>> print t[2:4].render(html.Backend())
