@@ -363,7 +363,7 @@ class BaseMultipartText(BaseText):
         >>> text = Text()
         >>> parts = [Tag('em', 'Breaking'), Tag('em', ' '), Tag('em', 'news!')]
         >>> merged_parts = list(text._merge_similar(parts))
-        >>> merged_parts == [Tag('em', 'Breaking', ' ', 'news!')]
+        >>> merged_parts == [Tag('em', 'Breaking news!')]
         True
         """
 
@@ -525,11 +525,13 @@ class BaseMultipartText(BaseText):
             return self
 
 
-class String(unicode, BaseText):
+class String(BaseText):
     """
     A single Python string wrapped into BaseText interface.
 
     >>> print unicode(String('').upper())
+    <BLANKLINE>
+    >>> print unicode(String('', '').upper())
     <BLANKLINE>
     >>> print unicode(String('').lower())
     <BLANKLINE>
@@ -556,13 +558,47 @@ class String(unicode, BaseText):
     November
     >>> print unicode(String('November').add_period())
     November.
+
+    >>> print unicode(String('November', ', ', 'December', '.'))
+    November, December.
     """
+
+    def __init__(self, *parts):
+        self.value = ''.join(parts)
+
+    def __repr__(self):
+        return self.value.__repr__()
+
+    def __unicode__(self):
+        return unicode(self.value)
+
+    def __eq__(self, other):
+        return type(other) == type(self) and self.value == other.value
+
+    def __getitem__(self, index):
+        return self.value.__getitem__(index)
+
+    def __len__(self):
+        return self.value.__len__()
 
     def __add__(self, other):
         return BaseText.__add__(self, other)
 
+    def lower(self):
+        return self.value.lower()
+
+    def upper(self):
+        return self.value.upper()
+
+    @property
+    def parts(self):
+        return [unicode(self)]
+
+    def _typeinfo(self):
+        return String, ()
+
     def render(self, backend):
-        return backend.format_str(self)
+        return backend.format_str(self.value)
 
 
 class Text(BaseMultipartText):
