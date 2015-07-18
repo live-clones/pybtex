@@ -416,6 +416,9 @@ class BaseMultipartText(BaseText):
     def upper(self):
         return self._create_similar(part.upper() for part in self.parts)
 
+    def lower(self):
+        return self._create_similar(part.lower() for part in self.parts)
+
     @deprecated('0.19', 'use slicing instead')
     def apply_to_start(self, f):
         """Apply a function to the last part of the text"""
