@@ -122,8 +122,10 @@ class BaseText(object):
     def lower(self):
         raise NotImplementedError
 
-    def add_period(self):
-        return self if textutils.is_terminated(unicode(self)) else self + '.'
+    def add_period(self, period='.'):
+        """Add a period to the end of text, if necessary."""
+
+        return self if textutils.is_terminated(unicode(self)) else self + period
 
     def capfirst(self):
         """Capitalize the first letter of the text.
