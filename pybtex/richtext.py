@@ -399,7 +399,7 @@ class BaseMultipartText(BaseText):
         Mary had a little lamb
 
         """
-        return self.apply_to_start(textutils.capfirst)
+        return self[:1].upper() + self[1:]
 
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary.
