@@ -522,8 +522,12 @@ class Tag(BaseMultipartText):
     <em>12</em>
     >>> print t[2:4].render(html.Backend())
     <em>3<em>4</em></em>
-    >>> print t[4:].render(html.Backend())
-    <em><em>56789</em>0</em>
+
+    >>> text = Text(Tag('em', Text(), Text('mary ', 'had ', 'a little lamb')))
+    >>> print text.render(html.Backend())
+    <em>mary had a little lamb</em>
+    >>> print text.capfirst().render(html.Backend())
+    <em>Mary had a little lamb</em>
     """
 
     def from_list(self, lst):
@@ -568,6 +572,13 @@ class HRef(BaseMultipartText):
     <a href="http://www.example.com">hyperlinked text</a>
     >>> print href.render(plaintext.Backend())
     hyperlinked text
+
+    >>> text = Text(HRef('info.html', Text(), Text('mary ', 'had ', 'a little lamb')))
+    >>> print text.render(html.Backend())
+    <a href="info.html">mary had a little lamb</a>
+    >>> print text.capfirst().render(html.Backend())
+    <a href="info.html">Mary had a little lamb</a>
+
     """
 
     def __init__(self, url, *args):
@@ -581,6 +592,9 @@ class HRef(BaseMultipartText):
     def __repr__(self):
         reprparts = ', '.join(repr(part) for part in self.parts)
         return 'HRef({}, {})'.format(repr(self.url), reprparts)
+
+    def from_list(self, lst):
+        return HRef(self.url, *lst)
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
@@ -598,6 +612,10 @@ class Symbol(BaseText):
     ~
     >>> print nbsp.render(html.Backend())
     &nbsp;
+
+    >>> print Text(nbsp).capfirst().render(html.Backend())
+    &nbsp;
+
     """
 
     def __init__(self, name):
@@ -645,6 +663,12 @@ class Symbol(BaseText):
 
     def render(self, backend):
         return backend.symbols[self.name]
+
+    def upper(self):
+        return self
+
+    def lower(self):
+        return self
 
 
 nbsp = Symbol('nbsp')
