@@ -104,11 +104,11 @@ class Backend(BaseBackend):
         return text
 
     def format_tag(self, tag_name, text):
-        tag = self.__class__.tags.get(tag_name)
+        tag = self.tags.get(tag_name)
         if tag is None:
-            return ur'%s' % text
+            return text
         else:
-            return ur'%s%s%s' % (tag, text, tag) if text else u''
+            return ur'{0}{1}{0}'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
         return ur'[%s](%s)' % (text, url) if text else u''

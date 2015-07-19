@@ -55,7 +55,7 @@ class Backend(BaseBackend):
     }
 
     def format_tag(self, tag_name, text):
-        tag = self.__class__.tags.get(tag_name)
+        tag = self.tags.get(tag_name)
         if tag is None:
             return u'{%s}' % text if text else u''
         else:
