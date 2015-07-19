@@ -83,7 +83,11 @@ class BaseText(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __getitem__(self, key):
+    def __unicode__(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def __eq__(self, other):
         raise NotImplementedError
 
     @abstractmethod
@@ -91,7 +95,7 @@ class BaseText(object):
         raise NotImplementedError
 
     @abstractmethod
-    def __eq__(self, other):
+    def __getitem__(self, key):
         raise NotImplementedError
 
     def __add__(self, other):
@@ -108,43 +112,6 @@ class BaseText(object):
         """
 
         return Text(self, other)
-
-    def _unpack(self):
-        """
-        For Text object, iterate over all text parts.
-        Else, yield the object itself.
-
-        Used for unpacking Text objects passed as children to another Text object.
-        """
-
-        yield self
-
-    def _typeinfo(self):
-        """
-
-        Return the type of this object and its parameters
-        (not including the actual text content).
-
-        Used for:
-
-        - merging similar tags together (<em>A</em><em>B</em> -> <em>AB</em>),
-        - creating similar text objects with different text content.
-
-        """
-
-        return None, ()
-
-    @abstractmethod
-    def render(self, backend):
-        raise NotImplementedError
-
-    @abstractmethod
-    def upper(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def lower(self):
-        raise NotImplementedError
 
     def append(self, text):
         """
@@ -177,6 +144,43 @@ class BaseText(object):
     def capitalize(self):
         """Capitalize the first letter of the text."""
         return self[:1].upper() + self[1:]
+
+    @abstractmethod
+    def render(self, backend):
+        raise NotImplementedError
+
+    @abstractmethod
+    def lower(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def upper(self):
+        raise NotImplementedError
+
+    def _unpack(self):
+        """
+        For Text object, iterate over all text parts.
+        Else, yield the object itself.
+
+        Used for unpacking Text objects passed as children to another Text object.
+        """
+
+        yield self
+
+    def _typeinfo(self):
+        """
+
+        Return the type of this object and its parameters
+        (not including the actual text content).
+
+        Used for:
+
+        - merging similar tags together (<em>A</em><em>B</em> -> <em>AB</em>),
+        - creating similar text objects with different text content.
+
+        """
+
+        return None, ()
 
 
 class BaseMultipartText(BaseText):
@@ -211,9 +215,8 @@ class BaseMultipartText(BaseText):
         self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
 
-    def __len__(self):
-        """Return the number of characters in this Text."""
-        return self.length
+    def __unicode__(self):
+        return ''.join(unicode(part) for part in self.parts)
 
     def __eq__(self, other):
         return (
@@ -221,6 +224,10 @@ class BaseMultipartText(BaseText):
             self._typeinfo() == other._typeinfo() and
             self.parts == other.parts
         )
+
+    def __len__(self):
+        """Return the number of characters in this Text."""
+        return self.length
 
     def __getitem__(self, key):
         """
@@ -355,147 +362,6 @@ class BaseMultipartText(BaseText):
                 length += len(part)
         return self._create_similar(reversed(parts))
 
-    def _typeinfo(self):
-        """Return the type and the parameters used to create this text object.
-
-        >>> text = Tag('strong', 'Heavy rain!')
-        >>> text._typeinfo() == (Tag, ('strong',))
-        True
-
-        """
-
-        return type(self), self.info
-
-    def _create_similar(self, parts):
-        """
-        Create a new text object of the same type with the same parameters,
-        with different text content.
-
-        >>> text = Tag('strong', 'Bananas!')
-        >>> text._create_similar(['Apples!']) == Tag('strong', 'Apples!')
-        True
-        """
-
-        cls, cls_args = self._typeinfo()
-        args = list(cls_args) + list(parts)
-        return cls(*args)
-
-    def _merge_similar(self, parts):
-        """Merge adjacent text objects with the same type and parameters together.
-
-        >>> text = Text()
-        >>> parts = [Tag('em', 'Breaking'), Tag('em', ' '), Tag('em', 'news!')]
-        >>> merged_parts = list(text._merge_similar(parts))
-        >>> merged_parts == [Tag('em', 'Breaking news!')]
-        True
-        """
-
-        groups = itertools.groupby(parts, lambda value: value._typeinfo())
-        for typeinfo, group in groups:
-            cls, info = typeinfo
-            group = list(group)
-            if cls and len(group) > 1:
-                group_parts = itertools.chain(*(text.parts for text in group))
-                args = list(info) + list(group_parts)
-                yield cls(*args)
-            else:
-                for text in group:
-                    yield text
-
-    def render(self, backend):
-        """Return backend-dependent textual representation of this Text."""
-
-        rendered_list = [part.render(backend) for part in self.parts]
-        assert all(isinstance(item, backend.RenderType)
-                   for item in rendered_list)
-        return backend.render_sequence(rendered_list)
-
-    def enumerate(self):
-        for n, child in enumerate(self.parts):
-            try:
-                for p in child.enumerate():
-                    yield p
-            except AttributeError:
-                yield self, n
-
-    def reversed(self):
-        for n, child in reversed(list(enumerate(self.parts))):
-            try:
-                for p in child.reversed():
-                    yield p
-            except AttributeError:
-                yield self, n
-
-    def map(self, f, condition=None):
-        if condition is None:
-            condition = lambda index, length: True
-        def iter_map_with_condition():
-            length = len(self)
-            for index, child in enumerate(self.parts):
-                if hasattr(child, 'map'):
-                    yield child.map(f, condition) if condition(index, length) else child
-                else:
-                    yield f(child) if condition(index, length) else child
-        return self._create_similar(iter_map_with_condition())
-
-    def upper(self):
-        return self._create_similar(part.upper() for part in self.parts)
-
-    def lower(self):
-        return self._create_similar(part.lower() for part in self.parts)
-
-    @deprecated('0.19', 'use slicing instead')
-    def apply_to_start(self, f):
-        """Apply a function to the last part of the text"""
-        return self.map(f, lambda index, length: index == 0)
-
-    @deprecated('0.19', 'use slicing instead')
-    def apply_to_end(self, f):
-        """Apply a function to the last part of the text"""
-        return self.map(f, lambda index, length: index == length - 1)
-
-    def get_beginning(self):
-        try:
-            l, i = self.enumerate().next()
-        except StopIteration:
-            pass
-        else:
-            return l.parts[i]
-
-    def get_end(self):
-        try:
-            l, i = self.reversed().next()
-        except StopIteration:
-            pass
-        else:
-            return l.parts[i]
-
-    def join(self, parts):
-        """Join a list using this text (like string.join)
-
-        >>> print unicode(Text(' ').join([]))
-        <BLANKLINE>
-        >>> print unicode(Text(' ').join(['a', 'b', 'c']))
-        a b c
-        >>> print unicode(Text(nbsp).join(['a', 'b', 'c']))
-        a<nbsp>b<nbsp>c
-        """
-
-        if not parts:
-            return Text()
-        joined = []
-        for part in parts[:-1]:
-            joined.extend([part, deepcopy(self)])
-        joined.append(parts[-1])
-        return Text(*joined)
-
-    @deprecated('0.19', 'use __unicode__() instead')
-    def plaintext(self):
-        return unicode(self)
-
-    def __unicode__(self):
-        return ''.join(unicode(part) for part in self.parts)
-
     def append(self, text):
         """
         Append text to the end of this text.
@@ -570,6 +436,149 @@ class BaseMultipartText(BaseText):
             return self.append(period)
         else:
             return self
+
+    def lower(self):
+        return self._create_similar(part.lower() for part in self.parts)
+
+    def upper(self):
+        return self._create_similar(part.upper() for part in self.parts)
+
+    def join(self, parts):
+        """Join a list using this text (like string.join)
+
+        >>> print unicode(Text(' ').join([]))
+        <BLANKLINE>
+        >>> print unicode(Text(' ').join(['a', 'b', 'c']))
+        a b c
+        >>> print unicode(Text(nbsp).join(['a', 'b', 'c']))
+        a<nbsp>b<nbsp>c
+        """
+
+        if not parts:
+            return Text()
+        joined = []
+        for part in parts[:-1]:
+            joined.extend([part, deepcopy(self)])
+        joined.append(parts[-1])
+        return Text(*joined)
+
+    def render(self, backend):
+        """Return backend-dependent textual representation of this Text."""
+
+        rendered_list = [part.render(backend) for part in self.parts]
+        assert all(isinstance(item, backend.RenderType)
+                   for item in rendered_list)
+        return backend.render_sequence(rendered_list)
+
+    def _typeinfo(self):
+        """Return the type and the parameters used to create this text object.
+
+        >>> text = Tag('strong', 'Heavy rain!')
+        >>> text._typeinfo() == (Tag, ('strong',))
+        True
+
+        """
+
+        return type(self), self.info
+
+    def _create_similar(self, parts):
+        """
+        Create a new text object of the same type with the same parameters,
+        with different text content.
+
+        >>> text = Tag('strong', 'Bananas!')
+        >>> text._create_similar(['Apples!']) == Tag('strong', 'Apples!')
+        True
+        """
+
+        cls, cls_args = self._typeinfo()
+        args = list(cls_args) + list(parts)
+        return cls(*args)
+
+    def _merge_similar(self, parts):
+        """Merge adjacent text objects with the same type and parameters together.
+
+        >>> text = Text()
+        >>> parts = [Tag('em', 'Breaking'), Tag('em', ' '), Tag('em', 'news!')]
+        >>> merged_parts = list(text._merge_similar(parts))
+        >>> merged_parts == [Tag('em', 'Breaking news!')]
+        True
+        """
+
+        groups = itertools.groupby(parts, lambda value: value._typeinfo())
+        for typeinfo, group in groups:
+            cls, info = typeinfo
+            group = list(group)
+            if cls and len(group) > 1:
+                group_parts = itertools.chain(*(text.parts for text in group))
+                args = list(info) + list(group_parts)
+                yield cls(*args)
+            else:
+                for text in group:
+                    yield text
+
+    @deprecated('0.19', 'use __unicode__() instead')
+    def plaintext(self):
+        return unicode(self)
+
+    @deprecated('0.19')
+    def enumerate(self):
+        for n, child in enumerate(self.parts):
+            try:
+                for p in child.enumerate():
+                    yield p
+            except AttributeError:
+                yield self, n
+
+    @deprecated('0.19')
+    def reversed(self):
+        for n, child in reversed(list(enumerate(self.parts))):
+            try:
+                for p in child.reversed():
+                    yield p
+            except AttributeError:
+                yield self, n
+
+    @deprecated('0.19', 'use slicing instead')
+    def get_beginning(self):
+        try:
+            l, i = self.enumerate().next()
+        except StopIteration:
+            pass
+        else:
+            return l.parts[i]
+
+    @deprecated('0.19', 'use slicing instead')
+    def get_end(self):
+        try:
+            l, i = self.reversed().next()
+        except StopIteration:
+            pass
+        else:
+            return l.parts[i]
+
+    @deprecated('0.19', 'use slicing instead')
+    def apply_to_start(self, f):
+        """Apply a function to the last part of the text"""
+        return self.map(f, lambda index, length: index == 0)
+
+    @deprecated('0.19', 'use slicing instead')
+    def apply_to_end(self, f):
+        """Apply a function to the last part of the text"""
+        return self.map(f, lambda index, length: index == length - 1)
+
+    @deprecated('0.19')
+    def map(self, f, condition=None):
+        if condition is None:
+            condition = lambda index, length: True
+        def iter_map_with_condition():
+            length = len(self)
+            for index, child in enumerate(self.parts):
+                if hasattr(child, 'map'):
+                    yield child.map(f, condition) if condition(index, length) else child
+                else:
+                    yield f(child) if condition(index, length) else child
+        return self._create_similar(iter_map_with_condition())
 
 
 class String(BaseText):
