@@ -21,10 +21,13 @@
 
 import re
 
+from pybtex.utils import deprecated
+
 terminators = '.?!'
 delimiter_re = re.compile(r'([\s\-])')
 whitespace_re = re.compile(r'\s+')
 
+@deprecated('0.19', 'use str.capitalize() instead')
 def capfirst(s):
     return s[0].upper() + s[1:] if s else s
 

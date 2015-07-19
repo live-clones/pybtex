@@ -23,7 +23,6 @@ from StringIO import StringIO
 from contextlib import contextmanager
 
 import pybtex.io
-from pybtex.textutils import capfirst, add_period
 
 
 strict = True

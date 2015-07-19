@@ -219,20 +219,29 @@ def together(children, data, last_tie=True):
 
 
 @node
-def sentence(children, data, capfirst=True, add_period=True, sep=', '):
+def sentence(children, data, capfirst=None, capitalize=True, add_period=True, sep=', '):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
     >>> print unicode(sentence.format())
     <BLANKLINE>
     >>> print unicode(sentence(sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format())
     Mary had a little lamb.
-    >>> print unicode(sentence(capfirst=False, add_period=False) ['uno', 'dos', 'tres'].format())
+    >>> print unicode(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format())
     uno, dos, tres
     """
 
+    if capfirst is not None:
+        from warnings import warn
+        message = (
+            'sentence(capfirst={0}) is deprecated since 0.19: '
+            'use sentence(capitalize={0}) instead'
+        )
+        warn(message.format(capfirst), DeprecationWarning)
+        capitalize = capfirst
+
     text = join(sep) [children].format_data(data)
-    if capfirst:
-        text = text.capfirst()
+    if capitalize:
+        text = text.capitalize()
     if add_period:
         text = text.add_period()
     return text

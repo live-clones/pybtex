@@ -30,7 +30,7 @@ Usage:
 this is a \emph{very} rich text
 >>> print unicode(t)
 this is a very rich text
->>> t = t.capfirst().add_period()
+>>> t = t.capitalize().add_period()
 >>> print t.render(backend)
 This is a \emph{very} rich text.
 >>> print unicode(t)
@@ -151,9 +151,12 @@ class BaseText(object):
 
         return self if textutils.is_terminated(unicode(self)) else self + period
 
+    @deprecated('0.19', 'renamed to capitalize()')
     def capfirst(self):
-        """Capitalize the first letter of the text."""
+        return self.capitalize()
 
+    def capitalize(self):
+        """Capitalize the first letter of the text."""
         return self[:1].upper() + self[1:]
 
 
@@ -535,7 +538,7 @@ class String(BaseText):
     <BLANKLINE>
     >>> print unicode(String('').lower())
     <BLANKLINE>
-    >>> print unicode(String('').capfirst())
+    >>> print unicode(String('').capitalize())
     <BLANKLINE>
     >>> print unicode(String('').add_period())
     .
@@ -552,9 +555,9 @@ class String(BaseText):
     NOVEMBER
     >>> print unicode(String('November').lower())
     november
-    >>> print unicode(String('november').capfirst())
+    >>> print unicode(String('november').capitalize())
     November
-    >>> print unicode(String('November').capfirst())
+    >>> print unicode(String('November').capitalize())
     November
     >>> print unicode(String('November').add_period())
     November.
@@ -628,7 +631,7 @@ class Text(BaseMultipartText):
     >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
     >>> print unicode(text)
     mary had a little lamb
-    >>> print unicode(text.capfirst())
+    >>> print unicode(text.capitalize())
     Mary had a little lamb
     >>> print unicode(text.upper())
     MARY HAD A LITTLE LAMB
@@ -673,7 +676,7 @@ class Tag(BaseMultipartText):
     <em>MARY HAD A LITTLE LAMB</em>
     >>> print tag.lower().render(html.Backend())
     <em>mary had a little lamb</em>
-    >>> print tag.capfirst().render(html.Backend())
+    >>> print tag.capitalize().render(html.Backend())
     <em>Mary had a little lamb</em>
     >>> print tag.add_period().render(html.Backend())
     <em>mary had a little lamb.</em>
@@ -732,7 +735,7 @@ class HRef(BaseMultipartText):
     <a href="info.html">MARY HAD A LITTLE LAMB</a>
     >>> print tag.lower().render(html.Backend())
     <a href="info.html">mary had a little lamb</a>
-    >>> print tag.lower().capfirst().render(html.Backend())
+    >>> print tag.lower().capitalize().render(html.Backend())
     <a href="info.html">Mary had a little lamb</a>
     >>> print tag.add_period().render(html.Backend())
     <a href="info.html">Mary had a little lamb.</a>
@@ -770,7 +773,7 @@ class Symbol(BaseText):
     >>> print nbsp.render(html.Backend())
     &nbsp;
 
-    >>> print Text(nbsp).capfirst().render(html.Backend())
+    >>> print Text(nbsp).capitalize().render(html.Backend())
     &nbsp;
     >>> print nbsp.upper().render(html.Backend())
     &nbsp;
