@@ -566,7 +566,7 @@ class BaseMultipartText(BaseText):
 
         end = self.get_end()
         if end and not textutils.is_terminated(end):
-            return self._create_similar(self.parts + [period])
+            return self.append(period)
         else:
             return self
 
