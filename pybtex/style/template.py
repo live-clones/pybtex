@@ -309,11 +309,9 @@ def optional_field(children, data, *args, **kwargs):
 def tag(children, data, name):
     """Wrap text into a tag.
 
-    >>> import pybtex.backends.html
-    >>> html = pybtex.backends.html.Backend()
-    >>> print tag('em') ['important'].format().render(html)
+    >>> print tag('em') ['important'].format().render_as('html')
     <em>important</em>
-    >>> print sentence ['ready', 'set', tag('em') ['go']].format().render(html)
+    >>> print sentence ['ready', 'set', tag('em') ['go']].format().render_as('html')
     Ready, set, <em>go</em>.
     """
     parts = _format_list(children, data)
@@ -323,11 +321,9 @@ def tag(children, data, name):
 def href(children, data):
     """Wrap text into a href.
 
-    >>> import pybtex.backends.html
-    >>> html = pybtex.backends.html.Backend()
-    >>> print href ['www.test.org', 'important'].format().render(html)
+    >>> print href ['www.test.org', 'important'].format().render_as('html')
     <a href="www.test.org">important</a>
-    >>> print sentence ['ready', 'set', href ['www.test.org', 'go']].format().render(html)
+    >>> print sentence ['ready', 'set', href ['www.test.org', 'go']].format().render_as('html')
     Ready, set, <a href="www.test.org">go</a>.
     """
     parts = _format_list(children, data)
