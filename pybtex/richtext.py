@@ -42,7 +42,7 @@ This is a very rich text.
 Some \emph{nested \texttt{Text objects}}.
 >>> print unicode(t)
 Some nested Text objects.
->>> t = t.map(lambda string: string.upper())
+>>> t = t.upper()
 >>> print t.render(backend)
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
 >>> print unicode(t)
