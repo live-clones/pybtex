@@ -146,8 +146,8 @@ class BstParser(Scanner):
 
 
 def parse_file(filename, encoding=None):
-    bst_file = pybtex.io.open_unicode(filename, encoding=encoding)
-    return parse_stream(bst_file, filename)
+    with pybtex.io.open_unicode(filename, encoding=encoding) as bst_file:
+        return parse_stream(bst_file, filename)
 
 
 def parse_stream(stream, filename='<INPUT>'):
