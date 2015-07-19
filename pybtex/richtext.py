@@ -281,7 +281,14 @@ class BaseMultipartText(BaseText):
     def __init__(self, *parts):
         """Create a text object consisting of one or more parts.
 
-        Text() objects are unpacked and their children are included directly.
+        Empty parts are ignored:
+
+        >>> Text() == Text('') == Text('', '', '')
+        True
+        >>> Text('Word', '') == Text('Word')
+        True
+
+        Text() objects are unpacked and their children are included directly:
 
         >>> text = Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
         >>> text == Text('Multi', ' ', Tag('em', 'part'), ' ', 'text!')
@@ -290,7 +297,7 @@ class BaseMultipartText(BaseText):
         >>> text == Tag('strong', 'Multi', ' ', Tag('em', 'part'), ' ', 'text!')
         True
 
-        Similar objects are merged into one.
+        Similar objects are merged into one:
 
         >>> text = Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
         >>> text == Text('Multi', Tag('em', 'part', ' ', 'text!'))
@@ -301,8 +308,8 @@ class BaseMultipartText(BaseText):
         """
 
         parts = (ensure_text(part) for part in parts)
-        nonenpty_parts = (part for part in parts if part)
-        unpacked_parts = itertools.chain(*(part._unpack() for part in parts))
+        nonempty_parts = (part for part in parts if part)
+        unpacked_parts = itertools.chain(*(part._unpack() for part in nonempty_parts))
         merged_parts = self._merge_similar(unpacked_parts)
         self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
