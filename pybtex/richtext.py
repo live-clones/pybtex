@@ -25,7 +25,7 @@ Usage:
 
 >>> from pybtex.backends import latex
 >>> backend = latex.Backend()
->>> t = Text('this ', 'is a ', Tag('emph', 'very'), Text(' rich', ' text'))
+>>> t = Text('this ', 'is a ', Tag('em', 'very'), Text(' rich', ' text'))
 >>> print t.render(backend)
 this is a \emph{very} rich text
 >>> print t.plaintext()
@@ -37,7 +37,7 @@ This is a \emph{very} rich text.
 This is a very rich text.
 >>> print Symbol('ndash').render(backend)
 --
->>> t = Text('Some ', Tag('emph', Text('nested ', Tag('texttt', 'Text', Text(' objects')))), '.')
+>>> t = Text('Some ', Tag('em', Text('nested ', Tag('tt', 'Text', Text(' objects')))), '.')
 >>> print t.render(backend)
 Some \emph{nested \texttt{Text objects}}.
 >>> print t.plaintext()
@@ -48,12 +48,12 @@ SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
 >>> print t.plaintext()
 SOME NESTED TEXT OBJECTS.
 
->>> t = Text(', ').join(['one', 'two', Tag('emph', 'three')])
+>>> t = Text(', ').join(['one', 'two', Tag('em', 'three')])
 >>> print t.render(backend)
 one, two, \emph{three}
 >>> print t.plaintext()
 one, two, three
->>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('emph', 'three')])
+>>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('em', 'three')])
 >>> print t.render(backend)
 one~two~\emph{three}
 >>> print t.plaintext()
@@ -63,6 +63,7 @@ one<nbsp>two<nbsp>three
 from copy import deepcopy
 from pybtex import textutils
 import string
+import warnings
 
 class Text(list):
     """
@@ -81,7 +82,7 @@ class Text(list):
     ['a', 'c']
     >>> Text('a', Text(), 'c')
     ['a', 'c']
-    >>> Text('a', Text('b', 'c'), Tag('emph', 'x'), Symbol('nbsp'), 'd')
+    >>> Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd')
     ['a', ['b', 'c'], ['x'], Symbol('nbsp'), 'd']
     >>> Text({}) # doctest: +ELLIPSIS
     Traceback (most recent call last):
@@ -244,23 +245,23 @@ class Text(list):
         >>> print text.add_period().plaintext()
         That's all, folks.
 
-        >>> text = Tag('emph', Text("That's all, folks"))
+        >>> text = Tag('em', Text("That's all, folks"))
         >>> print text.add_period().render(html)
         <em>That's all, folks.</em>
         >>> print text.add_period().add_period().render(html)
         <em>That's all, folks.</em>
 
-        >>> text = Text("That's all, ", Tag('emph', 'folks'))
+        >>> text = Text("That's all, ", Tag('em', 'folks'))
         >>> print text.add_period().render(html)
         That's all, <em>folks</em>.
         >>> print text.add_period().add_period().render(html)
         That's all, <em>folks</em>.
 
-        >>> text = Text("That's all, ", Tag('emph', 'folks.'))
+        >>> text = Text("That's all, ", Tag('em', 'folks.'))
         >>> print text.add_period().render(html)
         That's all, <em>folks.</em>
 
-        >>> text = Text("That's all, ", Tag('emph', 'folks'))
+        >>> text = Text("That's all, ", Tag('em', 'folks'))
         >>> print text.add_period('!').render(html)
         That's all, <em>folks</em>!
         >>> print text.add_period('!').add_period('.').render(html)
@@ -278,7 +279,7 @@ class Tag(Text):
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
 
-    >>> emph = Tag('emph', 'emphasized text')
+    >>> emph = Tag('em', 'emphasized text')
     >>> from pybtex.backends import latex, html
     >>> print emph.render(latex.Backend())
     \emph{emphasized text}
@@ -289,13 +290,23 @@ class Tag(Text):
     def from_list(self, lst):
         return Tag(self.name, *lst)
 
+    def __check_name(self, name):
+        depr_map = {}
+        depr_map[u'emph'] = u'em'
+        if name in depr_map:
+            msg  = u"The tag '%s' is deprecated" % name
+            msg += u", use '%s' instead." % depr_map[name]
+            warnings.warn(msg, DeprecationWarning)
+            return depr_map[name]
+        return name
+
     def __init__(self, name, *args):
         if not isinstance(name, (basestring, Text)):
             raise TypeError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
         if isinstance(name, Text):
             name = name.plaintext()
-        self.name = name
+        self.name = self.__check_name(name)
         Text.__init__(self, *args)
 
     def render(self, backend):

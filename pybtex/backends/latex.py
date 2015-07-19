@@ -29,13 +29,24 @@ class Backend(BaseBackend):
         'newblock': u'\n\\newblock ',
         'nbsp': u'~'
     }
-    
+    tags = {
+        u'em'     : u'emph',
+        u'strong' : None,
+        u'i'      : u'textit',
+        u'b'      : u'textbf',
+        u'tt'     : u'texttt'
+    }
+
     def format_tag(self, tag_name, text):
-        return ur'\%s{%s}' % (tag_name, text)
+        tag = self.__class__.tags.get(tag_name)
+        if tag is None:
+            return ur'{%s}' % text
+        else:
+            return ur'\%s{%s}' % (tag, text)
 
     def format_href(self, url, text):
         return ur'\href{%s}{%s}' % (url, text)
-    
+
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
             self.output(self.formatted_bibliography.preamble + u'\n')

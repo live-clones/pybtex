@@ -36,6 +36,12 @@ class BibliographyDataError(PybtexError):
     pass
 
 
+class InvalidNameString(PybtexError):
+    def __init__(self, name_string):
+        message = 'Too many commas in {}'.format(repr(name_string))
+        super(InvalidNameString, self).__init__(message)
+
+
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
         self.entries = OrderedCaseInsensitiveDict()
@@ -423,6 +429,11 @@ class Person(object):
             return lst[:pos], lst[pos:]
 
         parts = split_tex_string(name, ',')
+        if len(parts) > 3:
+            report_error(InvalidNameString(name))
+            last_parts = parts[2:]
+            parts = parts[:2] + [' '.join(last_parts)]
+
         if len(parts) == 3: # von Last, Jr, First
             process_von_last(split_tex_string(parts[0]))
             self._lineage.extend(split_tex_string(parts[1]))
@@ -439,7 +450,8 @@ class Person(object):
             process_first_middle(first_middle)
             process_von_last(von_last)
         else:
-            raise PybtexError('Invalid name format: %s' % name)
+            # should hot really happen
+            raise ValueError(name)
 
     def __eq__(self, other):
         if not isinstance(other, Person):

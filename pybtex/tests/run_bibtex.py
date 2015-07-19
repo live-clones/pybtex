@@ -30,6 +30,8 @@ from tempfile import mkdtemp
 from shutil import rmtree
 from subprocess import Popen, PIPE
 
+from pybtex.exceptions import PybtexError
+from pybtex.errors import report_error
 from pybtex.database.output import bibtex
 from pybtex.database import BibliographyData
 from pybtex.database import Person, Entry
@@ -67,7 +69,7 @@ def run_bibtex(style, database, citations=None):
         bibtex = Popen(('bibtex', 'test'), cwd=tmpdir, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bibtex.communicate()
         if bibtex.returncode:
-            raise ValueError(stdout)
+            report_error(PybtexError(stdout))
         with open(path.join(tmpdir, 'test.bbl')) as bbl_file:
             result = bbl_file.read()
         return result

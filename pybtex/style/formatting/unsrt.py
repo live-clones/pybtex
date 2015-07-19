@@ -62,7 +62,7 @@ class Style(BaseStyle):
             self.format_names('author'),
             self.format_title(e, 'title'),
             sentence(capfirst=False) [
-                tag('emph') [field('journal')],
+                tag('em') [field('journal')],
                 optional[ volume_and_pages ],
                 date],
             sentence(capfirst=False) [ optional_field('note') ],
@@ -92,7 +92,7 @@ class Style(BaseStyle):
             return sentence(capfirst=False) [result]
         else:
             return result
-    
+
     def format_volume_and_series(self, e, as_sentence=True):
         volume_and_series = optional [
             words [
@@ -119,7 +119,7 @@ class Style(BaseStyle):
             return sentence(capfirst=False) [result]
         else:
             return result
-    
+
     def format_chapter_and_pages(self, e):
         return join(sep=', ') [
             optional [words ['chapter', field('chapter')]],
@@ -135,32 +135,17 @@ class Style(BaseStyle):
         ]
 
     def format_title(self, e, which_field, as_sentence=True):
-
-        def protected_capitalize(x):
-            """Capitalize string, but protect {...} parts."""
-            result = ""
-            level = 0
-            for pos, c in enumerate(x):
-                if c == '{':
-                    level += 1
-                elif c == '}':
-                    level -= 1
-                elif pos == 0:
-                    c = c.upper()
-                elif level <= 0:
-                    c = c.lower()
-                result += c
-            return result
+        from pybtex.bibtex.utils import change_case
 
         formatted_title = field(
-            which_field, apply_func=protected_capitalize)
+            which_field, apply_func=lambda text: change_case(text, 't'))
         if as_sentence:
             return sentence(capfirst=False) [ formatted_title ]
         else:
             return formatted_title
 
     def format_btitle(self, e, which_field, as_sentence=True):
-        formatted_title = tag('emph') [ field(which_field) ]
+        formatted_title = tag('em') [ field(which_field) ]
         if as_sentence:
             return sentence[ formatted_title ]
         else:

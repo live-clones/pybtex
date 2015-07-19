@@ -1,0 +1,14 @@
+*.pyc
+*~
+*.swp
+*.orig
+docs/html
+docs/site
+docs/man1/*.1
+build
+dist
+pybtex.egg-info
+MANIFEST
+.ropeproject
+.coverage
+__pycache__

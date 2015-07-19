@@ -27,6 +27,12 @@ import pybtex.plugin
 import pybtex.style.formatting.plain
 
 
+# unittest.assertRaisesRegexp() is deprecated and renamed to
+# unittest.assertRaisesRegex() in Python 3
+if not hasattr(nose.tools, 'assert_raises_regex'):
+    nose.tools.assert_raises_regex = nose.tools.assert_raises_regexp
+
+
 def test_plugin_loader():
     """Check that all enumerated plugins can be imported."""
     for group in pybtex.plugin._DEFAULT_PLUGINS:
@@ -93,7 +99,7 @@ def test_bad_find_plugin():
     nose.tools.assert_raises(
         pybtex.plugin.PluginGroupNotFound,
         lambda: pybtex.plugin.find_plugin("pybtex.invalid.group", "__oops"))
-    nose.tools.assert_raises_regexp(
+    nose.tools.assert_raises_regex(
         pybtex.plugin.PluginNotFound,
         re.escape('plugin pybtex.style.formatting.__oops not found'),
         lambda: pybtex.plugin.find_plugin("pybtex.style.formatting", "__oops"))

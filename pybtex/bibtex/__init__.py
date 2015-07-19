@@ -1,5 +1,4 @@
-# Copyright (c) 2007, 2008, 2009, 2010, 2011, 2012  Andrey Golovizin
-#
+# Copyright (c) 2007, 2008, 2009, 2010, 2011, 2012  Andrey Golovizin #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -23,35 +22,66 @@
 """
 
 
-def make_bibliography(aux_filename,
+from os import path
+
+
+from pybtex import Engine
+
+class BibTeXEngine(Engine):
+    def format_from_files(
+        self,
+        bib_files_or_filenames,
+        style,
+        citations='*',
         bib_format=None,
         bib_encoding=None,
         output_encoding=None,
         bst_encoding=None,
         min_crossrefs=2,
-        style=None,
+        output_filename=None,
+        add_output_suffix=False,
         **kwargs
     ):
 
-    from os import path
+        from io import StringIO
+        import pybtex.io
+        from pybtex.bibtex import bst
+        from pybtex.bibtex.interpreter import Interpreter
 
-    import pybtex.io
-    from pybtex.bibtex import bst
-    from pybtex.bibtex.interpreter import Interpreter
-    from pybtex import auxfile
+        if bib_format is None:
+            from pybtex.database.input.bibtex import Parser as bib_format
+        bst_filename = style + path.extsep + 'bst'
+        bst_script = bst.parse_file(bst_filename, bst_encoding)
+        interpreter = Interpreter(bib_format, bib_encoding)
+        bbl_data = interpreter.run(bst_script, citations, bib_files_or_filenames, min_crossrefs=min_crossrefs)
+
+        if add_output_suffix:
+            output_filename = output_filename + '.bbl'
+        if output_filename:
+            output_file = pybtex.io.open_unicode(output_filename, 'w', encoding=output_encoding) 
+        else:
+            output_file = StringIO()
+        with output_file:
+            output_file.write(bbl_data)
+            if isinstance(output_file, StringIO):
+                return output_file.getvalue()
 
 
-    if bib_format is None:
-        from pybtex.database.input.bibtex import Parser as bib_format
-    aux_data = auxfile.parse_file(aux_filename, output_encoding)
-    if style is None:
-        style = aux_data.style
-    bst_filename = style + path.extsep + 'bst'
-    bst_script = bst.parse_file(bst_filename, bst_encoding)
-    base_filename = path.splitext(aux_filename)[0]
-    bbl_filename = base_filename + path.extsep + 'bbl'
-    bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
-    interpreter = Interpreter(bib_format, bib_encoding)
-    bbl_data = interpreter.run(bst_script, aux_data.citations, bib_filenames, min_crossrefs=min_crossrefs)
-    with pybtex.io.open_unicode(bbl_filename, 'w', encoding=output_encoding) as bbl_file:
-        bbl_file.write(bbl_data)
+def make_bibliography(*args, **kwargs):
+    return BibTeXEngine().make_bibliography(*args, **kwargs)
+
+
+def format_from_file(*args, **kwargs):
+    return BibTeXEngine().format_from_file(*args, **kwargs)
+
+
+def format_from_files(*args, **kwargs):
+    return BibTeXEngine().format_from_files(*args, **kwargs)
+
+
+def format_from_string(*args, **kwargs):
+    return BibTeXEngine().format_from_string(*args, **kwargs)
+
+
+def format_from_strings(*args, **kwargs):
+    return BibTeXEngine().format_from_strings(*args, **kwargs)

@@ -302,9 +302,9 @@ def tag(children, data, name):
 
     >>> import pybtex.backends.html
     >>> html = pybtex.backends.html.Backend()
-    >>> print tag('emph') ['important'].format().render(html)
+    >>> print tag('em') ['important'].format().render(html)
     <em>important</em>
-    >>> print sentence ['ready', 'set', tag('emph') ['go']].format().render(html)
+    >>> print sentence ['ready', 'set', tag('em') ['go']].format().render(html)
     Ready, set, <em>go</em>.
     """
     parts = _format_list(children, data)

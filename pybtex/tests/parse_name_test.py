@@ -1,4 +1,8 @@
+from pybtex import errors
 from pybtex.database import Person
+
+from pybtex.database import InvalidNameString
+
 
 # name, (bibtex_first, prelast, last, lineage
 # as parsed by the bibtex program itself
@@ -135,10 +139,33 @@ sample_names = [
     ([], [], ['{{\\LaTeX\\,3} Project Team}'], [])),
     ('Johansen Kyle, Derik Mamania M.',
     (['Derik', 'Mamania', 'M.'], [], ['Johansen', 'Kyle'], [])),
+
+    # incorrectly formatted name strings below
+
+    # too many commas
+    ('Chong, B. M., Specia, L., & Mitkov, R.',
+    (['Specia', 'L.', '&', 'Mitkov', 'R.'], [], ['Chong'], ['B.', 'M.']),
+    [InvalidNameString('Chong, B. M., Specia, L., & Mitkov, R.')]
+    ),
+    # too many commas, sloppy whitespace
+    ('LeCun, Y. ,      Bottou,   L . , Bengio, Y. ,  Haffner ,  P',
+    (['Bottou', 'L', '.', 'Bengio', 'Y.', 'Haffner', 'P'], [], ['LeCun'], ['Y.']),
+    [InvalidNameString('LeCun, Y. ,      Bottou,   L . , Bengio, Y. ,  Haffner ,  P')]),
 ]
 
-def parse_name_test():
-    for name, correct_result in sample_names:
+
+def parse_name(name, correct_result, expected_errors=None):
+    if expected_errors is None:
+        expected_errors = []
+
+    with errors.capture() as captured_errors:
         person = Person(name)
-        result = (person.bibtex_first(), person.prelast(), person.last(), person.lineage())
-        assert result == correct_result
+
+    result = (person.bibtex_first(), person.prelast(), person.last(), person.lineage())
+    assert result == correct_result
+    assert captured_errors == expected_errors
+
+
+def parse_name_test():
+    for test_args in sample_names:
+        yield (parse_name,) + test_args

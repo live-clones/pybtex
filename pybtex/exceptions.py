@@ -32,3 +32,5 @@ class PybtexError(Exception):
         """Return filename, if relevant."""
         return self.filename
 
+    def __eq__(self, other):
+        return unicode(self) == unicode(other)

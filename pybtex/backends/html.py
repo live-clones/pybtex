@@ -39,7 +39,7 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 class Backend(BaseBackend):
     u"""
     >>> from pybtex.richtext import Text, Tag, Symbol
-    >>> print Tag('emph', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
+    >>> print Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
     <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
 
     """
@@ -50,17 +50,13 @@ class Backend(BaseBackend):
         'newblock': u'\n',
         'nbsp': u'&nbsp;'
     }
-    tags = {
-         'emph': u'em',
-    }
-    
+
     def format_str(self, text):
         return escape(text)
 
-    def format_tag(self, tag_name, text):
-        tag = self.tags[tag_name]
+    def format_tag(self, tag, text):
         return ur'<%s>%s</%s>' % (tag, text, tag)
-    
+
     def format_href(self, url, text):
         return ur'<a href="%s">%s</a>' % (url, text)
 
