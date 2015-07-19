@@ -197,19 +197,18 @@ class BaseText(object):
         >>> import pybtex.backends.html
         >>> html = pybtex.backends.html.Backend()
 
+        >>> Text().endswith(('.', '!', '?'))
+        False
+        >>> textutils.is_terminated(Text())
+        False
+        >>> print unicode(Text().add_period())
+        <BLANKLINE>
+
         >>> text = Text("That's all, folks")
-        >>> print unicode(text.upper())
-        THAT'S ALL, FOLKS
-        >>> print unicode(text.lower())
-        that's all, folks
         >>> print unicode(text.add_period())
         That's all, folks.
 
         >>> text = Tag('em', Text("That's all, folks"))
-        >>> print text.upper().render(html)
-        <em>THAT'S ALL, FOLKS</em>
-        >>> print text.lower().render(html)
-        <em>that's all, folks</em>
         >>> print text.add_period().render(html)
         <em>That's all, folks.</em>
         >>> print text.add_period().add_period().render(html)
@@ -226,17 +225,16 @@ class BaseText(object):
         That's all, <em>folks.</em>
 
         >>> text = Text("That's all, ", Tag('em', 'folks'))
-        >>> print text.upper().render(html)
-        THAT'S ALL, <em>FOLKS</em>
-        >>> print text.lower().render(html)
-        that's all, <em>folks</em>
         >>> print text.add_period('!').render(html)
         That's all, <em>folks</em>!
         >>> print text.add_period('!').add_period('.').render(html)
         That's all, <em>folks</em>!
         """
 
-        return self if textutils.is_terminated(self) else self.append(period)
+        if self and not textutils.is_terminated(self):
+            return self.append(period)
+        else:
+            return self
 
     @deprecated('0.19', 'renamed to capitalize()')
     def capfirst(self):
@@ -636,21 +634,23 @@ class String(BaseText):
     >>> print unicode(String('').capitalize())
     <BLANKLINE>
     >>> print unicode(String('').add_period())
-    .
+    <BLANKLINE>
     >>> print unicode(String('').add_period('!'))
-    !
+    <BLANKLINE>
     >>> print unicode(String('').add_period().add_period())
-    .
+    <BLANKLINE>
     >>> print unicode(String('').add_period().add_period('!'))
-    .
+    <BLANKLINE>
     >>> print unicode(String('').add_period('!').add_period())
-    !
+    <BLANKLINE>
 
     >>> print unicode(String('november').capitalize())
     November
     >>> print unicode(String('November').capitalize())
     November
     >>> print unicode(String('November').add_period())
+    November.
+    >>> print unicode(String('November').add_period().add_period())
     November.
 
     """
@@ -746,6 +746,10 @@ class String(BaseText):
         False
         >>> String('').startswith('n')
         False
+        >>> String().endswith('n')
+        False
+        >>> String('').endswith('n')
+        False
         >>> String('November.').startswith('n')
         False
         >>> String('November.').startswith('N')
@@ -762,6 +766,10 @@ class String(BaseText):
         suffix can also be a tuple of suffixes to look for.
         return self.value.endswith(text)
 
+        >>> String().endswith('.')
+        False
+        >>> String().endswith(('.', '!'))
+        False
         >>> String('November.').endswith('r')
         False
         >>> String('November.').endswith('.')
@@ -838,6 +846,15 @@ class Text(BaseMultipartText):
         ...
     TypeError: ...
 
+    >>> Text().startswith('.')
+    False
+    >>> Text().startswith(('.', '!'))
+    False
+    >>> Text().endswith('.')
+    False
+    >>> Text().endswith(('.', '!'))
+    False
+
     >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
     >>> print unicode(text)
     mary had a little lamb
@@ -892,8 +909,19 @@ class Tag(BaseMultipartText):
     or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
     'some text' is tag's text.
 
-    >>> em = Tag('em', 'Emphasized text')
     >>> from pybtex.backends import latex, html
+
+    >>> empty = Tag('em')
+    >>> print unicode(empty)
+    <BLANKLINE>
+    >>> print unicode(empty.lower())
+    <BLANKLINE>
+    >>> print unicode(empty.capitalize())
+    <BLANKLINE>
+    >>> print unicode(empty.add_period())
+    <BLANKLINE>
+
+    >>> em = Tag('em', 'Emphasized text')
     >>> print em.render(latex.Backend())
     \emph{Emphasized text}
     >>> print em.upper().render(latex.Backend())
@@ -996,6 +1024,16 @@ class Tag(BaseMultipartText):
 class HRef(BaseMultipartText):
     """A href is somethins like <href url="URL">some text</href> in HTML
     or \href{URL}{some text} in LaTeX.
+
+    >>> empty = HRef('/')
+    >>> print unicode(empty)
+    <BLANKLINE>
+    >>> print unicode(empty.lower())
+    <BLANKLINE>
+    >>> print unicode(empty.capitalize())
+    <BLANKLINE>
+    >>> print unicode(empty.add_period())
+    <BLANKLINE>
 
     >>> href = HRef('http://www.example.com', 'Hyperlinked text.')
     >>> from pybtex.backends import latex, html, plaintext
