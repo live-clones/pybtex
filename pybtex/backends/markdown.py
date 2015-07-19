@@ -24,6 +24,25 @@
 from pybtex.backends import BaseBackend
 
 
+SPECIAL_CHARS = [
+    u'\\',  # backslash
+    u'`',   # backtick
+    u'*',   # asterisk
+    u'_',   # underscore
+    u'{',   # curly braces
+    u'}',   # curly braces
+    u'[',   # square brackets
+    u']',   # square brackets
+    u'(',   # parentheses
+    u')',   # parentheses
+    u'#',   # hash mark
+    u'+',   # plus sign
+    u'-',   # minus sign (hyphen)
+    u'.',   # dot
+    u'!',   # exclamation mark
+]
+
+
 class Backend(BaseBackend):
     u""" A backend to support markdown output. It implements the same
     features as the HTML backend.
@@ -56,32 +75,14 @@ class Backend(BaseBackend):
         'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
     }
 
-    def format_str(self, str_):
+    def format_str(self, text):
         """Format the given string *str_*.
         Escapes special markdown control characters.
         """
-        table = {
-          u'\\': u'\\\\',  # backslash
-          u'`' : u'\\`',   # backtick
-          u'*' : u'\\*',   # asterisk
-          u'_' : u'\\_',   # underscore
-          u'{' : u'\\{',   # curly braces
-          u'}' : u'\\}',   # curly braces
-          u'[' : u'\\[',   # square brackets
-          u']' : u'\\]',   # square brackets
-          u'(' : u'\\(',   # parentheses
-          u')' : u'\\)',   # parentheses
-          u'#' : u'\\#',   # hash mark
-          u'+' : u'\\+',   # plus sign
-          u'-' : u'\\-',   # minus sign (hyphen)
-          u'.' : u'\\.',   # dot
-          u'!' : u'\\!',   # exclamation mark
-          #u'&' : u'&amp;', # ampersand
-          #u'<' : u'&lt;',  # left angle bracket
-        }
-        for i in table:
-            str_ = str_.replace(i, table[i])
-        return str_
+        text = escape(text)
+        for special_char in SPECIAL_CHARS:
+            text = text.replace(special_char, u'\\' + special_char)
+        return text
 
     def format_tag(self, tag_name, text):
         tag = self.__class__.tags.get(tag_name)
