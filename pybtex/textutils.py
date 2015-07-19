@@ -23,7 +23,7 @@ import re
 
 from pybtex.utils import deprecated
 
-terminators = '.?!'
+terminators = '.', '?', '!'
 delimiter_re = re.compile(r'([\s\-])')
 whitespace_re = re.compile(r'\s+')
 
@@ -34,7 +34,7 @@ def capfirst(s):
 def is_terminated(s):
     """Return true if s ends with a terminating character.
     """
-    return (bool(s) and s[-1] in terminators)
+    return s.endswith(terminators)
 
 def add_period(s):
     """Add a period to the end of s, if there is none yet.

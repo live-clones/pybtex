@@ -191,9 +191,52 @@ class BaseText(object):
         raise NotImplementedError
 
     def add_period(self, period='.'):
-        """Add a period to the end of text, if necessary."""
+        """
+        Add a period to the end of text, if necessary.
 
-        return self if textutils.is_terminated(unicode(self)) else self + period
+        >>> import pybtex.backends.html
+        >>> html = pybtex.backends.html.Backend()
+
+        >>> text = Text("That's all, folks")
+        >>> print unicode(text.upper())
+        THAT'S ALL, FOLKS
+        >>> print unicode(text.lower())
+        that's all, folks
+        >>> print unicode(text.add_period())
+        That's all, folks.
+
+        >>> text = Tag('em', Text("That's all, folks"))
+        >>> print text.upper().render(html)
+        <em>THAT'S ALL, FOLKS</em>
+        >>> print text.lower().render(html)
+        <em>that's all, folks</em>
+        >>> print text.add_period().render(html)
+        <em>That's all, folks.</em>
+        >>> print text.add_period().add_period().render(html)
+        <em>That's all, folks.</em>
+
+        >>> text = Text("That's all, ", Tag('em', 'folks'))
+        >>> print text.add_period().render(html)
+        That's all, <em>folks</em>.
+        >>> print text.add_period().add_period().render(html)
+        That's all, <em>folks</em>.
+
+        >>> text = Text("That's all, ", Tag('em', 'folks.'))
+        >>> print text.add_period().render(html)
+        That's all, <em>folks.</em>
+
+        >>> text = Text("That's all, ", Tag('em', 'folks'))
+        >>> print text.upper().render(html)
+        THAT'S ALL, <em>FOLKS</em>
+        >>> print text.lower().render(html)
+        that's all, <em>folks</em>
+        >>> print text.add_period('!').render(html)
+        That's all, <em>folks</em>!
+        >>> print text.add_period('!').add_period('.').render(html)
+        That's all, <em>folks</em>!
+        """
+
+        return self if textutils.is_terminated(self) else self.append(period)
 
     @deprecated('0.19', 'renamed to capitalize()')
     def capfirst(self):
@@ -460,57 +503,6 @@ class BaseMultipartText(BaseText):
             return False
         else:
             return self.parts[-1].endswith(text)
-
-    def add_period(self, period='.'):
-        """Add a period to the end of text, if necessary.
-
-        >>> import pybtex.backends.html
-        >>> html = pybtex.backends.html.Backend()
-
-        >>> text = Text("That's all, folks")
-        >>> print unicode(text.upper())
-        THAT'S ALL, FOLKS
-        >>> print unicode(text.lower())
-        that's all, folks
-        >>> print unicode(text.add_period())
-        That's all, folks.
-
-        >>> text = Tag('em', Text("That's all, folks"))
-        >>> print text.upper().render(html)
-        <em>THAT'S ALL, FOLKS</em>
-        >>> print text.lower().render(html)
-        <em>that's all, folks</em>
-        >>> print text.add_period().render(html)
-        <em>That's all, folks.</em>
-        >>> print text.add_period().add_period().render(html)
-        <em>That's all, folks.</em>
-
-        >>> text = Text("That's all, ", Tag('em', 'folks'))
-        >>> print text.add_period().render(html)
-        That's all, <em>folks</em>.
-        >>> print text.add_period().add_period().render(html)
-        That's all, <em>folks</em>.
-
-        >>> text = Text("That's all, ", Tag('em', 'folks.'))
-        >>> print text.add_period().render(html)
-        That's all, <em>folks.</em>
-
-        >>> text = Text("That's all, ", Tag('em', 'folks'))
-        >>> print text.upper().render(html)
-        THAT'S ALL, <em>FOLKS</em>
-        >>> print text.lower().render(html)
-        that's all, <em>folks</em>
-        >>> print text.add_period('!').render(html)
-        That's all, <em>folks</em>!
-        >>> print text.add_period('!').add_period('.').render(html)
-        That's all, <em>folks</em>!
-        """
-
-        end = self.get_end()
-        if end and not textutils.is_terminated(unicode(end)):
-            return self.append(period)
-        else:
-            return self
 
     def lower(self):
         return self._create_similar(part.lower() for part in self.parts)
