@@ -1007,6 +1007,19 @@ class Tag(BaseMultipartText):
         return 'Tag({}, {})'.format(repr(self.name), reprparts)
 
     def render(self, backend):
+        r"""
+        >>> empty = Tag('em')
+        >>> print empty.render_as('html')
+        <BLANKLINE>
+        >>> print empty.render_as('latex')
+        <BLANKLINE>
+        >>> tag = Tag('em', 'a', 'b')
+        >>> print tag.render_as('html')
+        <em>ab</em>
+        >>> print tag.render_as('latex')
+        \emph{ab}
+        """
+
         text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
 
@@ -1212,6 +1225,19 @@ class Symbol(BaseText):
         return False
 
     def render(self, backend):
+        """
+        >>> empty = HRef('/')
+        >>> print empty.render_as('html')
+        <BLANKLINE>
+        >>> print empty.render_as('latex')
+        <BLANKLINE>
+        >>> tag = HRef('/', 'a', 'b')
+        >>> print tag.render_as('html')
+        <a href="/">ab</a>
+        >>> print tag.render_as('latex')
+        \href{/}{ab}
+        """
+
         return backend.symbols[self.name]
 
     def upper(self):

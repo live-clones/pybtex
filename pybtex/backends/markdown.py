@@ -21,6 +21,25 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+ur"""
+Markdown output backend.
+
+>>> from pybtex.richtext import Tag, HRef
+>>> markdown = Backend()
+>>> print Tag('em', '').render(markdown)
+<BLANKLINE>
+>>> print Tag('em', 'Non-', 'empty').render(markdown)
+*Non\-empty*
+>>> print HRef('/', '').render(markdown)
+<BLANKLINE>
+>>> print HRef('/', 'Non-', 'empty').render(markdown)
+[Non\-empty](/)
+"""
+
+
+from xml.sax.saxutils import escape
+
 from pybtex.backends import BaseBackend
 
 
@@ -89,10 +108,10 @@ class Backend(BaseBackend):
         if tag is None:
             return ur'%s' % text
         else:
-            return ur'%s%s%s' % (tag, text, tag)
+            return ur'%s%s%s' % (tag, text, tag) if text else u''
 
     def format_href(self, url, text):
-        return ur'[%s](%s)' % (text, url)
+        return ur'[%s](%s)' % (text, url) if text else u''
 
     def write_entry(self, key, label, text):
         # Support http://www.michelf.com/projects/php-markdown/extra/#def-list
