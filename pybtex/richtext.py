@@ -146,6 +146,25 @@ class BaseText(object):
     def lower(self):
         raise NotImplementedError
 
+    def append(self, text):
+        """
+        Append text to the end of this text.
+
+        Normally, this is the same as concatenating texts with +,
+        but for tags and similar objects the appended text is placed _inside_ the tag.
+
+        >>> import pybtex.backends.html
+        >>> html = pybtex.backends.html.Backend()
+
+        >>> text = Tag('em', 'Look here')
+        >>> print (text +  '!').render(html)
+        <em>Look here</em>!
+        >>> print text.append('!').render(html)
+        <em>Look here!</em>
+        """
+
+        return self + text
+
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary."""
 
@@ -476,6 +495,30 @@ class BaseMultipartText(BaseText):
     def __unicode__(self):
         return ''.join(unicode(part) for part in self.parts)
 
+    def append(self, text):
+        """
+        Append text to the end of this text.
+
+        For Tags, HRefs, etc. the appended text is placed _inside_ the tag.
+
+        >>> import pybtex.backends.html
+        >>> html = pybtex.backends.html.Backend()
+
+        >>> text = Tag('strong', 'Chuck Norris')
+        >>> print (text +  ' wins!').render(html)
+        <strong>Chuck Norris</strong> wins!
+        >>> print text.append(' wins!').render(html)
+        <strong>Chuck Norris wins!</strong>
+
+        >>> text = HRef('/', 'Chuck Norris')
+        >>> print (text +  ' wins!').render(html)
+        <a href="/">Chuck Norris</a> wins!
+        >>> print text.append(' wins!').render(html)
+        <a href="/">Chuck Norris wins!</a>
+        """
+
+        return self._create_similar(self.parts + [text])
+
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary.
 
@@ -550,6 +593,15 @@ class String(BaseText):
     .
     >>> print unicode(String('').add_period('!').add_period())
     !
+
+    >>> print unicode(String('Python') + String(' ') + String('3'))
+    Python 3
+    >>> print unicode(String('Python') + Text(' ') + String('3'))
+    Python 3
+    >>> print unicode(String('Python') + ' ' + '3')
+    Python 3
+    >>> print unicode(String('Python').append(' 3'))
+    Python 3
 
     >>> print unicode(String('November').upper())
     NOVEMBER
@@ -782,6 +834,10 @@ class Symbol(BaseText):
     >>> print nbsp.add_period().render(html.Backend())
     &nbsp;.
     >>> print nbsp.add_period().add_period().render(html.Backend())
+    &nbsp;.
+    >>> print (nbsp + '.').render(html.Backend())
+    &nbsp;.
+    >>> print nbsp.append('.').render(html.Backend())
     &nbsp;.
     """
 
