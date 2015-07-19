@@ -217,6 +217,7 @@ class BaseMultipartText(BaseText):
 
     def __eq__(self, other):
         return (
+            isinstance(other, BaseText) and
             self._typeinfo() == other._typeinfo() and
             self.parts == other.parts
         )
@@ -565,7 +566,7 @@ class BaseMultipartText(BaseText):
         """
 
         end = self.get_end()
-        if end and not textutils.is_terminated(end):
+        if end and not textutils.is_terminated(unicode(end)):
             return self.append(period)
         else:
             return self
@@ -575,12 +576,6 @@ class String(BaseText):
     """
     A single Python string wrapped into BaseText interface.
 
-    >>> print unicode(String('').upper())
-    <BLANKLINE>
-    >>> print unicode(String('', '').upper())
-    <BLANKLINE>
-    >>> print unicode(String('').lower())
-    <BLANKLINE>
     >>> print unicode(String('').capitalize())
     <BLANKLINE>
     >>> print unicode(String('').add_period())
@@ -594,19 +589,6 @@ class String(BaseText):
     >>> print unicode(String('').add_period('!').add_period())
     !
 
-    >>> print unicode(String('Python') + String(' ') + String('3'))
-    Python 3
-    >>> print unicode(String('Python') + Text(' ') + String('3'))
-    Python 3
-    >>> print unicode(String('Python') + ' ' + '3')
-    Python 3
-    >>> print unicode(String('Python').append(' 3'))
-    Python 3
-
-    >>> print unicode(String('November').upper())
-    NOVEMBER
-    >>> print unicode(String('November').lower())
-    november
     >>> print unicode(String('november').capitalize())
     November
     >>> print unicode(String('November').capitalize())
@@ -614,11 +596,14 @@ class String(BaseText):
     >>> print unicode(String('November').add_period())
     November.
 
-    >>> print unicode(String('November', ', ', 'December', '.'))
-    November, December.
     """
 
     def __init__(self, *parts):
+        """
+        >>> print unicode(String('November', ', ', 'December', '.'))
+        November, December.
+        """
+
         self.value = ''.join(parts)
 
     def __repr__(self):
@@ -628,22 +613,86 @@ class String(BaseText):
         return unicode(self.value)
 
     def __eq__(self, other):
+        """
+        >>> String() == ''
+        False
+        >>> String('') == ''
+        False
+        >>> String() == String()
+        True
+        >>> String('') == String()
+        True
+        >>> String('', '', '') == String()
+        True
+        >>> String('Wa', '', 'ke', ' ', 'up') == String('Wake up')
+        True
+        """
         return type(other) == type(self) and self.value == other.value
-
-    def __getitem__(self, index):
-        return self.value.__getitem__(index)
 
     def __len__(self):
         return self.value.__len__()
 
+    def __getitem__(self, index):
+        """
+        >>> digits = String('0123456789')
+        >>> digits[0] == '0'
+        False
+        >>> digits[0] == String('0')
+        True
+        """
+
+        return String(self.value.__getitem__(index))
+
     def __add__(self, other):
+        """
+        >>> String('Python') + String(' 3') == 'Python 3'
+        False
+        >>> String('Python') + String(' 3') == Text('Python 3')
+        True
+        >>> String('A').lower() == String('a')
+        True
+        >>> print unicode(String('Python') + String(' ') + String('3'))
+        Python 3
+        >>> print unicode(String('Python') + Text(' ') + String('3'))
+        Python 3
+        >>> print unicode(String('Python') + ' ' + '3')
+        Python 3
+        >>> print unicode(String('Python').append(' 3'))
+        Python 3
+
+        """
+
         return BaseText.__add__(self, other)
 
     def lower(self):
-        return self.value.lower()
+        """
+        >>> String('A').lower() == 'a'
+        False
+        >>> String('A').lower() == String('a')
+        True
+        >>> print unicode(String('').lower())
+        <BLANKLINE>
+        >>> print unicode(String('November').lower())
+        november
+        """
+
+        return String(self.value.lower())
 
     def upper(self):
-        return self.value.upper()
+        """
+        >>> String('a').upper() == 'A'
+        False
+        >>> String('a').upper() == String('A')
+        True
+        >>> print unicode(String('').upper())
+        <BLANKLINE>
+        >>> print unicode(String('', '').upper())
+        <BLANKLINE>
+        >>> print unicode(String('November').upper())
+        NOVEMBER
+        """
+
+        return String(self.value.upper())
 
     @property
     def parts(self):
