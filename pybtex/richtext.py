@@ -247,15 +247,15 @@ class BaseText(object):
         return self[:1].upper() + self[1:]
 
     @abstractmethod
-    def render(self, backend):
-        raise NotImplementedError
-
-    @abstractmethod
     def lower(self):
         raise NotImplementedError
 
     @abstractmethod
     def upper(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def render(self, backend):
         raise NotImplementedError
 
     def _unpack(self):
