@@ -23,13 +23,16 @@ import re
 
 from pybtex.utils import deprecated
 
+
 terminators = '.', '?', '!'
 delimiter_re = re.compile(r'([\s\-])')
 whitespace_re = re.compile(r'\s+')
 
+
 @deprecated('0.19', 'use str.capitalize() instead')
 def capfirst(s):
     return s[0].upper() + s[1:] if s else s
+
 
 def is_terminated(text):
     """
@@ -108,6 +111,7 @@ def abbreviate(s, split=delimiter_re.split):
 
     return ''.join(abbreviate(part) for part in split(s))
 
+
 def normalize_whitespace(string):
     r"""
     Replace every sequence of whitespace characters with a single space.
@@ -129,6 +133,7 @@ def normalize_whitespace(string):
     """
 
     return whitespace_re.sub(' ', string.strip())
+
 
 def width(string):
     r"""
