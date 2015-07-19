@@ -64,7 +64,6 @@ one<nbsp>two<nbsp>three
 import warnings
 import itertools
 from abc import ABCMeta, abstractmethod
-from copy import deepcopy
 from pybtex import textutils
 from pybtex.utils import deprecated
 
@@ -164,7 +163,7 @@ class BaseText(object):
             return Text()
         joined = []
         for part in parts[:-1]:
-            joined.extend([part, deepcopy(self)])
+            joined.extend([part, self])
         joined.append(parts[-1])
         return Text(*joined)
 
