@@ -58,12 +58,33 @@ def is_terminated(text):
     return text.endswith(terminators)
 
 
-def add_period(s):
-    """Add a period to the end of s, if there is none yet.
+def add_period(text):
+    """Add a period to the end of s, if needed.
+
+    >>> print add_period('')
+    <BLANKLINE>
+    >>> print add_period('.')
+    .
+    >>> print add_period('Done')
+    Done.
+    >>> print add_period('Done. ')
+    Done. .
+    >>> print add_period('Done.')
+    Done.
+    >>> print add_period('Done...')
+    Done...
+    >>> print add_period('Done!')
+    Done!
+    >>> print add_period('Done?')
+    Done?
+    >>> print add_period('Done?!')
+    Done?!
     """
-    if s and not is_terminated(s):
-        return s + '.'
-    return s
+
+    if text and not is_terminated(text):
+        return text + '.'
+    return text
+
 
 def abbreviate(s, split=delimiter_re.split):
     """Abbreviate some text.
