@@ -95,6 +95,10 @@ class BaseText(object):
         raise NotImplementedError
 
     @abstractmethod
+    def __contains__(self, item):
+        raise NotImplementedError
+
+    @abstractmethod
     def __getitem__(self, key):
         raise NotImplementedError
 
@@ -282,6 +286,11 @@ class BaseMultipartText(BaseText):
     def __len__(self):
         """Return the number of characters in this Text."""
         return self.length
+
+    def __contains__(self, item):
+        if not isinstance(item, basestring):
+            raise ValueError(item)
+        return not item or any(part.__contains__(item) for part in self.parts)
 
     def __getitem__(self, key):
         """
@@ -688,6 +697,20 @@ class String(BaseText):
     def __len__(self):
         return self.value.__len__()
 
+    def __contains__(self, item):
+        """
+        >>> '' in String()
+        True
+        >>> 'abc' in String()
+        False
+        >>> '' in String(' ')
+        True
+        >>> ' + ' in String('2 + 2')
+        True
+        """
+
+        return self.value.__contains__(item)
+
     def __getitem__(self, index):
         """
         >>> digits = String('0123456789')
@@ -833,6 +856,12 @@ class Text(BaseMultipartText):
     >>> print unicode(text.lower())
     mary had a little lamb
 
+    >>> 'mary' in text
+    True
+    >>> 'Mary' in text
+    False
+    >>> 'had a little' in text
+    True
     >>> text.startswith('M')
     False
     >>> text.startswith('m')
@@ -841,9 +870,12 @@ class Text(BaseMultipartText):
     False
     >>> text.endswith('b')
     True
-    >>> Text('a', 'b', 'c').startswith('ab')
+    >>> text = Text('a', 'b', 'c')
+    >>> 'abc' in text
     True
-    >>> Text('a', 'b', 'c').endswith('bc')
+    >>> text.startswith('ab')
+    True
+    >>> text.endswith('bc')
     True
     >>> Text('This is good').startswith(('This', 'That'))
     True
@@ -899,6 +931,12 @@ class Tag(BaseMultipartText):
     >>> print tag.add_period().add_period().render(html.Backend())
     <em>mary had a little lamb.</em>
 
+    >>> 'mary' in tag
+    True
+    >>> 'Mary' in tag
+    False
+    >>> 'had a little' in tag
+    True
     >>> tag.startswith('M')
     False
     >>> tag.startswith('m')
@@ -922,10 +960,14 @@ class Tag(BaseMultipartText):
     >>> tag.endswith(('bad', 'awful'))
     False
     >>> text = Text('This ', Tag('em', 'is'), ' good')
+    >>> 'This is' in unicode(text)
+    True
     >>> unicode(text).startswith('This is')
     True
     >>> unicode(text).endswith('is good')
     True
+    >>> 'This is' in text
+    False
     >>> text.startswith('This is')
     False
     >>> text.endswith('is good')
@@ -990,6 +1032,12 @@ class HRef(BaseMultipartText):
     >>> print tag.add_period().add_period().render(html.Backend())
     <a href="info.html">Mary had a little lamb.</a>
 
+    >>> 'mary' in tag
+    False
+    >>> 'Mary' in tag
+    True
+    >>> 'had a little' in tag
+    True
     >>> tag.startswith('M')
     True
     >>> tag.startswith('m')
@@ -1013,10 +1061,14 @@ class HRef(BaseMultipartText):
     >>> tag.endswith(('bad', 'awful'))
     False
     >>> text = Text('This ', HRef('/', 'is'), ' good')
+    >>> 'This is' in unicode(text)
+    True
     >>> unicode(text).startswith('This is')
     True
     >>> unicode(text).endswith('is good')
     True
+    >>> 'This is' in text
+    False
     >>> text.startswith('This is')
     False
     >>> text.endswith('is good')
@@ -1098,6 +1150,16 @@ class Symbol(BaseText):
         False
         """
         return self.name == other.name
+
+    def __contains__(self, item):
+        """
+        >>> '' in nbsp
+        False
+        >>> 'abc' in nbsp
+        False
+        """
+
+        return False
 
     def __getitem__(self, index):
         """
