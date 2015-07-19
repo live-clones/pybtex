@@ -63,7 +63,7 @@ import warnings
 import itertools
 from abc import ABCMeta, abstractmethod
 from pybtex import textutils
-from pybtex.utils import deprecated
+from pybtex.utils import deprecated, collect_iterable
 
 
 def ensure_text(value):
@@ -158,6 +158,10 @@ class BaseText(object):
             joined.extend([part, self])
         joined.append(parts[-1])
         return Text(*joined)
+
+    @abstractmethod
+    def split(sep=None):
+        raise NotImplementedError
 
     @abstractmethod
     def startswith(prefix):
@@ -487,6 +491,53 @@ class BaseMultipartText(BaseText):
 
         return self._create_similar(self.parts + [text])
 
+    @collect_iterable
+    def split(self, sep=None, keep_empty_parts=None):
+        """
+        >>> Text().split()
+        []
+        >>> Text().split('abc') == [Text()]
+        True
+        >>> Text('a').split() == [Text('a')]
+        True
+        >>> Text('a ').split() == [Text('a')]
+        True
+        >>> Text('   a   ').split() == [Text('a')]
+        True
+        >>> Text('a + b').split() == [Text('a'), Text('+'), Text('b')]
+        True
+        >>> Text('a + b').split(' + ') == [Text('a'), Text('b')]
+        True
+        >>> Text('abc').split('xyz') == [Text('abc')]
+        True
+        >>> Text('---').split('--') == [Text(), Text('-')]
+        True
+        >>> Text('---').split('-') == [Text(), Text(), Text(), Text()]
+        True
+        """
+
+        if keep_empty_parts is None:
+            keep_empty_parts = sep is not None
+
+        tail = [] if sep is None else ['']
+        for part in self.parts:
+            split_part = part.split(sep, keep_empty_parts=True)
+            if not split_part:
+                continue
+            for item in split_part[:-1]:
+                if tail:
+                    yield self._create_similar(tail + [item])
+                    tail = []
+                else:
+                    if item or keep_empty_parts:
+                        yield self._create_similar([item])
+            tail.append(split_part[-1])
+        if tail:
+            tail_text = self._create_similar(tail)
+            if tail_text or keep_empty_parts:
+                yield tail_text
+
+
     def startswith(self, text):
         if not self.parts:
             return False
@@ -734,6 +785,32 @@ class String(BaseText):
 
         return BaseText.__add__(self, other)
 
+    def split(self, sep=None, keep_empty_parts=None):
+        """
+        >>> String().split()
+        []
+        >>> String().split('abc') == [String('')]
+        True
+        >>> String('a').split() == [String('a')]
+        True
+        >>> String('a ').split() == [String('a')]
+        True
+        >>> String('a + b').split() == [String('a'), String('+'), String('b')]
+        True
+        >>> String('a + b').split(' + ') == [String('a'), String('b')]
+        True
+        """
+
+        if keep_empty_parts is None:
+            keep_empty_parts = sep is not None
+
+        if sep is None:
+            from .textutils import whitespace_re
+            parts = whitespace_re.split(self.value)
+        else:
+            parts = self.value.split(sep)
+        return [String(part) for part in parts if part or keep_empty_parts]
+
     def startswith(self, prefix):
         """
         Return True if string starts with the prefix,
@@ -917,6 +994,10 @@ class Tag(BaseMultipartText):
     <BLANKLINE>
     >>> print unicode(empty.add_period())
     <BLANKLINE>
+    >>> empty.split()
+    []
+    >>> empty.split('abc') == [Tag('em')]
+    True
 
     >>> em = Tag('em', 'Emphasized text')
     >>> print em.render_as('latex')
@@ -927,6 +1008,12 @@ class Tag(BaseMultipartText):
     \emph{emphasized text}
     >>> print em.render_as('html')
     <em>Emphasized text</em>
+    >>> em.split() == [Tag('em', 'Emphasized'), Tag('em', 'text')]
+    True
+    >>> em.split(' ') == [Tag('em', 'Emphasized'), Tag('em', 'text')]
+    True
+    >>> em.split('no such text') == [em]
+    True
 
     >>> t = Tag(u'em', u'123', Tag(u'em', u'456', Text(u'78'), u'9'), u'0')
     >>> print t[:2].render_as('html')
@@ -989,6 +1076,26 @@ class Tag(BaseMultipartText):
     False
     >>> text.endswith('is good')
     False
+
+    >>> text = Text('Bonnie ', Tag('em', 'and'), ' Clyde')
+    >>> text.split('and') == [Text('Bonnie '), Text(' Clyde')]
+    True
+    >>> text.split(' and ') == [text]
+    True
+    >>> text = Text('Bonnie', Tag('em', ' and '), 'Clyde')
+    >>> text.split('and') == [Text('Bonnie', Tag('em', ' ')), Text(Tag('em', ' '), 'Clyde')]
+    True
+    >>> text.split(' and ') == [Text('Bonnie'), Text('Clyde')]
+    True
+    >>> text = Text('From ', Tag('em', 'the very beginning'), ' of things')
+    >>> text.split() == [Text('From'), Text(Tag('em', 'the')), Text(Tag('em', 'very')), Text(Tag('em', 'beginning')), Text('of'), Text('things')]
+    True
+    >>> dashified = String('-').join(text.split())
+    >>> dashified == Text('From-', Tag('em', 'the'), '-', Tag('em', 'very'), '-', Tag('em', 'beginning'), '-of-things')
+    True
+    >>> dashified = Tag('em', '-').join(text.split())
+    >>> dashified == Text('From', Tag('em', '-the-very-beginning-'), 'of', Tag('em', '-'), 'things')
+    True
     """
 
     def __check_name(self, name):
@@ -1044,6 +1151,10 @@ class HRef(BaseMultipartText):
     <BLANKLINE>
     >>> print unicode(empty.add_period())
     <BLANKLINE>
+    >>> empty.split()
+    []
+    >>> empty.split('abc') == [empty]
+    True
 
     >>> href = HRef('http://www.example.com', 'Hyperlinked text.')
     >>> print href.upper().render_as('latex')
@@ -1112,6 +1223,13 @@ class HRef(BaseMultipartText):
     False
     >>> text.endswith('is good')
     False
+
+    >>> href = HRef('/', 'World Wide Web')
+    >>> href.split() == [HRef('/', 'World'), HRef('/', 'Wide'), HRef('/', 'Web')]
+    True
+    >>> dashified = Text('-').join(Text('Estimated size of the ', href).split())
+    >>> dashified == Text('Estimated-size-of-the-', HRef('/', 'World'), '-', HRef('/', 'Wide'), '-', HRef('/', 'Web'))
+    True
     """
 
     def __init__(self, url, *args):
@@ -1224,6 +1342,16 @@ class Symbol(BaseText):
             raise IndexError('richtext.Symbol index out of range')
         else:
             return self if result else String()
+
+    def split(self, sep=None, keep_empty_parts=None):
+        """
+        >>> nbsp.split() == [nbsp]
+        True
+        >>> text = Text('F.', nbsp, 'Miller')
+        >>> text.split() == [text]
+        True
+        """
+        return [self]
 
     def startswith(self, text):
         return False
