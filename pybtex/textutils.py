@@ -31,10 +31,32 @@ whitespace_re = re.compile(r'\s+')
 def capfirst(s):
     return s[0].upper() + s[1:] if s else s
 
-def is_terminated(s):
-    """Return true if s ends with a terminating character.
+def is_terminated(text):
     """
-    return s.endswith(terminators)
+    Return True if text ends with a terminating character.
+
+    >>> is_terminated('')
+    False
+    >>> is_terminated('.')
+    True
+    >>> is_terminated('Done')
+    False
+    >>> is_terminated('Done. ')
+    False
+    >>> is_terminated('Done.')
+    True
+    >>> is_terminated('Done...')
+    True
+    >>> is_terminated('Done!')
+    True
+    >>> is_terminated('Done?')
+    True
+    >>> is_terminated('Done?!')
+    True
+    """
+
+    return text.endswith(terminators)
+
 
 def add_period(s):
     """Add a period to the end of s, if there is none yet.
