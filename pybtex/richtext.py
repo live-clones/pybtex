@@ -164,6 +164,28 @@ class BaseText(object):
         joined.append(parts[-1])
         return Text(*joined)
 
+    @abstractmethod
+    def startswith(prefix):
+        """
+        Return True if string starts with the prefix,
+        otherwise return False.
+
+        prefix can also be a tuple of suffixes to look for.
+        """
+
+        raise NotImplementedError
+
+    @abstractmethod
+    def endswith(suffix):
+        """
+        Return True if the string ends with the specified suffix,
+        otherwise return False.
+
+        suffix can also be a tuple of suffixes to look for.
+        """
+
+        raise NotImplementedError
+
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary."""
 
@@ -417,6 +439,18 @@ class BaseMultipartText(BaseText):
         """
 
         return self._create_similar(self.parts + [text])
+
+    def startswith(self, text):
+        if not self.parts:
+            return False
+        else:
+            return self.parts[0].startswith(text)
+
+    def endswith(self, text):
+        if not self.parts:
+            return False
+        else:
+            return self.parts[-1].endswith(text)
 
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary.
@@ -686,6 +720,44 @@ class String(BaseText):
 
         return BaseText.__add__(self, other)
 
+    def startswith(self, prefix):
+        """
+        Return True if string starts with the prefix,
+        otherwise return False.
+
+        prefix can also be a tuple of suffixes to look for.
+
+        >>> String().startswith('n')
+        False
+        >>> String('').startswith('n')
+        False
+        >>> String('November.').startswith('n')
+        False
+        >>> String('November.').startswith('N')
+        True
+        """
+        return self.value.startswith(prefix)
+
+
+    def endswith(self, suffix):
+        """
+        Return True if the string ends with the specified suffix,
+        otherwise return False.
+
+        suffix can also be a tuple of suffixes to look for.
+        return self.value.endswith(text)
+
+        >>> String('November.').endswith('r')
+        False
+        >>> String('November.').endswith('.')
+        True
+        >>> String('November.').endswith(('.', '!'))
+        True
+        >>> String('November.').endswith(('?', '!'))
+        False
+        """
+        return self.value.endswith(suffix)
+
     def lower(self):
         """
         >>> String('A').lower() == 'a'
@@ -760,6 +832,27 @@ class Text(BaseMultipartText):
     MARY HAD A LITTLE LAMB
     >>> print unicode(text.lower())
     mary had a little lamb
+
+    >>> text.startswith('M')
+    False
+    >>> text.startswith('m')
+    True
+    >>> text.endswith('B')
+    False
+    >>> text.endswith('b')
+    True
+    >>> Text('a', 'b', 'c').startswith('ab')
+    True
+    >>> Text('a', 'b', 'c').endswith('bc')
+    True
+    >>> Text('This is good').startswith(('This', 'That'))
+    True
+    >>> Text('This is good').startswith(('That', 'Those'))
+    False
+    >>> Text('This is good').endswith(('good', 'wonderful'))
+    True
+    >>> Text('This is good').endswith(('bad', 'awful'))
+    False
     """
 
     def __repr__(self):
@@ -805,6 +898,38 @@ class Tag(BaseMultipartText):
     <em>mary had a little lamb.</em>
     >>> print tag.add_period().add_period().render(html.Backend())
     <em>mary had a little lamb.</em>
+
+    >>> tag.startswith('M')
+    False
+    >>> tag.startswith('m')
+    True
+    >>> tag.endswith('B')
+    False
+    >>> tag.endswith('b')
+    True
+    >>> tag = Tag('em', 'a', 'b', 'c')
+    >>> tag.startswith('ab')
+    True
+    >>> tag.endswith('bc')
+    True
+    >>> tag = Tag('em', 'This is good')
+    >>> tag.startswith(('This', 'That'))
+    True
+    >>> tag.startswith(('That', 'Those'))
+    False
+    >>> tag.endswith(('good', 'wonderful'))
+    True
+    >>> tag.endswith(('bad', 'awful'))
+    False
+    >>> text = Text('This ', Tag('em', 'is'), ' good')
+    >>> unicode(text).startswith('This is')
+    True
+    >>> unicode(text).endswith('is good')
+    True
+    >>> text.startswith('This is')
+    False
+    >>> text.endswith('is good')
+    False
     """
 
     def __check_name(self, name):
@@ -865,6 +990,37 @@ class HRef(BaseMultipartText):
     >>> print tag.add_period().add_period().render(html.Backend())
     <a href="info.html">Mary had a little lamb.</a>
 
+    >>> tag.startswith('M')
+    True
+    >>> tag.startswith('m')
+    False
+    >>> tag.endswith('B')
+    False
+    >>> tag.endswith('b')
+    True
+    >>> tag = HRef('/', 'a', 'b', 'c')
+    >>> tag.startswith('ab')
+    True
+    >>> tag.endswith('bc')
+    True
+    >>> tag = HRef('/', 'This is good')
+    >>> tag.startswith(('This', 'That'))
+    True
+    >>> tag.startswith(('That', 'Those'))
+    False
+    >>> tag.endswith(('good', 'wonderful'))
+    True
+    >>> tag.endswith(('bad', 'awful'))
+    False
+    >>> text = Text('This ', HRef('/', 'is'), ' good')
+    >>> unicode(text).startswith('This is')
+    True
+    >>> unicode(text).endswith('is good')
+    True
+    >>> text.startswith('This is')
+    False
+    >>> text.endswith('is good')
+    False
     """
 
     def __init__(self, url, *args):
@@ -910,6 +1066,15 @@ class Symbol(BaseText):
     &nbsp;.
     >>> print nbsp.append('.').render(html.Backend())
     &nbsp;.
+
+    >>> nbsp.startswith('.')
+    False
+    >>> nbsp.startswith(('.', '?!'))
+    False
+    >>> nbsp.endswith('.')
+    False
+    >>> nbsp.endswith(('.', '?!'))
+    False
     """
 
     def __init__(self, name):
@@ -963,6 +1128,12 @@ class Symbol(BaseText):
             raise IndexError('richtext.Symbol index out of range')
         else:
             return self if result else String()
+
+    def startswith(self, text):
+        return False
+
+    def endswith(self, text):
+        return False
 
     def render(self, backend):
         return backend.symbols[self.name]
