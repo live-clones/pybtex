@@ -132,6 +132,38 @@ class BaseText(object):
 
         return self + text
 
+    def join(self, parts):
+        """Join a list using this text (like string.join)
+
+        >>> import pybtex.backends.html
+        >>> html = pybtex.backends.html.Backend()
+
+        >>> print unicode(Text(' ').join([]))
+        <BLANKLINE>
+        >>> print unicode(Text(' ').join(['a', 'b', 'c']))
+        a b c
+        >>> print unicode(Text(' ').join(['a', Text('b c')]))
+        a b c
+        >>> print unicode(Text(nbsp).join(['a', 'b', 'c']))
+        a<nbsp>b<nbsp>c
+        >>> print unicode(nbsp.join(['a', 'b', 'c']))
+        a<nbsp>b<nbsp>c
+        >>> print unicode(String('-').join(['a', 'b', 'c']))
+        a-b-c
+        >>> print Tag('em', ' and ').join(['a', 'b', 'c']).render(html)
+        a<em> and </em>b<em> and </em>c
+        >>> print HRef('/', ' and ').join(['a', 'b', 'c']).render(html)
+        a<a href="/"> and </a>b<a href="/"> and </a>c
+        """
+
+        if not parts:
+            return Text()
+        joined = []
+        for part in parts[:-1]:
+            joined.extend([part, deepcopy(self)])
+        joined.append(parts[-1])
+        return Text(*joined)
+
     def add_period(self, period='.'):
         """Add a period to the end of text, if necessary."""
 
@@ -442,25 +474,6 @@ class BaseMultipartText(BaseText):
 
     def upper(self):
         return self._create_similar(part.upper() for part in self.parts)
-
-    def join(self, parts):
-        """Join a list using this text (like string.join)
-
-        >>> print unicode(Text(' ').join([]))
-        <BLANKLINE>
-        >>> print unicode(Text(' ').join(['a', 'b', 'c']))
-        a b c
-        >>> print unicode(Text(nbsp).join(['a', 'b', 'c']))
-        a<nbsp>b<nbsp>c
-        """
-
-        if not parts:
-            return Text()
-        joined = []
-        for part in parts[:-1]:
-            joined.extend([part, deepcopy(self)])
-        joined.append(parts[-1])
-        return Text(*joined)
 
     def render(self, backend):
         """Return backend-dependent textual representation of this Text."""
