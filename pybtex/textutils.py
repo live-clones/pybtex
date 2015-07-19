@@ -62,7 +62,7 @@ def is_terminated(text):
 
 
 def add_period(text):
-    """Add a period to the end of s, if needed.
+    """Add a period to the end of text, if needed.
 
     >>> print add_period('')
     <BLANKLINE>
@@ -89,8 +89,8 @@ def add_period(text):
     return text
 
 
-def abbreviate(s, split=delimiter_re.split):
-    """Abbreviate some text.
+def abbreviate(text, split=delimiter_re.split):
+    """Abbreviate the given text.
 
     >> abbreviate('Name')
     'N'
@@ -109,7 +109,7 @@ def abbreviate(s, split=delimiter_re.split):
         else:
             return part
 
-    return ''.join(abbreviate(part) for part in split(s))
+    return ''.join(abbreviate(part) for part in split(text))
 
 
 def normalize_whitespace(string):
