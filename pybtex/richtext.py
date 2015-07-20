@@ -66,6 +66,23 @@ from pybtex import textutils
 from pybtex.utils import deprecated, collect_iterable
 
 
+# workaround for doctests in Python 2/3
+def str_repr(string):
+    """
+    >>> print str_repr('test')
+    'test'
+    >>> print str_repr(u'test')
+    'test'
+    """
+
+    result = repr(string)
+    if result.startswith('u'):
+        return result[1:]
+    else:
+        return result
+
+
+
 def ensure_text(value):
     if isinstance(value, basestring):
         return String(value)
@@ -714,7 +731,7 @@ class String(BaseText):
         self.value = ''.join(parts)
 
     def __repr__(self):
-        return self.value.__repr__()
+        return str_repr(self.value)
 
     def __unicode__(self):
         return unicode(self.value)
@@ -1117,8 +1134,11 @@ class Tag(BaseMultipartText):
         super(Tag, self).__init__(*args)
 
     def __repr__(self):
-        reprparts = ', '.join(repr(part) for part in self.parts)
-        return 'Tag({}, {})'.format(repr(self.name), reprparts)
+        if self.parts:
+            reprparts = ', '.join(repr(part) for part in self.parts)
+            return 'Tag({}, {})'.format(str_repr(self.name), reprparts)
+        else:
+            return 'Tag({})'.format(str_repr(self.name))
 
     def render(self, backend):
         r"""
@@ -1242,7 +1262,7 @@ class HRef(BaseMultipartText):
 
     def __repr__(self):
         reprparts = ', '.join(repr(part) for part in self.parts)
-        return 'HRef({}, {})'.format(repr(self.url), reprparts)
+        return 'HRef({}, {})'.format(str_repr(self.url), reprparts)
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
@@ -1292,7 +1312,7 @@ class Symbol(BaseText):
         return 1
 
     def __repr__(self):
-        return "Symbol(%s)" % repr(self.name)
+        return "Symbol(%s)" % str_repr(self.name)
 
     def __unicode__(self):
         return u'<%s>' % self.name
