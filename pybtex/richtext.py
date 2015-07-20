@@ -311,21 +311,17 @@ class BaseMultipartText(BaseText):
 
         Text() objects are unpacked and their children are included directly:
 
-        >>> text = Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
-        >>> text == Text('Multi', ' ', Tag('em', 'part'), ' ', 'text!')
-        True
-        >>> text = Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
-        >>> text == Tag('strong', 'Multi', ' ', Tag('em', 'part'), ' ', 'text!')
-        True
+        >>> Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
+        Text('Multi ', Tag('em', 'part'), ' text!')
+        >>> Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
+        Tag('strong', 'Multi ', Tag('em', 'part'), ' text!')
 
         Similar objects are merged into one:
 
-        >>> text = Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
-        >>> text == Text('Multi', Tag('em', 'part', ' ', 'text!'))
-        True
-        >>> text = Text('Please ', HRef('http://example.com/', 'click'), HRef('http://example.com/', ' here'), '.')
-        >>> text == Text('Please ', HRef('http://example.com/', 'click', ' here'), '.')
-        True
+        >>> Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
+        Text('Multi', Tag('em', 'part text!'))
+        >>> Text('Please ', HRef('http://example.com/', 'click'), HRef('http://example.com/', ' here'), '.')
+        Text('Please ', HRef('http://example.com/', 'click here'), '.')
         """
 
         parts = (ensure_text(part) for part in parts)
@@ -513,24 +509,24 @@ class BaseMultipartText(BaseText):
         """
         >>> Text().split()
         []
-        >>> Text().split('abc') == [Text()]
-        True
-        >>> Text('a').split() == [Text('a')]
-        True
-        >>> Text('a ').split() == [Text('a')]
-        True
-        >>> Text('   a   ').split() == [Text('a')]
-        True
-        >>> Text('a + b').split() == [Text('a'), Text('+'), Text('b')]
-        True
-        >>> Text('a + b').split(' + ') == [Text('a'), Text('b')]
-        True
-        >>> Text('abc').split('xyz') == [Text('abc')]
-        True
-        >>> Text('---').split('--') == [Text(), Text('-')]
-        True
-        >>> Text('---').split('-') == [Text(), Text(), Text(), Text()]
-        True
+        >>> Text().split('abc')
+        [Text()]
+        >>> Text('a').split()
+        [Text('a')]
+        >>> Text('a ').split()
+        [Text('a')]
+        >>> Text('   a   ').split()
+        [Text('a')]
+        >>> Text('a + b').split()
+        [Text('a'), Text('+'), Text('b')]
+        >>> Text('a + b').split(' + ')
+        [Text('a'), Text('b')]
+        >>> Text('abc').split('xyz')
+        [Text('abc')]
+        >>> Text('---').split('--')
+        [Text(), Text('-')]
+        >>> Text('---').split('-')
+        [Text(), Text(), Text(), Text()]
         """
 
         if keep_empty_parts is None:
@@ -600,8 +596,8 @@ class BaseMultipartText(BaseText):
         with different text content.
 
         >>> text = Tag('strong', 'Bananas!')
-        >>> text._create_similar(['Apples!']) == Tag('strong', 'Apples!')
-        True
+        >>> text._create_similar(['Apples!'])
+        Tag('strong', 'Apples!')
         """
 
         cls, cls_args = self._typeinfo()
@@ -613,9 +609,8 @@ class BaseMultipartText(BaseText):
 
         >>> text = Text()
         >>> parts = [Tag('em', 'Breaking'), Tag('em', ' '), Tag('em', 'news!')]
-        >>> merged_parts = list(text._merge_similar(parts))
-        >>> merged_parts == [Tag('em', 'Breaking news!')]
-        True
+        >>> list(text._merge_similar(parts))
+        [Tag('em', 'Breaking news!')]
         """
 
         groups = itertools.groupby(parts, lambda value: value._typeinfo())
@@ -1013,8 +1008,8 @@ class Tag(BaseMultipartText):
     <BLANKLINE>
     >>> empty.split()
     []
-    >>> empty.split('abc') == [Tag('em')]
-    True
+    >>> empty.split('abc')
+    [Tag('em')]
 
     >>> em = Tag('em', 'Emphasized text')
     >>> print em.render_as('latex')
@@ -1025,10 +1020,10 @@ class Tag(BaseMultipartText):
     \emph{emphasized text}
     >>> print em.render_as('html')
     <em>Emphasized text</em>
-    >>> em.split() == [Tag('em', 'Emphasized'), Tag('em', 'text')]
-    True
-    >>> em.split(' ') == [Tag('em', 'Emphasized'), Tag('em', 'text')]
-    True
+    >>> em.split()
+    [Tag('em', 'Emphasized'), Tag('em', 'text')]
+    >>> em.split(' ')
+    [Tag('em', 'Emphasized'), Tag('em', 'text')]
     >>> em.split('no such text') == [em]
     True
 
@@ -1095,24 +1090,24 @@ class Tag(BaseMultipartText):
     False
 
     >>> text = Text('Bonnie ', Tag('em', 'and'), ' Clyde')
-    >>> text.split('and') == [Text('Bonnie '), Text(' Clyde')]
-    True
+    >>> text.split('and')
+    [Text('Bonnie '), Text(' Clyde')]
     >>> text.split(' and ') == [text]
     True
     >>> text = Text('Bonnie', Tag('em', ' and '), 'Clyde')
-    >>> text.split('and') == [Text('Bonnie', Tag('em', ' ')), Text(Tag('em', ' '), 'Clyde')]
-    True
-    >>> text.split(' and ') == [Text('Bonnie'), Text('Clyde')]
-    True
+    >>> text.split('and')
+    [Text('Bonnie', Tag('em', ' ')), Text(Tag('em', ' '), 'Clyde')]
+    >>> text.split(' and ')
+    [Text('Bonnie'), Text('Clyde')]
     >>> text = Text('From ', Tag('em', 'the very beginning'), ' of things')
-    >>> text.split() == [Text('From'), Text(Tag('em', 'the')), Text(Tag('em', 'very')), Text(Tag('em', 'beginning')), Text('of'), Text('things')]
-    True
+    >>> text.split()
+    [Text('From'), Text(Tag('em', 'the')), Text(Tag('em', 'very')), Text(Tag('em', 'beginning')), Text('of'), Text('things')]
     >>> dashified = String('-').join(text.split())
-    >>> dashified == Text('From-', Tag('em', 'the'), '-', Tag('em', 'very'), '-', Tag('em', 'beginning'), '-of-things')
-    True
+    >>> dashified
+    Text('From-', Tag('em', 'the'), '-', Tag('em', 'very'), '-', Tag('em', 'beginning'), '-of-things')
     >>> dashified = Tag('em', '-').join(text.split())
-    >>> dashified == Text('From', Tag('em', '-the-very-beginning-'), 'of', Tag('em', '-'), 'things')
-    True
+    >>> dashified
+    Text('From', Tag('em', '-the-very-beginning-'), 'of', Tag('em', '-'), 'things')
     """
 
     def __check_name(self, name):
@@ -1245,11 +1240,10 @@ class HRef(BaseMultipartText):
     False
 
     >>> href = HRef('/', 'World Wide Web')
-    >>> href.split() == [HRef('/', 'World'), HRef('/', 'Wide'), HRef('/', 'Web')]
-    True
-    >>> dashified = Text('-').join(Text('Estimated size of the ', href).split())
-    >>> dashified == Text('Estimated-size-of-the-', HRef('/', 'World'), '-', HRef('/', 'Wide'), '-', HRef('/', 'Web'))
-    True
+    >>> href.split()
+    [HRef('/', 'World'), HRef('/', 'Wide'), HRef('/', 'Web')]
+    >>> Text('-').join(Text('Estimated size of the ', href).split())
+    Text('Estimated-size-of-the-', HRef('/', 'World'), '-', HRef('/', 'Wide'), '-', HRef('/', 'Web'))
     """
 
     def __init__(self, url, *args):
