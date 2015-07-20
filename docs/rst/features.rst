@@ -103,6 +103,6 @@ produce:
 Support for other formats can be added easily. If you really need it,
 please `file a feature request`_.
 
-.. _file a feature request: http://sourceforge.net/p/pybtex/bugs/new/
+.. _file a feature request: https://bitbucket.org/pybtex-devs/pybtex/issues/new
 
 

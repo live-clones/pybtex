@@ -8,7 +8,7 @@ It requires:
 - Jinja2 (tested with 2.1.1)
 - Pygments (tested with versions from 0.7.1 to 1.0)
 
-For the curious: the site at http://pybtex.sourceforge.net/ is generated and
+For the curious: the site at http://pybtex.org/ is generated and
 updated as follows:
 
 $ ./generate.py site
