@@ -1245,28 +1245,32 @@ class HRef(BaseMultipartText):
     [HRef('/', 'World'), HRef('/', 'Wide'), HRef('/', 'Web')]
     >>> Text('-').join(Text('Estimated size of the ', href).split())
     Text('Estimated-size-of-the-', HRef('/', 'World'), '-', HRef('/', 'Wide'), '-', HRef('/', 'Web'))
-    >>> text = Text(Tag('em', Text(Tag('strong', HRef('/', 'Very, very'), ' bad'), ' guys')), '! ')
+    >>> text = Text(Tag('em', Text(Tag('strong', HRef('/', '  Very, very'), ' bad'), ' guys')), '! ')
     >>> print text.render_as('html')
-    <em><strong><a href="/">Very, very</a> bad</strong> guys</em>! 
+    <em><strong><a href="/">  Very, very</a> bad</strong> guys</em>! 
     >>> text.split(', ')
-    [Text(Tag('em', Tag('strong', HRef('/', 'Very')))), Text(Tag('em', Tag('strong', HRef('/', 'very'), ' bad'), ' guys'), '! ')]
+    [Text(Tag('em', Tag('strong', HRef('/', '  Very')))), Text(Tag('em', Tag('strong', HRef('/', 'very'), ' bad'), ' guys'), '! ')]
     >>> text.split(' ')
-    [Text(Tag('em', Tag('strong', HRef('/', 'Very,')))), Text(Tag('em', Tag('strong', HRef('/', 'very')))), Text(Tag('em', Tag('strong', 'bad'))), Text(Tag('em', 'guys'), '!'), Text()]
+    [Text(), Text(), Text(Tag('em', Tag('strong', HRef('/', 'Very,')))), Text(Tag('em', Tag('strong', HRef('/', 'very')))), Text(Tag('em', Tag('strong', 'bad'))), Text(Tag('em', 'guys'), '!'), Text()]
     >>> text.split(' ', keep_empty_parts=False)
     [Text(Tag('em', Tag('strong', HRef('/', 'Very,')))), Text(Tag('em', Tag('strong', HRef('/', 'very')))), Text(Tag('em', Tag('strong', 'bad'))), Text(Tag('em', 'guys'), '!')]
     >>> text.split()
     [Text(Tag('em', Tag('strong', HRef('/', 'Very,')))), Text(Tag('em', Tag('strong', HRef('/', 'very')))), Text(Tag('em', Tag('strong', 'bad'))), Text(Tag('em', 'guys'), '!')]
-    >>> text = Text(' A', Tag('em', ' big', HRef('/', ' ', Tag('strong', 'no-no'), '!')))
+    >>> text.split(keep_empty_parts=True)
+    [Text(), Text(Tag('em', Tag('strong', HRef('/', 'Very,')))), Text(Tag('em', Tag('strong', HRef('/', 'very')))), Text(Tag('em', Tag('strong', 'bad'))), Text(Tag('em', 'guys'), '!'), Text()]
+    >>> text = Text(' A', Tag('em', ' big', HRef('/', ' ', Tag('strong', 'no-no'), '!  ')))
     >>> print text.render_as('html')
-     A<em> big<a href="/"> <strong>no-no</strong>!</a></em>
+     A<em> big<a href="/"> <strong>no-no</strong>!  </a></em>
     >>> text.split('-')
-    [Text(' A', Tag('em', ' big', HRef('/', ' ', Tag('strong', 'no')))), Text(Tag('em', HRef('/', Tag('strong', 'no'), '!')))]
+    [Text(' A', Tag('em', ' big', HRef('/', ' ', Tag('strong', 'no')))), Text(Tag('em', HRef('/', Tag('strong', 'no'), '!  ')))]
     >>> text.split(' ')
-    [Text(), Text('A'), Text(Tag('em', 'big')), Text(Tag('em', HRef('/', Tag('strong', 'no-no'), '!')))]
+    [Text(), Text('A'), Text(Tag('em', 'big')), Text(Tag('em', HRef('/', Tag('strong', 'no-no'), '!'))), Text(), Text()]
     >>> text.split(' ', keep_empty_parts=False)
     [Text('A'), Text(Tag('em', 'big')), Text(Tag('em', HRef('/', Tag('strong', 'no-no'), '!')))]
     >>> text.split()
     [Text('A'), Text(Tag('em', 'big')), Text(Tag('em', HRef('/', Tag('strong', 'no-no'), '!')))]
+    >>> text.split(keep_empty_parts=True)
+    [Text(), Text('A'), Text(Tag('em', 'big')), Text(Tag('em', HRef('/', Tag('strong', 'no-no'), '!'))), Text()]
     """
 
     def __init__(self, url, *args):
