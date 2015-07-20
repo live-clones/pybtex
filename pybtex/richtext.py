@@ -1273,8 +1273,12 @@ class Symbol(BaseText):
     >>> print nbsp.render_as('html')
     &nbsp;
 
-    >>> print Text(nbsp).capitalize().render_as('html')
-    &nbsp;
+    >>> Text(nbsp, nbsp)
+    Text(Symbol('nbsp'), Symbol('nbsp'))
+    >>> print Text(nbsp, nbsp).render_as('html')
+    &nbsp;&nbsp;
+    >>> print Text(nbsp, nbsp).capitalize().render_as('html')
+    &nbsp;&nbsp;
     >>> print nbsp.upper().render_as('html')
     &nbsp;
     >>> print nbsp.lower().render_as('html')
