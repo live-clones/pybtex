@@ -52,6 +52,13 @@ def memoize(f):
     return new_f
 
 
+def collect_iterable(f):
+    @wraps(f)
+    def new_f(*args, **kwargs):
+        return list(f(*args, **kwargs))
+    return new_f
+
+
 class CaseInsensitiveDict(MutableMapping):
     """A dict with case-insensitive lookup.
 

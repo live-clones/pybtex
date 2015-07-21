@@ -19,6 +19,23 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+r"""
+LaTeX output backend.
+
+>>> from pybtex.richtext import Tag, HRef
+>>> latex = Backend()
+>>> print Tag('em', '').render(latex)
+<BLANKLINE>
+>>> print Tag('em', 'Non-', 'empty').render(latex)
+\emph{Non-empty}
+>>> print HRef('/', '').render(latex)
+<BLANKLINE>
+>>> print HRef('/', 'Non-', 'empty').render(latex)
+\href{/}{Non-empty}
+"""
+
+
 from pybtex.backends import BaseBackend
 
 
@@ -38,14 +55,14 @@ class Backend(BaseBackend):
     }
 
     def format_tag(self, tag_name, text):
-        tag = self.__class__.tags.get(tag_name)
+        tag = self.tags.get(tag_name)
         if tag is None:
-            return ur'{%s}' % text
+            return u'{%s}' % text if text else u''
         else:
-            return ur'\%s{%s}' % (tag, text)
+            return ur'\%s{%s}' % (tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'\href{%s}{%s}' % (url, text)
+        return ur'\href{%s}{%s}' % (url, text) if text else u''
 
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
