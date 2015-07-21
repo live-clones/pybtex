@@ -1,0 +1,5 @@
+PyYAML>=3.01
+nose
+docutils
+Jinja2
+pygments

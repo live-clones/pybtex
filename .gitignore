@@ -13,4 +13,5 @@ pybtex.egg-info
 MANIFEST
 .ropeproject
 .coverage
+.tox
 __pycache__
