@@ -487,3 +487,11 @@ class CaseSensitivityTest(ParserTest, TestCase):
             },
         ),
     })
+
+
+class WindowsNewlineTest(ParserTest, TestCase):
+    input_strings = [
+        u"""'@Article\r\n\r\n\r\n}\r\n'""",
+    ]
+    correct_result = BibliographyData()
+    errors = ["syntax error in line 4: '(' or '{' expected"]
