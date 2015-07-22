@@ -21,9 +21,8 @@
 
 """BibTeX parser
 
->>> from io import StringIO
 >>> parser = Parser()
->>> bib_data = parser.parse_stream(StringIO(u'''
+>>> bib_data = parser.parse_string(u'''
 ... @String{SCI = "Science"}
 ... 
 ... @String{JFernandez = "Fernandez, Julio M."}
@@ -46,7 +45,7 @@
 ...   URL =          "http://www.sciencemag.org/cgi/content/abstract/276/5315/1109",
 ...   eprint =       "http://www.sciencemag.org/cgi/reprint/276/5315/1109.pdf",
 ... }
-... '''))
+... ''')
 
 # entry keys are case-insensitive
 >>> bib_data.entries['rief97b'] == bib_data.entries['RIEF97B']
@@ -349,9 +348,8 @@ class Parser(BaseParser):
         from pybtex.errors import report_error
         report_error(error)
 
-    def parse_stream(self, stream):
+    def parse_string(self, text):
         self.unnamed_entry_counter = 1
-        text = stream.read()
         self.command_start = 0
 
         entry_iterator = BibTeXEntryIterator(
@@ -372,3 +370,7 @@ class Parser(BaseParser):
             else:
                 self.process_entry(entry_type, *entry[1])
         return self.data
+
+    def parse_stream(self, stream):
+        text = stream.read()
+        return self.parse_string(text)

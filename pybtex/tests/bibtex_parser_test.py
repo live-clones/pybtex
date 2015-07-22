@@ -33,7 +33,6 @@ https://github.com/matthew-brett/babybib
 from pybtex.database import BibliographyData
 from pybtex.database import Entry, Person
 from pybtex.database.input.bibtex import Parser
-from io import StringIO
 from itertools import izip_longest
 
 from unittest import TestCase
@@ -62,7 +61,7 @@ class ParserTest(object):
     def test_parser(self):
         parser = TestParser(encoding='UTF-8', **self.parser_options)
         for input_string in self.input_strings:
-            parser.parse_stream(StringIO(input_string))
+            parser.parse_string(input_string)
         result = parser.data
         correct_result = self.correct_result
         assert result == correct_result

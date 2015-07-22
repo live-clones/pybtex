@@ -58,5 +58,9 @@ class BaseParser(Plugin):
             self.parse_file(filename, file_suffix)
         return self.data
 
+    def parse_string(self, value):
+        from io import StringIO
+        return self.parse_stream(StringIO(value))
+
     def parse_stream(self, stream):
         raise NotImplementedError
