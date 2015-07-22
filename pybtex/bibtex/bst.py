@@ -123,7 +123,7 @@ class BstParser(Scanner):
 
     def parse_group(self):
         while True:
-            token = self.required([self.LBRACE, self.RBRACE, self.STRING, self.INTEGER, self.NAME])
+            token = self.required([self.NAME, self.STRING, self.INTEGER, self.LBRACE, self.RBRACE])
             if token.pattern is self.LBRACE:
                 yield FunctionLiteral(list(self.parse_group()))
             elif token.pattern is self.RBRACE:
