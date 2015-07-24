@@ -295,6 +295,16 @@ class Interpreter(object):
         self.output_lines.append(u'\n')
         self.output_buffer = []
 
+    def exec_code(self, code):
+        bytecode = code.compile()
+        context = {
+            'i': self,
+            'builtins': builtins,
+            'Function': Function,
+        }
+        exec bytecode in context
+        return context
+
     def run(self, bst_script, citations, bib_files, min_crossrefs):
         """Run bst script and return formatted bibliography."""
 
@@ -339,13 +349,7 @@ class Interpreter(object):
         #pprint(body, indent=4)
         #print
         #print code.stream.getvalue()
-        bytecode = code.compile()
-        context = {
-            'i': self,
-            'builtins': builtins,
-            'Function': Function,
-        }
-        exec bytecode in context
+        context = self.exec_code(code)
         func = Function(name, context['_tmp_'])
         self.add_variable(func)
 
