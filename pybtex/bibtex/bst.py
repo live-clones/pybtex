@@ -20,19 +20,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import re
-from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
+from pybtex.bibtex.interpreter import (IntegerLiteral, StringLiteral, QuotedVar,
         Identifier, FunctionLiteral, BibTeXError)
 import pybtex.io
 
 #ParserElement.enablePackrat()
 
 def process_int_literal(value):
-    return Integer(int(value.strip('#')))
+    return IntegerLiteral(int(value.strip('#')))
 
 def process_string_literal(value):
     assert value.startswith('"')
     assert value.endswith('"')
-    return String(value[1:-1])
+    return StringLiteral(value[1:-1])
 
 def process_identifier(name):
     if name[0] == "'":

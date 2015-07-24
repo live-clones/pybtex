@@ -92,6 +92,19 @@ class EntryString(String, EntryVariable):
     pass
 
 
+class Literal(Variable):
+    def __init__(self, value):
+        self._value = value
+
+
+class IntegerLiteral(Literal):
+    pass
+
+
+class StringLiteral(Literal):
+    pass
+
+
 class MissingField(str):
     def __new__(cls, name):
         self = str.__new__(cls)
