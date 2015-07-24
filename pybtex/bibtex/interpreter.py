@@ -206,7 +206,6 @@ class FunctionLiteral(object):
         if body is None:
             body = []
         self.body = body
-        self.f = None
 
     def __repr__(self):
         return u'{0}({1})'.format(type(self).__name__, repr(self.body))
@@ -230,6 +229,10 @@ class Function(FunctionLiteral):
     def __init__(self, name, f):
         self.name = name.lower()
         self.f = f
+        super(Function, self).__init__()
+
+    def __repr__(self):
+        return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
 
     def write_code(self, interpreter, code):
         code.write('i.vars[{!r}].f()'.format(self.name))
