@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.utils import CaseInsensitiveDict
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import Builtin, builtins, print_warning
 from pybtex.bibtex.utils import wrap
@@ -37,7 +36,7 @@ class Variable(object):
 
     def __init__(self, name, value=None):
         self.set(value)
-        self.name = name
+        self.name = name.lower()
 
     def __repr__(self):
         return '{0}({1})'.format(type(self).__name__, repr(self._value))
@@ -117,7 +116,7 @@ class StringLiteral(Literal):
 class MissingField(str):
     def __new__(cls, name):
         self = str.__new__(cls)
-        self.name = name
+        self.name = name.lower()
         return self
     def __nonzero__(self):
         return False
@@ -126,7 +125,7 @@ class MissingField(str):
 class Field(object):
     def __init__(self, name, interpreter):
         self.interpreter = interpreter
-        self.name = name
+        self.name = name.lower()
 
     def execute(self, interpreter):
         self.interpreter.push(self.value())
@@ -160,7 +159,7 @@ class Crossref(Field):
 
 class Identifier(object):
     def __init__(self, name):
-        self.name = name
+        self.name = name.lower()
 
     def __repr__(self):
         return '{0}({1!r})'.format(type(self).__name__, self.name)
@@ -233,12 +232,12 @@ class FunctionLiteral(object):
     def write_code(self, interpreter, code):
         function = CodeBlock(self.body)
         function.write_code(interpreter, code)
-        code.write('i.push(Function(None, _tmp_))')
+        code.write('i.push(Function("", _tmp_))')
 
 
 class Function(FunctionLiteral):
     def __init__(self, name, f):
-        self.name = name
+        self.name = name.lower()
         self.f = f
 
     def write_code(self, interpreter, code):
@@ -250,7 +249,7 @@ class Interpreter(object):
         self.bib_format = bib_format
         self.bib_encoding = bib_encoding
         self.stack = []
-        self.vars = CaseInsensitiveDict(builtins)
+        self.vars = dict(builtins)
         self.builtins = builtins
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
         self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
