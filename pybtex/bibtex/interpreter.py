@@ -68,15 +68,22 @@ class EntryVariable(Variable):
     def __init__(self, name, interpreter):
         super(EntryVariable, self).__init__(name)
         self.interpreter = interpreter
+
     def set(self, value):
         if value is not None:
             self.validate(value)
             self.interpreter.current_entry.vars[self.name] = value
+
     def value(self):
         try:
             return self.interpreter.current_entry.vars[self.name]
         except KeyError:
             return None
+
+    def write_code(self, interpreter, code):
+        if self.name not in interpreter.vars:
+            raise BibTeXError('undefined entry variable {}'.format(self.name))
+        code.write('i.push(i.current_entry.vars[{!r}])'.format(self.name))
 
 
 class Integer(Variable):
