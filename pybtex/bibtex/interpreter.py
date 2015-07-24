@@ -167,36 +167,27 @@ class Identifier(object):
     def __eq__(self, other):
         return type(self) == type(other) and self.name == other.name
 
-    def execute(self, interpreter):
+    def get_var(self, interpreter):
         try:
-            f = interpreter.vars[self.name]
+            var = interpreter.vars[self.name]
         except KeyError:
-            raise BibTeXError('can not execute undefined function %s' % self)
-        f.execute(interpreter)
+            raise BibTeXError('can not execute undefined function %s' % self.name)
+        return var
+
+    def execute(self, interpreter):
+        self.get_var(interpreter).execute(interpreter)
 
     def write_code(self, interpreter, code):
-        # check errors
-        var = interpreter.vars[self.name]
-        var.write_code(interpreter, code)
+        self.get_var(interpreter).write_code(interpreter, code)
 
 
 class QuotedVar(Identifier):
-    def execute(self, interpreter):
+    def write_code(self, interpreter, code):
         try:
             var = interpreter.vars[self.name]
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.name)
-        interpreter.push(var)
-
-    def write_code(self, interpreter, code):
-        # XXX check errors
         code.write('i.push(i.vars[{!r}])'.format(self.name))
-
-#         val = 'i.vars[{!r}]'.format(self.value())
-#         if isinstance(var, (Function, Builtin)):
-#             code.write('{}.f()'.format(val))
-#         else:
-#             code.write('i.push({})'.format(val))
 
 
 class CodeBlock(object):
