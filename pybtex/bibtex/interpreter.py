@@ -120,13 +120,11 @@ class StringLiteral(Literal):
     pass
 
 
-class MissingField(str):
-    def __new__(cls, name):
-        self = str.__new__(cls)
-        self.name = name.lower()
-        return self
-    def __nonzero__(self):
-        return False
+class MissingField(unicode):
+    pass
+
+
+MISSING_FIELD = MissingField()
 
 
 class Field(object):
@@ -141,11 +139,12 @@ class Field(object):
         try:
             return self.interpreter.current_entry.fields[self.name]
         except KeyError:
-            return MissingField(self.name)
+            return MISSING_FIELD
 
     def write_code(self, interpreter, code):
-        # XXX generate proper code
-        code.write('i.push(i.vars[{!r}].value())'.format(self.name))
+        if self.name not in interpreter.vars:
+            raise BibTeXError('undefined field {}'.format(self.name))
+        code.write('i.push(i.current_entry.fields.get({0!r}, MISSING_FIELD))'.format(self.name))
 
 
 class Crossref(Field):
@@ -157,7 +156,7 @@ class Crossref(Field):
             value = self.interpreter.current_entry.fields[self.name]
             crossref_entry = self.interpreter.bib_data.entries[value]
         except KeyError:
-            return MissingField(self.name)
+            return MISSING_FIELD
         return crossref_entry.key
 
     def write_code(self, interpreter, code):
@@ -311,6 +310,7 @@ class Interpreter(object):
             'i': self,
             'builtins': builtins,
             'Function': Function,
+            'MISSING_FIELD': MISSING_FIELD,
         }
         exec bytecode in context
         return context
@@ -425,4 +425,4 @@ class Interpreter(object):
 
     @staticmethod
     def is_missing_field(field):
-        return isinstance(field, MissingField)
+        return field is MISSING_FIELD
