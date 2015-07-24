@@ -21,8 +21,9 @@
 
 from pybtex.utils import CaseInsensitiveDict
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.bibtex.builtins import builtins, print_warning
+from pybtex.bibtex.builtins import Builtin, builtins, print_warning
 from pybtex.bibtex.utils import wrap
+from .codegen import PythonCode
 #from pybtex.database.input import bibtex
 
 
@@ -50,6 +51,10 @@ class Variable(object):
             raise ValueError('Invalid value for BibTeX %s: %s' % (self.__class__.__name__, value))
     def execute(self, interpreter):
         interpreter.push(self.value())
+
+    def write_code(self, interpreter, code):
+        code.write('i.push(i.vars[{!r}].value())'.format(self.name))
+
     def value(self):
         return self._value
 
@@ -97,6 +102,9 @@ class Literal(Variable):
     def __init__(self, value):
         self._value = value
 
+    def write_code(self, interpreter, code):
+        code.write('i.push({!r})'.format(self.value()))
+
 
 class IntegerLiteral(Literal):
     pass
@@ -129,6 +137,10 @@ class Field(object):
         except KeyError:
             return MissingField(self.name)
 
+    def write_code(self, interpreter, code):
+        # XXX generate proper code
+        code.write('i.push(i.vars[{!r}].value())'.format(self.name))
+
 
 class Crossref(Field):
     def __init__(self, interpreter):
@@ -141,6 +153,9 @@ class Crossref(Field):
         except KeyError:
             return MissingField(self.name)
         return crossref_entry.key
+
+    def write_code(self, interpreter, code):
+        code.write('i.push(i.vars[{!r}].value())'.format(self.name))
 
 
 class Identifier(object):
@@ -160,6 +175,11 @@ class Identifier(object):
             raise BibTeXError('can not execute undefined function %s' % self)
         f.execute(interpreter)
 
+    def write_code(self, interpreter, code):
+        # check errors
+        var = interpreter.vars[self.name]
+        var.write_code(interpreter, code)
+
 
 class QuotedVar(Identifier):
     def execute(self, interpreter):
@@ -169,12 +189,34 @@ class QuotedVar(Identifier):
             raise BibTeXError('can not push undefined variable %s' % self.name)
         interpreter.push(var)
 
+    def write_code(self, interpreter, code):
+        # XXX check errors
+        code.write('i.push(i.vars[{!r}])'.format(self.name))
+
+#         val = 'i.vars[{!r}]'.format(self.value())
+#         if isinstance(var, (Function, Builtin)):
+#             code.write('{}.f()'.format(val))
+#         else:
+#             code.write('i.push({})'.format(val))
+
+
+class CodeBlock(object):
+    def __init__(self, body):
+        self.body = body
+
+    def write_code(self, interpreter, code):
+        code.write('def _tmp_():')
+        with code.indent():
+            for element in self.body:
+                element.write_code(interpreter, code)
+
 
 class FunctionLiteral(object):
     def __init__(self, body=None):
         if body is None:
             body = []
         self.body = body
+        self.f = None
 
     def __repr__(self):
         return u'{0}({1})'.format(type(self).__name__, repr(self.body))
@@ -183,18 +225,24 @@ class FunctionLiteral(object):
         return type(self) == type(other) and self.body == other.body
 
     def execute(self, interpreter):
-        interpreter.push(Function(None, self.body))
+        self.f()
+#        print 'executing function', self.body
+        #for element in self.body:
+            #element.execute(interpreter)
+
+    def write_code(self, interpreter, code):
+        function = CodeBlock(self.body)
+        function.write_code(interpreter, code)
+        code.write('i.push(Function(None, _tmp_))')
 
 
 class Function(FunctionLiteral):
-    def __init__(self, name, body):
+    def __init__(self, name, f):
         self.name = name
-        super(Function, self).__init__(body)
+        self.f = f
 
-    def execute(self, interpreter):
-#        print 'executing function', self.body
-        for element in self.body:
-            element.execute(interpreter)
+    def write_code(self, interpreter, code):
+        code.write('i.vars[{!r}].f()'.format(self.name))
 
 
 class Interpreter(object):
@@ -203,6 +251,7 @@ class Interpreter(object):
         self.bib_encoding = bib_encoding
         self.stack = []
         self.vars = CaseInsensitiveDict(builtins)
+        self.builtins = builtins
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
         self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
         self.add_variable(EntryString('sort.key$', self))
@@ -277,7 +326,21 @@ class Interpreter(object):
 
     def command_function(self, name_, body):
         name = name_[0].name
-        self.add_variable(Function(name, body))
+        block = CodeBlock(body)
+        code = PythonCode()
+        block.write_code(self, code)
+        #from pprint import pprint
+        #pprint(body, indent=4)
+        #print
+        #print code.stream.getvalue()
+        bytecode = code.compile()
+        context = {
+            'i': self,
+            'Function': Function,
+        }
+        exec bytecode in context
+        func = Function(name, context['_tmp_'])
+        self.add_variable(func)
 
     def command_integers(self, identifiers):
 #        print 'INTEGERS'

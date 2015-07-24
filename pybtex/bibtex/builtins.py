@@ -41,18 +41,22 @@ def print_warning(msg):
 
 
 class Builtin(object):
-    def __init__(self, f):
+    def __init__(self, f, name):
         self.f = f
+        self.name = name
     def execute(self, interpreter):
         self.f(interpreter)
     def __repr__(self):
         return '<builtin %s>' % self.f.__name__
 
+    def write_code(self, interpreter, code):
+        code.write('i.builtins[{!r}].f(i)'.format(self.name))
+
 builtins = {}
 
 def builtin(name):
     def _builtin(f):
-        b = Builtin(f)
+        b = Builtin(f, name)
         update_wrapper(b, f)
         builtins[name] = b
         return b
