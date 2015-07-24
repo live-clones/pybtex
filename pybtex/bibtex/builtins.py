@@ -24,8 +24,6 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 
-from functools import update_wrapper
-
 
 import pybtex.io
 from pybtex.errors import report_error
@@ -38,28 +36,12 @@ from pybtex.bibtex.names import format_name as format_bibtex_name
 
 def print_warning(msg):
     report_error(BibTeXError(msg))
-
-
-class Builtin(object):
-    def __init__(self, f, name):
-        self.f = f
-        self.name = name
-    def execute(self, interpreter):
-        self.f(interpreter)
-    def __repr__(self):
-        return '<builtin %s>' % self.f.__name__
-
-    def write_code(self, interpreter, code):
-        code.write('i.builtins[{!r}].f(i)'.format(self.name))
-
 builtins = {}
 
 def builtin(name):
     def _builtin(f):
-        b = Builtin(f, name)
-        update_wrapper(b, f)
-        builtins[name] = b
-        return b
+        builtins[name] = f
+        return f
     return _builtin
 
 @builtin('>')

@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.bibtex.builtins import Builtin, builtins, print_warning
+from pybtex.bibtex.builtins import builtins, print_warning
 from pybtex.bibtex.utils import wrap
 from .codegen import PythonCode
 #from pybtex.database.input import bibtex
@@ -244,13 +244,29 @@ class Function(FunctionLiteral):
         code.write('i.vars[{!r}].f()'.format(self.name))
 
 
+class Builtin(object):
+    def __init__(self, name):
+        self.name = name
+        self.f = builtins[name]
+
+    def execute(self, interpreter):
+        self.f(interpreter)
+
+    def __repr__(self):
+        return '<builtin %s>' % self.name
+
+    def write_code(self, interpreter, code):
+        code.write('builtins[{!r}](i)'.format(self.name))
+
+
 class Interpreter(object):
     def __init__(self, bib_format, bib_encoding):
         self.bib_format = bib_format
         self.bib_encoding = bib_encoding
         self.stack = []
-        self.vars = dict(builtins)
-        self.builtins = builtins
+        self.vars = {}
+        for name in builtins:
+            self.add_variable(Builtin(name))
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
         self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
         self.add_variable(EntryString('sort.key$', self))
@@ -335,6 +351,7 @@ class Interpreter(object):
         bytecode = code.compile()
         context = {
             'i': self,
+            'builtins': builtins,
             'Function': Function,
         }
         exec bytecode in context
