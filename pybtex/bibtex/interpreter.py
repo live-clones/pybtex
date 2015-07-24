@@ -34,8 +34,10 @@ class Variable(object):
     default = property(_undefined)
     value_type = property(_undefined)
 
-    def __init__(self, value=None):
+    def __init__(self, name, value=None):
         self.set(value)
+        self.name = name
+
     def __repr__(self):
         return '{0}({1})'.format(type(self).__name__, repr(self._value))
     def set(self, value):
@@ -59,10 +61,9 @@ class Variable(object):
 
 
 class EntryVariable(Variable):
-    def __init__(self, interpreter, name):
-        Variable.__init__(self)
+    def __init__(self, name, interpreter):
+        super(EntryVariable, self).__init__(name)
         self.interpreter = interpreter
-        self.name = name
     def set(self, value):
         if value is not None:
             self.validate(value)
@@ -115,7 +116,7 @@ class MissingField(str):
 
 
 class Field(object):
-    def __init__(self, interpreter, name):
+    def __init__(self, name, interpreter):
         self.interpreter = interpreter
         self.name = name
 
@@ -131,7 +132,7 @@ class Field(object):
 
 class Crossref(Field):
     def __init__(self, interpreter):
-        super(Crossref, self).__init__(interpreter, 'crossref')
+        super(Crossref, self).__init__('crossref', interpreter)
 
     def value(self):
         try:
@@ -142,27 +143,34 @@ class Crossref(Field):
         return crossref_entry.key
 
 
-class Identifier(Variable):
-    value_type = basestring
+class Identifier(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '{0}({1!r})'.format(type(self).__name__, self.name)
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.name == other.name
+
     def execute(self, interpreter):
         try:
-            f = interpreter.vars[self.value()]
+            f = interpreter.vars[self.name]
         except KeyError:
             raise BibTeXError('can not execute undefined function %s' % self)
         f.execute(interpreter)
 
 
-class QuotedVar(Variable):
-    value_type = basestring
+class QuotedVar(Identifier):
     def execute(self, interpreter):
         try:
-            var = interpreter.vars[self.value()]
+            var = interpreter.vars[self.name]
         except KeyError:
-            raise BibTeXError('can not push undefined variable %s' % self.value())
+            raise BibTeXError('can not push undefined variable %s' % self.name)
         interpreter.push(var)
 
 
-class Function(object):
+class FunctionLiteral(object):
     def __init__(self, body=None):
         if body is None:
             body = []
@@ -175,14 +183,18 @@ class Function(object):
         return type(self) == type(other) and self.body == other.body
 
     def execute(self, interpreter):
+        interpreter.push(Function(None, self.body))
+
+
+class Function(FunctionLiteral):
+    def __init__(self, name, body):
+        self.name = name
+        super(Function, self).__init__(body)
+
+    def execute(self, interpreter):
 #        print 'executing function', self.body
         for element in self.body:
             element.execute(interpreter)
-
-
-class FunctionLiteral(Function):
-    def execute(self, interpreter):
-        interpreter.push(Function(self.body))
 
 
 class Interpreter(object):
@@ -191,9 +203,9 @@ class Interpreter(object):
         self.bib_encoding = bib_encoding
         self.stack = []
         self.vars = CaseInsensitiveDict(builtins)
-        self.add_variable('global.max$', Integer(20000))  # constants taken from
-        self.add_variable('entry.max$', Integer(250))     # BibTeX 0.99d (TeX Live 2012)
-        self.add_variable('sort.key$', EntryString(self, 'sort.key$'))
+        self.add_variable(Integer('global.max$', 20000))  # constants taken from
+        self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
+        self.add_variable(EntryString('sort.key$', self))
         self.macros = {}
         self.output_buffer = []
         self.output_lines = []
@@ -214,10 +226,10 @@ class Interpreter(object):
     def get_token(self):
         return self.bst_script.next()
 
-    def add_variable(self, name, value):
-        if name in self.vars:
+    def add_variable(self, var):
+        if var.name in self.vars:
             raise BibTeXError('variable "{0}" already declared as {1}'.format(name, type(value).__name__))
-        self.vars[name] = value
+        self.vars[var.name] = var
 
     def output(self, string):
         self.output_buffer.append(string)
@@ -249,31 +261,31 @@ class Interpreter(object):
 
     def command_entry(self, fields, ints, strings):
         for id in fields:
-            name = id.value()
-            self.add_variable(name, Field(self, name))
-        self.add_variable('crossref', Crossref(self))
+            name = id.name
+            self.add_variable(Field(name, self))
+        self.add_variable(Crossref(self))
         for id in ints:
-            name = id.value()
-            self.add_variable(name, EntryInteger(self, name))
+            name = id.name
+            self.add_variable(EntryInteger(name, self))
         for id in strings:
-            name = id.value()
-            self.add_variable(name, EntryString(self, name))
+            name = id.name
+            self.add_variable(EntryString(name, self))
 
     def command_execute(self, command_):
 #        print 'EXECUTE'
         command_[0].execute(self)
 
     def command_function(self, name_, body):
-        name = name_[0].value()
-        self.add_variable(name, Function(body))
+        name = name_[0].name
+        self.add_variable(Function(name, body))
 
     def command_integers(self, identifiers):
 #        print 'INTEGERS'
         for identifier in identifiers:
-            self.vars[identifier.value()] = Integer()
+            self.add_variable(Integer(identifier.name))
 
     def command_iterate(self, function_group):
-        function = function_group[0].value()
+        function = function_group[0].name
         self._iterate(function, self.citations)
 
     def _iterate(self, function, citations):
@@ -285,7 +297,7 @@ class Interpreter(object):
         self.currentEntry = None
 
     def command_macro(self, name_, value_):
-        name = name_[0].value()
+        name = name_[0].name
         value = value_[0].value()
         self.macros[name] = value
 
@@ -314,7 +326,7 @@ class Interpreter(object):
                 print_warning('missing database entry for "{0}"'.format(citation))
 
     def command_reverse(self, function_group):
-        function = function_group[0].value()
+        function = function_group[0].name
         self._iterate(function, reversed(self.citations))
 
     def command_sort(self):
@@ -325,7 +337,7 @@ class Interpreter(object):
     def command_strings(self, identifiers):
         #print 'STRINGS'
         for identifier in identifiers:
-            self.vars[identifier.value()] = String()
+            self.add_variable(String(identifier.name))
 
     @staticmethod
     def is_missing_field(field):
