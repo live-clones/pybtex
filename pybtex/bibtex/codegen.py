@@ -92,7 +92,7 @@ class PythonCode(object):
 
     def write(self, stream, level=0):
         for statement in self.statements:
-            statement.write(stream, self.level + level)
+            statement.write(stream, self.level)
 
     def getvalue(self):
         stream = StringIO()
