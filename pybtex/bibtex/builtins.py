@@ -112,17 +112,19 @@ def operator_assign(i, code):
     code.line('var.set(val)')
 
 
-@builtin('+')
-def operator_plus(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    i.push(arg2 + arg1)
+@inline_builtin('+')
+def operator_plus(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('a1 + a2')
 
-@builtin('-')
-def operator_minus(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    i.push(arg2 - arg1)
+
+@inline_builtin('-')
+def operator_plus(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('a1 - a2')
+
 
 @builtin('add.period$')
 def add_period(i):
