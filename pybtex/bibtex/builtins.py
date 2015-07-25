@@ -218,13 +218,11 @@ def int_to_str(i, code):
     code.push('str(a1)')
 
 
-@builtin('missing$')
-def missing(i):
-    f = i.pop()
-    if i.is_missing_field(f):
-        i.push(1)
-    else:
-        i.push(0)
+@inline_builtin('missing$')
+def missing(i, code):
+    code.pop('a1')
+    code.push('1 if i.is_missing_field(a1) else 0')
+
 
 @builtin('newline$')
 def newline(i):
