@@ -166,11 +166,12 @@ def cite(i, code):
     code.push('i.current_entry_key')
 
 
-@builtin('duplicate$')
-def duplicate(i):
-    tmp = i.pop()
-    i.push(tmp)
-    i.push(tmp)
+@inline_builtin('duplicate$')
+def duplicate(i, code):
+    code.pop('a1')
+    code.push('a1')
+    code.push('a1')
+
 
 @builtin('empty$')
 def empty(i):
