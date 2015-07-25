@@ -234,9 +234,11 @@ def quote(i, code):
     code.push('{!r}'.format('"'))
 
 
-@builtin('skip$')
-def skip(i):
+@inline_builtin('skip$')
+def skip(i, code):
+    code.line('pass')
     pass
+
 
 @builtin('substring$')
 def substring(i):
