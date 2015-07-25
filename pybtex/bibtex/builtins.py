@@ -173,14 +173,10 @@ def duplicate(i, code):
     code.push('a1')
 
 
-@builtin('empty$')
-def empty(i):
-    #FIXME error checking
-    s = i.pop()
-    if s and not s.isspace():
-        i.push(0)
-    else:
-        i.push(1)
+@inline_builtin('empty$')
+def empty(i, code):
+    code.pop('a1')
+    code.push('0 if a1 and not a1.isspace() else 1')
 
 
 @memoize
