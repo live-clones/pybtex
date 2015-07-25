@@ -59,22 +59,34 @@ class PythonCode(object):
     def __init__(self, level=0):
         self.statements = []
         self.level = level
+        self.var_count = 0
 
-    def line(self, python):
+    def new_var(self):
+        var = 'a{}'.format(self.var_count)
+        self.var_count += 1
+        return var
+
+    def line(self, python, *vars):
+        if vars:
+            python = python.format(*vars)
         self.statements.append(Line(python))
 
-    def push(self, expr):
+    def push(self, expr, *vars):
+        if vars:
+            expr = expr.format(*vars)
         self.statements.append(PushStatement(expr))
 
-    def pop(self, expr=None):
+    def pop(self, discard=False):
+        var = None if discard else self.new_var()
         if self.statements:
             last = self.statements[-1]
             if isinstance(last, PushStatement):
                 self.statements.pop()
-                if expr != last.expr:
-                    self.line('{} = {}'.format(expr, last.expr))
-                return
-        self.statements.append(PopStatement(expr))
+                if var and var != last.expr:
+                    self.line('{} = {}'.format(var, last.expr))
+                return var
+        self.statements.append(PopStatement(var))
+        return var
 
     def nested(self):
         block = PythonCode(self.level + 1)
