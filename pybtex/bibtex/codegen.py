@@ -26,27 +26,45 @@
 from io import StringIO
 
 
+class Line(object):
+    def __init__(self, python):
+        self.python = python
+
+    def write(self, stream, level):
+        stream.write(u' ' * (4 * level) + self.python + '\n')
+
+
 class PythonCode(object):
-    def __init__(self):
-        self.stream = StringIO()
-        self.indentation = 0
+    def __init__(self, level=0):
+        self.statements = []
+        self.level = level
 
-    def write(self, line):
-        self.stream.write(u' ' * self.indentation + line + '\n')
+    def line(self, python):
+        self.statements.append(Line(python))
 
-    def indent(self):
-        self.indentation += 4
-        return self
+    def nested(self):
+        block = PythonCode(self.level + 1)
+        self.statements.append(block)
+        return block
 
     def function(self, name='_tmp_'):
         self.write('def {}:' + name)
-        return self.indent()
+        return nested()
 
     def __enter__(self):
-        pass
+        return self
 
     def __exit__(self, type, value, traceback):
-        self.indentation -= 4
+        pass
+
+    def write(self, stream, level=0):
+        for statement in self.statements:
+            statement.write(stream, self.level + level)
+
+    def getvalue(self):
+        stream = StringIO()
+        self.write(stream)
+        return stream.getvalue()
 
     def compile(self):
-        return compile(self.stream.getvalue(), '<BST>', 'exec')
+        return compile(self.getvalue(), '<BST>', 'exec')

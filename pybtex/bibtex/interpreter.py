@@ -52,7 +52,7 @@ class Variable(object):
         interpreter.push(self.value())
 
     def write_code(self, interpreter, code):
-        code.write('push(vars[{!r}]._value)'.format(self.name))
+        code.line('push(vars[{!r}]._value)'.format(self.name))
 
     def value(self):
         return self._value
@@ -83,7 +83,7 @@ class EntryVariable(Variable):
     def write_code(self, interpreter, code):
         if self.name not in interpreter.vars:
             raise BibTeXError('undefined entry variable {}'.format(self.name))
-        code.write('push(i.current_entry.vars[{!r}])'.format(self.name))
+        code.line('push(i.current_entry.vars[{!r}])'.format(self.name))
 
 
 class Integer(Variable):
@@ -109,7 +109,7 @@ class Literal(Variable):
         self._value = value
 
     def write_code(self, interpreter, code):
-        code.write('push({!r})'.format(self.value()))
+        code.line('push({!r})'.format(self.value()))
 
 
 class IntegerLiteral(Literal):
@@ -144,7 +144,7 @@ class Field(object):
     def write_code(self, interpreter, code):
         if self.name not in interpreter.vars:
             raise BibTeXError('undefined field {}'.format(self.name))
-        code.write('push(i.current_entry.fields.get({0!r}, MISSING_FIELD))'.format(self.name))
+        code.line('push(i.current_entry.fields.get({0!r}, MISSING_FIELD))'.format(self.name))
 
 
 class Crossref(Field):
@@ -160,7 +160,7 @@ class Crossref(Field):
         return crossref_entry.key
 
     def write_code(self, interpreter, code):
-        code.write('push(vars[{!r}].value())'.format(self.name))
+        code.line('push(vars[{!r}].value())'.format(self.name))
 
 
 class Identifier(object):
@@ -193,7 +193,7 @@ class QuotedVar(Identifier):
             var = interpreter.vars[self.name]
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.name)
-        code.write('push(vars[{!r}])'.format(self.name))
+        code.line('push(vars[{!r}])'.format(self.name))
 
 
 class CodeBlock(object):
@@ -201,10 +201,10 @@ class CodeBlock(object):
         self.body = body
 
     def write_code(self, interpreter, code):
-        code.write('def _tmp_():')
-        with code.indent():
+        code.line('def _tmp_():')
+        with code.nested() as body:
             for element in self.body:
-                element.write_code(interpreter, code)
+                element.write_code(interpreter, body)
 
 
 class FunctionLiteral(object):
@@ -228,7 +228,7 @@ class FunctionLiteral(object):
     def write_code(self, interpreter, code):
         function = CodeBlock(self.body)
         function.write_code(interpreter, code)
-        code.write('push(Function("", _tmp_))')
+        code.line('push(Function("", _tmp_))')
 
 
 class Function(FunctionLiteral):
@@ -241,7 +241,7 @@ class Function(FunctionLiteral):
         return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
 
     def write_code(self, interpreter, code):
-        code.write('vars[{!r}].f()'.format(self.name))
+        code.line('vars[{!r}].f()'.format(self.name))
 
 
 class Builtin(object):
@@ -256,7 +256,7 @@ class Builtin(object):
         return '<builtin %s>' % self.name
 
     def write_code(self, interpreter, code):
-        code.write('builtins[{!r}](i)'.format(self.name))
+        code.line('builtins[{!r}](i)'.format(self.name))
 
 
 class Interpreter(object):
