@@ -91,14 +91,12 @@ def operator_more(i, code):
     code.push('1 if a1 < a2 else 0')
 
 
-@builtin('=')
-def operator_equals(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    if arg2 == arg1:
-        i.push(1)
-    else:
-        i.push(0)
+@inline_builtin('=')
+def operator_equals(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('1 if a1 == a2 else 0')
+
 
 @inline_builtin('*')
 def operator_asterisk(i, code):
@@ -106,11 +104,13 @@ def operator_asterisk(i, code):
     code.pop('a1')
     code.push('a1 + a2')
 
-@builtin(':=')
-def operator_assign(i):
-    var = i.pop()
-    value = i.pop()
-    var.set(value)
+
+@inline_builtin(':=')
+def operator_assign(i, code):
+    code.pop('var')
+    code.pop('val')
+    code.line('var.set(val)')
+
 
 @builtin('+')
 def operator_plus(i):
