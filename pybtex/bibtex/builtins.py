@@ -38,51 +38,21 @@ from .codegen import PythonCode
 def print_warning(msg):
     report_error(BibTeXError(msg))
 builtins = {}
-builtin_vars = []
+inline_builtins = {}
 
 
 def builtin(name):
     def _builtin(f):
         builtins[name] = f
-        builtin_vars.append(Builtin(name, f))
         return f
     return _builtin
 
 
 def inline_builtin(name):
     def _builtin(f):
-        builtin_vars.append(InlineBuiltin(name, f))
+        inline_builtins[name] = f
         return f
     return _builtin
-
-
-class Builtin(object):
-    def __init__(self, name, f):
-        self.name = name
-        self.f = f
-
-    def execute(self, interpreter):
-        self.f(interpreter)
-
-    def __repr__(self):
-        return '<builtin %s>' % self.name
-
-    def write_code(self, interpreter, code):
-        code.line('builtins[{!r}](i)'.format(self.name))
-
-
-class InlineBuiltin(Builtin):
-    def __init__(self, name, write_code):
-        self.name = name
-        self.write_code = write_code
-
-    def f(self, interpreter):
-        code = PythonCode()
-        with code.function(name='_tmp_', args=['i']) as f_code:
-            self.write_code(interpreter, f_code)
-        context = interpreter.exec_code(code)
-        self.f = context['_tmp_']
-        self.f(interpreter)
 
 
 @inline_builtin('>')
@@ -245,8 +215,7 @@ def num_names(i, code):
 
 @inline_builtin('pop$')
 def pop(i, code):
-    # XXX
-    code.line('i.pop()')
+    code.pop()
 
 
 @builtin('preamble$')

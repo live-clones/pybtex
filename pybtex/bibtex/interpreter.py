@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.bibtex.builtins import builtins, builtin_vars, print_warning
+from pybtex.bibtex.builtins import builtins, inline_builtins, print_warning
 from pybtex.bibtex import utils
 from .codegen import PythonCode
 #from pybtex.database.input import bibtex
@@ -244,6 +244,35 @@ class Function(FunctionLiteral):
         code.line('vars[{!r}].f()'.format(self.name))
 
 
+class Builtin(Function):
+    def __init__(self, name, f):
+        self.name = name
+        self.f = f
+
+    def execute(self, interpreter):
+        self.f(interpreter)
+#        print 'executing function', self.body
+        #for element in self.body:
+            #element.execute(interpreter)
+
+    def write_code(self, interpreter, code):
+        code.line('builtins[{!r}](i)'.format(self.name))
+
+
+class InlineBuiltin(Builtin):
+    def __init__(self, name, write_code):
+        self.name = name
+        self.write_code = write_code
+
+    def f(self, interpreter):
+        code = PythonCode()
+        with code.function(name='_tmp_', args=['i']) as f_code:
+            self.write_code(interpreter, f_code)
+        context = interpreter.exec_code(code)
+        self.f = context['_tmp_']
+        self.f(interpreter)
+
+
 class Interpreter(object):
     def __init__(self, bib_format, bib_encoding):
         self.bib_format = bib_format
@@ -252,8 +281,10 @@ class Interpreter(object):
         self.push = self.stack.append
         self.pop = self.stack.pop
         self.vars = {}
-        for builtin_var in builtin_vars:
-            self.add_variable(builtin_var)
+        for name, builtin in builtins.items():
+            self.add_variable(Builtin(name, builtin))
+        for name, inline_builtin in inline_builtins.items():
+            self.add_variable(InlineBuiltin(name, inline_builtin))
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
         self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
         self.add_variable(EntryString('sort.key$', self))
