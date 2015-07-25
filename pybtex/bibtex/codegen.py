@@ -71,7 +71,8 @@ class PythonCode(object):
             last = self.statements[-1]
             if isinstance(last, PushStatement):
                 self.statements.pop()
-                self.line('{} = {}'.format(expr, last.expr))
+                if expr != last.expr:
+                    self.line('{} = {}'.format(expr, last.expr))
                 return
         self.statements.append(PopStatement(expr))
 
