@@ -288,15 +288,17 @@ def warning(i):
     msg = i.pop()
     print_warning(msg)
 
-@builtin('while$')
-def while_(i):
-    f = i.pop()
-    p = i.pop()
-    while True:
-        p.execute(i)
-        if i.pop() <= 0:
-            break
-        f.execute(i)
+
+@inline_builtin('while$')
+def while_(i, code):
+    code.pop('func')
+    code.pop('cond')
+    code.line('while True:')
+    with code.nested() as body:
+        body.line('cond.execute(i)')
+        body.line('if pop() <= 0: break')
+        body.line('func.execute(i)')
+
 
 @builtin('width$')
 def width(i):
