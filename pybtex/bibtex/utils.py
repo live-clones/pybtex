@@ -522,3 +522,17 @@ def bibtex_add_period(string):
     if string and not string.rstrip('}')[-1] in '.?!':
         string += '.'
     return string
+
+
+def chr_to_int(string):
+    try:
+        return ord(string)
+    except TypeError:
+        raise BibTeXError('%s passed to chr.to.int$', string)
+
+
+def int_to_chr(num):
+    try:
+        return unichr(num)
+    except ValueError:
+        raise BibTeXError('%i passed to int.to.chr$', num)

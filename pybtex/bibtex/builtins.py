@@ -155,14 +155,11 @@ def change_case(i, code):
     code.push('utils.change_case(a1, a2)')
 
 
-@builtin('chr.to.int$')
-def chr_to_int(i):
-    s = i.pop()
-    try:
-        value = ord(s)
-    except TypeError:
-        raise BibTeXError('%s passed to chr.to.int$', s)
-    i.push(value)
+@inline_builtin('chr.to.int$')
+def chr_to_int(i, code):
+    code.pop('a1')
+    code.push('utils.chr_to_int(a1)')
+
 
 @builtin('cite$')
 def cite(i):
@@ -213,14 +210,12 @@ def if_(i):
     else:
         f1.execute(i)
 
-@builtin('int.to.chr$')
-def int_to_chr(i):
-    n = i.pop()
-    try:
-        char = unichr(n)
-    except ValueError:
-        raise BibTeXError('%i passed to int.to.chr$', n)
-    i.push(char)
+
+@inline_builtin('int.to.chr$')
+def int_to_chr(i, code):
+    code.pop('a1')
+    code.push('utils.int_to_chr(a1)')
+
 
 @builtin('int.to.str$')
 def int_to_str(i):
