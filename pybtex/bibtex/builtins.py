@@ -32,6 +32,7 @@ from pybtex.utils import memoize
 from pybtex.bibtex import utils
 from pybtex.database import Person
 from pybtex.bibtex.names import format_name as format_bibtex_name
+from .codegen import PythonCode
 
 
 def print_warning(msg):
@@ -51,7 +52,6 @@ def builtin(name):
 def inline_builtin(name):
     def _builtin(f):
         builtin_vars.append(InlineBuiltin(name, f))
-        # xxx direct execution
         return f
     return _builtin
 
@@ -71,10 +71,18 @@ class Builtin(object):
         code.line('builtins[{!r}](i)'.format(self.name))
 
 
-class InlineBuiltin:
+class InlineBuiltin(Builtin):
     def __init__(self, name, write_code):
         self.name = name
         self.write_code = write_code
+
+    def f(self, interpreter):
+        code = PythonCode()
+        with code.function(name='_tmp_', args=['i']) as f_code:
+            self.write_code(interpreter, f_code)
+        context = interpreter.exec_code(code)
+        self.f = context['_tmp_']
+        self.f(interpreter)
 
 
 @inline_builtin('>')
@@ -235,9 +243,11 @@ def num_names(i, code):
     code.push('len(utils.split_name_list(a1))')
 
 
-@builtin('pop$')
-def pop(i):
-    i.pop()
+@inline_builtin('pop$')
+def pop(i, code):
+    # XXX
+    code.line('i.pop()')
+
 
 @builtin('preamble$')
 def preamble(i):
