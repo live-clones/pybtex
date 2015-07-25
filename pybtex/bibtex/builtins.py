@@ -306,7 +306,7 @@ def width(i, code):
     code.push('utils.bibtex_width(a1)')
 
 
-@builtin('write$')
-def write(i):
-    s = i.pop()
-    i.output(s)
+@inline_builtin('write$')
+def write(i, code):
+    code.pop('a1')
+    code.line('i.output(a1)')
