@@ -277,9 +277,11 @@ def text_prefix(i, code):
 def top(i):
     print >>pybtex.io.stdout, i.pop()
 
-@builtin('type$')
-def type_(i):
-    i.push(i.current_entry.type)
+
+@inline_builtin('type$')
+def type_(i, code):
+    code.push('i.current_entry.type')
+
 
 @builtin('warning$')
 def warning(i):
