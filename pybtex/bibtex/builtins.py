@@ -77,23 +77,19 @@ class InlineBuiltin:
         self.write_code = write_code
 
 
-@builtin('>')
-def operator_more(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    if arg2 > arg1:
-        i.push(1)
-    else:
-        i.push(0)
+@inline_builtin('>')
+def operator_more(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('1 if a1 > a2 else 0')
 
-@builtin('<')
-def operator_less(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    if arg2 < arg1:
-        i.push(1)
-    else:
-        i.push(0)
+
+@inline_builtin('<')
+def operator_more(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('1 if a1 < a2 else 0')
+
 
 @builtin('=')
 def operator_equals(i):
