@@ -161,9 +161,10 @@ def chr_to_int(i, code):
     code.push('utils.chr_to_int(a1)')
 
 
-@builtin('cite$')
-def cite(i):
-    i.push(i.current_entry_key)
+@inline_builtin('cite$')
+def cite(i, code):
+    code.push('i.current_entry_key')
+
 
 @builtin('duplicate$')
 def duplicate(i):
