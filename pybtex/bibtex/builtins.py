@@ -218,9 +218,10 @@ def pop(i, code):
     code.pop()
 
 
-@builtin('preamble$')
-def preamble(i):
-    i.push(i.bib_data.get_preamble())
+@inline_builtin('preamble$')
+def preamble(i, code):
+    code.push('i.bib_data.get_preamble()')
+
 
 @builtin('purify$')
 def purify(i):
