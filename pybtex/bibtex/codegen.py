@@ -34,6 +34,15 @@ class Line(object):
         stream.write(u' ' * (4 * level) + self.python + '\n')
 
 
+class PushStatement(Line):
+    def __init__(self, expr):
+        self.expr = expr
+
+    def write(self, stream, level):
+        line = 'push({})'.format(self.expr)
+        stream.write(u' ' * (4 * level) + line + '\n')
+
+
 class PythonCode(object):
     def __init__(self, level=0):
         self.statements = []
@@ -41,6 +50,9 @@ class PythonCode(object):
 
     def line(self, python):
         self.statements.append(Line(python))
+
+    def push(self, expr):
+        self.statements.append(PushStatement(expr))
 
     def nested(self):
         block = PythonCode(self.level + 1)

@@ -52,7 +52,7 @@ class Variable(object):
         interpreter.push(self.value())
 
     def write_code(self, interpreter, code):
-        code.line('push(vars[{!r}]._value)'.format(self.name))
+        code.push('vars[{!r}]._value'.format(self.name))
 
     def value(self):
         return self._value
@@ -83,7 +83,7 @@ class EntryVariable(Variable):
     def write_code(self, interpreter, code):
         if self.name not in interpreter.vars:
             raise BibTeXError('undefined entry variable {}'.format(self.name))
-        code.line('push(i.current_entry.vars[{!r}])'.format(self.name))
+        code.push('i.current_entry.vars[{!r}]'.format(self.name))
 
 
 class Integer(Variable):
@@ -109,7 +109,7 @@ class Literal(Variable):
         self._value = value
 
     def write_code(self, interpreter, code):
-        code.line('push({!r})'.format(self.value()))
+        code.push('{!r}'.format(self.value()))
 
 
 class IntegerLiteral(Literal):
@@ -144,7 +144,7 @@ class Field(object):
     def write_code(self, interpreter, code):
         if self.name not in interpreter.vars:
             raise BibTeXError('undefined field {}'.format(self.name))
-        code.line('push(i.current_entry.fields.get({0!r}, MISSING_FIELD))'.format(self.name))
+        code.push('i.current_entry.fields.get({0!r}, MISSING_FIELD)'.format(self.name))
 
 
 class Crossref(Field):
@@ -160,7 +160,7 @@ class Crossref(Field):
         return crossref_entry.key
 
     def write_code(self, interpreter, code):
-        code.line('push(vars[{!r}].value())'.format(self.name))
+        code.push('vars[{!r}].value()'.format(self.name))
 
 
 class Identifier(object):
@@ -193,7 +193,7 @@ class QuotedVar(Identifier):
             var = interpreter.vars[self.name]
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.name)
-        code.line('push(vars[{!r}])'.format(self.name))
+        code.push('vars[{!r}]'.format(self.name))
 
 
 class CodeBlock(object):
@@ -228,7 +228,7 @@ class FunctionLiteral(object):
     def write_code(self, interpreter, code):
         function = CodeBlock(self.body)
         function.write_code(interpreter, code)
-        code.line('push(Function("", _tmp_))')
+        code.push('Function("", _tmp_)')
 
 
 class Function(FunctionLiteral):
