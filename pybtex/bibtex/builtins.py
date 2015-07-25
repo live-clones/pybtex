@@ -104,11 +104,11 @@ def operator_equals(i):
     else:
         i.push(0)
 
-@builtin('*')
-def operator_asterisk(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    i.push(arg2 + arg1)
+@inline_builtin('*')
+def operator_asterisk(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('a1 + a2')
 
 @builtin(':=')
 def operator_assign(i):
