@@ -229,10 +229,11 @@ def newline(i, code):
     code.line('i.newline()')
 
 
-@builtin('num.names$')
-def num_names(i):
-    names = i.pop()
-    i.push(len(utils.split_name_list(names)))
+@inline_builtin('num.names$')
+def num_names(i, code):
+    code.pop('a1')
+    code.push('len(utils.split_name_list(a1))')
+
 
 @builtin('pop$')
 def pop(i):
