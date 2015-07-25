@@ -283,6 +283,7 @@ class Interpreter(object):
         context = {
             'i': self,
             'push': self.push,
+            'pop': self.pop,
             'vars': self.vars,
             'builtins': builtins,
             'Function': Function,

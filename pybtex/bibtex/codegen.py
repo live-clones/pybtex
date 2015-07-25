@@ -43,6 +43,15 @@ class PushStatement(Line):
         stream.write(u' ' * (4 * level) + line + '\n')
 
 
+class PopStatement(Line):
+    def __init__(self, expr):
+        self.expr = expr
+
+    def write(self, stream, level):
+        line = '{} = pop()'.format(self.expr)
+        stream.write(u' ' * (4 * level) + line + '\n')
+
+
 class PythonCode(object):
     def __init__(self, level=0):
         self.statements = []
@@ -53,6 +62,9 @@ class PythonCode(object):
 
     def push(self, expr):
         self.statements.append(PushStatement(expr))
+
+    def pop(self, expr):
+        self.statements.append(PopStatement(expr))
 
     def nested(self):
         block = PythonCode(self.level + 1)
