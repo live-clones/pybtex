@@ -67,6 +67,12 @@ class PythonCode(object):
         self.statements.append(PushStatement(expr))
 
     def pop(self, expr=None):
+        if self.statements:
+            last = self.statements[-1]
+            if isinstance(last, PushStatement):
+                self.statements.pop()
+                self.line('{} = {}'.format(expr, last.expr))
+                return
         self.statements.append(PopStatement(expr))
 
     def nested(self):
