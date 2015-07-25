@@ -510,3 +510,9 @@ def bibtex_abbreviate(string, delimiter=None, separator='-'):
     if delimiter is None:
         delimiter = '.-'
     return delimiter.join(_bibtex_abbreviate())
+
+
+def bibtex_add_period(string):
+    if string and not string.rstrip('}')[-1] in '.?!':
+        string += '.'
+    return string

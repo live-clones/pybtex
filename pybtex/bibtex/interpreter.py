@@ -21,7 +21,7 @@
 
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import builtins, builtin_vars, print_warning
-from pybtex.bibtex.utils import wrap
+from pybtex.bibtex import utils
 from .codegen import PythonCode
 #from pybtex.database.input import bibtex
 
@@ -273,7 +273,7 @@ class Interpreter(object):
         self.output_buffer.append(string)
 
     def newline(self):
-        output = wrap(u''.join(self.output_buffer))
+        output = utils.wrap(u''.join(self.output_buffer))
         self.output_lines.append(output)
         self.output_lines.append(u'\n')
         self.output_buffer = []
@@ -285,6 +285,7 @@ class Interpreter(object):
             'push': self.push,
             'pop': self.pop,
             'vars': self.vars,
+            'utils': utils,
             'builtins': builtins,
             'Function': Function,
             'MISSING_FIELD': MISSING_FIELD,

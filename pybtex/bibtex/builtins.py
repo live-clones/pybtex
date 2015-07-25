@@ -126,12 +126,11 @@ def operator_plus(i, code):
     code.push('a1 - a2')
 
 
-@builtin('add.period$')
-def add_period(i):
-    s = i.pop()
-    if s and not s.rstrip('}')[-1] in '.?!':
-        s += '.'
-    i.push(s)
+@inline_builtin('add.period$')
+def add_period(i, code):
+    code.pop('a1')
+    code.push('utils.bibtex_add_period(a1)')
+
 
 @builtin('call.type$')
 def call_type(i):
