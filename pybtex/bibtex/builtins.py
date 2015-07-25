@@ -223,10 +223,11 @@ def preamble(i, code):
     code.push('i.bib_data.get_preamble()')
 
 
-@builtin('purify$')
-def purify(i):
-    s = i.pop()
-    i.push(utils.bibtex_purify(s))
+@inline_builtin('purify$')
+def purify(i, code):
+    code.pop('a1')
+    code.push('utils.bibtex_purify(a1)')
+
 
 @builtin('quote$')
 def quote(i):
