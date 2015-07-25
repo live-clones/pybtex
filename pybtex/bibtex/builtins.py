@@ -37,12 +37,45 @@ from pybtex.bibtex.names import format_name as format_bibtex_name
 def print_warning(msg):
     report_error(BibTeXError(msg))
 builtins = {}
+builtin_vars = []
+
 
 def builtin(name):
     def _builtin(f):
         builtins[name] = f
+        builtin_vars.append(Builtin(name, f))
         return f
     return _builtin
+
+
+def inline_builtin(name):
+    def _builtin(f):
+        builtin_vars.append(InlineBuiltin(name, f))
+        # xxx direct execution
+        return f
+    return _builtin
+
+
+class Builtin(object):
+    def __init__(self, name, f):
+        self.name = name
+        self.f = f
+
+    def execute(self, interpreter):
+        self.f(interpreter)
+
+    def __repr__(self):
+        return '<builtin %s>' % self.name
+
+    def write_code(self, interpreter, code):
+        code.line('builtins[{!r}](i)'.format(self.name))
+
+
+class InlineBuiltin:
+    def __init__(self, name, write_code):
+        self.name = name
+        self.write_code = write_code
+
 
 @builtin('>')
 def operator_more(i):

@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.bibtex.builtins import builtins, print_warning
+from pybtex.bibtex.builtins import builtins, builtin_vars, print_warning
 from pybtex.bibtex.utils import wrap
 from .codegen import PythonCode
 #from pybtex.database.input import bibtex
@@ -244,21 +244,6 @@ class Function(FunctionLiteral):
         code.line('vars[{!r}].f()'.format(self.name))
 
 
-class Builtin(object):
-    def __init__(self, name):
-        self.name = name
-        self.f = builtins[name]
-
-    def execute(self, interpreter):
-        self.f(interpreter)
-
-    def __repr__(self):
-        return '<builtin %s>' % self.name
-
-    def write_code(self, interpreter, code):
-        code.line('builtins[{!r}](i)'.format(self.name))
-
-
 class Interpreter(object):
     def __init__(self, bib_format, bib_encoding):
         self.bib_format = bib_format
@@ -267,8 +252,8 @@ class Interpreter(object):
         self.push = self.stack.append
         self.pop = self.stack.pop
         self.vars = {}
-        for name in builtins:
-            self.add_variable(Builtin(name))
+        for builtin_var in builtin_vars:
+            self.add_variable(builtin_var)
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
         self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
         self.add_variable(EntryString('sort.key$', self))
