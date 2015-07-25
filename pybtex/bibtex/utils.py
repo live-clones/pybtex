@@ -132,6 +132,12 @@ def change_case(string, mode):
     {\TeX\ and databases\Dash\TeX DBI}
     """
 
+    if not mode:
+        raise BibTeXError('empty mode string passed to change.case$')
+    mode_letter = mode[0].lower()
+    if not mode_letter in ('l', 'u', 't'):
+        raise BibTeXError('incorrect change.case$ mode: %s' % mode)
+
     def title(char, state):
         if state == 'start':
             return char

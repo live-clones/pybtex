@@ -147,19 +147,13 @@ def call_type(i):
             return
     func.execute(i)
 
-@builtin('change.case$')
-def change_case(i):
 
-    mode = i.pop()
-    string = i.pop()
+@inline_builtin('change.case$')
+def change_case(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('utils.change_case(a1, a2)')
 
-    if not mode:
-        raise BibTeXError('empty mode string passed to change.case$')
-    mode_letter = mode[0].lower()
-    if not mode_letter in ('l', 'u', 't'):
-        raise BibTeXError('incorrect change.case$ mode: %s' % mode)
-
-    i.push(utils.change_case(string, mode_letter))
 
 @builtin('chr.to.int$')
 def chr_to_int(i):
