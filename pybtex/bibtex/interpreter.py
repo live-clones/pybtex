@@ -52,7 +52,7 @@ class Variable(object):
         interpreter.push(self.value())
 
     def write_code(self, interpreter, code):
-        code.write('push(i.vars[{!r}].value())'.format(self.name))
+        code.write('push(vars[{!r}]._value)'.format(self.name))
 
     def value(self):
         return self._value
@@ -160,7 +160,7 @@ class Crossref(Field):
         return crossref_entry.key
 
     def write_code(self, interpreter, code):
-        code.write('push(i.vars[{!r}].value())'.format(self.name))
+        code.write('push(vars[{!r}].value())'.format(self.name))
 
 
 class Identifier(object):
@@ -193,7 +193,7 @@ class QuotedVar(Identifier):
             var = interpreter.vars[self.name]
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.name)
-        code.write('push(i.vars[{!r}])'.format(self.name))
+        code.write('push(vars[{!r}])'.format(self.name))
 
 
 class CodeBlock(object):
@@ -241,7 +241,7 @@ class Function(FunctionLiteral):
         return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
 
     def write_code(self, interpreter, code):
-        code.write('i.vars[{!r}].f()'.format(self.name))
+        code.write('vars[{!r}].f()'.format(self.name))
 
 
 class Builtin(object):
@@ -298,6 +298,7 @@ class Interpreter(object):
         context = {
             'i': self,
             'push': self.push,
+            'vars': self.vars,
             'builtins': builtins,
             'Function': Function,
             'MISSING_FIELD': MISSING_FIELD,
