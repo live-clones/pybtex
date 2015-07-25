@@ -224,9 +224,10 @@ def missing(i, code):
     code.push('1 if i.is_missing_field(a1) else 0')
 
 
-@builtin('newline$')
-def newline(i):
-    i.newline()
+@inline_builtin('newline$')
+def newline(i, code):
+    code.line('i.newline()')
+
 
 @builtin('num.names$')
 def num_names(i):
