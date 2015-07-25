@@ -260,10 +260,11 @@ def swap(i, code):
     code.line('i.stack[-2:] = a2, a1')
 
 
-@builtin('text.length$')
-def text_length(i):
-    s = i.pop()
-    i.push(utils.bibtex_len(s))
+@inline_builtin('text.length$')
+def text_length(i, code):
+    code.pop('a1')
+    code.push('utils.bibtex_len(a1)')
+
 
 @builtin('text.prefix$')
 def text_prefix(i):
