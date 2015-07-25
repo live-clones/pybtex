@@ -212,9 +212,11 @@ def int_to_chr(i, code):
     code.push('utils.int_to_chr(a1)')
 
 
-@builtin('int.to.str$')
-def int_to_str(i):
-    i.push(str(i.pop()))
+@inline_builtin('int.to.str$')
+def int_to_str(i, code):
+    code.pop('a1')
+    code.push('str(a1)')
+
 
 @builtin('missing$')
 def missing(i):
