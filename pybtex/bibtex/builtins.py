@@ -229,9 +229,10 @@ def purify(i, code):
     code.push('utils.bibtex_purify(a1)')
 
 
-@builtin('quote$')
-def quote(i):
-    i.push('"')
+@inline_builtin('quote$')
+def quote(i, code):
+    code.push('{!r}'.format('"'))
+
 
 @builtin('skip$')
 def skip(i):
