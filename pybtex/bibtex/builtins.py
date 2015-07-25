@@ -253,12 +253,12 @@ def stack(i):
     while i.stack:
         print >>pybtex.io.stdout, i.pop()
 
-@builtin('swap$')
-def swap(i):
-    tmp1 = i.pop()
-    tmp2 = i.pop()
-    i.push(tmp1)
-    i.push(tmp2)
+
+@inline_builtin('swap$')
+def swap(i, code):
+    code.line('a1, a2 = i.stack[-2:]')
+    code.line('i.stack[-2:] = a2, a1')
+
 
 @builtin('text.length$')
 def text_length(i):
