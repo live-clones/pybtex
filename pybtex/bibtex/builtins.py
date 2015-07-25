@@ -266,11 +266,12 @@ def text_length(i, code):
     code.push('utils.bibtex_len(a1)')
 
 
-@builtin('text.prefix$')
-def text_prefix(i):
-    l = i.pop()
-    s = i.pop()
-    i.push(utils.bibtex_prefix(s, l))
+@inline_builtin('text.prefix$')
+def text_prefix(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.push('utils.bibtex_prefix(a1, a2)')
+
 
 @builtin('top$')
 def top(i):
