@@ -300,10 +300,11 @@ def while_(i, code):
         body.line('func.execute(i)')
 
 
-@builtin('width$')
-def width(i):
-    s = i.pop()
-    i.push(utils.bibtex_width(s))
+@inline_builtin('width$')
+def width(i, code):
+    code.pop('a1')
+    code.push('utils.bibtex_width(a1)')
+
 
 @builtin('write$')
 def write(i):
