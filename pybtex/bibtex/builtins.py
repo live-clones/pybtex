@@ -198,15 +198,12 @@ def format_name(i):
     i.push(_format_name(names, n, format))
 
 
-@builtin('if$')
-def if_(i):
-    f1 = i.pop()
-    f2 = i.pop()
-    p = i.pop()
-    if p > 0:
-        f2.execute(i)
-    else:
-        f1.execute(i)
+@inline_builtin('if$')
+def if_(i, code):
+    code.pop('a2')
+    code.pop('a1')
+    code.pop('p')
+    code.line('(a1 if p > 0 else a2).execute(i)')
 
 
 @inline_builtin('int.to.chr$')
