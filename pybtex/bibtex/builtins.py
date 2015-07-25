@@ -240,12 +240,13 @@ def skip(i, code):
     pass
 
 
-@builtin('substring$')
-def substring(i):
-    length = i.pop()
-    start = i.pop()
-    string = i.pop()
-    i.push(utils.bibtex_substring(string, start, length))
+@inline_builtin('substring$')
+def substring(i, code):
+    code.pop('a3')
+    code.pop('a2')
+    code.pop('a1')
+    code.push('utils.bibtex_substring(a1, a2, a3)')
+
 
 @builtin('stack$')
 def stack(i):
