@@ -132,7 +132,7 @@ def normalize_whitespace(string):
     Abc def.
     """
 
-    return whitespace_re.sub(' ', string.strip())
+    return ' '.join(string.split())
 
 
 def width(string):
