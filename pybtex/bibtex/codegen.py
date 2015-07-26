@@ -23,6 +23,8 @@
 """Python code generator."""
 
 
+import re
+
 from io import StringIO
 
 
@@ -101,8 +103,8 @@ class PythonCode(Statement):
         self.statements.append(block)
         return block
 
-    def function(self, name='_tmp_', args=()):
-        function = PythonFunction(self.new_var(), args=args)
+    def function(self, name='_tmp_', hint=None, args=()):
+        function = PythonFunction(self.new_var(), hint=hint, args=args)
         self.statements.append(function)
         return function
 
@@ -121,10 +123,17 @@ class PythonCode(Statement):
 
 
 class PythonFunction(PythonCode):
-    def __init__(self, name, args=()):
+    CRUFT = re.compile('[^A-Za-z0-9]')
+
+    def __init__(self, name, hint=None, args=()):
         self.name = name
+        if hint:
+            self.name += '_' + self.escape(hint)
         self.args = args
         super(PythonFunction, self).__init__()
+
+    def escape(self, hint):
+        return '_'.join(part for part in self.CRUFT.split(hint) if part)
 
     def write(self, stream, level):
         decl = 'def {}({}):'.format(self.name, ', '.join(self.args))

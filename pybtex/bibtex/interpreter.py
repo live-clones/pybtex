@@ -266,7 +266,7 @@ class InlineBuiltin(Builtin):
         self.write_code = write_code
 
     def f(self, interpreter):
-        function = PythonFunction('_tmp_', args=['i'])
+        function = PythonFunction('_builtin_', hint=self.name, args=['i'])
         self.write_code(interpreter, function)
         context = interpreter.exec_code(function)
         self.f = context[function.name]
@@ -361,15 +361,11 @@ class Interpreter(object):
 
     def command_function(self, name_, body):
         name = name_[0].name
-        block = CodeBlock(body)
-        code = PythonCode()
-        block.write_code(self, code)
-        #from pprint import pprint
-        #pprint(body, indent=4)
-        #print
-        #print code.stream.getvalue()
-        context = self.exec_code(code)
-        func = Function(name, context['_tmp_'])
+        function = PythonFunction('_func_', hint=name)
+        for stmt in body:
+            stmt.write_code(self, function)
+        context = self.exec_code(function)
+        func = Function(name, context[function.name])
         self.add_variable(func)
 
     def command_integers(self, identifiers):
