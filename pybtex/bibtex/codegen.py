@@ -29,11 +29,13 @@ from io import StringIO
 
 
 class Statement(object):
-    def __init__(self, python):
+    def __init__(self, python, vars):
         self.python = python
+        self.vars = vars
 
     def write(self, stream, level):
-        self.writeline(stream, level, self.python)
+        code = self.python.format(*self.vars) if self.vars else self.python
+        self.writeline(stream, level, code)
 
     def writeline(self, stream, level, line):
         stream.write(u' ' * (4 * level) + line + '\n')
@@ -77,15 +79,11 @@ class PythonCode(Statement):
         return var
 
     def stmt(self, python, *vars):
-        if vars:
-            python = python.format(*vars)
-        self.statements.append(Statement(python))
+        self.statements.append(Statement(python, vars))
 
     def push(self, expr, *vars):
         var = self.new_var()
-        if vars:
-            expr = expr.format(*vars)
-        self.stmt('{} = {}'.format(var, expr))
+        self.stmt('{} = {}'.format(var, expr), *vars)
         self.push_var(var)
 
     def push_var(self, var):
