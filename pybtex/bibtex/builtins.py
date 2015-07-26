@@ -256,8 +256,10 @@ def stack(i):
 
 @inline_builtin('swap$')
 def swap(i, code):
-    code.stmt('tmp1, tmp2 = i.stack[-2:]')
-    code.stmt('i.stack[-2:] = tmp2, tmp1')
+    a1 = code.pop()
+    a2 = code.pop()
+    code.push_var(a1)
+    code.push_var(a2)
 
 
 @inline_builtin('text.length$')
