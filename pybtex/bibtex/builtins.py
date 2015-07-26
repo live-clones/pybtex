@@ -63,7 +63,7 @@ def operator_more(i, code):
 
 
 @inline_builtin('<')
-def operator_more(i, code):
+def operator_less(i, code):
     a2 = code.pop()
     a1 = code.pop()
     code.push('1 if {} < {} else 0', (a1, a2))
@@ -98,7 +98,7 @@ def operator_plus(i, code):
 
 
 @inline_builtin('-')
-def operator_plus(i, code):
+def operator_minus(i, code):
     a2 = code.pop()
     a1 = code.pop()
     code.push('{} - {}', (a1, a2))
