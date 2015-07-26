@@ -114,7 +114,7 @@ class PythonCode(Statement):
 
     def getvalue(self):
         stream = StringIO()
-        self.write(stream, level=-1)
+        self.write(stream, level=0)
         return stream.getvalue()
 
     def compile(self):
@@ -138,4 +138,4 @@ class PythonFunction(PythonCode):
     def write(self, stream, level):
         decl = 'def {}({}):'.format(self.name, ', '.join(self.args))
         self.writeline(stream, level, decl)
-        super(PythonFunction, self).write(stream, level + 1)
+        super(PythonFunction, self).write(stream, level)
