@@ -40,21 +40,21 @@ class Statement(object):
 
 
 class PushStatement(Statement):
-    def __init__(self, expr):
-        self.expr = expr
+    def __init__(self, var):
+        self.var = var
 
     def write(self, stream, level):
-        line = 'push({})'.format(self.expr)
+        line = 'push({})'.format(self.var)
         self.writeline(stream, level, line)
 
 
 class PopStatement(Statement):
-    def __init__(self, expr=None):
-        self.expr = expr
+    def __init__(self, var=None):
+        self.var = var
 
     def write(self, stream, level):
-        if self.expr:
-            line = '{} = pop()'.format(self.expr)
+        if self.var:
+            line = '{} = pop()'.format(self.var)
         else:
             line = 'pop()'
         self.writeline(stream, level, line)
@@ -82,9 +82,14 @@ class PythonCode(Statement):
         self.statements.append(Statement(python))
 
     def push(self, expr, *vars):
+        var = self.new_var()
         if vars:
             expr = expr.format(*vars)
-        self.statements.append(PushStatement(expr))
+        self.stmt('{} = {}'.format(var, expr))
+        self.push_var(var)
+
+    def push_var(self, var):
+        self.statements.append(PushStatement(var))
 
     def pop(self, discard=False):
         var = None if discard else self.new_var()
@@ -92,8 +97,8 @@ class PythonCode(Statement):
             last = self.statements[-1]
             if isinstance(last, PushStatement):
                 self.statements.pop()
-                if var and var != last.expr:
-                    self.stmt('{} = {}'.format(var, last.expr))
+                if var and var != last.var:
+                    self.stmt('{} = {}'.format(var, last.var))
                 return var
         self.statements.append(PopStatement(var))
         return var
