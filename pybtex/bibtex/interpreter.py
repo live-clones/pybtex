@@ -264,6 +264,29 @@ class Interpreter(object):
         self.macros = {}
         self.output_buffer = []
         self.output_lines = []
+        self.context = self.init_context()
+        self.func_count = 0
+
+    def init_context(self):
+        from builtins import _format_name  # XXX
+        from pybtex import io
+        context = {
+            'i': self,
+            'push': self.push,
+            'pop': self.pop,
+            'vars': self.vars,
+            'utils': utils,
+            '_format_name': _format_name,
+            'io': io,
+            'Function': Function,
+            'MISSING_FIELD': MISSING_FIELD,
+        }
+        return context
+
+    def exec_code(self, code):
+        bytecode = code.compile()
+        exec bytecode in self.context
+        return self.context
 
     def get_token(self):
         return self.bst_script.next()
@@ -281,24 +304,6 @@ class Interpreter(object):
         self.output_lines.append(output)
         self.output_lines.append(u'\n')
         self.output_buffer = []
-
-    def exec_code(self, code):
-        bytecode = code.compile()
-        from builtins import _format_name  # XXX
-        from pybtex import io
-        context = {
-            'i': self,
-            'push': self.push,
-            'pop': self.pop,
-            'vars': self.vars,
-            'utils': utils,
-            '_format_name': _format_name,
-            'io': io,
-            'Function': Function,
-            'MISSING_FIELD': MISSING_FIELD,
-        }
-        exec bytecode in context
-        return context
 
     def run(self, bst_script, citations, bib_files, min_crossrefs):
         """Run bst script and return formatted bibliography."""
@@ -337,12 +342,13 @@ class Interpreter(object):
 
     def command_function(self, name_, body):
         name = name_[0].name
-        function = PythonFunction('_func_', hint=name)
+        function = PythonFunction('_func_{}'.format(self.func_count), hint=name)
         for stmt in body:
             stmt.write_code(self, function)
         context = self.exec_code(function)
         func = Function(name, context[function.name])
         self.add_variable(func)
+        self.func_count += 1
 
     def command_integers(self, identifiers):
 #        print 'INTEGERS'
