@@ -84,13 +84,13 @@ class PythonCode(Statement):
             self.statements.append(PushStatement(var))
         self.stack = []
 
-    def stmt(self, python, *vars):
+    def stmt(self, python, vars=()):
         self.flush_stack()
         self.statements.append(Statement(python, vars))
 
-    def push(self, expr, *vars):
+    def push(self, expr, vars=()):
         var = self.new_var()
-        self.stmt('{} = {}'.format(var, expr), *vars)
+        self.stmt('{} = {}'.format(var, expr), vars)
         self.push_var(var)
 
     def push_var(self, var):

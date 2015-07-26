@@ -59,55 +59,55 @@ def inline_builtin(name):
 def operator_more(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('1 if {} > {} else 0', a1, a2)
+    code.push('1 if {} > {} else 0', (a1, a2))
 
 
 @inline_builtin('<')
 def operator_more(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('1 if {} < {} else 0', a1, a2)
+    code.push('1 if {} < {} else 0', (a1, a2))
 
 
 @inline_builtin('=')
 def operator_equals(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('1 if {} == {} else 0', a1, a2)
+    code.push('1 if {} == {} else 0', (a1, a2))
 
 
 @inline_builtin('*')
 def operator_asterisk(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('{} + {}', a1, a2)
+    code.push('{} + {}', (a1, a2))
 
 
 @inline_builtin(':=')
 def operator_assign(i, code):
     var = code.pop()
     val = code.pop()
-    code.stmt('{}.set({})', var, val)
+    code.stmt('{}.set({})', (var, val))
 
 
 @inline_builtin('+')
 def operator_plus(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('{} + {}', a1, a2)
+    code.push('{} + {}', (a1, a2))
 
 
 @inline_builtin('-')
 def operator_plus(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('{} - {}', a1, a2)
+    code.push('{} - {}', (a1, a2))
 
 
 @inline_builtin('add.period$')
 def add_period(i, code):
     text = code.pop()
-    code.push('utils.bibtex_add_period({})', text)
+    code.push('utils.bibtex_add_period({})', (text,))
 
 
 @builtin('call.type$')
@@ -130,13 +130,13 @@ def call_type(i):
 def change_case(i, code):
     a2 = code.pop()
     a1 = code.pop()
-    code.push('utils.change_case({}, {})', a1, a2)
+    code.push('utils.change_case({}, {})', (a1, a2))
 
 
 @inline_builtin('chr.to.int$')
 def chr_to_int(i, code):
     a1 = code.pop()
-    code.push('utils.chr_to_int({})', a1)
+    code.push('utils.chr_to_int({})', (a1,))
 
 
 @inline_builtin('cite$')
@@ -147,14 +147,14 @@ def cite(i, code):
 @inline_builtin('duplicate$')
 def duplicate(i, code):
     a1 = code.pop()
-    code.push(a1)
-    code.push(a1)
+    code.push_var(a1)
+    code.push_var(a1)
 
 
 @inline_builtin('empty$')
 def empty(i, code):
     a1 = code.pop()
-    code.push('0 if {0} and not {0}.isspace() else 1', a1)
+    code.push('0 if {0} and not {0}.isspace() else 1', (a1,))
 
 
 @memoize
@@ -181,25 +181,25 @@ def if_(i, code):
     a2 = code.pop()
     a1 = code.pop()
     cond = code.pop()
-    code.stmt('({1} if {0} > 0 else {2}).execute(i)', cond, a1, a2)
+    code.stmt('({1} if {0} > 0 else {2}).execute(i)', (cond, a1, a2))
 
 
 @inline_builtin('int.to.chr$')
 def int_to_chr(i, code):
     a1 = code.pop()
-    code.push('utils.int_to_chr({})', a1)
+    code.push('utils.int_to_chr({})', (a1,))
 
 
 @inline_builtin('int.to.str$')
 def int_to_str(i, code):
     a1 = code.pop()
-    code.push('str({})', a1)
+    code.push('str({})', (a1,))
 
 
 @inline_builtin('missing$')
 def missing(i, code):
     a1 = code.pop()
-    code.push('1 if i.is_missing_field({}) else 0', a1)
+    code.push('1 if i.is_missing_field({}) else 0', (a1,))
 
 
 @inline_builtin('newline$')
@@ -210,7 +210,7 @@ def newline(i, code):
 @inline_builtin('num.names$')
 def num_names(i, code):
     a1 = code.pop()
-    code.push('len(utils.split_name_list({}))', a1)
+    code.push('len(utils.split_name_list({}))', (a1,))
 
 
 @inline_builtin('pop$')
@@ -226,7 +226,7 @@ def preamble(i, code):
 @inline_builtin('purify$')
 def purify(i, code):
     a1 = code.pop()
-    code.push('utils.bibtex_purify({})', a1)
+    code.push('utils.bibtex_purify({})', (a1,))
 
 
 @inline_builtin('quote$')
@@ -245,7 +245,7 @@ def substring(i, code):
     stop = code.pop()
     start = code.pop()
     string = code.pop()
-    code.push('utils.bibtex_substring({}, {}, {})', string, start, stop)
+    code.push('utils.bibtex_substring({}, {}, {})', (string, start, stop))
 
 
 @builtin('stack$')
@@ -265,14 +265,14 @@ def swap(i, code):
 @inline_builtin('text.length$')
 def text_length(i, code):
     a1 = code.pop()
-    code.push('utils.bibtex_len({})', a1)
+    code.push('utils.bibtex_len({})', (a1,))
 
 
 @inline_builtin('text.prefix$')
 def text_prefix(i, code):
     length = code.pop()
     string = code.pop()
-    code.push('utils.bibtex_prefix({}, {})', string, length)
+    code.push('utils.bibtex_prefix({}, {})', (string, length))
 
 
 @builtin('top$')
@@ -297,18 +297,18 @@ def while_(i, code):
     cond = code.pop()
     code.stmt('while True:')
     with code.nested() as body:
-        body.stmt('{}.execute(i)', cond)
+        body.stmt('{}.execute(i)', (cond,))
         body.stmt('if pop() <= 0: break')
-        body.stmt('{}.execute(i)', func)
+        body.stmt('{}.execute(i)', (func,))
 
 
 @inline_builtin('width$')
 def width(i, code):
     string = code.pop()
-    code.push('utils.bibtex_width({})', string)
+    code.push('utils.bibtex_width({})', (string,))
 
 
 @inline_builtin('write$')
 def write(i, code):
     string = code.pop()
-    code.stmt('i.output({})', string)
+    code.stmt('i.output({})', (string,))

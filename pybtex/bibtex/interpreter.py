@@ -218,7 +218,7 @@ class FunctionLiteral(object):
         with code.function() as function:
             for element in self.body:
                 element.write_code(interpreter, function)
-        code.push('Function("", {})', function.name)
+        code.push('Function("", {})', (function.name,))
 
 
 class Function(FunctionLiteral):
