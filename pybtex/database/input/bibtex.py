@@ -81,7 +81,7 @@ from pybtex.exceptions import PybtexError
 from pybtex import textutils
 from pybtex.scanner import (
     Scanner, Pattern, Literal,
-    PrematureEOF, PybtexSyntaxError,
+    PrematureEOF, PybtexSyntaxError, TokenRequired,
 )
 
 month_names = {
@@ -260,18 +260,19 @@ class BibTeXEntryIterator(Scanner):
         self.current_value = value_parts
 
     def parse_value_part(self):
-        token = self.required(
-            [self.QUOTE, self.LBRACE, self.NUMBER, self.NAME],
-            description='field value',
-        )
-        if token.pattern is self.QUOTE:
+        char = self.next_char()
+        if char == '"':
+            self.pos += 1
             value_part = self.flatten_string(self.parse_string(string_end='"'))
-        elif token.pattern is self.LBRACE:
+        elif char == '{':
+            self.pos += 1
             value_part = self.flatten_string(self.parse_string(string_end='}'))
-        elif token.pattern is self.NUMBER:
-            value_part = token.value
+        elif char in digits:
+            value_part = self.required([self.NUMBER]).value
+        elif char in self.NAME_CHARS:
+            value_part = self.substitute_macro(self.required([self.NAME]).value)
         else:
-            value_part = self.substitute_macro(token.value)
+            raise TokenRequired('field value', self)
         return value_part
 
     def flatten_string(self, parts):

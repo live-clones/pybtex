@@ -113,12 +113,15 @@ class Scanner(object):
         else:
             return token
 
-    def char_required(self, chars, description=None):
+    def next_char(self):
         self.eat_whitespace()
         try:
-            char = self.text[self.pos]
+            return self.text[self.pos]
         except IndexError:
             raise EOFError
+
+    def char_required(self, chars, description=None):
+        char = self.next_char()
         if char in chars:
             self.pos += 1
             return char
