@@ -196,17 +196,6 @@ class QuotedVar(Identifier):
         code.push('vars[{!r}]'.format(self.name))
 
 
-class CodeBlock(object):
-    def __init__(self, body):
-        self.body = body
-
-    def write_code(self, interpreter, code):
-        code.stmt('def _tmp_():')
-        with code.nested() as body:
-            for element in self.body:
-                element.write_code(interpreter, body)
-
-
 class FunctionLiteral(object):
     def __init__(self, body=None):
         if body is None:
