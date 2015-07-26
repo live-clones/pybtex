@@ -197,9 +197,7 @@ class QuotedVar(Identifier):
 
 
 class FunctionLiteral(object):
-    def __init__(self, body=None):
-        if body is None:
-            body = []
+    def __init__(self, body):
         self.body = body
 
     def __repr__(self):
@@ -208,12 +206,6 @@ class FunctionLiteral(object):
     def __eq__(self, other):
         return type(self) == type(other) and self.body == other.body
 
-    def execute(self, interpreter):
-        self.f()
-#        print 'executing function', self.body
-        #for element in self.body:
-            #element.execute(interpreter)
-
     def write_code(self, interpreter, code):
         with code.function() as function:
             for element in self.body:
@@ -221,11 +213,13 @@ class FunctionLiteral(object):
         code.push('Function("", {})', (function.name,))
 
 
-class Function(FunctionLiteral):
+class Function(object):
     def __init__(self, name, f):
         self.name = name.lower()
         self.f = f
-        super(Function, self).__init__()
+
+    def execute(self, interpreter):
+        self.f()
 
     def __repr__(self):
         return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
