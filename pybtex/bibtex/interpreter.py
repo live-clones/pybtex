@@ -226,7 +226,7 @@ class Function(object):
         return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
 
     def write_code(self, interpreter, code):
-        code.stmt('vars[{!r}].f()'.format(self.name), stack_safe=False)
+        code.stmt('{}()'.format(self.f.__name__), stack_safe=False)
 
 
 class InlineBuiltin(object):
