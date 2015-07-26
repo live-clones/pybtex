@@ -87,7 +87,7 @@ def operator_asterisk(i, code):
 def operator_assign(i, code):
     var = code.pop()
     val = code.pop()
-    code.line('{}.set({})', var, val)
+    code.stmt('{}.set({})', var, val)
 
 
 @inline_builtin('+')
@@ -181,7 +181,7 @@ def if_(i, code):
     a2 = code.pop()
     a1 = code.pop()
     cond = code.pop()
-    code.line('({1} if {0} > 0 else {2}).execute(i)', cond, a1, a2)
+    code.stmt('({1} if {0} > 0 else {2}).execute(i)', cond, a1, a2)
 
 
 @inline_builtin('int.to.chr$')
@@ -204,7 +204,7 @@ def missing(i, code):
 
 @inline_builtin('newline$')
 def newline(i, code):
-    code.line('i.newline()')
+    code.stmt('i.newline()')
 
 
 @inline_builtin('num.names$')
@@ -236,7 +236,7 @@ def quote(i, code):
 
 @inline_builtin('skip$')
 def skip(i, code):
-    code.line('pass')
+    code.stmt('pass')
     pass
 
 
@@ -256,8 +256,8 @@ def stack(i):
 
 @inline_builtin('swap$')
 def swap(i, code):
-    code.line('tmp1, tmp2 = i.stack[-2:]')
-    code.line('i.stack[-2:] = tmp2, tmp1')
+    code.stmt('tmp1, tmp2 = i.stack[-2:]')
+    code.stmt('i.stack[-2:] = tmp2, tmp1')
 
 
 @inline_builtin('text.length$')
@@ -293,11 +293,11 @@ def warning(i):
 def while_(i, code):
     func = code.pop()
     cond = code.pop()
-    code.line('while True:')
+    code.stmt('while True:')
     with code.nested() as body:
-        body.line('{}.execute(i)', cond)
-        body.line('if pop() <= 0: break')
-        body.line('{}.execute(i)', func)
+        body.stmt('{}.execute(i)', cond)
+        body.stmt('if pop() <= 0: break')
+        body.stmt('{}.execute(i)', func)
 
 
 @inline_builtin('width$')
@@ -309,4 +309,4 @@ def width(i, code):
 @inline_builtin('write$')
 def write(i, code):
     string = code.pop()
-    code.line('i.output({})', string)
+    code.stmt('i.output({})', string)

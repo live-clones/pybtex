@@ -26,7 +26,7 @@
 from io import StringIO
 
 
-class Line(object):
+class Statement(object):
     def __init__(self, python):
         self.python = python
 
@@ -34,7 +34,7 @@ class Line(object):
         stream.write(u' ' * (4 * level) + self.python + '\n')
 
 
-class PushStatement(Line):
+class PushStatement(Statement):
     def __init__(self, expr):
         self.expr = expr
 
@@ -43,7 +43,7 @@ class PushStatement(Line):
         stream.write(u' ' * (4 * level) + line + '\n')
 
 
-class PopStatement(Line):
+class PopStatement(Statement):
     def __init__(self, expr=None):
         self.expr = expr
 
@@ -66,10 +66,10 @@ class PythonCode(object):
         self.var_count += 1
         return var
 
-    def line(self, python, *vars):
+    def stmt(self, python, *vars):
         if vars:
             python = python.format(*vars)
-        self.statements.append(Line(python))
+        self.statements.append(Statement(python))
 
     def push(self, expr, *vars):
         if vars:
@@ -83,7 +83,7 @@ class PythonCode(object):
             if isinstance(last, PushStatement):
                 self.statements.pop()
                 if var and var != last.expr:
-                    self.line('{} = {}'.format(var, last.expr))
+                    self.stmt('{} = {}'.format(var, last.expr))
                 return var
         self.statements.append(PopStatement(var))
         return var
@@ -94,7 +94,7 @@ class PythonCode(object):
         return block
 
     def function(self, name='_tmp_', args=()):
-        self.line('def {0}({1}):'.format(name, ', '.join(args)))
+        self.stmt('def {0}({1}):'.format(name, ', '.join(args)))
         return self.nested()
 
     def __enter__(self):

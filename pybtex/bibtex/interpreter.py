@@ -201,7 +201,7 @@ class CodeBlock(object):
         self.body = body
 
     def write_code(self, interpreter, code):
-        code.line('def _tmp_():')
+        code.stmt('def _tmp_():')
         with code.nested() as body:
             for element in self.body:
                 element.write_code(interpreter, body)
@@ -241,7 +241,7 @@ class Function(FunctionLiteral):
         return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
 
     def write_code(self, interpreter, code):
-        code.line('vars[{!r}].f()'.format(self.name))
+        code.stmt('vars[{!r}].f()'.format(self.name))
 
 
 class Builtin(Function):
@@ -256,7 +256,7 @@ class Builtin(Function):
             #element.execute(interpreter)
 
     def write_code(self, interpreter, code):
-        code.line('builtins[{!r}](i)'.format(self.name))
+        code.stmt('builtins[{!r}](i)'.format(self.name))
 
 
 class InlineBuiltin(Builtin):
