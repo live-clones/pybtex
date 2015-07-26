@@ -294,6 +294,7 @@ class Interpreter(object):
 
     def exec_code(self, code):
         bytecode = code.compile()
+        from builtins import _format_name  # XXX
         context = {
             'i': self,
             'push': self.push,
@@ -301,6 +302,7 @@ class Interpreter(object):
             'vars': self.vars,
             'utils': utils,
             'builtins': builtins,
+            '_format_name': _format_name,
             'Function': Function,
             'MISSING_FIELD': MISSING_FIELD,
         }

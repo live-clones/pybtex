@@ -166,12 +166,12 @@ def _format_name(names, n, format):
     return format_bibtex_name(name, format)
 
 
-@builtin('format.name$')
-def format_name(i):
-    format = i.pop()
-    n = i.pop()
-    names = i.pop()
-    i.push(_format_name(names, n, format))
+@inline_builtin('format.name$')
+def format_name(i, code):
+    format = code.pop()
+    n = code.pop()
+    names = code.pop()
+    code.push('_format_name({}, {}, {})', (names, n, format))
 
 
 @inline_builtin('if$')
