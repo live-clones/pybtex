@@ -25,7 +25,6 @@ CAUTION: functions should PUSH results, not RETURN
 """
 
 
-from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import memoize
 from pybtex.bibtex import utils
 from pybtex.bibtex.names import format_name as format_bibtex_name
