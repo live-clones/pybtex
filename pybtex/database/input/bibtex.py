@@ -72,12 +72,10 @@ http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 from string import ascii_letters, digits
 
 import re
-import pybtex.io
 from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
-from pybtex.exceptions import PybtexError
 from pybtex import textutils
 from pybtex.scanner import (
     Scanner, Pattern, Literal,
