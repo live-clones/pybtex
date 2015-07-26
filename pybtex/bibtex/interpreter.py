@@ -22,7 +22,7 @@
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import builtins, inline_builtins, print_warning
 from pybtex.bibtex import utils
-from .codegen import PythonCode, PythonFunction
+from .codegen import PythonFunction
 #from pybtex.database.input import bibtex
 
 
