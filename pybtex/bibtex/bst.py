@@ -117,9 +117,6 @@ class BstParser(Scanner):
                 yield list(self.parse_command())
             except EOFError:
                 break
-            except PybtexSyntaxError, e:
-                raise
-                break
 
     def parse_group(self):
         while True:
