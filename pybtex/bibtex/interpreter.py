@@ -40,14 +40,17 @@ class Variable(object):
 
     def __repr__(self):
         return '{0}({1})'.format(type(self).__name__, repr(self._value))
+
     def set(self, value):
         if value is None:
             value = self.default
         self.validate(value)
         self._value = value
+
     def validate(self, value):
         if not (isinstance(value, self.value_type) or value is None):
             raise ValueError('Invalid value for BibTeX %s: %s' % (self.__class__.__name__, value))
+
     def execute(self, interpreter):
         interpreter.push(self.value())
 
