@@ -60,9 +60,6 @@ class Variable(object):
     def value(self):
         return self._value
 
-    def __repr__(self):
-        return u'{0}({1})'.format(type(self).__name__, repr(self.value()))
-
     def __eq__(self, other):
         return type(self) == type(other) and self._value == other._value
 
