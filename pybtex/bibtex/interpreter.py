@@ -244,9 +244,6 @@ class InlineBuiltin(object):
         self.f = context[function.name]
         self.f(interpreter)
 
-    def write_code(self, interpreter, code):
-        code.stmt('builtins[{!r}](i)'.format(self.name), stack_safe=False)
-
 
 class Interpreter(object):
     def __init__(self, bib_format, bib_encoding):
