@@ -66,6 +66,7 @@ class PythonCode(Statement):
     def __init__(self):
         self.statements = []
         self.var_count = 0
+        self.stack = []
 
     def __enter__(self):
         return self
@@ -78,7 +79,13 @@ class PythonCode(Statement):
         self.var_count += 1
         return var
 
+    def flush_stack(self):
+        for var in self.stack:
+            self.statements.append(PushStatement(var))
+        self.stack = []
+
     def stmt(self, python, *vars):
+        self.flush_stack()
         self.statements.append(Statement(python, vars))
 
     def push(self, expr, *vars):
@@ -87,17 +94,12 @@ class PythonCode(Statement):
         self.push_var(var)
 
     def push_var(self, var):
-        self.statements.append(PushStatement(var))
+        self.stack.append(var)
 
     def pop(self, discard=False):
+        if self.stack:
+            return self.stack.pop()
         var = None if discard else self.new_var()
-        if self.statements:
-            last = self.statements[-1]
-            if isinstance(last, PushStatement):
-                self.statements.pop()
-                if var and var != last.var:
-                    self.stmt('{} = {}'.format(var, last.var))
-                return var
         self.statements.append(PopStatement(var))
         return var
 
@@ -112,6 +114,7 @@ class PythonCode(Statement):
         return function
 
     def write(self, stream, level):
+        self.flush_stack()
         for statement in self.statements:
             statement.write(stream, level + 1)
 
