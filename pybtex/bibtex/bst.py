@@ -20,9 +20,12 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import re
-from pybtex.bibtex.interpreter import (IntegerLiteral, StringLiteral, QuotedVar,
-        Identifier, FunctionLiteral, BibTeXError)
+
 import pybtex.io
+from pybtex.bibtex.interpreter import (
+    IntegerLiteral, StringLiteral, QuotedVar, Identifier, FunctionLiteral
+)
+from pybtex.scanner import Scanner, Pattern, Literal, TokenRequired
 
 #ParserElement.enablePackrat()
 
@@ -77,12 +80,6 @@ def strip_comment(line):
             in_string = not in_string
         pos = match.end()
     return line
-
-
-from pybtex.scanner import (
-    Scanner, Pattern, Literal,
-    TokenRequired, PybtexSyntaxError,
-)
 
 
 class BstParser(Scanner):
