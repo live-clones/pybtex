@@ -392,28 +392,30 @@ def scan_bibtex_string(string):
     )
 
 
-def split_name_list(string):
+def split_name_list(string, sep=re.compile( ' [Aa][Nn][Dd] ')):
     """
     Split a list of names, separated by ' and '.
 
-    >>> split_name_list('Johnson and Peterson')
-    ['Johnson', 'Peterson']
-    >>> split_name_list('Johnson AND Peterson')
-    ['Johnson', 'Peterson']
-    >>> split_name_list('Johnson AnD Peterson')
-    ['Johnson', 'Peterson']
-    >>> split_name_list('Armand and Peterson')
-    ['Armand', 'Peterson']
-    >>> split_name_list('Armand and anderssen')
-    ['Armand', 'anderssen']
-    >>> split_name_list('{Armand and Anderssen}')
-    ['{Armand and Anderssen}']
-    >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
-    ['What a Strange{ }and Bizzare Name!', 'Peterson']
-    >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
-    ['What a Strange and{ }Bizzare Name!', 'Peterson']
+    >>> print ', '.join(split_name_list('Johnson and Peterson'))
+    Johnson, Peterson
+    >>> print ', '.join(split_name_list('Johnson AND Peterson'))
+    Johnson, Peterson
+    >>> print ', '.join(split_name_list('Johnson AnD Peterson'))
+    Johnson, Peterson
+    >>> print ', '.join(split_name_list('Armand and Peterson'))
+    Armand, Peterson
+    >>> print ', '.join(split_name_list('Armand and anderssen'))
+    Armand, anderssen
+    >>> print ', '.join(split_name_list('{Armand and Anderssen}'))
+    {Armand and Anderssen}
+    >>> print ', '.join(split_name_list('What a Strange{ }and Bizzare Name! and Peterson'))
+    What a Strange{ }and Bizzare Name!, Peterson
+    >>> print ', '.join(split_name_list('What a Strange and{ }Bizzare Name! and Peterson'))
+    What a Strange and{ }Bizzare Name!, Peterson
     """
-    return split_tex_string(string, ' [Aa][Nn][Dd] ')
+    if not '{' in string:
+        return [part for part in sep.split(string) if part]
+    return split_tex_string(string, sep)
 
 
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
@@ -445,6 +447,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     if sep is None:
         sep = '[\s~]+'
         filter_empty = True
+
     sep_re = re.compile(sep)
     brace_level = 0
     name_start = 0
@@ -500,7 +503,7 @@ def bibtex_first_letter(string):
     return ''
 
 
-def bibtex_abbreviate(string, delimiter=None, separator='-'):
+def bibtex_abbreviate(string, delimiter=None, separator=re.compile('-')):
     """
     Abbreviate string.
 
