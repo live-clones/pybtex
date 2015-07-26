@@ -181,7 +181,7 @@ def if_(i, code):
     a2 = code.pop()
     a1 = code.pop()
     cond = code.pop()
-    code.stmt('({1} if {0} > 0 else {2}).execute(i)', (cond, a1, a2))
+    code.stmt('({1} if {0} > 0 else {2}).execute(i)', (cond, a1, a2), stack_safe=False)
 
 
 @inline_builtin('int.to.chr$')
@@ -295,11 +295,11 @@ def warning(i):
 def while_(i, code):
     func = code.pop()
     cond = code.pop()
-    code.stmt('while True:')
+    code.stmt('while True:', stack_safe=False)
     with code.nested() as body:
-        body.stmt('{}.execute(i)', (cond,))
-        body.stmt('if pop() <= 0: break')
-        body.stmt('{}.execute(i)', (func,))
+        body.stmt('{}.execute(i)', (cond,), stack_safe=False)
+        body.stmt('if pop() <= 0: break', stack_safe=False)
+        body.stmt('{}.execute(i)', (func,), stack_safe=False)
 
 
 @inline_builtin('width$')

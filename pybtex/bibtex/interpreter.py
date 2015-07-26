@@ -231,7 +231,7 @@ class Function(FunctionLiteral):
         return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
 
     def write_code(self, interpreter, code):
-        code.stmt('vars[{!r}].f()'.format(self.name))
+        code.stmt('vars[{!r}].f()'.format(self.name), stack_safe=False)
 
 
 class Builtin(Function):
@@ -246,7 +246,7 @@ class Builtin(Function):
             #element.execute(interpreter)
 
     def write_code(self, interpreter, code):
-        code.stmt('builtins[{!r}](i)'.format(self.name))
+        code.stmt('builtins[{!r}](i)'.format(self.name), stack_safe=False)
 
 
 class InlineBuiltin(Builtin):
