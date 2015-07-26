@@ -64,20 +64,14 @@ class Scanner(object):
         self.end_pos = len(text)
         self.filename = filename
 
-    def skip_to(self, patterns):
-        end = None
-        winning_pattern = None
-        for pattern in patterns:
-            match = pattern.search(self.text, self.pos)
-            if match and (not end or match.end() < end):
-                end = match.end()
-                winning_pattern = pattern
-        if winning_pattern:
+    def skip_to(self, pattern):
+        match = pattern.search(self.text, self.pos)
+        if match:
+            end = match.end()
             value = self.text[self.pos : end]
-            self.pos = end
-            #print '>>', value
             self.update_lineno(value)
-            return Token(value, winning_pattern)
+            self.pos = end
+            return match.group(), value
 
     def update_lineno(self, value):
         num_newlines = len(self.NEWLINE.findall(value))

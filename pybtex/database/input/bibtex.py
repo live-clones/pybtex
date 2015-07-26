@@ -122,6 +122,8 @@ class BibTeXEntryIterator(Scanner):
     EQUALS = Literal(u'=')
     HASH = Literal(u'#')
     AT = Literal(u'@')
+    STRING_BOUNDS = Pattern(ur'[\}\{]', None)
+    QSTRING_BOUNDS = Pattern(ur'[\"\}\{]', None)
 
     command_start = None
     current_command = None
@@ -168,7 +170,7 @@ class BibTeXEntryIterator(Scanner):
 
     def parse_bibliography(self):
         while True:
-            if not self.skip_to([self.AT]):
+            if not self.skip_to(self.AT):
                 return
             self.command_start = self.pos - 1
             try:
@@ -263,9 +265,9 @@ class BibTeXEntryIterator(Scanner):
             description='field value',
         )
         if token.pattern is self.QUOTE:
-            value_part = self.flatten_string(self.parse_string(string_end=self.QUOTE))
+            value_part = self.flatten_string(self.parse_string(string_end='"'))
         elif token.pattern is self.LBRACE:
-            value_part = self.flatten_string(self.parse_string(string_end=self.RBRACE))
+            value_part = self.flatten_string(self.parse_string(string_end='}'))
         elif token.pattern is self.NUMBER:
             value_part = token.value
         else:
@@ -273,7 +275,7 @@ class BibTeXEntryIterator(Scanner):
         return value_part
 
     def flatten_string(self, parts):
-        return ''.join(part.value for part in parts)[:-1]
+        return ''.join(part for part in parts)[:-1]
 
     def substitute_macro(self, name):
         try:
@@ -284,21 +286,21 @@ class BibTeXEntryIterator(Scanner):
             return ''
 
     def parse_string(self, string_end, level=0):
-        special_chars = [self.RBRACE, self.LBRACE]
-        if string_end is self.QUOTE:
-            special_chars = [self.QUOTE] + special_chars
+        special_chars = self.STRING_BOUNDS
+        if string_end =='"':
+            special_chars = self.QSTRING_BOUNDS
         while True:
-            part = self.skip_to(special_chars)
-            if not part:
+            char, part = self.skip_to(special_chars)
+            if not char:
                 raise PrematureEOF(self)
-            if part.pattern is string_end:
+            if char == string_end:
                 yield part
                 break
-            elif part.pattern is self.LBRACE:
+            elif char == '{':
                 yield part
-                for subpart in self.parse_string(self.RBRACE, level + 1):
+                for subpart in self.parse_string('}', level + 1):
                     yield subpart
-            elif part.pattern is self.RBRACE and level == 0:
+            elif char == '}' and level == 0:
                 raise PybtexSyntaxError('unbalanced braces', self)
 
 
