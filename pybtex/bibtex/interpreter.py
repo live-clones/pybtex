@@ -22,7 +22,7 @@
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import builtins, inline_builtins, print_warning
 from pybtex.bibtex import utils
-from .codegen import PythonCode
+from .codegen import PythonCode, PythonFunction
 #from pybtex.database.input import bibtex
 
 
@@ -226,9 +226,10 @@ class FunctionLiteral(object):
             #element.execute(interpreter)
 
     def write_code(self, interpreter, code):
-        function = CodeBlock(self.body)
-        function.write_code(interpreter, code)
-        code.push('Function("", _tmp_)')
+        with code.function() as function:
+            for element in self.body:
+                element.write_code(interpreter, function)
+        code.push('Function("", {})', function.name)
 
 
 class Function(FunctionLiteral):
@@ -265,11 +266,10 @@ class InlineBuiltin(Builtin):
         self.write_code = write_code
 
     def f(self, interpreter):
-        code = PythonCode()
-        with code.function(name='_tmp_', args=['i']) as f_code:
-            self.write_code(interpreter, f_code)
-        context = interpreter.exec_code(code)
-        self.f = context['_tmp_']
+        function = PythonFunction('_tmp_', args=['i'])
+        self.write_code(interpreter, function)
+        context = interpreter.exec_code(function)
+        self.f = context[function.name]
         self.f(interpreter)
 
 

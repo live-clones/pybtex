@@ -31,7 +31,10 @@ class Statement(object):
         self.python = python
 
     def write(self, stream, level):
-        stream.write(u' ' * (4 * level) + self.python + '\n')
+        self.writeline(stream, level, self.python)
+
+    def writeline(self, stream, level, line):
+        stream.write(u' ' * (4 * level) + line + '\n')
 
 
 class PushStatement(Statement):
@@ -40,7 +43,7 @@ class PushStatement(Statement):
 
     def write(self, stream, level):
         line = 'push({})'.format(self.expr)
-        stream.write(u' ' * (4 * level) + line + '\n')
+        self.writeline(stream, level, line)
 
 
 class PopStatement(Statement):
@@ -52,14 +55,19 @@ class PopStatement(Statement):
             line = '{} = pop()'.format(self.expr)
         else:
             line = 'pop()'
-        stream.write(u' ' * (4 * level) + line + '\n')
+        self.writeline(stream, level, line)
 
 
-class PythonCode(object):
-    def __init__(self, level=0):
+class PythonCode(Statement):
+    def __init__(self):
         self.statements = []
-        self.level = level
         self.var_count = 0
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
 
     def new_var(self):
         var = 'a{}'.format(self.var_count)
@@ -89,29 +97,36 @@ class PythonCode(object):
         return var
 
     def nested(self):
-        block = PythonCode(self.level + 1)
+        block = PythonCode()
         self.statements.append(block)
         return block
 
     def function(self, name='_tmp_', args=()):
-        self.stmt('def {0}({1}):'.format(name, ', '.join(args)))
-        return self.nested()
+        function = PythonFunction(self.new_var(), args=args)
+        self.statements.append(function)
+        return function
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
-
-    def write(self, stream, level=0):
+    def write(self, stream, level):
         for statement in self.statements:
-            statement.write(stream, self.level)
+            statement.write(stream, level + 1)
 
     def getvalue(self):
         stream = StringIO()
-        self.write(stream)
+        self.write(stream, level=-1)
         return stream.getvalue()
 
     def compile(self):
         python_code = self.getvalue()
         return compile(python_code, '<BST>', 'exec')
+
+
+class PythonFunction(PythonCode):
+    def __init__(self, name, args=()):
+        self.name = name
+        self.args = args
+        super(PythonFunction, self).__init__()
+
+    def write(self, stream, level):
+        decl = 'def {}({}):'.format(self.name, ', '.join(self.args))
+        self.writeline(stream, level, decl)
+        super(PythonFunction, self).write(stream, level + 1)
