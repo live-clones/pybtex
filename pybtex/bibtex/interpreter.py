@@ -223,7 +223,7 @@ class Function(object):
         self.f()
 
     def __repr__(self):
-        return u'{0}({1}){2!r}'.format(type(self).__name__, self.name, self.body)
+        return u'{0}({1})'.format(type(self).__name__, self.name)
 
     def write_code(self, interpreter, code):
         code.stmt('{}()'.format(self.f.__name__), stack_safe=False)
