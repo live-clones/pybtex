@@ -25,25 +25,13 @@ CAUTION: functions should PUSH results, not RETURN
 """
 
 
-import pybtex.io
-from pybtex.errors import report_error
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import memoize
 from pybtex.bibtex import utils
 from pybtex.bibtex.names import format_name as format_bibtex_name
 
 
-def print_warning(msg):
-    report_error(BibTeXError(msg))
-builtins = {}
 inline_builtins = {}
-
-
-def builtin(name):
-    def _builtin(f):
-        builtins[name] = f
-        return f
-    return _builtin
 
 
 def inline_builtin(name):
@@ -108,20 +96,9 @@ def add_period(i, code):
     code.push('utils.bibtex_add_period({})', (text,))
 
 
-@builtin('call.type$')
-def call_type(i):
-    entry_type = i.current_entry.type
-    try:
-        func = i.vars[entry_type]
-    except KeyError:
-        print_warning(u'entry type for "{0}" isn\'t style-file defined'.format(
-            i.current_entry_key,
-        ))
-        try:
-            func = i.vars['default.type']
-        except KeyError:
-            return
-    func.execute(i)
+@inline_builtin('call.type$')
+def call_type(i, code):
+    code.stmt('i.call_type()')
 
 
 @inline_builtin('change.case$')
@@ -246,10 +223,9 @@ def substring(i, code):
     code.push('utils.bibtex_substring({}, {}, {})', (string, start, stop))
 
 
-@builtin('stack$')
-def stack(i):
-    while i.stack:
-        print >>pybtex.io.stdout, i.pop()
+@inline_builtin('stack$')
+def stack(i, code):
+    code.stmt('i.print_stack()')
 
 
 @inline_builtin('swap$')
@@ -273,9 +249,10 @@ def text_prefix(i, code):
     code.push('utils.bibtex_prefix({}, {})', (string, length))
 
 
-@builtin('top$')
-def top(i):
-    print >>pybtex.io.stdout, i.pop()
+@inline_builtin('top$')
+def top(i, code):
+    top = code.pop()
+    code.stmt('utils.print_message({})', (top,))
 
 
 @inline_builtin('type$')
@@ -283,10 +260,10 @@ def type_(i, code):
     code.push('i.current_entry.type')
 
 
-@builtin('warning$')
-def warning(i):
-    msg = i.pop()
-    print_warning(msg)
+@inline_builtin('warning$')
+def warning(i, code):
+    top = code.pop()
+    code.stmt('utils.print_warning({})', (top,))
 
 
 @inline_builtin('while$')

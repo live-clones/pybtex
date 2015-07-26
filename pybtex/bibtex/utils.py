@@ -21,6 +21,8 @@
 
 import re
 
+import pybtex.io
+from pybtex.errors import report_error
 from pybtex.bibtex.exceptions import BibTeXError
 
 whitespace_re = re.compile('(\s)')
@@ -545,3 +547,11 @@ def int_to_chr(num):
         return unichr(num)
     except ValueError:
         raise BibTeXError('%i passed to int.to.chr$', num)
+
+
+def print_warning(msg):
+    report_error(BibTeXError(msg))
+
+
+def print_message(msg):
+    print >>pybtex.io.stdout, msg

@@ -20,8 +20,9 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.bibtex.builtins import builtins, inline_builtins, print_warning
+from pybtex.bibtex.builtins import inline_builtins
 from pybtex.bibtex import utils
+import pybtex.io
 from .codegen import PythonFunction
 #from pybtex.database.input import bibtex
 
@@ -228,25 +229,13 @@ class Function(object):
         code.stmt('vars[{!r}].f()'.format(self.name), stack_safe=False)
 
 
-class Builtin(Function):
-    def __init__(self, name, f):
-        self.name = name
-        self.f = f
-
-    def execute(self, interpreter):
-        self.f(interpreter)
-#        print 'executing function', self.body
-        #for element in self.body:
-            #element.execute(interpreter)
-
-    def write_code(self, interpreter, code):
-        code.stmt('builtins[{!r}](i)'.format(self.name), stack_safe=False)
-
-
-class InlineBuiltin(Builtin):
+class InlineBuiltin(object):
     def __init__(self, name, write_code):
         self.name = name
         self.write_code = write_code
+
+    def execute(self, interpreter):
+        self.f(interpreter)
 
     def f(self, interpreter):
         function = PythonFunction('_builtin_', hint=self.name, args=['i'])
@@ -254,6 +243,9 @@ class InlineBuiltin(Builtin):
         context = interpreter.exec_code(function)
         self.f = context[function.name]
         self.f(interpreter)
+
+    def write_code(self, interpreter, code):
+        code.stmt('builtins[{!r}](i)'.format(self.name), stack_safe=False)
 
 
 class Interpreter(object):
@@ -264,8 +256,6 @@ class Interpreter(object):
         self.push = self.stack.append
         self.pop = self.stack.pop
         self.vars = {}
-        for name, builtin in builtins.items():
-            self.add_variable(Builtin(name, builtin))
         for name, inline_builtin in inline_builtins.items():
             self.add_variable(InlineBuiltin(name, inline_builtin))
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
@@ -295,14 +285,15 @@ class Interpreter(object):
     def exec_code(self, code):
         bytecode = code.compile()
         from builtins import _format_name  # XXX
+        from pybtex import io
         context = {
             'i': self,
             'push': self.push,
             'pop': self.pop,
             'vars': self.vars,
             'utils': utils,
-            'builtins': builtins,
             '_format_name': _format_name,
+            'io': io,
             'Function': Function,
             'MISSING_FIELD': MISSING_FIELD,
         }
@@ -397,7 +388,7 @@ class Interpreter(object):
             if citation in self.bib_data.entries:
                 yield citation
             else:
-                print_warning('missing database entry for "{0}"'.format(citation))
+                utils.print_warning('missing database entry for "{0}"'.format(citation))
 
     def command_reverse(self, function_group):
         function = function_group[0].name
@@ -416,3 +407,21 @@ class Interpreter(object):
     @staticmethod
     def is_missing_field(field):
         return field is MISSING_FIELD
+
+    def call_type(self):
+        entry_type = self.current_entry.type
+        try:
+            func = self.vars[entry_type]
+        except KeyError:
+            utils.print_warning(u'entry type for "{0}" isn\'t style-file defined'.format(
+                self.current_entry_key,
+            ))
+            try:
+                func = self.vars['default.type']
+            except KeyError:
+                return
+        func.execute(self)
+
+    def print_stack(self):
+        while self.stack:
+            print >>pybtex.io.stdout, self.pop()
