@@ -88,7 +88,7 @@ class Scanner(object):
 
     def get_token(self, patterns, allow_eof=False):
         self.eat_whitespace()
-        if self.eof():
+        if self.pos == self.end_pos:
             if allow_eof:
                 raise EOFError
             else:
@@ -112,6 +112,20 @@ class Scanner(object):
             raise TokenRequired(description, self)
         else:
             return token
+
+    def char_required(self, chars, description=None):
+        self.eat_whitespace()
+        try:
+            char = self.text[self.pos]
+        except IndexError:
+            raise EOFError
+        if char in chars:
+            self.pos += 1
+            return char
+        else:
+            if not description:
+                description = ' or '.join("'{}'".format(char) for char in chars)
+            raise TokenRequired(description, self)
 
     def get_error_context_info(self):
         return self.lineno, self.pos

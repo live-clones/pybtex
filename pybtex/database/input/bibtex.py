@@ -188,8 +188,8 @@ class BibTeXEntryIterator(Scanner):
 
         name = self.required([self.NAME])
         command = name.value
-        body_start = self.required([self.LPAREN, self.LBRACE])
-        body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
+        body_start = self.char_required('({')
+        body_end = '}' if body_start == '{' else ')'
 
         command_lower = command.lower()
         if command_lower == 'string':
@@ -205,7 +205,7 @@ class BibTeXEntryIterator(Scanner):
             make_result = lambda: (command, (self.current_entry_key, self.current_fields))
         try:
             parse_body(body_end)
-            self.required([body_end])
+            self.char_required(body_end)
         except PybtexSyntaxError, error:
             self.handle_error(error)
         return make_result()
@@ -215,13 +215,13 @@ class BibTeXEntryIterator(Scanner):
 
     def parse_string_body(self, body_end):
         self.current_field_name = self.required([self.NAME]).value
-        self.required([self.EQUALS])
+        self.char_required('=')
         self.parse_value()
         self.macros[self.current_field_name] = ''.join(self.current_value)
 
     def parse_entry_body(self, body_end):
         if not self.keyless_entries:
-            key_pattern = self.KEY_PAREN if body_end == self.RPAREN else self.KEY_BRACE
+            key_pattern = self.KEY_PAREN if body_end == ')' else self.KEY_BRACE
             self.current_entry_key = self.required([key_pattern]).value
         self.parse_entry_fields()
         if not self.want_current_entry():
@@ -243,7 +243,7 @@ class BibTeXEntryIterator(Scanner):
         if not name:
             return
         self.current_field_name = name.value
-        self.required([self.EQUALS])
+        self.char_required('=')
         self.parse_value()
 
     def parse_value(self):
