@@ -67,6 +67,7 @@ class PythonCode(Statement):
         self.statements = []
         self.var_count = 0
         self.stack = []
+        self.var_src = {}
 
     def __enter__(self):
         return self
@@ -89,10 +90,12 @@ class PythonCode(Statement):
             self.flush_stack()
         self.statements.append(Statement(python, vars))
 
-    def push(self, expr, vars=(), stack_safe=True):
+    def push(self, expr, vars=(), src=None, stack_safe=True):
         var = self.new_var()
         self.stmt('{} = {}'.format(var, expr), vars=vars, stack_safe=stack_safe)
         self.push_var(var)
+        if src is not None:
+            self.var_src[var] = src
 
     def push_var(self, var):
         self.stack.append(var)

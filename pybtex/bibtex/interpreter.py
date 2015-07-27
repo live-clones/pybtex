@@ -194,7 +194,7 @@ class QuotedVar(Identifier):
             var = interpreter.vars[self.name]
         except KeyError:
             raise BibTeXError('can not push undefined variable %s' % self.name)
-        code.push('vars[{!r}]'.format(self.name))
+        code.push('vars[{!r}]'.format(self.name), src=var)
 
 
 class FunctionLiteral(object):
@@ -211,13 +211,14 @@ class FunctionLiteral(object):
         with code.function() as function:
             for element in self.body:
                 element.write_code(interpreter, function)
-        code.push('Function("", {})', (function.name,))
+        code.push('Function("", {})', (function.name,), src=Function(function.name, None, function.name))
 
 
 class Function(object):
-    def __init__(self, name, f):
-        self.name = name.lower()
+    def __init__(self, name, f, python_name=None):
+        self.name = name
         self.f = f
+        self.python_name = python_name or f.__name__
 
     def execute(self, interpreter):
         self.f()
@@ -226,7 +227,7 @@ class Function(object):
         return u'{0}({1})'.format(type(self).__name__, self.name)
 
     def write_code(self, interpreter, code):
-        code.stmt('{}()'.format(self.f.__name__), stack_safe=False)
+        code.stmt('{}()'.format(self.python_name), stack_safe=False)
 
 
 class InlineBuiltin(object):

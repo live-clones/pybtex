@@ -150,17 +150,27 @@ def format_name(i, code):
     code.push('_format_name({}, {}, {})', (names, n, format))
 
 
+def _execute(var, i, code, target_code):
+    try:
+        obj = code.var_src[var]
+    except KeyError:
+        target_code.stmt('{}.execute(i)', (var,))
+    else:
+        obj.write_code(i, target_code)
+
+
 @inline_builtin('if$')
 def if_(i, code):
+
     a2 = code.pop()
     a1 = code.pop()
     cond = code.pop()
     code.stmt('if {0}:', (cond,), stack_safe=False)
     with code.nested() as block:
-        block.stmt('{}.execute(i)', (a1,))
+        _execute(a1, i, code, block)
     code.stmt('else:')
     with code.nested() as block:
-        block.stmt('{}.execute(i)', (a2,))
+        _execute(a2, i, code, block)
 
 
 @inline_builtin('int.to.chr$')
@@ -276,9 +286,9 @@ def while_(i, code):
     cond = code.pop()
     code.stmt('while True:', stack_safe=False)
     with code.nested() as body:
-        body.stmt('{}.execute(i)', (cond,), stack_safe=False)
+        _execute(cond, i, code, body)
         body.stmt('if pop() <= 0: break', stack_safe=False)
-        body.stmt('{}.execute(i)', (func,), stack_safe=False)
+        _execute(func, i, code, body)
 
 
 @inline_builtin('width$')
