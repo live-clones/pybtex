@@ -155,7 +155,12 @@ def if_(i, code):
     a2 = code.pop()
     a1 = code.pop()
     cond = code.pop()
-    code.stmt('({1} if {0} > 0 else {2}).execute(i)', (cond, a1, a2), stack_safe=False)
+    code.stmt('if {0}:', (cond,), stack_safe=False)
+    with code.nested() as block:
+        block.stmt('{}.execute(i)', (a1,))
+    code.stmt('else:')
+    with code.nested() as block:
+        block.stmt('{}.execute(i)', (a2,))
 
 
 @inline_builtin('int.to.chr$')
