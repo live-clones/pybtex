@@ -26,6 +26,7 @@ from pybtex.errors import report_error
 from pybtex.bibtex.exceptions import BibTeXError
 
 whitespace_re = re.compile('(\s)')
+tex_whitespace_re = re.compile('[\s~]+')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
 
 def wrap(string, width=79):
@@ -430,11 +431,11 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     []
     >>> split_tex_string('     ')
     []
-    >>> split_tex_string('   ', ' ', strip=False, filter_empty=False)
+    >>> split_tex_string('   ', re.compile(' '), strip=False, filter_empty=False)
     [' ', ' ']
-    >>> split_tex_string('.a.b.c.', r'\.')
+    >>> split_tex_string('.a.b.c.', re.compile(r'\.'))
     ['.a', 'b', 'c.']
-    >>> split_tex_string('.a.b.c.{d.}.', r'\.')
+    >>> split_tex_string('.a.b.c.{d.}.', re.compile(r'\.'))
     ['.a', 'b', 'c', '{d.}.']
     >>> split_tex_string('Matsui      Fuuka')
     ['Matsui', 'Fuuka']
@@ -447,10 +448,9 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     """
 
     if sep is None:
-        sep = '[\s~]+'
+        sep = tex_whitespace_re
         filter_empty = True
 
-    sep_re = re.compile(sep)
     brace_level = 0
     name_start = 0
     result = []
@@ -462,7 +462,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
         elif char == '}':
             brace_level -= 1
         elif brace_level == 0 and pos > 0:
-            match = sep_re.match(string[pos:])
+            match = sep.match(string[pos:])
             if match:
                 sep_len = len(match.group())
                 if pos + sep_len < string_len:

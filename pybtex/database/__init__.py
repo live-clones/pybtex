@@ -32,6 +32,9 @@ from pybtex.bibtex.utils import split_tex_string
 from pybtex.errors import report_error
 
 
+COMMA_RE = re.compile(',')
+
+
 class BibliographyDataError(PybtexError):
     pass
 
@@ -325,7 +328,6 @@ class Entry(object):
         )
 
 
-
 class Person(object):
     """Represents a person (usually human).
 
@@ -428,7 +430,7 @@ class Person(object):
             pos = len(lst) - rpos
             return lst[:pos], lst[pos:]
 
-        parts = split_tex_string(name, ',')
+        parts = split_tex_string(name, COMMA_RE)
         if len(parts) > 3:
             report_error(InvalidNameString(name))
             last_parts = parts[2:]
