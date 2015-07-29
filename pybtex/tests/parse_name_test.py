@@ -113,8 +113,13 @@ sample_names = [
     ('Rainer Sch{\\"o}pf', (['Rainer'], [], ['Sch{\\"o}pf'], [])),
     ('T. L. (Frank) Pappas', (['T.', 'L.', '(Frank)'], [], ['Pappas'], [])),
     ('TUG 2004 conference', (['TUG', '2004'], [], ['conference'], [])),
+
+    # von part with BibTeX special characters
     ('TUG {\\sltt DVI} Driver Standards Committee',
     (['TUG', '{\\sltt DVI}', 'Driver', 'Standards'], [], ['Committee'], [])),
+    ('TUG {\\sltt xDVIx} Driver Standards Committee',
+    (['TUG'], ['{\\sltt xDVIx}'], ['Driver', 'Standards', 'Committee'], [])),
+
     ('University of M{\\"u}nster',
     (['University'], ['of'], ['M{\\"u}nster'], [])),
     ('Walter van der Laan', (['Walter'], ['van', 'der'], ['Laan'], [])),
@@ -139,6 +144,13 @@ sample_names = [
     ([], [], ['{{\\LaTeX\\,3} Project Team}'], [])),
     ('Johansen Kyle, Derik Mamania M.',
     (['Derik', 'Mamania', 'M.'], [], ['Johansen', 'Kyle'], [])),
+    ("Johannes Adam Ferdinand Alois Josef Maria Marko d'Aviano "
+    'Pius von und zu Liechtenstein',
+    (['Johannes', 'Adam', 'Ferdinand', 'Alois', 'Josef', 'Maria', 'Marko'],
+    ["d'Aviano", 'Pius', 'von', 'und', 'zu'], ['Liechtenstein'],[])),
+
+    # sort of wrong, but BibTeX parses it like this
+    (r'Brand\~{a}o, F', (['F'], [], ['Brand\\', '{a}o'], [])),
 
     # incorrectly formatted name strings below
 
