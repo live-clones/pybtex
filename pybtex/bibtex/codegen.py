@@ -63,9 +63,10 @@ class PopStatement(Statement):
 
 
 class PythonCode(Statement):
+    var_count = 0
+
     def __init__(self):
         self.statements = []
-        self.var_count = 0
         self.stack = []
         self.var_src = {}
 
@@ -77,7 +78,7 @@ class PythonCode(Statement):
 
     def new_var(self):
         var = 'a{}'.format(self.var_count)
-        self.var_count += 1
+        PythonCode.var_count += 1
         return var
 
     def flush_stack(self):
