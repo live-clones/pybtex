@@ -24,7 +24,7 @@
 
 
 from functools import wraps
-from collections import Sequence, MutableMapping, MutableSet
+from collections import deque, Sequence, MutableMapping, MutableSet
 from types import GeneratorType
 
 
@@ -42,12 +42,16 @@ def deprecated(since, reason=None):
     return decorator
 
 
-def memoize(f):
+def memoize(f, capacity=1024):
     memory = {}
+    history = deque()
     @wraps(f)
     def new_f(*args):
         if args not in memory:
+            if len(history) >= capacity:
+                del memory[history.popleft()]
             memory[args] = f(*args)
+            history.append(args)
         return memory[args]
     return new_f
 
