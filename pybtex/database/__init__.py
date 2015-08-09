@@ -84,11 +84,20 @@ class BibliographyData(object):
 
     @property
     def preamble(self):
-        """LaTeX preamble."""
+        """
+        LaTeX preamble.
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`.get_preamble()`, which is now deprecated.
+        """
         return ''.join(self._preamble)
 
     @deprecated('1.19', 'use BibliographyData.preamble instead')
     def get_preamble(self):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.preamble` instead.
+        """
         return self.preamble
 
     def want_entry(self, key):
