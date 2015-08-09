@@ -47,7 +47,20 @@ class InvalidNameString(PybtexError):
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
         self.entries = OrderedCaseInsensitiveDict()
-        """A dictionary of bibliography entries."""
+        '''A dictionary of bibliography entries by their keys.
+
+        The dictionary is case insensitive:
+
+        >>> bib_data = parse_string("""
+        ...     @ARTICLE{gnats,
+        ...         author = {L[eslie] A. Aamport},
+        ...         title = {The Gnats and Gnus Document Preparation System},
+        ...     }
+        ... """, 'bibtex')
+        >>> bib_data.entries['gnats'] == bib_data.entries['GNATS']
+        True
+
+        '''
 
         self.crossref_count = CaseInsensitiveDefaultDict(int)
         self.min_crossrefs = min_crossrefs
@@ -85,12 +98,18 @@ class BibliographyData(object):
 
     @property
     def preamble(self):
-        """
+        r'''
         LaTeX preamble.
+
+        >>> bib_data = parse_string(r"""
+        ...     @PREAMBLE{"\newcommand{\noopsort}[1]{}"}
+        ... """, 'bibtex')
+        >>> print bib_data.preamble
+        \newcommand{\noopsort}[1]{}
 
         .. versionadded:: 1.19
             Earlier versions used :py:meth:`.get_preamble()`, which is now deprecated.
-        """
+        '''
         return ''.join(self._preamble)
 
     @deprecated('1.19', 'use BibliographyData.preamble instead')
@@ -240,16 +259,23 @@ class BibliographyData(object):
         return expanded_citations + crossrefs
 
     def lower(self):
-        u"""
+        u'''
         Return another BibliographyData with all identifiers converted to lowercase.
 
-        >>> data = BibliographyData([
-        ...     ('Obrazy', Entry('Book', [('Title', u'Obrazy z Rus')], [('Author', u'Karel Havlíček Borovský')])),
-        ...     ('Elegie', Entry('BOOK', [('TITLE', u'Tirolské elegie')], [('AUTHOR', u'Karel Havlíček Borovský')])),
-        ... ]).lower()
-        >>> data.entries.keys()
+        >>> data = parse_string("""
+        ...     @BOOK{Obrazy,
+        ...         title = "Obrazy z Rus",
+        ...         author = "Karel Havlíček Borovský",
+        ...     }
+        ...     @BOOK{Elegie,
+        ...         title = "Tirolské elegie",
+        ...         author = "Karel Havlíček Borovský",
+        ...     }
+        ... """, 'bibtex')
+        >>> data_lower = data.lower()
+        >>> data_lower.entries.keys()
         ['obrazy', 'elegie']
-        >>> for entry in data.entries.values():
+        >>> for entry in data_lower.entries.values():
         ...     entry.key
         ...     entry.persons.keys()
         ...     entry.fields.keys()
@@ -260,7 +286,7 @@ class BibliographyData(object):
         ['author']
         ['title']
 
-        """
+        '''
 
         entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.iteritems())
         return type(self)(
