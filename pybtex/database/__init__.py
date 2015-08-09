@@ -84,6 +84,7 @@ class BibliographyData(object):
 
     @property
     def preamble(self):
+        """LaTeX preamble."""
         return ''.join(self._preamble)
 
     @deprecated('1.19', 'use BibliographyData.preamble instead')
