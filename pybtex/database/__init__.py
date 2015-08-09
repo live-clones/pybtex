@@ -125,7 +125,7 @@ class BibliographyData(object):
         for key, entry in entries:
             self.add_entry(key, entry)
 
-    def get_crossreferenced_citations(self, citations, min_crossrefs):
+    def _get_crossreferenced_citations(self, citations, min_crossrefs):
         """
         Get cititations not cited explicitly but referenced by other citations.
 
@@ -134,29 +134,29 @@ class BibliographyData(object):
         ...     'main_article': Entry('article', {'crossref': 'xrefd_arcicle'}),
         ...     'xrefd_arcicle': Entry('article'),
         ... })
-        >>> list(data.get_crossreferenced_citations([], min_crossrefs=1))
+        >>> list(data._get_crossreferenced_citations([], min_crossrefs=1))
         []
-        >>> list(data.get_crossreferenced_citations(['main_article'], min_crossrefs=1))
+        >>> list(data._get_crossreferenced_citations(['main_article'], min_crossrefs=1))
         ['xrefd_arcicle']
-        >>> list(data.get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
+        >>> list(data._get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
         ['xrefd_arcicle']
-        >>> list(data.get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        >>> list(data._get_crossreferenced_citations(['main_article'], min_crossrefs=2))
         []
-        >>> list(data.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        >>> list(data._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
         []
 
         >>> data2 = BibliographyData(data.entries, wanted_entries=data.entries.keys())
-        >>> list(data2.get_crossreferenced_citations([], min_crossrefs=1))
+        >>> list(data2._get_crossreferenced_citations([], min_crossrefs=1))
         []
-        >>> list(data2.get_crossreferenced_citations(['main_article'], min_crossrefs=1))
+        >>> list(data2._get_crossreferenced_citations(['main_article'], min_crossrefs=1))
         ['xrefd_arcicle']
-        >>> list(data2.get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
+        >>> list(data2._get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
         ['xrefd_arcicle']
-        >>> list(data2.get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        >>> list(data2._get_crossreferenced_citations(['main_article'], min_crossrefs=2))
         []
-        >>> list(data2.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        >>> list(data2._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
         []
-        >>> list(data2.get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        >>> list(data2._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
         []
 
         """
@@ -186,7 +186,7 @@ class BibliographyData(object):
                 citation_set.add(canonical_crossref)
                 yield canonical_crossref
 
-    def expand_wildcard_citations(self, citations):
+    def _expand_wildcard_citations(self, citations):
         """
         Expand wildcard citations (\citation{*} in .aux file).
 
@@ -197,17 +197,17 @@ class BibliographyData(object):
         ...     ('tres', Entry('article')),
         ...     ('cuatro', Entry('article')),
         ... ))
-        >>> list(data.expand_wildcard_citations([]))
+        >>> list(data._expand_wildcard_citations([]))
         []
-        >>> list(data.expand_wildcard_citations(['*']))
+        >>> list(data._expand_wildcard_citations(['*']))
         ['uno', 'dos', 'tres', 'cuatro']
-        >>> list(data.expand_wildcard_citations(['uno', '*']))
+        >>> list(data._expand_wildcard_citations(['uno', '*']))
         ['uno', 'dos', 'tres', 'cuatro']
-        >>> list(data.expand_wildcard_citations(['dos', '*']))
+        >>> list(data._expand_wildcard_citations(['dos', '*']))
         ['dos', 'uno', 'tres', 'cuatro']
-        >>> list(data.expand_wildcard_citations(['*', 'uno']))
+        >>> list(data._expand_wildcard_citations(['*', 'uno']))
         ['uno', 'dos', 'tres', 'cuatro']
-        >>> list(data.expand_wildcard_citations(['*', 'DOS']))
+        >>> list(data._expand_wildcard_citations(['*', 'DOS']))
         ['uno', 'dos', 'tres', 'cuatro']
 
         """
@@ -225,8 +225,8 @@ class BibliographyData(object):
                     yield citation
 
     def add_extra_citations(self, citations, min_crossrefs):
-        expanded_citations = list(self.expand_wildcard_citations(citations))
-        crossrefs = list(self.get_crossreferenced_citations(expanded_citations, min_crossrefs))
+        expanded_citations = list(self._expand_wildcard_citations(citations))
+        crossrefs = list(self._get_crossreferenced_citations(expanded_citations, min_crossrefs))
         return expanded_citations + crossrefs
 
     def lower(self):
