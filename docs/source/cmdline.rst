@@ -143,22 +143,3 @@ By default ``unsrt`` formatting style is used. This can be changed with the
 .. code-block:: shell
 
     $ pybtex-format -s plain book.bib book.txt
-
-
-Using Pybtex programmatically
-=============================
-
-Using the BibTeX parser
------------------------
-
-.. sourcecode:: pycon
-
-    >>> from pybtex.database.input import bibtex
-    >>> parser = bibtex.Parser()
-    >>> bib_data = parser.parse_file('examples/foo.bib')
-    >>> bib_data.entries.keys()
-    [u'ruckenstein-diffusion', u'viktorov-metodoj', u'test-inbook', u'test-booklet']
-    >>> print bib_data.entries['ruckenstein-diffusion'].fields['title']
-    Predicting the Diffusion Coefficient in Supercritical Fluids
-
-(to be continued)
