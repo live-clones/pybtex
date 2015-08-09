@@ -23,6 +23,7 @@
 """
 from os import path
 from pybtex.exceptions import PybtexError
+from pybtex import database
 from pybtex.plugin import find_plugin
 
 class ConvertError(PybtexError):
@@ -38,13 +39,13 @@ def convert(from_filename, to_filename,
         ):
     if parser_options is None:
         parser_options = {}
-    input_format = find_plugin('pybtex.database.input', name=from_format, filename=from_filename)
+
     output_format = find_plugin('pybtex.database.output', name=to_format, filename=to_filename)
     
     if from_filename == to_filename:
         raise ConvertError('input and output file can not be the same')
 
-    bib_data = input_format(input_encoding, **parser_options).parse_file(from_filename)
+    bib_data = database.parse_file(from_filename, encoding=input_encoding, **parser_options)
     if not preserve_case:
         bib_data = bib_data.lower()
     output_format(output_encoding).write_file(bib_data, to_filename)

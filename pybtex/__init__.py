@@ -76,6 +76,7 @@ class PybtexEngine(Engine):
         add_output_suffix=False,
         **kwargs
     ):
+        from pybtex import database
         from pybtex.plugin import find_plugin
 
         bib_parser = find_plugin('pybtex.database.input', bib_format)

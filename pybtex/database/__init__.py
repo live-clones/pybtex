@@ -23,6 +23,7 @@
 import re
 
 from collections import Mapping
+from pybtex.plugin import find_plugin
 
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
@@ -664,3 +665,48 @@ class Person(object):
             Use :py:attr:`.bibtex_first_names` instead.
         """
         return self.bibtex_first_names
+
+
+def parse_file(file_, format=None, **kwargs):
+    """
+    Read bibliography data from file and return a :py:class:`.BibliographyData` object.
+
+    :param file_: A file name or a file-like object.
+    :param format: Data format ("bibtex", "yaml", etc.).
+        If not specified, Pybtex will try to guess by the file name.
+    """
+
+    if isinstance(file_, basestring):
+        filename = file_
+    else:
+        filename = geattr(file_, 'name', None)
+
+    parser = find_plugin('pybtex.database.input', format, filename=filename)(**kwargs)
+    return parser.parse_file(file_)
+
+
+def parse_string(value, format, **kwargs):
+    """
+    Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
+
+    Some formats (notably "bibtexml") do not support unicode strings,
+    use :py:func:`.parse_bytes` instead.
+
+    :param value: A unicode string.
+    :param format: Data format ("bibtex", "yaml", etc.).
+    """
+
+    parser = find_plugin('pybtex.database.input', format)(**kwargs)
+    return parser.parse_string(value)
+
+
+def parse_bytes(value, format, **kwargs):
+    """
+    Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
+
+    :param value: A byte string.
+    :param format: Data format ("bibtex", "yaml", etc.).
+    """
+
+    parser = find_plugin('pybtex.database.input', format)(**kwargs)
+    return parser.parse_bytes(value)

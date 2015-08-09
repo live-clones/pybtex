@@ -33,6 +33,7 @@ class BaseParser(Plugin):
     default_suffix = None
     filename = '<INPUT>'
     unicode_io = False
+    unicode_supported = None
 
     def __init__(self, encoding=None, wanted_entries=None, min_crossrefs=2, **kwargs):
         self.encoding = encoding or pybtex.io.get_default_encoding()
@@ -40,6 +41,8 @@ class BaseParser(Plugin):
             wanted_entries=wanted_entries,
             min_crossrefs=min_crossrefs,
         )
+        if self.unicode_supported is None:
+            self.unicode_supported = self.unicode_io
 
     def parse_file(self, filename, file_suffix=None):
         if file_suffix is not None:
@@ -59,8 +62,28 @@ class BaseParser(Plugin):
         return self.data
 
     def parse_string(self, value):
+        if isinstance(value, bytes):
+            msg = 'unicode string expected. Use {0}.parse_bytes() to parse bytes'.format(type(self).__name__)
+            raise ValueError(msg)
+
+        if not self.unicode_supported:
+            msg = '{0} does not support unicode strings, use {0}.parse_bytes() instead'.format(type(self).__name__)
+            raise ValueError(msg)
+
         from io import StringIO
         return self.parse_stream(StringIO(value))
+
+    def parse_bytes(self, value):
+        if isinstance(value, unicode):
+            msg = 'bytes expected. Use {0}.parse_bytes() to parse unicode strings'.format(type(self).__name__)
+            raise ValueError(msg)
+
+        if self.unicode_io:
+            msg = '{0} does not support byte strings, use {0}.parse_string() instead'.format(type(self).__name__)
+            raise ValueError(msg)
+
+        from io import BytesIO
+        return self.parse_stream(BytesIO(value))
 
     def parse_stream(self, stream):
         raise NotImplementedError

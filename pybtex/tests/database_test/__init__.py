@@ -27,6 +27,7 @@ import pickle
 from .data import reference_data
 
 from pybtex.plugin import find_plugin
+from pybtex.database import parse_string, parse_bytes
 
 class DatabaseIOTest(TestCase):
     def setUp(self):
@@ -39,11 +40,13 @@ class DatabaseIOTest(TestCase):
         writer = find_plugin('pybtex.database.output', plugin)(encoding='UTF-8')
         stream = BytesIO()
         writer_stream = TextIOWrapper(stream, 'UTF-8') if writer.unicode_io else stream
-        parser_stream = TextIOWrapper(stream, 'UTF-8') if parser.unicode_io else stream
         writer.write_stream(self.reference_data, writer_stream)
         writer_stream.flush()
         stream.seek(0)
-        parser.parse_stream(parser_stream)
+        if parser.unicode_io:
+            parser.parse_string(stream.getvalue().decode('UTF-8'))
+        else:
+            parser.parse_bytes(stream.getvalue())
         loaded_data = parser.data
         self.assertEqual(loaded_data, self.reference_data)
         self.assertEqual(pickle.loads(pickle.dumps(loaded_data, 0)), self.reference_data)
