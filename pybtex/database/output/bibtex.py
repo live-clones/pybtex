@@ -110,7 +110,7 @@ class Writer(BaseWriter):
             if preamble:
                 stream.write(u'@preamble{%s}\n\n' % self.quote(preamble))
 
-        write_preamble(bib_data.get_preamble())
+        write_preamble(bib_data.preamble)
         for key, entry in bib_data.entries.iteritems():
             stream.write(u'@%s' % entry.original_type)
             stream.write(u'{%s' % key)

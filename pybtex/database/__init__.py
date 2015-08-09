@@ -26,6 +26,7 @@ from collections import Mapping
 
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
+    deprecated,
     OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
 )
 from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
@@ -81,8 +82,13 @@ class BibliographyData(object):
     def add_to_preamble(self, *values):
         self._preamble.extend(values)
 
-    def get_preamble(self):
+    @property
+    def preamble(self):
         return ''.join(self._preamble)
+
+    @deprecated('1.19', 'use BibliographyData.preamble instead')
+    def get_preamble(self):
+        return self.preamble
 
     def want_entry(self, key):
         return (
