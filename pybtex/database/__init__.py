@@ -674,6 +674,8 @@ def parse_file(file_, format=None, **kwargs):
     :param file_: A file name or a file-like object.
     :param format: Data format ("bibtex", "yaml", etc.).
         If not specified, Pybtex will try to guess by the file name.
+
+    .. versionadded:: 1.19
     """
 
     if isinstance(file_, basestring):
@@ -689,11 +691,13 @@ def parse_string(value, format, **kwargs):
     """
     Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
 
-    Some formats (notably "bibtexml") do not support unicode strings,
-    use :py:func:`.parse_bytes` instead.
+    Some formats (notably "bibtexml") are byte-oriented and do not support
+    unicode strings. Use :py:func:`.parse_bytes` instead.
 
     :param value: A unicode string.
     :param format: Data format ("bibtex", "yaml", etc.).
+
+    .. versionadded:: 1.19
     """
 
     parser = find_plugin('pybtex.database.input', format)(**kwargs)
@@ -705,7 +709,9 @@ def parse_bytes(value, format, **kwargs):
     Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
 
     :param value: A byte string.
-    :param format: Data format ("bibtex", "yaml", etc.).
+    :param format: Data format (for example, "bibtexml").
+
+    .. versionadded:: 1.19
     """
 
     parser = find_plugin('pybtex.database.input', format)(**kwargs)
