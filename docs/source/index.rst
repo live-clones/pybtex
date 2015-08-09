@@ -54,7 +54,7 @@ Hmm nice. Wrap it up, I'll take it! Where is the download link?
 .. _download:
 
 The tarballs are available from the `PyPI page
-<http://pypi.python.org/pypi/pybtex>`_.  That said, the most stable and
+<https://pypi.python.org/pypi/pybtex>`_.  That said, the most stable and
 feature complete and well documented version of Pybtex is known to be the
 `Bazaar trunk <https://code.launchpad.net/~pybtex-devs/pybtex/trunk>`_.
 
@@ -64,7 +64,7 @@ To get the very latest Pybtex from the trunk:
 
     bzr branch lp:pybtex
 
-To run the tests (need `nose <http://nose.readthedocs.org/>`_):
+To run the tests (need `nose <https://nose.readthedocs.org/>`_):
 
 .. sourcecode:: bash
 

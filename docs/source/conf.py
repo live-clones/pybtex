@@ -265,5 +265,5 @@ stexinfo_no_detailmenu = False
 
 rst_epilog = """
 .. |download_url| replace:: Pybtex {release}
-.. _download_url: http://pypi.python.org/packages/source/p/pybtex/pybtex-{release}.tar.bz2
+.. _download_url: https://pypi.python.org/packages/source/p/pybtex/pybtex-{release}.tar.bz2
 """.format(release=release)
