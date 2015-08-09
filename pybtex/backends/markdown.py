@@ -21,7 +21,45 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+ur"""
+Markdown output backend.
+
+>>> from pybtex.richtext import Tag, HRef
+>>> markdown = Backend()
+>>> print Tag('em', '').render(markdown)
+<BLANKLINE>
+>>> print Tag('em', 'Non-', 'empty').render(markdown)
+*Non\-empty*
+>>> print HRef('/', '').render(markdown)
+<BLANKLINE>
+>>> print HRef('/', 'Non-', 'empty').render(markdown)
+[Non\-empty](/)
+"""
+
+
+from xml.sax.saxutils import escape
+
 from pybtex.backends import BaseBackend
+
+
+SPECIAL_CHARS = [
+    u'\\',  # backslash
+    u'`',   # backtick
+    u'*',   # asterisk
+    u'_',   # underscore
+    u'{',   # curly braces
+    u'}',   # curly braces
+    u'[',   # square brackets
+    u']',   # square brackets
+    u'(',   # parentheses
+    u')',   # parentheses
+    u'#',   # hash mark
+    u'+',   # plus sign
+    u'-',   # minus sign (hyphen)
+    u'.',   # dot
+    u'!',   # exclamation mark
+]
 
 
 class Backend(BaseBackend):
@@ -56,42 +94,24 @@ class Backend(BaseBackend):
         'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
     }
 
-    def format_str(self, str_):
+    def format_str(self, text):
         """Format the given string *str_*.
         Escapes special markdown control characters.
         """
-        table = {
-          u'\\': u'\\\\',  # backslash
-          u'`' : u'\\`',   # backtick
-          u'*' : u'\\*',   # asterisk
-          u'_' : u'\\_',   # underscore
-          u'{' : u'\\{',   # curly braces
-          u'}' : u'\\}',   # curly braces
-          u'[' : u'\\[',   # square brackets
-          u']' : u'\\]',   # square brackets
-          u'(' : u'\\(',   # parentheses
-          u')' : u'\\)',   # parentheses
-          u'#' : u'\\#',   # hash mark
-          u'+' : u'\\+',   # plus sign
-          u'-' : u'\\-',   # minus sign (hyphen)
-          u'.' : u'\\.',   # dot
-          u'!' : u'\\!',   # exclamation mark
-          #u'&' : u'&amp;', # ampersand
-          #u'<' : u'&lt;',  # left angle bracket
-        }
-        for i in table:
-            str_ = str_.replace(i, table[i])
-        return str_
+        text = escape(text)
+        for special_char in SPECIAL_CHARS:
+            text = text.replace(special_char, u'\\' + special_char)
+        return text
 
     def format_tag(self, tag_name, text):
-        tag = self.__class__.tags.get(tag_name)
+        tag = self.tags.get(tag_name)
         if tag is None:
-            return ur'%s' % text
+            return text
         else:
-            return ur'%s%s%s' % (tag, text, tag)
+            return ur'{0}{1}{0}'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'[%s](%s)' % (text, url)
+        return ur'[%s](%s)' % (text, url) if text else u''
 
     def write_entry(self, key, label, text):
         # Support http://www.michelf.com/projects/php-markdown/extra/#def-list

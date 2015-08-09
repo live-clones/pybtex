@@ -21,6 +21,23 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
+"""
+HTML output backend.
+
+>>> from pybtex.richtext import Tag, HRef
+>>> html = Backend()
+>>> print Tag('em', '').render(html)
+<BLANKLINE>
+>>> print Tag('em', 'Hard &', ' heavy').render(html)
+<em>Hard &amp; heavy</em>
+>>> print HRef('/', '').render(html)
+<BLANKLINE>
+>>> print HRef('/', 'Hard & heavy').render(html)
+<a href="/">Hard &amp; heavy</a>
+"""
+
+
 from xml.sax.saxutils import escape
 from pybtex.backends import BaseBackend
 import pybtex.io
@@ -55,10 +72,10 @@ class Backend(BaseBackend):
         return escape(text)
 
     def format_tag(self, tag, text):
-        return ur'<%s>%s</%s>' % (tag, text, tag)
+        return ur'<{0}>{1}</{0}>'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'<a href="%s">%s</a>' % (url, text)
+        return ur'<a href="{0}">{1}</a>'.format(url, text) if text else u''
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()

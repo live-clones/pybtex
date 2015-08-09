@@ -57,7 +57,7 @@ class Scanner(object):
     lineno = 1
     pos = 0
     WHITESPACE = Pattern(ur'\s+', 'whitespace')
-    NEWLINE = Pattern(ur'[\r\n]', 'newline')
+    NEWLINE = Pattern(ur'\n|(\r\n)|\r', 'newline')
 
     def __init__(self, text, filename=None):
         self.text = text

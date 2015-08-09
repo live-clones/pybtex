@@ -37,7 +37,7 @@ Nevertheless, we are going to achieve 100% compatibility before releasing
 version 1.0.
 
 If something does not work for you, just `let us know
-<http://sourceforge.net/p/pybtex/bugs/new/>`_.
+<https://bitbucket.org/pybtex-devs/pybtex/issues/new>`_.
 
 
 But why should I use it instead of BibTeX?
@@ -53,16 +53,15 @@ Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================
 .. _download:
 
-The tarballs are available from the `PyPI page
-<https://pypi.python.org/pypi/pybtex>`_.  That said, the most stable and
-feature complete and well documented version of Pybtex is known to be the
-`Bazaar trunk <https://code.launchpad.net/~pybtex-devs/pybtex/trunk>`_.
+Release tarballs are available from our `PyPI page
+<https://pypi.python.org/pypi/pybtex>`_.
 
-To get the very latest Pybtex from the trunk:
+Development sources are available from our `Git repository at Bitbucket
+<https://bitbucket.org/pybtex-devs/pybtex>`_:
 
 .. sourcecode:: bash
 
-    bzr branch lp:pybtex
+    git clone https://bitbucket.org/pybtex-devs/pybtex
 
 To run the tests (need `nose <https://nose.readthedocs.org/>`_):
 
@@ -72,15 +71,16 @@ To run the tests (need `nose <https://nose.readthedocs.org/>`_):
     python setup.py egg_info  # or python setup.py develop
     python setup.py nosetests
 
-Pybtex can be also installed with Easy Install:
+Pybtex can be also installed with pip:
 
 .. sourcecode:: bash
 
-    easy_install pybtex
+    pip install pybtex
 
-But you won't get any documentation this way.
-
-If something goes wrong, please `file a bug report
-<http://sourceforge.net/p/pybtex/bugs/new/>`_.
+If something goes wrong, just `file a bug report
+<https://bitbucket.org/pybtex-devs/pybtex/issues/new>`_.
 
 Have fun!
+
+
+.. _file a bug report: https://bitbucket.org/pybtex-devs/pybtex/issues/new

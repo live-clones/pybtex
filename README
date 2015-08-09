@@ -1,5 +1,5 @@
-A BibTeX-compatible bibliography processor in Python
-====================================================
+BibTeX-compatible bibliography processor in Python
+==================================================
 
 Synopsis
 --------
@@ -39,15 +39,11 @@ The resulting bibliography may be output in one of the following formats
 - plain text
 
 
-Download and Install
---------------------
+See also
+--------
 
-You are strongly encouraged to use our `Bazaar repository <https://code.launchpad.net/~pybtex-devs/pybtex/trunk>`_ instead of tarballs::
+- `Home page <http://pybtex.org/>`_
 
-    bzr branch lp:pybtex
+- `Pybtex at Bitbucket <https://bitbucket.org/pybtex-devs/pybtex>`_
 
-To run unit tests::
-
-    cd pybtex
-    python setup.py egg_info  # or python setup.py develop
-    python setup.py nosetests
+- `Pybtex at PyPI <https://pypi.python.org/pypi/pybtex>`_

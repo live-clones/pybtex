@@ -123,7 +123,7 @@ class BstParser(Scanner):
 
     def parse_group(self):
         while True:
-            token = self.required([self.LBRACE, self.RBRACE, self.STRING, self.INTEGER, self.NAME])
+            token = self.required([self.NAME, self.STRING, self.INTEGER, self.LBRACE, self.RBRACE])
             if token.pattern is self.LBRACE:
                 yield FunctionLiteral(list(self.parse_group()))
             elif token.pattern is self.RBRACE:
@@ -152,7 +152,12 @@ def parse_file(filename, encoding=None):
 
 def parse_stream(stream, filename='<INPUT>'):
     bst = '\n'.join(strip_comment(line.rstrip()) for line in stream)
-    return list(BstParser(bst, filename=filename).parse())
+    return BstParser(bst, filename=filename).parse()
+
+
+def parse_string(bst_string):
+    bst = '\n'.join(strip_comment(line) for line in bst_string.splitlines())
+    return BstParser(bst).parse()
 
 
 if __name__ == '__main__':

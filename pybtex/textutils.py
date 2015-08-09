@@ -21,27 +21,76 @@
 
 import re
 
-terminators = '.?!'
+from pybtex.utils import deprecated
+
+
+terminators = '.', '?', '!'
 delimiter_re = re.compile(r'([\s\-])')
 whitespace_re = re.compile(r'\s+')
 
+
+@deprecated('0.19', 'use str.capitalize() instead')
 def capfirst(s):
     return s[0].upper() + s[1:] if s else s
 
-def is_terminated(s):
-    """Return true if s ends with a terminating character.
-    """
-    return (bool(s) and s[-1] in terminators)
 
-def add_period(s):
-    """Add a period to the end of s, if there is none yet.
+def is_terminated(text):
     """
-    if s and not is_terminated(s):
-        return s + '.'
-    return s
+    Return True if text ends with a terminating character.
 
-def abbreviate(s, split=delimiter_re.split):
-    """Abbreviate some text.
+    >>> is_terminated('')
+    False
+    >>> is_terminated('.')
+    True
+    >>> is_terminated('Done')
+    False
+    >>> is_terminated('Done. ')
+    False
+    >>> is_terminated('Done.')
+    True
+    >>> is_terminated('Done...')
+    True
+    >>> is_terminated('Done!')
+    True
+    >>> is_terminated('Done?')
+    True
+    >>> is_terminated('Done?!')
+    True
+    """
+
+    return text.endswith(terminators)
+
+
+def add_period(text):
+    """Add a period to the end of text, if needed.
+
+    >>> print add_period('')
+    <BLANKLINE>
+    >>> print add_period('.')
+    .
+    >>> print add_period('Done')
+    Done.
+    >>> print add_period('Done. ')
+    Done. .
+    >>> print add_period('Done.')
+    Done.
+    >>> print add_period('Done...')
+    Done...
+    >>> print add_period('Done!')
+    Done!
+    >>> print add_period('Done?')
+    Done?
+    >>> print add_period('Done?!')
+    Done?!
+    """
+
+    if text and not is_terminated(text):
+        return text + '.'
+    return text
+
+
+def abbreviate(text, split=delimiter_re.split):
+    """Abbreviate the given text.
 
     >> abbreviate('Name')
     'N'
@@ -60,7 +109,8 @@ def abbreviate(s, split=delimiter_re.split):
         else:
             return part
 
-    return ''.join(abbreviate(part) for part in split(s))
+    return ''.join(abbreviate(part) for part in split(text))
+
 
 def normalize_whitespace(string):
     r"""
@@ -83,6 +133,7 @@ def normalize_whitespace(string):
     """
 
     return whitespace_re.sub(' ', string.strip())
+
 
 def width(string):
     r"""

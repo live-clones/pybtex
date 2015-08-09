@@ -90,7 +90,7 @@ def execute(code, database=None):
         READ
         ITERATE {call.type$}
     """.strip() % code
-    [result] = run_bibtex(bst, database).splitlines()
+    result = ' '.join(run_bibtex(bst, database).splitlines())
     return result
 
 

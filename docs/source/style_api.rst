@@ -17,12 +17,11 @@ producing formatted text:
 
 .. sourcecode:: pycon
 
-    >>> from pybtex.richtext import Text, Tag
-    >>> from pybtex.backends import latex, html
-    >>> text = Text('This is an example of a ', Tag('emph', 'rich'), ' text.')
-    >>> print text.render(html.Backend())
+    >>> from pybtex.richtex import Text, Tag
+    >>> text = Text('This is an example of a ', Tag('em', 'rich'), ' text.')
+    >>> print text.render_as('html')
     This is an example of a <em>rich</em> text.
-    >>> print text.render(latex.Backend())
+    >>> print text.render_as('latex')
     This is an example of a \emph{rich} text.
 
 

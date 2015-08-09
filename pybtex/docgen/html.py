@@ -28,7 +28,6 @@ import os
 import sys
 import re
 import shutil
-from datetime import datetime
 from cgi import escape
 from glob import glob
 from subprocess import check_call
@@ -55,40 +54,6 @@ PYGMENTS_FORMATTER = HtmlFormatter(style=MyHiglightStyle, cssclass='sourcecode')
 #            .read().decode('utf-8')
 
 DATE_FORMAT = '%d %B %y (%a)'
-
-
-def get_bzr_modification_date(filename):
-    from bzrlib.osutils import format_date
-
-    mtime, timezone = get_bzr_timestamp(filename)
-    return format_date(mtime, timezone, 'utc', date_fmt=DATE_FORMAT, show_offset=False)
-
-
-def get_bzr_timestamp(filename):
-    from bzrlib import workingtree
-
-    if os.path.basename(filename) == 'history.rst':
-        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(filename)))
-        filename = os.path.join(root_dir, 'CHANGES')
-    tree = workingtree.WorkingTree.open_containing(filename)[0]
-    tree.lock_read()
-    rel_path = tree.relpath(os.path.abspath(filename))
-    file_id = tree.inventory.path2id(rel_path)
-    last_revision = get_last_bzr_revision(tree.branch, file_id)
-    tree.unlock()
-    return last_revision.timestamp, last_revision.timezone
-    
-
-def get_last_bzr_revision(branch, file_id):
-    history = branch.repository.iter_reverse_revision_history(branch.last_revision())
-    last_revision_id = branch.last_revision()
-    current_inventory = branch.repository.get_inventory(last_revision_id)
-    current_sha1 = current_inventory[file_id].text_sha1
-    for revision_id in history:
-        inv = branch.repository.get_inventory(revision_id)
-        if not file_id in inv or inv[file_id].text_sha1 != current_sha1:
-            return branch.repository.get_revision(last_revision_id)
-        last_revision_id = revision_id
 
 
 def pygments_directive(name, arguments, options, content, lineno,
@@ -232,8 +197,6 @@ def handle_file(filename, fp, dst, for_site):
     os.chdir(cwd)
 
     c = dict(parts)
-    if for_site:
-        c['modification_date'] = get_bzr_modification_date(filename) 
     c['file_id'] = title
     c['for_site'] = for_site
     tmpl = e.get_template('template.html')

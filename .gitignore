@@ -5,10 +5,13 @@
 docs/html
 docs/site
 docs/man1/*.1
+examples/xampl.bibtexml
+examples/xampl.yaml
 build
 dist
 pybtex.egg-info
 MANIFEST
 .ropeproject
 .coverage
+.tox
 __pycache__

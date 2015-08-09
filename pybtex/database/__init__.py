@@ -28,7 +28,7 @@ from pybtex.exceptions import PybtexError
 from pybtex.utils import (
     OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
 )
-from pybtex.bibtex.utils import split_tex_string
+from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
 from pybtex.errors import report_error
 
 
@@ -402,11 +402,15 @@ class Person(object):
                 pass
 
         def process_von_last(parts):
-            von, last = rsplit_at(parts, lambda part: part.islower())
-            if von and not last:
-                last.append(von.pop())
-            self._prelast.extend(von)
-            self._last.extend(last)
+            # von cannot be the last name in the list
+            von_last = parts[:-1]
+            definitely_not_von = parts[-1:]
+
+            if von_last:
+                von, last = rsplit_at(von_last, is_von_name)
+                self._prelast.extend(von)
+                self._last.extend(last)
+            self._last.extend(definitely_not_von)
 
         def find_pos(lst, pred):
             for i, item in enumerate(lst):
@@ -428,6 +432,31 @@ class Person(object):
             pos = len(lst) - rpos
             return lst[:pos], lst[pos:]
 
+        def is_von_name(string):
+            if string[0].isupper():
+                return False
+            if string[0].islower():
+                return True
+            else:
+                for char, brace_level in scan_bibtex_string(string):
+                    if brace_level == 0 and char.isalpha():
+                        return char.islower()
+                    elif brace_level == 1 and char.startswith('\\'):
+                        return special_char_islower(char)
+            return False
+
+        def special_char_islower(special_char):
+            control_sequence = True
+            for char in special_char[1:]: # skip the backslash
+                if control_sequence:
+                    if not char.isalpha():
+                        control_sequence = False
+                else:
+                    if char.isalpha():
+                        return char.islower()
+            return False
+
+
         parts = split_tex_string(name, ',')
         if len(parts) > 3:
             report_error(InvalidNameString(name))
@@ -443,7 +472,7 @@ class Person(object):
             process_first_middle(split_tex_string(parts[1]))
         elif len(parts) == 1: # First von Last
             parts = split_tex_string(name)
-            first_middle, von_last = split_at(parts, lambda part: part.islower())
+            first_middle, von_last = split_at(parts, is_von_name)
             if not von_last and first_middle:
                 last = first_middle.pop()
                 von_last.append(last)
