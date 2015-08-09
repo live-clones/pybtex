@@ -66,8 +66,10 @@ Please contribute more styles. :)
 Registering Plugins
 ===================
 
-See `Distribute's documentation
-<http://packages.python.org/distribute/setuptools.html#extensible-applications-and-frameworks>`_.
+see `Setuptools' documentation`_.
+
+
+.. _Setuptools' documentation: https://pythonhosted.org/setuptools/setuptools.html#extensible-applications-and-frameworks
 
 
 Example Plugins
