@@ -535,6 +535,7 @@ class Person(object):
         """Return first and middle names together.
         (BibTeX treats all middle names as first)
         """
+        return self.bibtex_first_names
 
     @property
     def bibtex_first_names(self):
