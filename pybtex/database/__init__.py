@@ -45,6 +45,8 @@ class InvalidNameString(PybtexError):
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
         self.entries = OrderedCaseInsensitiveDict()
+        """A dictionary of bibliography entries."""
+
         self.crossref_count = CaseInsensitiveDefaultDict(int)
         self.min_crossrefs = min_crossrefs
         self._preamble = []
@@ -287,8 +289,13 @@ class Entry(object):
             persons = {}
         self.type = type_.lower()
         self.original_type = type_
+
         self.fields = FieldDict(self, fields)
+        """A dictionary of entry fields."""
+
         self.persons = OrderedCaseInsensitiveDict(persons)
+        """A dictionary of entry persons, by role."""
+
         self.collection = collection
 
         # for BibTeX interpreter
