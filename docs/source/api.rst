@@ -3,6 +3,11 @@ Using Pybtex as a library
 =========================
 
 
+.. testsetup:: *
+
+    from pybtex.database import BibliographyData, Entry, Person
+
+
 Using the BibTeX parser
 =======================
 
@@ -18,4 +23,11 @@ Using the BibTeX parser
     Knuth, Donald
     MacKay, Pierre
 
-(to be continued)
+.. autoclass:: pybtex.database.BibliographyData
+    :members:
+
+.. autoclass:: pybtex.database.Entry
+    :members:
+
+.. autoclass:: pybtex.database.Person
+    :members:
