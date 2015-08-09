@@ -341,72 +341,102 @@ class Entry(object):
 
 
 class Person(object):
-    """Represents a person (usually human).
+    """Represents a person or other person-like entity (like organization).
 
-    >>> p = Person('Avinash K. Dixit')
-    >>> print p.first_names
-    ['Avinash']
-    >>> print p.middle_names
-    ['K.']
-    >>> print p.prelast_names
-    []
-    >>> print p.last_names
-    ['Dixit']
-    >>> print p.lineage_names
-    []
-    >>> print unicode(p)
-    Dixit, Avinash K.
-    >>> p == Person(unicode(p))
-    True
-    >>> p = Person('Dixit, Jr, Avinash K. ')
-    >>> print p.first_names
-    ['Avinash']
-    >>> print p.middle_names
-    ['K.']
-    >>> print p.prelast_names
-    []
-    >>> print p.last_names
-    ['Dixit']
-    >>> print p.lineage_names
-    ['Jr']
-    >>> print unicode(p)
-    Dixit, Jr, Avinash K.
-    >>> p == Person(unicode(p))
-    True
+    >>> knuth = Person('Donald E. Knuth')
+    >>> knuth.first_names
+    ['Donald']
+    >>> knuth.middle_names
+    ['E.']
+    >>> knuth.last_names
+    ['Knuth']
 
-    >>> p = Person('abc')
-    >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
-    [] [] [] ['abc'] []
-    >>> p = Person('Viktorov, Michail~Markovitch')
-    >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
-    ['Michail'] ['Markovitch'] [] ['Viktorov'] []
     """
     valid_roles = ['author', 'editor'] 
     style1_re = re.compile('^(.+),\s*(.+)$')
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
 
     def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):
-        self.first_names = []
-        self.middle_names = []
-        self.prelast_names = []
-        self.last_names = []
-        self.lineage_names = []
+        """
+        :param string: The full name string.
+            It will be parsed and split into separate first, last, middle,
+            pre-last and lineage name parst.
+
+            Supported name formats are:
+
+            - von Last, First
+            - von Last, Jr, First
+            - First von Last
+
+            (see BibTeX manual for explanation)
+
+        """
+
+        self.first_names = []  #: A list of first names.
+        self.middle_names = []  #: A list of middle names.
+        self.prelast_names = []  #: A list of pre-last (aka von) name parts.
+        self.last_names = []  #: A list of last names.
+        self.lineage_names = []  #: A list of linage (aka Jr) name parts.
         string = string.strip()
         if string:
-            self.parse_string(string)
+            self._parse_string(string)
         self.first_names.extend(split_tex_string(first))
         self.middle_names.extend(split_tex_string(middle))
         self.prelast_names.extend(split_tex_string(prelast))
         self.last_names.extend(split_tex_string(last))
         self.lineage_names.extend(split_tex_string(lineage))
 
-    def parse_string(self, name):
+    @property
+    def bibtex_first_names(self):
+        """A list of first and middle names together.
+        (BibTeX treats all middle names as first.)
+
+        >>> knuth = Person('Donald E. Knuth')
+        >>> knuth.bibtex_first_names
+        ['Donald', 'E.']
+        """
+        return self.first_names + self.middle_names
+
+    def _parse_string(self, name):
         """Extract various parts of the name from a string.
-        Supported formats are:
-         - von Last, First
-         - von Last, Jr, First
-         - First von Last
-        (see BibTeX manual for explanation)
+
+        >>> p = Person('Avinash K. Dixit')
+        >>> print p.first_names
+        ['Avinash']
+        >>> print p.middle_names
+        ['K.']
+        >>> print p.prelast_names
+        []
+        >>> print p.last_names
+        ['Dixit']
+        >>> print p.lineage_names
+        []
+        >>> print unicode(p)
+        Dixit, Avinash K.
+        >>> p == Person(unicode(p))
+        True
+        >>> p = Person('Dixit, Jr, Avinash K. ')
+        >>> print p.first_names
+        ['Avinash']
+        >>> print p.middle_names
+        ['K.']
+        >>> print p.prelast_names
+        []
+        >>> print p.last_names
+        ['Dixit']
+        >>> print p.lineage_names
+        ['Jr']
+        >>> print unicode(p)
+        Dixit, Jr, Avinash K.
+        >>> p == Person(unicode(p))
+        True
+
+        >>> p = Person('abc')
+        >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
+        [] [] [] ['abc'] []
+        >>> p = Person('Viktorov, Michail~Markovitch')
+        >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
+        ['Michail'] ['Markovitch'] [] ['Viktorov'] []
         """
         def process_first_middle(parts):
             try:
@@ -522,6 +552,15 @@ class Person(object):
         return ' '.join(names)
 
     def get_part(self, type, abbr=False):
+        """Get a list of name parts by `type`.
+
+        >>> knuth = Person('Donald E. Knuth')
+        >>> knuth.get_part('first')
+        ['Donald']
+        >>> knuth.get_part('last')
+        ['Knuth']
+        """
+
         names = getattr(self, type + '_names')
         if abbr:
             import warnings
@@ -532,14 +571,7 @@ class Person(object):
 
     @deprecated('1.19', 'use Person.bibtex_first_names instead')
     def bibtex_first(self):
-        """Return first and middle names together.
-        (BibTeX treats all middle names as first)
-        """
         return self.bibtex_first_names
-
-    @property
-    def bibtex_first_names(self):
-        return self.first_names + self.middle_names
 
     @deprecated('1.19', 'use Person.first_names instead')
     def first(self, abbr=False):
