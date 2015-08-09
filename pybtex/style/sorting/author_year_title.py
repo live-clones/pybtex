@@ -38,9 +38,9 @@ class SortingStyle(BaseSortingStyle):
 
     def person_key(self, person):
         return '  '.join((
-            ' '.join(person.prelast() + person.last()),
-            ' '.join(person.first() + person.middle()),
-            ' '.join(person.lineage()),
+            ' '.join(person.prelast_names + person.last_names),
+            ' '.join(person.first_names + person.middle_names),
+            ' '.join(person.lineage_names),
         )).lower()
 
     def author_editor_key(self, entry):

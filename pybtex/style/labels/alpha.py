@@ -32,6 +32,7 @@ import re
 import string
 import unicodedata
 
+from pybtex.textutils import abbreviate
 from pybtex.style.labels import BaseLabelStyle
 
 _nonalnum_pattern = re.compile('[^A-Za-z0-9]+', re.UNICODE)
@@ -49,6 +50,10 @@ def _strip_nonalnum(parts):
     """
     s = u''.join(parts)
     return _nonalnum_pattern.sub(u'', _strip_accents(s))
+
+def _abbr(parts):
+    return (abbreviate(part) for part in parts)
+
 
 class LabelStyle(BaseLabelStyle):
 
@@ -154,19 +159,19 @@ class LabelStyle(BaseLabelStyle):
                     if unicode(person) == "others":
                         result += "+"
                     else:
-                        result += _strip_nonalnum(
-                            person.prelast(abbr=True) + person.last(abbr=True))
+                        result += _strip_nonalnum(_abbr(
+                            person.prelast_names + person.last_names))
                 else:
-                    result += _strip_nonalnum(
-                        person.prelast(abbr=True) + person.last(abbr=True))
+                    result += _strip_nonalnum(_abbr(
+                        person.prelast_names + person.last_names))
                 nameptr += 1
                 namesleft -= 1
             if numnames > 4:
                 result += "+"
         else:
             person = persons[0]
-            result = _strip_nonalnum(
-                person.prelast(abbr=True) + person.last(abbr=True))
+            result = _strip_nonalnum(_abbr(
+                person.prelast_names + person.last_names))
             if len(result) < 2:
-                result = _strip_nonalnum(person.last(abbr=False))[:3]
+                result = _strip_nonalnum(person.last_names)[:3]
         return result

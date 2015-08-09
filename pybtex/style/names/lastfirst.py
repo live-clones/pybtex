@@ -46,9 +46,9 @@ class NameStyle(BaseNameStyle):
 
         """
         return join [
-            name_part(tie=True) [person.prelast()],
-            name_part [person.last()],
-            name_part(before=', ') [person.lineage()],
-            name_part(before=', ') [person.first(abbr) + person.middle(abbr)],
+            name_part(tie=True) [person.prelast_names],
+            name_part [person.last_names],
+            name_part(before=', ') [person.lineage_names],
+            name_part(before=', ', abbr=abbr) [person.first_names + person.middle_names],
         ]
 

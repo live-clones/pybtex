@@ -127,7 +127,7 @@ class NamePart(object):
     }
 
     def format(self, person):
-        names = getattr(person, self.types[self.format_char])() if self.format_char else []
+        names = person.get_part(self.types[self.format_char]) if self.format_char else []
 
         if self.format_char and not names:
             return ''

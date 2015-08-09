@@ -173,7 +173,7 @@ def parse_name(name, correct_result, expected_errors=None):
     with errors.capture() as captured_errors:
         person = Person(name)
 
-    result = (person.bibtex_first(), person.prelast(), person.last(), person.lineage())
+    result = (person.bibtex_first_names, person.prelast_names, person.last_names, person.lineage_names)
     assert result == correct_result
     assert captured_errors == expected_errors
 

@@ -23,6 +23,7 @@
 """
 
 from pybtex.plugin import Plugin
+from pybtex.textutils import abbreviate
 from pybtex.richtext import Symbol, Text, nbsp
 from pybtex.style.template import join, together, node, _format_list
 
@@ -40,7 +41,9 @@ def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
     
 
 @node
-def name_part(children, data, before='', tie=False):
+def name_part(children, data, before='', tie=False, abbr=False):
+    if abbr:
+        children = [abbreviate(child) for child in children]
     parts = together [children].format_data(data)
     if not parts:
         return Text()

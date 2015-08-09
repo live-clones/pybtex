@@ -344,30 +344,30 @@ class Person(object):
     """Represents a person (usually human).
 
     >>> p = Person('Avinash K. Dixit')
-    >>> print p.first()
+    >>> print p.first_names
     ['Avinash']
-    >>> print p.middle()
+    >>> print p.middle_names
     ['K.']
-    >>> print p.prelast()
+    >>> print p.prelast_names
     []
-    >>> print p.last()
+    >>> print p.last_names
     ['Dixit']
-    >>> print p.lineage()
+    >>> print p.lineage_names
     []
     >>> print unicode(p)
     Dixit, Avinash K.
     >>> p == Person(unicode(p))
     True
     >>> p = Person('Dixit, Jr, Avinash K. ')
-    >>> print p.first()
+    >>> print p.first_names
     ['Avinash']
-    >>> print p.middle()
+    >>> print p.middle_names
     ['K.']
-    >>> print p.prelast()
+    >>> print p.prelast_names
     []
-    >>> print p.last()
+    >>> print p.last_names
     ['Dixit']
-    >>> print p.lineage()
+    >>> print p.lineage_names
     ['Jr']
     >>> print unicode(p)
     Dixit, Jr, Avinash K.
@@ -375,10 +375,10 @@ class Person(object):
     True
 
     >>> p = Person('abc')
-    >>> print p.first(), p.middle(), p.prelast(), p.last(), p.lineage()
+    >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
     [] [] [] ['abc'] []
     >>> p = Person('Viktorov, Michail~Markovitch')
-    >>> print p.first(), p.middle(), p.prelast(), p.last(), p.lineage()
+    >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
     ['Michail'] ['Markovitch'] [] ['Viktorov'] []
     """
     valid_roles = ['author', 'editor'] 
@@ -386,19 +386,19 @@ class Person(object):
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
 
     def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):
-        self._first = []
-        self._middle = []
-        self._prelast = []
-        self._last = []
-        self._lineage = []
+        self.first_names = []
+        self.middle_names = []
+        self.prelast_names = []
+        self.last_names = []
+        self.lineage_names = []
         string = string.strip()
         if string:
             self.parse_string(string)
-        self._first.extend(split_tex_string(first))
-        self._middle.extend(split_tex_string(middle))
-        self._prelast.extend(split_tex_string(prelast))
-        self._last.extend(split_tex_string(last))
-        self._lineage.extend(split_tex_string(lineage))
+        self.first_names.extend(split_tex_string(first))
+        self.middle_names.extend(split_tex_string(middle))
+        self.prelast_names.extend(split_tex_string(prelast))
+        self.last_names.extend(split_tex_string(last))
+        self.lineage_names.extend(split_tex_string(lineage))
 
     def parse_string(self, name):
         """Extract various parts of the name from a string.
@@ -410,8 +410,8 @@ class Person(object):
         """
         def process_first_middle(parts):
             try:
-                self._first.append(parts[0])
-                self._middle.extend(parts[1:])
+                self.first_names.append(parts[0])
+                self.middle_names.extend(parts[1:])
             except IndexError:
                 pass
 
@@ -422,9 +422,9 @@ class Person(object):
 
             if von_last:
                 von, last = rsplit_at(von_last, is_von_name)
-                self._prelast.extend(von)
-                self._last.extend(last)
-            self._last.extend(definitely_not_von)
+                self.prelast_names.extend(von)
+                self.last_names.extend(last)
+            self.last_names.extend(definitely_not_von)
 
         def find_pos(lst, pred):
             for i, item in enumerate(lst):
@@ -479,7 +479,7 @@ class Person(object):
 
         if len(parts) == 3: # von Last, Jr, First
             process_von_last(split_tex_string(parts[0]))
-            self._lineage.extend(split_tex_string(parts[1]))
+            self.lineage_names.extend(split_tex_string(parts[1]))
             process_first_middle(split_tex_string(parts[2]))
         elif len(parts) == 2: # von Last, First
             process_von_last(split_tex_string(parts[0]))
@@ -500,48 +500,62 @@ class Person(object):
         if not isinstance(other, Person):
             return super(Person, self) == other
         return (
-                self._first == other._first
-                and self._middle == other._middle
-                and self._prelast == other._prelast
-                and self._last == other._last
-                and self._lineage == other._lineage
+                self.first_names == other.first_names
+                and self.middle_names == other.middle_names
+                and self.prelast_names == other.prelast_names
+                and self.last_names == other.last_names
+                and self.lineage_names == other.lineage_names
         )
 
     def __unicode__(self):
         # von Last, Jr, First
-        von_last = ' '.join(self._prelast + self._last)
-        jr = ' '.join(self._lineage)
-        first = ' '.join(self._first + self._middle)
+        von_last = ' '.join(self.prelast_names + self.last_names)
+        jr = ' '.join(self.lineage_names)
+        first = ' '.join(self.first_names + self.middle_names)
         return ', '.join(part for part in (von_last, jr, first) if part)
 
     def __repr__(self):
         return 'Person({0})'.format(repr(unicode(self)))
 
     def get_part_as_text(self, type):
-        names = getattr(self, '_' + type)
+        names = getattr(self, type + '_names')
         return ' '.join(names)
 
     def get_part(self, type, abbr=False):
-        names = getattr(self, '_' + type)
+        names = getattr(self, type + '_names')
         if abbr:
+            import warnings
+            warnings.warn('Person.get_part(abbr=True) is deprecated since 0.19: use pybtex.textutils.abbreviate()', stacklevel=2)
             from pybtex.textutils import abbreviate
             names = [abbreviate(name) for name in names]
         return names
 
-    #FIXME needs some thinking and cleanup
+    @deprecated('1.19', 'use Person.bibtex_first_names instead')
     def bibtex_first(self):
         """Return first and middle names together.
         (BibTeX treats all middle names as first)
         """
-        return self._first + self._middle
 
+    @property
+    def bibtex_first_names(self):
+        return self.first_names + self.middle_names
+
+    @deprecated('1.19', 'use Person.first_names instead')
     def first(self, abbr=False):
         return self.get_part('first', abbr)
+
+    @deprecated('1.19', 'use Person.middle_names instead')
     def middle(self, abbr=False):
         return self.get_part('middle', abbr)
+
+    @deprecated('1.19', 'use Person.prelast_names instead')
     def prelast(self, abbr=False):
         return self.get_part('prelast', abbr)
+
+    @deprecated('1.19', 'use Person.last_names instead')
     def last(self, abbr=False):
         return self.get_part('last', abbr)
+
+    @deprecated('1.19', 'use Person.lineage_names instead')
     def lineage(self, abbr=False):
         return self.get_part('lineage', abbr)
