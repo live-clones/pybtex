@@ -1117,7 +1117,7 @@ class Tag(BaseMultipartText):
         if name in depr_map:
             msg  = u"The tag '%s' is deprecated" % name
             msg += u", use '%s' instead." % depr_map[name]
-            warnings.warn(msg, DeprecationWarning)
+            warnings.warn(msg, DeprecationWarning, stacklevel=3)
             return depr_map[name]
         return name
 
