@@ -26,6 +26,8 @@ from pybtex.database import Entry, Person
 
 class Parser(BaseParser):
     default_suffix = '.yaml'
+    unicode_io = False
+    unicode_supported = True
 
     def parse_stream(self, stream):
         t = yaml.safe_load(stream)
