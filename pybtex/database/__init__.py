@@ -372,11 +372,46 @@ class Person(object):
 
         """
 
-        self.first_names = []  #: A list of first names.
-        self.middle_names = []  #: A list of middle names.
-        self.prelast_names = []  #: A list of pre-last (aka von) name parts.
-        self.last_names = []  #: A list of last names.
-        self.lineage_names = []  #: A list of linage (aka Jr) name parts.
+        self.first_names = []
+        """
+        A list of first names.
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`.first`, which is now deprecated.
+        """
+
+        self.middle_names = []
+        """
+        A list of middle names.
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`.middle`, which is now deprecated.
+        """
+
+        self.prelast_names = []
+        """
+        A list of pre-last (aka von) name parts.
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`.middle`, which is now deprecated.
+        """
+
+        self.last_names = []
+        """
+        A list of last names.
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`.last`, which is now deprecated.
+        """
+
+        self.lineage_names = []
+        """
+        A list of linage (aka Jr) name parts.
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`.lineage`, which is now deprecated.
+        """
+
         string = string.strip()
         if string:
             self._parse_string(string)
@@ -390,6 +425,10 @@ class Person(object):
     def bibtex_first_names(self):
         """A list of first and middle names together.
         (BibTeX treats all middle names as first.)
+
+        .. versionadded:: 1.19
+            Earlier versions used :py:meth:`Person.bibtex_first`, which is now deprecated.
+
 
         >>> knuth = Person('Donald E. Knuth')
         >>> knuth.bibtex_first_names
@@ -569,26 +608,50 @@ class Person(object):
             names = [abbreviate(name) for name in names]
         return names
 
-    @deprecated('1.19', 'use Person.bibtex_first_names instead')
-    def bibtex_first(self):
-        return self.bibtex_first_names
-
     @deprecated('1.19', 'use Person.first_names instead')
     def first(self, abbr=False):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.first_names` instead.
+        """
         return self.get_part('first', abbr)
 
     @deprecated('1.19', 'use Person.middle_names instead')
     def middle(self, abbr=False):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.middle_names` instead.
+        """
         return self.get_part('middle', abbr)
 
     @deprecated('1.19', 'use Person.prelast_names instead')
     def prelast(self, abbr=False):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.prelast_names` instead.
+        """
         return self.get_part('prelast', abbr)
 
     @deprecated('1.19', 'use Person.last_names instead')
     def last(self, abbr=False):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.last_names` instead.
+        """
         return self.get_part('last', abbr)
 
     @deprecated('1.19', 'use Person.lineage_names instead')
     def lineage(self, abbr=False):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.lineage_names` instead.
+        """
         return self.get_part('lineage', abbr)
+
+    @deprecated('1.19', 'use Person.bibtex_first_names instead')
+    def bibtex_first(self):
+        """
+        .. deprecated:: 1.19
+            Use :py:attr:`.bibtex_first_names` instead.
+        """
+        return self.bibtex_first_names
