@@ -36,7 +36,7 @@ def deprecated(since, reason=None):
             message = u'{0}() is deprecated since {1}'.format(f.__name__, since)
             if reason:
                 message += ': {0}'.format(reason)
-            warnings.warn(message, DeprecationWarning)
+            warnings.warn(message, DeprecationWarning, stacklevel=2)
             return f(*args, **kwargs)
         return new_f
     return decorator
