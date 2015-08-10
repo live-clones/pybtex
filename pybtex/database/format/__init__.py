@@ -39,7 +39,11 @@ def format_database(from_filename, to_filename,
         parser_options = {}
     output_backend = find_plugin('pybtex.backends', output_backend, filename=to_filename)
     
-    bib_data = database.parse_file(from_filename, encoding=input_encoding, **parser_options)
+    bib_data = database.parse_file(
+        from_filename,
+        encoding=input_encoding, bib_format=bib_format,
+        **parser_options
+    )
     style_cls = find_plugin('pybtex.style.formatting', style)
     style = style_cls(
             label_style=kwargs.get('label_style'),

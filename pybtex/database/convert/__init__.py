@@ -45,7 +45,11 @@ def convert(from_filename, to_filename,
     if from_filename == to_filename:
         raise ConvertError('input and output file can not be the same')
 
-    bib_data = database.parse_file(from_filename, encoding=input_encoding, **parser_options)
+    bib_data = database.parse_file(
+        from_filename,
+        bib_format=from_format, encoding=input_encoding,
+        **parser_options
+    )
     if not preserve_case:
         bib_data = bib_data.lower()
     output_format(output_encoding).write_file(bib_data, to_filename)
