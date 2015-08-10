@@ -258,34 +258,34 @@ class BibliographyData(object):
         crossrefs = list(self._get_crossreferenced_citations(expanded_citations, min_crossrefs))
         return expanded_citations + crossrefs
 
-    def to_string(self, format, **kwargs):
+    def to_string(self, bib_format, **kwargs):
         """
         Return the data as a unicode string in the given format.
 
-        :param format: Data format ("bibtex", "yaml", etc.).
+        :param bib_format: Data format ("bibtex", "yaml", etc.).
 
         .. versionadded:: 1.19
         """
-        writer = find_plugin('pybtex.database.output', format)(**kwargs)
+        writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_string(self)
 
-    def to_bytes(self, format, **kwargs):
+    def to_bytes(self, bib_format, **kwargs):
         """
         Return the data as a byte string in the given format.
 
-        :param format: Data format ("bibtex", "yaml", etc.).
+        :param bib_format: Data format ("bibtex", "yaml", etc.).
 
         .. versionadded:: 1.19
         """
-        writer = find_plugin('pybtex.database.output', format)(**kwargs)
+        writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_bytes(self)
 
-    def to_file(self, file_, format=None, **kwargs):
+    def to_file(self, file_, bib_format=None, **kwargs):
         """
         Save the data to a file.
 
         :param file_: A file name or a file-like object.
-        :param format: Data format ("bibtex", "yaml", etc.).
+        :param bib_format: Data format ("bibtex", "yaml", etc.).
             If not specified, Pybtex will try to guess by the file name.
 
         .. versionadded:: 1.19
@@ -294,7 +294,7 @@ class BibliographyData(object):
             filename = file_
         else:
             filename = getattr(file_, 'name', None)
-        writer = find_plugin('pybtex.database.output', format, filename=filename)(**kwargs)
+        writer = find_plugin('pybtex.database.output', bib_format, filename=filename)(**kwargs)
         return writer.write_file(self, file_)
 
     def lower(self):
@@ -732,12 +732,12 @@ class Person(object):
         return self.bibtex_first_names
 
 
-def parse_file(file_, format=None, **kwargs):
+def parse_file(file_, bib_format=None, **kwargs):
     """
     Read bibliography data from file and return a :py:class:`.BibliographyData` object.
 
     :param file_: A file name or a file-like object.
-    :param format: Data format ("bibtex", "yaml", etc.).
+    :param bib_format: Data format ("bibtex", "yaml", etc.).
         If not specified, Pybtex will try to guess by the file name.
 
     .. versionadded:: 1.19
@@ -748,36 +748,36 @@ def parse_file(file_, format=None, **kwargs):
     else:
         filename = geattr(file_, 'name', None)
 
-    parser = find_plugin('pybtex.database.input', format, filename=filename)(**kwargs)
+    parser = find_plugin('pybtex.database.input', bib_format, filename=filename)(**kwargs)
     return parser.parse_file(file_)
 
 
-def parse_string(value, format, **kwargs):
+def parse_string(value, bib_format, **kwargs):
     """
     Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
 
-    Some formats (notably "bibtexml") are byte-oriented and do not support
+    Some bib_formats (notably "bibtexml") are byte-oriented and do not support
     unicode strings. Use :py:func:`.parse_bytes` instead.
 
     :param value: A unicode string.
-    :param format: Data format ("bibtex", "yaml", etc.).
+    :param bib_format: Data format ("bibtex", "yaml", etc.).
 
     .. versionadded:: 1.19
     """
 
-    parser = find_plugin('pybtex.database.input', format)(**kwargs)
+    parser = find_plugin('pybtex.database.input', bib_format)(**kwargs)
     return parser.parse_string(value)
 
 
-def parse_bytes(value, format, **kwargs):
+def parse_bytes(value, bib_format, **kwargs):
     """
     Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
 
     :param value: A byte string.
-    :param format: Data format (for example, "bibtexml").
+    :param bib_format: Data format (for example, "bibtexml").
 
     .. versionadded:: 1.19
     """
 
-    parser = find_plugin('pybtex.database.input', format)(**kwargs)
+    parser = find_plugin('pybtex.database.input', bib_format)(**kwargs)
     return parser.parse_bytes(value)
