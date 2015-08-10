@@ -24,6 +24,8 @@
 """Generate HTML documentation
 """
 
+from __future__ import absolute_import
+
 import os
 import sys
 import re
@@ -44,11 +46,11 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
 from pybtex.__version__ import version
-from .mystyle import MyHiglightStyle
+from .pygments import PybtexStyle
 
 e = Environment(loader=PackageLoader('pybtex', 'docgen'))
 
-PYGMENTS_FORMATTER = HtmlFormatter(style=MyHiglightStyle, cssclass='sourcecode')
+PYGMENTS_FORMATTER = HtmlFormatter(style=PybtexStyle, cssclass='sourcecode')
 
 #CHANGELOG = file(os.path.join(os.path.dirname(__file__), os.pardir, 'CHANGES'))\
 #            .read().decode('utf-8')
