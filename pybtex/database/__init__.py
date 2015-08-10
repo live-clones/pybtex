@@ -266,6 +266,14 @@ class BibliographyData(object):
         writer = find_plugin('pybtex.database.output', format)(**kwargs)
         return writer.to_bytes(self)
 
+    def to_file(self, file_, format=None, **kwargs):
+        if isinstance(file_, basestring):
+            filename = file_
+        else:
+            filename = getattr(file_, 'name', None)
+        writer = find_plugin('pybtex.database.output', format, filename=filename)(**kwargs)
+        return writer.write_file(self, file_)
+
     def lower(self):
         u'''
         Return another BibliographyData with all identifiers converted to lowercase.
