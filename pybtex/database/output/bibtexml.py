@@ -75,6 +75,20 @@ class Writer(BaseWriter):
         stream.write(b'\n')
 
     def to_string(self, bib_data):
+        """
+        Return a unicode XML string without encoding declaration.
+
+        >>> from pybtex.database import BibliographyData
+        >>> data = BibliographyData()
+        >>> unicode_xml = Writer().to_string(data)
+        >>> isinstance(unicode_xml, unicode)
+        True
+        >>> print unicode_xml
+        <bibtex:file xmlns:bibtex="http://bibtexml.sf.net/">
+        <BLANKLINE>
+        </bibtex:file>
+        """
+
         import sys
         tree = self._build_tree(bib_data)
         if sys.version_info.major >= 3:

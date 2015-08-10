@@ -34,9 +34,19 @@ def remove_ns(s):
 class Parser(BaseParser):
     default_suffix = '.xml'
 
+    def parse_bytes(self, value):
+        tree = ET.fromstring(value)
+        return self.parse_tree(tree)
+
+    def parse_string(self, value):
+        return self.parse_bytes(value)
+
     def parse_stream(self, stream):
-        t = ET.parse(stream)
-        entries = t.findall(bibtexns + 'entry')
+        tree = ET.parse(stream)
+        return self.parse_tree(tree)
+
+    def parse_tree(self, tree):
+        entries = tree.findall(bibtexns + 'entry')
         self.data.add_entries(self.process_entry(entry) for entry in entries)
         return self.data
 
