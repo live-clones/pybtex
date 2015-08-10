@@ -258,6 +258,14 @@ class BibliographyData(object):
         crossrefs = list(self._get_crossreferenced_citations(expanded_citations, min_crossrefs))
         return expanded_citations + crossrefs
 
+    def to_string(self, format, **kwargs):
+        writer = find_plugin('pybtex.database.output', format)(**kwargs)
+        return writer.to_string(self)
+
+    def to_bytes(self, format, **kwargs):
+        writer = find_plugin('pybtex.database.output', format)(**kwargs)
+        return writer.to_bytes(self)
+
     def lower(self):
         u'''
         Return another BibliographyData with all identifiers converted to lowercase.

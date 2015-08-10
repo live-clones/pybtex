@@ -27,7 +27,7 @@ from pybtex.database.output import BaseWriter
 class Writer(BaseWriter):
     """Outputs YAML markup"""
 
-    def write_stream(self, bib_data, stream):
+    def _to_dict(self, bib_data):
         def process_person_roles(entry):
             for role, persons in entry.persons.iteritems():
                 yield role, list(process_persons(persons))
@@ -52,4 +52,16 @@ class Writer(BaseWriter):
         data = {'entries': dict(process_entries(bib_data.entries))}
         if bib_data.preamble:
             data['preamble'] = bib_data.preamble
-        yaml.safe_dump(data, stream, allow_unicode=True, encoding='UTF-8', default_flow_style=False, indent=4)
+        return data
+
+    def _dump(self, bib_data, encoding=None, stream=None):
+        return yaml.safe_dump(bib_data, stream, encoding=encoding, allow_unicode=True, default_flow_style=False, indent=4)
+
+    def write_stream(self, bib_data, stream):
+        return self._dump(self._to_dict(bib_data), encoding='UTF-8', stream=stream)
+
+    def to_string(self, bib_data):
+        return self._dump(self._to_dict(bib_data), encoding=None)
+
+    def to_bytes(self, bib_data):
+        return self._dump(self._to_dict(bib_data), encoding='UTF-8')

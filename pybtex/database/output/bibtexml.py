@@ -19,6 +19,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import io
+
 from xml.etree import cElementTree as ET
 from pybtex.database import Entry
 from pybtex.database.output import BaseWriter
@@ -68,6 +70,23 @@ class Writer(BaseWriter):
     """Outputs BibTeXML markup"""
 
     def write_stream(self, bib_data, stream):
+        tree = self._build_tree(bib_data)
+        tree.write(stream, self.encoding)
+        stream.write(b'\n')
+
+    def to_string(self, bib_data):
+        import sys
+        tree = self._build_tree(bib_data)
+        if sys.version_info.major >= 3:
+            stream = io.StringIO()
+            tree.write(stream, encoding='unicode')
+            return stream.getvalue()
+        else:
+            stream = io.BytesIO()
+            tree.write(stream, encoding='UTF-8', xml_declaration=False)
+            return stream.getvalue().decode('UTF-8')
+
+    def _build_tree(self, bib_data):
         def write_persons(persons, role):
             if persons:
                 w.start('bibtex:' + role)
@@ -97,5 +116,4 @@ class Writer(BaseWriter):
         w.end()
 
         tree = ET.ElementTree(w.close())
-        tree.write(stream, self.encoding)
-        stream.write(b'\n')
+        return tree

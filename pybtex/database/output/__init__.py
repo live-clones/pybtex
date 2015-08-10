@@ -20,6 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import with_statement
+import io
 
 import pybtex.io
 from pybtex.plugin import Plugin
@@ -41,3 +42,16 @@ class BaseWriter(Plugin):
 
     def write_stream(self, bib_data, stream):
         raise NotImplementedError
+
+    def _to_string_or_bytes(self, bib_data):
+        stream = io.StringIO() if self.unicode_io else io.BytesIO()
+        self.write_stream(bib_data, stream)
+        return stream.getvalue()
+
+    def to_string(self, bib_data):
+        result = self._to_string_or_bytes(bib_data)
+        return result if self.unicode_io else result.decode(self.encoding)
+
+    def to_bytes(self, bib_data):
+        result = self._to_string_or_bytes(bib_data)
+        return result.encode(self.encoding) if self.unicode_io else result
