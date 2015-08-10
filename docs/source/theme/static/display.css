@@ -1,6 +1,6 @@
 @import url(master.css);
 
-div.body {
+body {
 	margin-left: 10%;
 	width: 70%;
 	max-width: 540pt;

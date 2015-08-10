@@ -86,22 +86,22 @@ hr {
     border-right: 0;
 }
 
-div#footer {
+div.footer {
     margin-top: 3em;
     font-size: 80%;
     color: #555;
 }
 
-div#footer-left {
+div.footer-left {
     float: left;
     width: 45%;
 }
 
-div#footer-right p {
+div.footer-right p {
     text-align: right;
 }
 
-div#footer-right {
+div.footer-right {
     float: right;
     width: 45%;
 }
