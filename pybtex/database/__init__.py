@@ -259,14 +259,37 @@ class BibliographyData(object):
         return expanded_citations + crossrefs
 
     def to_string(self, format, **kwargs):
+        """
+        Return the data as a unicode string in the given format.
+
+        :param format: Data format ("bibtex", "yaml", etc.).
+
+        .. versionadded:: 1.19
+        """
         writer = find_plugin('pybtex.database.output', format)(**kwargs)
         return writer.to_string(self)
 
     def to_bytes(self, format, **kwargs):
+        """
+        Return the data as a byte string in the given format.
+
+        :param format: Data format ("bibtex", "yaml", etc.).
+
+        .. versionadded:: 1.19
+        """
         writer = find_plugin('pybtex.database.output', format)(**kwargs)
         return writer.to_bytes(self)
 
     def to_file(self, file_, format=None, **kwargs):
+        """
+        Save the data to a file.
+
+        :param file_: A file name or a file-like object.
+        :param format: Data format ("bibtex", "yaml", etc.).
+            If not specified, Pybtex will try to guess by the file name.
+
+        .. versionadded:: 1.19
+        """
         if isinstance(file_, basestring):
             filename = file_
         else:
