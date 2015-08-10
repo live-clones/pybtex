@@ -39,7 +39,7 @@ class Parser(BaseParser):
         return self.parse_tree(tree)
 
     def parse_string(self, value):
-        return self.parse_bytes(value)
+        return self.parse_bytes(value.encode(self.encoding))
 
     def parse_stream(self, stream):
         tree = ET.parse(stream)
