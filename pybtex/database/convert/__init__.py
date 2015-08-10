@@ -24,7 +24,6 @@
 from os import path
 from pybtex.exceptions import PybtexError
 from pybtex import database
-from pybtex.plugin import find_plugin
 
 class ConvertError(PybtexError):
     pass
@@ -40,8 +39,6 @@ def convert(from_filename, to_filename,
     if parser_options is None:
         parser_options = {}
 
-    output_format = find_plugin('pybtex.database.output', name=to_format, filename=to_filename)
-    
     if from_filename == to_filename:
         raise ConvertError('input and output file can not be the same')
 
@@ -52,4 +49,4 @@ def convert(from_filename, to_filename,
     )
     if not preserve_case:
         bib_data = bib_data.lower()
-    output_format(output_encoding).write_file(bib_data, to_filename)
+    bib_data.to_file(to_filename, bib_format=to_format, encoding=output_encoding)
