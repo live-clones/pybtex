@@ -280,22 +280,22 @@ class BibliographyData(object):
         writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_bytes(self)
 
-    def to_file(self, file_, bib_format=None, **kwargs):
+    def to_file(self, file, bib_format=None, **kwargs):
         """
         Save the data to a file.
 
-        :param file_: A file name or a file-like object.
+        :param file: A file name or a file-like object.
         :param bib_format: Data format ("bibtex", "yaml", etc.).
             If not specified, Pybtex will try to guess by the file name.
 
         .. versionadded:: 1.19
         """
-        if isinstance(file_, basestring):
-            filename = file_
+        if isinstance(file, basestring):
+            filename = file
         else:
-            filename = getattr(file_, 'name', None)
+            filename = getattr(file, 'name', None)
         writer = find_plugin('pybtex.database.output', bib_format, filename=filename)(**kwargs)
-        return writer.write_file(self, file_)
+        return writer.write_file(self, file)
 
     def lower(self):
         u'''
@@ -732,24 +732,24 @@ class Person(object):
         return self.bibtex_first_names
 
 
-def parse_file(file_, bib_format=None, **kwargs):
+def parse_file(file, bib_format=None, **kwargs):
     """
     Read bibliography data from file and return a :py:class:`.BibliographyData` object.
 
-    :param file_: A file name or a file-like object.
+    :param file: A file name or a file-like object.
     :param bib_format: Data format ("bibtex", "yaml", etc.).
         If not specified, Pybtex will try to guess by the file name.
 
     .. versionadded:: 1.19
     """
 
-    if isinstance(file_, basestring):
-        filename = file_
+    if isinstance(file, basestring):
+        filename = file
     else:
-        filename = geattr(file_, 'name', None)
+        filename = geattr(file, 'name', None)
 
     parser = find_plugin('pybtex.database.input', bib_format, filename=filename)(**kwargs)
-    return parser.parse_file(file_)
+    return parser.parse_file(file)
 
 
 def parse_string(value, bib_format, **kwargs):
