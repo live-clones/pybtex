@@ -92,7 +92,7 @@ class PybtexStringIO(PybtexDatabaseIO):
 class PybtexBytesIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_bytes(self.bib_format)
-        assert_is_instance(result, str)
+        assert_is_instance(result, bytes)
         return result
 
     def deserialize(self, string):
