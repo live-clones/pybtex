@@ -23,7 +23,7 @@ Version 0.18
   line, for compatibility with BibTeX. Use ``--strict`` option if you don't
   like this.
 
-- Added missing pybtex-format manpage.
+- Added missing manpage for ``pybtex-format``.
 
 
 Version 0.17
@@ -118,7 +118,7 @@ Version 0.15
 
 - Changed license from GPL-3 to MIT.
 
-- Added support for `setuptools plugins <plugins.txt>`_.
+- Added support for :doc:`setuptools plugins <plugins>`.
 
 - BibTeX parser: fixed whitespace normalization in concatenated strings.
 
@@ -131,10 +131,10 @@ Version 0.15
 - ``call.type$`` BibTeX built-in function now uses ``default.entry`` for
   unknown entry types, like in BibTeX.
 
-- ``substring$`` now accepts start=0 and returns an empty string.
+- ``substring$`` now accepts ``start=0`` and returns an empty string.
 
 - ``change.case$``: fixed incorrect formatting of strings starting with special
-  characters with "t" format.
+  characters with ``"t"`` format.
 
 - Fixed abbreviation of names starting with special characters or
   non-alphabetic characters.
@@ -149,7 +149,7 @@ Version 0.14.1
 --------------
 (released on September 30, 2010)
 
-- Added missing custom_fixers directory to the tarball - needed only for
+- Added missing ``custom_fixers`` directory to the tarball --- needed only for
   converting the sources to Python 3.
 
 
@@ -161,7 +161,7 @@ Version 0.14
 
 - BibTeX parser now produces human-readable error messages on unread macros.
 
-- Added error messages on missing data in .aux files.
+- Added error messages on missing data in ``.aux`` files.
 
 - Improved performance on very long name lists.
 
@@ -172,7 +172,8 @@ Version 0.13.2
 --------------
 (released on February 26, 2010)
 
-- BibTeX parser: fixed a bug with parsing strings containing braces, like "Error in {DNA}".
+- BibTeX parser: fixed a bug with parsing strings containing braces, like
+  ``"Error in {DNA}"``.
 
 
 Version 0.13.1
@@ -187,11 +188,11 @@ Version 0.13
 ------------
 (released on February 14, 2010)
 
-- Implemented `--min-crossrefs` option.
+- Implemented ``--min-crossrefs`` option.
 
 - All command line options of the original BibTeX are not supported.
 
-- Pybtex now respects `BSTINPUTS`, `BIBINPUTS` and `TEXMFOUTPUT` environment
+- Pybtex now respects ``BSTINPUTS``, ``BIBINPUTS`` and ``TEXMFOUTPUT`` environment
   variables.
 
 - BibTeX bibliography parser now strips excessive whitespace from fields, like
@@ -234,7 +235,7 @@ Version 0.11
 - BibTeX name parser: ties are now treated as whitespace when splitting name
   parts.
 
-- Implemented BibTeX-like text wrapping - the resulting .bbl output should now
+- Implemented BibTeX-like text wrapping. The resulting .bbl output should now
   be byte-for-byte identical to that of BibTeX in most cases.
 
 
@@ -275,9 +276,9 @@ Version 0.9
 
 - Implemented crossrefs.
 
-- BibTeX .bib parser now supports newlines inside strings.
+- BibTeX ``.bib`` parser now supports newlines inside strings.
 
-- Fixed: .bib filename from .aux file was ignored.
+- Fixed: ``.bib`` filename from ``.aux`` file was ignored.
 
 - Fixed incorrect argument passing to codecs.open().
 
