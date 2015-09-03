@@ -1,18 +1,15 @@
 body {
     font-family: sans-serif;
     font-size: 12pt;
-    color: black;
     background-color: white;
 }
 
 a {
     color: #884400;
-    background-color: white;
 }
 
 a:hover {
     color: #BB8811;
-    background-color: white;
 }
 
 p, dd, li {
@@ -32,9 +29,8 @@ img {
 h1, h2, h3, h2 a, h3 a {
     margin-top: 3ex;
     margin-bottom: 1ex;
-    color: #BB8811;
-    background-color: white;
     font-weight: bold;
+    color: #BB8811;
 }
 
 h1 {
