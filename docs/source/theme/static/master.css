@@ -46,6 +46,7 @@ h3 {
 
 a.headerlink {
     visibility: hidden;
+    text-decoration: none;
 }
 
 h1:hover > a.headerlink,
