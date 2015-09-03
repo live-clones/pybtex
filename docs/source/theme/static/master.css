@@ -33,11 +33,11 @@ h1, h2, h3, h2 a, h3 a {
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 2rem;
 }
 
 h2 {
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 h3 {
