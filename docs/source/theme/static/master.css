@@ -88,7 +88,7 @@ code.descname {
     font-size: 120%;
 }
 
-.property {
+dl.class > dt > .property {
     font-weight: bold;
 }
 
