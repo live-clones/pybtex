@@ -416,7 +416,7 @@ class Entry(object):
 
 
 class Person(object):
-    """Represents a person or other person-like entity (like organization).
+    """A person or some other person-like entity.
 
     >>> knuth = Person('Donald E. Knuth')
     >>> knuth.first_names
