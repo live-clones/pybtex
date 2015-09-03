@@ -1,0 +1,28 @@
+{%- extends "basic/layout.html" %}
+
+{%- macro prev_next() %}
+<div class="prev-next">
+    {%- if prev %}
+    <div class="left">
+        <a href="{{ prev.link|e }}">← {{ prev.title }}</a>
+    </div>
+    {%- endif %}
+
+    <div class="middle">
+    {%- if parents %}
+        <a href="{{ parents[0].link|e }}">Table of contents</a>
+    {%- else %}
+    &nbsp;
+    {%- endif %}
+    </div>
+
+    {%- if next %}
+    <div class="right">
+        <a href="{{ next.link|e }}">{{ next.title }} →</a>
+    </div>
+    {%- endif %}
+</div>
+{%- endmacro %}
+
+{%- block relbar1 %}{% endblock %}
+{%- block relbar2 %}{{ prev_next() }}{% endblock %}

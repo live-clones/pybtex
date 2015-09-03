@@ -66,12 +66,6 @@ div.code-block-caption:hover > a.headerlink {
     visibility: visible;
 }
 
-div.footer {
-    margin-top: 6ex;
-    font-size: 80%;
-    color: #555;
-}
-
 dl.function > dt,
 dl.class > dt {
 }
@@ -122,4 +116,31 @@ table.field-list th {
 
 .first {
     margin-top: 0 !important;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.middle {
+    display: inline-block;
+    text-align: center;
+}
+
+.prev-next {
+    margin-top: 3ex;
+    clear: both;
+    text-align: center;
+    text-wrap: none;
+}
+
+.footer {
+    margin-top: 7ex;
+    font-size: 80%;
+    opacity: 0.5;
+    clear: both;
 }
