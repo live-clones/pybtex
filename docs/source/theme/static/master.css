@@ -88,6 +88,10 @@ code.descname {
     font-size: 120%;
 }
 
+.property {
+    font-weight: bold;
+}
+
 .literal {
     background-color: #F0F0F0;
     padding: 0.16em;
