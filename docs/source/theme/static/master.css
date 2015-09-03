@@ -117,9 +117,14 @@ th {
     text-align: left;
 }
 
-table.field-list th {
-    padding: 0px;
+.field-name {
     margin: 0px;
+    padding: 0px 0.3em 0px 0px;
+}
+
+.field-body {
+    margin: 0px;
+    padding: 0px;
 }
 
 .field-list ul {
