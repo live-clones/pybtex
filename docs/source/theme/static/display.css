@@ -1,8 +1,19 @@
 @import url(master.css);
 
-body {
-	margin-left: 15%;
-	width: 70%;
-	max-width: 50em;
+@media only screen {
+    body {
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0px 0px;
+        width: 100%;
+        max-width: 45em;
+    }
+
+    .document {
+        padding: 0.5em;
+    }
 }
 
+@media only screen and (max-width: 400px) {
+    body { font-size: 0.8em; }
+}
