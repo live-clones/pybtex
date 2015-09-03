@@ -88,6 +88,15 @@ code.descname {
     font-size: 120%;
 }
 
+.literal {
+    background-color: #F0F0F0;
+    padding: 0.16em;
+}
+
+a .docutils.literal {
+    background: none;
+}
+
 .versionmodified {
     font-style: italic;
 }
