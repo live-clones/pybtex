@@ -76,6 +76,7 @@ dl, dt {
 
 code, pre, tt {
     font-size: 1em;
+    line-height: 140%;
 }
 
 code.descclassname, code.descname{
