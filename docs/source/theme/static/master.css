@@ -21,6 +21,10 @@ p {
     text-align: justify;
 }
 
+li {
+    margin: 0.8ex 0 0.8ex 0;
+}
+
 img {
     border: none;
 }
@@ -108,6 +112,10 @@ table.field-list th {
 .field-list ul {
     margin: 0px 0px 0px 0.5em;
     padding-left: 1em;
+}
+
+.field-list li {
+    margin: 0;
 }
 
 .first {
