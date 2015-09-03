@@ -1,9 +1,8 @@
 @import url(master.css);
 
 body {
-	margin-left: 10%;
+	margin-left: 15%;
 	width: 70%;
-	max-width: 540pt;
-	min-width: 220pt;
+	max-width: 50em;
 }
 
