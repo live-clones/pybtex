@@ -46,8 +46,17 @@ class InvalidNameString(PybtexError):
 
 class BibliographyData(object):
     def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
+        """
+        A :py:class:`.BibliographyData` object contains a dictionary of bibliography
+        entries referenced by their keys.
+        Each entry represented by an :py:class:`.Entry` object.
+
+        Additionally, :py:class:`.BibliographyData` may contain a LaTeX
+        preamble defined by ``@PREAMBLE`` commands in the BibTeX file.
+        """
+
         self.entries = OrderedCaseInsensitiveDict()
-        '''A dictionary of bibliography entries by their keys.
+        '''A dictionary of bibliography entries referenced by their keys.
 
         The dictionary is case insensitive:
 
@@ -299,7 +308,7 @@ class BibliographyData(object):
 
     def lower(self):
         u'''
-        Return another BibliographyData with all identifiers converted to lowercase.
+        Return another :py:class:`.BibliographyData` with all identifiers converted to lowercase.
 
         >>> data = parse_string("""
         ...     @BOOK{Obrazy,
@@ -359,10 +368,10 @@ class FieldDict(OrderedCaseInsensitiveDict):
 
 
 class Entry(object):
-    """Bibliography entry. Important members are:
-    - persons (a dict of Person objects)
-    - fields (all dict of string)
-    """
+    """A bibliography entry."""
+
+    key = None
+    """Entry key (for example, ``'fukushima1980neocognitron'``)."""
 
     def __init__(self, type_, fields=None, persons=None, collection=None):
         if fields is None:
@@ -370,13 +379,18 @@ class Entry(object):
         if persons is None:
             persons = {}
         self.type = type_.lower()
+        """Entry type (``'book'``, ``'article'``, etc.)."""
         self.original_type = type_
 
         self.fields = FieldDict(self, fields)
-        """A dictionary of entry fields."""
+        """A dictionary of entry fields.
+        The dictionary is ordered and case-insensitive."""
 
         self.persons = OrderedCaseInsensitiveDict(persons)
-        """A dictionary of entry persons, by role."""
+        """A dictionary of entry persons, by their roles.
+
+        The most often used roles are ``'author'`` and ``'editor'``.
+        """
 
         self.collection = collection
 
@@ -754,12 +768,9 @@ def parse_file(file, bib_format=None, **kwargs):
 
 def parse_string(value, bib_format, **kwargs):
     """
-    Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
+    Parse a Unicode string containing bibliography data and return a :py:class:`.BibliographyData` object.
 
-    Some bib_formats (notably "bibtexml") are byte-oriented and do not support
-    unicode strings. Use :py:func:`.parse_bytes` instead.
-
-    :param value: A unicode string.
+    :param value: Unicode string.
     :param bib_format: Data format ("bibtex", "yaml", etc.).
 
     .. versionadded:: 1.19
@@ -771,9 +782,9 @@ def parse_string(value, bib_format, **kwargs):
 
 def parse_bytes(value, bib_format, **kwargs):
     """
-    Parse a string with bibliography data and return a :py:class:`.BibliographyData` object.
+    Parse a byte string containing bibliography data and return a :py:class:`.BibliographyData` object.
 
-    :param value: A byte string.
+    :param value: Byte string.
     :param bib_format: Data format (for example, "bibtexml").
 
     .. versionadded:: 1.19

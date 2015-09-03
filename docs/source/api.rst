@@ -19,9 +19,9 @@ for that.
 .. autofunction:: pybtex.database.parse_file
 
 
-All these functions do basically the same thing: parse the data from a string
-or a file and return a :py:class:`.BibliographyData` object containing all the
-bibliography data.
+Each of these functions does basically the same thing.
+It reads the bibliography data from a string or a file and returns a
+:py:class:`.BibliographyData` object containing all the bibliography data.
 
 Here is a quick example:
 
@@ -40,10 +40,17 @@ Here is a quick example:
 Bibliography data classes
 =========================
 
-:py:class:`.BibliographyData` contains contains a dictionary of bibliography
-entries represented by :py:class:`.Entry` objects.
-Additionally, it may contain a LaTeX preamble defined by ``@PREAMBLE``
-commands in the BibTeX file.
+Pybtex uses these classes to represent bibligraphy databases:
+
+- :py:class:`.BibliographyData` is a collection of individual bibliography
+  entries and possibly some additional metadata.
+
+- :py:class:`.Entry` is a single bibliography entry (a book, an article, etc.).
+
+  An entry has a key (like ``'knuth74'``), a type (``'book'``, ``'article'``, etc.) and a number of key-value fields.
+
+- :py:class:`.Person` is a person or an organization related to a bibliography entry
+  (usually an author or an editor).
 
 .. autoclass:: pybtex.database.BibliographyData
     :members:
