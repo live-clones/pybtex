@@ -49,7 +49,7 @@ You can change that with the :option:`-f` option:
 (In this case Pybtex will look for a YAML-formatted file :file:`report.yaml` instead of
 `report.bib`).
 
-Support for additional bibliography formats can be added by :doc:`plugins <plugins>`.
+Support for additional bibliography formats can be added by :doc:`plugins <api/plugins>`.
 
     
 Pythonic bibliography styles
@@ -74,7 +74,7 @@ about that unless you are designing your own BibTeX styles.
 Additionally, Pybtex allows writing bibliography styles in Python (although
 this feature is still experimental and under development).
 Some base BibTeX styles, including ``plain``, ``alpha``, ``unsrt`` have been already ported to Python.
-They can be found in :file:`pybtex/style/formatting` subdirectory in Pybtex sources. Additional styles can be added as :doc:`plugins <plugins>`.
+They can be found in :file:`pybtex/style/formatting` subdirectory in Pybtex sources. Additional styles can be added as :doc:`plugins <api/plugins>`.
 
 By default, Pybtex used BibTeX :file:`.bst` styles. You can switch the style
 language from BibTeX to Python with the :option:`-l` option:
@@ -92,7 +92,7 @@ option):
     $ pybtex -l python -b html foo
     $ pybtex -l python -b plaintext foo
 
-Support for other output formats can be allso added by :doc:`plugins <plugins>`.
+Support for other output formats can be allso added by :doc:`plugins <api/plugins>`.
 
 It is also possible to override the default label and name styles with
 command line options:
@@ -101,7 +101,7 @@ command line options:
 
     $ pybtex -l python --label-style number --name-style last_first foo
 
-(Again, support for label and name styles can be added by :doc:`plugins <plugins>`.)
+(Again, support for label and name styles can be added by :doc:`plugins <api/plugins>`.)
 
 
 Converting bibliography databases with :command:`bibtex-convert`

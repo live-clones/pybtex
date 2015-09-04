@@ -1,6 +1,6 @@
-=======
-Plugins
-=======
+==============
+Pybtex plugins
+==============
 
 Starting from version 0.15, it is possible to extend Pybtex without hacking
 the sources via setuptools/distribute entry points.

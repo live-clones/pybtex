@@ -8,6 +8,4 @@ Pybtex User's Guide
 
     cmdline
     formats
-    api
-    style_api
-    plugins
+    api/index

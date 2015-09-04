@@ -1,6 +1,6 @@
-=======================
-The Style API of Pybtex
-=======================
+===================================
+Writing formatting styles in Python
+===================================
 
 Well, to tell the truth, the style API is still undergoing heavy development
 and is far from being finished yet.

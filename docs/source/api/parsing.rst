@@ -1,6 +1,6 @@
-=========================
-Parsing bibliography data
-=========================
+=====================================
+Reading and writing bibliography data
+=====================================
 
 
 .. testsetup:: *
