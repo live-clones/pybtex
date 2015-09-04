@@ -7,5 +7,6 @@ Pybtex Python API
     :maxdepth: 2
 
     parsing
+    formatting
     styles
     plugins
