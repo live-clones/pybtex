@@ -86,7 +86,7 @@ Bibliography style formats
 ==========================
 
 - BibTeX ``.bst`` files
-- Pybtex own pythonic `style API <style_api.txt>`_
+- Pybtex own pythonic :doc:`style API <api/styles>`
 
 
 Output formats
