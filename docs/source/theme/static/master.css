@@ -93,8 +93,15 @@ div.code-block-caption:hover > a.headerlink {
     list-style: none;
 }
 
-dl.function > dt,
-dl.class > dt {
+dl.docutils dt {
+    margin-bottom: 0.5ex;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+dl.docutils dd {
+    margin: 0px 0px 0px 2em;
+    padding 0px;
 }
 
 dl, dt {

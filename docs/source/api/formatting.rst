@@ -48,18 +48,18 @@ When you type ``pybtex mydocument`` the following things happen:
 
     Pybtex is interested in these pieces of information:
 
-    :Bibliography style:
+    Bibliography style:
         First, Pybtex searches the ``.aux`` file for a ``\bibstyle`` tells what formatting style to use.
 
         For example, ``\bibstyle{unsrt}`` instructs Pybtex to use formatting style defined by ``unsrt.bst``.
 
-    :Bibliography data:
+    Bibliography data:
         Next, Pybtex expects to find at least one ``\bibdata`` command in the aux file that tells
         where to look for the bibliography data.
 
         For example, ``\bibdata{mydocument}`` means "use the bibliography data from ``mydocument.bib``".
 
-    :Citations:
+    Citations:
         Finally, Pybtex needs to know what entries to put into the resulting bibliography.
         Pybtex gets the list of citation keys from ``\citation`` commands in the ``.aux`` file.
 
