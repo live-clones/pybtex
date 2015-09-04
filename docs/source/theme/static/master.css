@@ -29,11 +29,12 @@ img {
     border: none;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h1 a, h2 a, h3 a {
     margin-top: 3ex;
     margin-bottom: 1ex;
     font-weight: bold;
     color: #BB8811;
+    text-decoration: none;
 }
 
 h1 {
@@ -64,6 +65,32 @@ caption:hover > a.headerlink,
 p.caption:hover > a.headerlink,
 div.code-block-caption:hover > a.headerlink {
     visibility: visible;
+    color: #884400;
+}
+
+.contents {
+    margin-bottom: 2ex;
+    color: #884400;
+/*    color: #BB8811;*/
+}
+
+.contents a {
+    font-family: sans-serif;
+}
+
+.contents .topic-title {
+    display: none;
+}
+
+.contents ul {
+    margin: 0px;
+    padding: 0px 0px 0px 1em;
+}
+
+.contents li {
+    margin: 1ex 0px 0px 0px;
+    padding: 0px;
+    list-style: none;
 }
 
 dl.function > dt,
