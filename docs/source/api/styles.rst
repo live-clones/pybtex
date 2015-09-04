@@ -1,6 +1,6 @@
-===================================
-Writing formatting styles in Python
-===================================
+====================
+Designing new styles
+====================
 
 Well, to tell the truth, the style API is still undergoing heavy development
 and is far from being finished yet.
