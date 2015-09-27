@@ -28,6 +28,13 @@ from os import path
 
 class Engine(object):
     def make_bibliography(self, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs):
+        """
+        Read the given ``.aux`` file and produce a formatted bibliography
+        using :py:meth:`~.Engine.format_from_files`.
+
+        :param style: If not ``None``, use this style instead of specified in the ``.aux`` file.
+        """
+
         from pybtex import auxfile
         if bib_format is None:
             from pybtex.database.input.bibtex import Parser as bib_format
@@ -47,21 +54,56 @@ class Engine(object):
         )
 
     def format_from_string(self, bib_string, *args, **kwargs):
+        """
+        Parse the bigliography data from the given string and produce a formated
+        bibliography using :py:meth:`~.Engine.format_from_files`.
+
+        This is a convenience method that calls
+        :py:meth:`~.Engine.format_from_strings` with a single string.
+        """
         return self.format_from_strings([bib_string], *args, **kwargs)
 
     def format_from_strings(self, bib_strings, *args, **kwargs):
+        """
+        Parse the bigliography data from the given strings and produce a formated
+        bibliography.
+
+        This is a convenience method that wraps each string into a StringIO,
+        then calls :py:meth:`~.Engine.format_from_files`.
+        """
         from io import StringIO
         inputs = [StringIO(bib_string) for bib_string in bib_strings]
         return self.format_from_files(inputs, *args, **kwargs)
 
     def format_from_file(self, filename, *args, **kwargs):
+        """
+        Read the bigliography data from the given file and produce a formated
+        bibliography.
+
+        This is a convenience method that calls :py:meth:`~.Engine.format_from_files`
+        with a single file. All extra arguments are passed to
+        :py:meth:`~.Engine.format_from_files`.
+        """
         return self.format_from_files([filename], *args, **kwargs)
 
     def format_from_files(*args, **kwargs):
+        """
+        Read the bigliography data from the given files and produce a formated
+        bibliography.
+
+        This is an abstract method overridden by both
+        :py:class:`pybtex.PybtexEngine` and :py:class:`pybtex.bibtex.BibTeXEngine`.
+        """
         raise NotImplementedError
 
 
 class PybtexEngine(Engine):
+    """
+    The Python fomatting engine.
+
+    See :py:class:`pybtex.Engine` for inherited methods.
+    """
+
     def format_from_files(
         self,
         bib_files_or_filenames,
@@ -76,6 +118,27 @@ class PybtexEngine(Engine):
         add_output_suffix=False,
         **kwargs
     ):
+        """
+        Read the bigliography data from the given files and produce a formated
+        bibliography.
+
+        :param bib_files_or_filenames: A list of file names or file objects.
+        :param style: The name of the formatting style.
+        :param citations: A list of citation keys.
+        :param bib_format: The name of the bibliography format. The default
+            format is ``bibtex``.
+        :param bib_encoding: Encoding of bibliography files.
+        :param output_backend: Which output backend to use. The default is ``latex``.
+        :param output_encoding: Encoding that will be used by the output backend.
+        :param bst_encoding: Encoding of the ``.bst`` file.
+        :param min_crossrefs: Include cross-referenced entries after this many
+            crossrefs. See BibTeX manual for details.
+        :param output_filename: If ``None``, the result will be returned as a
+            string. Else, the result will be written to the specified file.
+        :param add_output_suffix: Append default suffix to the output file
+            name (``.bbl`` for LaTeX, ``.html`` for HTML, etc.).
+        """
+
         from pybtex import database
         from pybtex.plugin import find_plugin
 
@@ -106,20 +169,24 @@ class PybtexEngine(Engine):
 
 
 def make_bibliography(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.PybtexEngine.make_bibliography`."""
     return PybtexEngine().make_bibliography(*args, **kwargs)
 
-
 def format_from_file(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.PybtexEngine.format_from_file`."""
     return PybtexEngine().format_from_file(*args, **kwargs)
 
 
 def format_from_files(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.PybtexEngine.format_from_files`."""
     return PybtexEngine().format_from_files(*args, **kwargs)
 
 
 def format_from_string(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.PybtexEngine.format_from_string`."""
     return PybtexEngine().format_from_string(*args, **kwargs)
 
 
 def format_from_strings(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.PybtexEngine.format_from_strings`."""
     return PybtexEngine().format_from_strings(*args, **kwargs)

@@ -28,11 +28,18 @@ from os import path
 from pybtex import Engine
 
 class BibTeXEngine(Engine):
+    """
+    The Python fomatting engine.
+
+    See :py:class:`pybtex.Engine` for inherited methods.
+    """
+
+
     def format_from_files(
         self,
         bib_files_or_filenames,
         style,
-        citations='*',
+        citations=['*'],
         bib_format=None,
         bib_encoding=None,
         output_encoding=None,
@@ -42,6 +49,24 @@ class BibTeXEngine(Engine):
         add_output_suffix=False,
         **kwargs
     ):
+        """
+        Read the bigliography data from the given files and produce a formated
+        bibliography.
+
+        :param bib_files_or_filenames: A list of file names or file objects.
+        :param style: The name of the formatting style.
+        :param citations: A list of citation keys.
+        :param bib_format: The name of the bibliography format. The default
+            format is ``bibtex``.
+        :param bib_encoding: Encoding of bibliography files.
+        :param output_encoding: Encoding that will be used by the output backend.
+        :param bst_encoding: Encoding of the ``.bst`` file.
+        :param min_crossrefs: Include cross-referenced entries after this many
+            crossrefs. See BibTeX manual for details.
+        :param output_filename: If ``None``, the result will be returned as a
+            string. Else, the result will be written to the specified file.
+        :param add_output_suffix: Append '.bbl` suffix to the output file name.
+        """
 
         from io import StringIO
         import pybtex.io
@@ -68,20 +93,25 @@ class BibTeXEngine(Engine):
 
 
 def make_bibliography(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.BibTeXEngine.make_bibliography`."""
     return BibTeXEngine().make_bibliography(*args, **kwargs)
 
 
 def format_from_file(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.BibTeXEngine.format_from_file`."""
     return BibTeXEngine().format_from_file(*args, **kwargs)
 
 
 def format_from_files(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.BibTeXEngine.format_from_files`."""
     return BibTeXEngine().format_from_files(*args, **kwargs)
 
 
 def format_from_string(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.BibTeXEngine.format_from_string`."""
     return BibTeXEngine().format_from_string(*args, **kwargs)
 
 
 def format_from_strings(*args, **kwargs):
+    """A convenience function that calls :py:meth:`.BibTeXEngine.format_from_strings`."""
     return BibTeXEngine().format_from_strings(*args, **kwargs)

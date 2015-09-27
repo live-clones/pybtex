@@ -167,3 +167,58 @@ So, when you type ``pybtex -l python mydocument``, this happens:
     backend. The default backend is LaTeX. It can be changed with the
     ``pybtex --output-backend`` option. The output backend converts the
     formatted bibliography to a specific markup format and writes the output.
+
+
+Python API
+==========
+
+The base interface
+------------------
+
+Both the Python engine and the BibTeX engine use the same interface
+defined in :py:class:`pybtex.Engine`.
+
+:py:class:`pybtex.Engine` has a handful of methods but most of them are just
+convenience wrappers for :py:meth:`.Engine.format_from_files` that does the
+actual job.
+
+
+.. autoclass:: pybtex.Engine
+    :members:
+
+
+.. _bibtex-engine-api:
+
+The BibTeXEngine class
+----------------------
+
+The BibTeX engine lives in the ``pybtex.bibtex`` module.
+The public interface consists of the :py:class:`.BibTeXEngine` class and a
+couple of convenience functions.
+
+
+.. autoclass:: pybtex.bibtex.BibTeXEngine
+    :members:
+
+.. autofunction:: pybtex.bibtex.make_bibliography
+.. autofunction:: pybtex.bibtex.format_from_string
+.. autofunction:: pybtex.bibtex.format_from_strings
+.. autofunction:: pybtex.bibtex.format_from_file
+.. autofunction:: pybtex.bibtex.format_from_files
+
+
+The PybtexEngine class
+----------------------
+
+The Python engine resides in the ``pybtex`` module
+and uses an interface similar to the :ref:`BibTeX engine <bibtex-engine-api>`.
+There is the :py:class:`.PybtexEngine` class and some convenience functions.
+
+.. autoclass:: pybtex.PybtexEngine
+    :members:
+
+.. autofunction:: pybtex.make_bibliography
+.. autofunction:: pybtex.format_from_string
+.. autofunction:: pybtex.format_from_strings
+.. autofunction:: pybtex.format_from_file
+.. autofunction:: pybtex.format_from_files
