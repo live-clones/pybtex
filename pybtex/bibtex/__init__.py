@@ -65,7 +65,7 @@ class BibTeXEngine(Engine):
             crossrefs. See BibTeX manual for details.
         :param output_filename: If ``None``, the result will be returned as a
             string. Else, the result will be written to the specified file.
-        :param add_output_suffix: Append '.bbl` suffix to the output file name.
+        :param add_output_suffix: Append a ``.bbl`` suffix to the output file name.
         """
 
         from io import StringIO
