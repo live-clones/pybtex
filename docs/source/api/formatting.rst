@@ -7,7 +7,7 @@ Formatting bibliographies
 
 The main purpose of Pybtex is turning machine-readable bibliography data into
 human-readable bibliographies formatted in a specific style.
-In other words, pybtex reads bibliography data that looks like this:
+Pybtex reads bibliography data that looks like this:
 
 .. sourcecode:: bibtex
 
@@ -39,6 +39,11 @@ BibTeX engine
 =============
 
 The BibTeX is backward compatible with BibTeX and is used by default.
+
+
+How it works
+------------
+
 When you type ``pybtex mydocument`` the following things happen:
 
 
@@ -89,8 +94,76 @@ When you type ``pybtex mydocument`` the following things happen:
 
 .. _`BibTeX hacking guide`: http://mirrors.ctan.org/biblio/bibtex/base/btxhak.pdf
 
+Most ``.bst`` styles contain hardcoded LaTeX markup. Because of that the BibTeX engine
+is limited to LaTeX and cannot produce HTML or Markdown output.
+
 
 .. _python-engine:
 
 Python engine
 =============
+
+The Python engine is enabled by running ``pybtex`` with  the ``-l python`` option.
+
+
+Differences from the BibTeX engine
+----------------------------------
+
+* Formatting styles are written in Python instead of the ``.bst`` language.
+
+* Formatting styles are not tied to LaTeX and do not use hardcoded LaTeX
+  markup. Instead of that they produce format-agnostic :py:class:`.RichText`
+  objects that can be converted to any markup (LaTeX, Markdown, HTML, etc.).
+
+* Name formatting, label formatting, and sorting styles are defined separately
+  from the main style.
+
+
+How it works
+------------
+
+So, when you type ``pybtex -l python mydocument``, this happens:
+
+1.  Pybtex reads the file ``mydocument.aux`` in the current directory and
+    extracts the name of the the bibliography style, the list of bibliography
+    data files and the list of citation keys.
+
+    This step is exactly the same as with the BibTeX engine.
+
+2.  Pybtex reads biliography data from all data files specified in the ``.aux`` file
+    into a single :py:class:`.BibliographyData` object.
+
+3.  Then the formatting style is loaded. The formatting style is simply a
+    Python class with a ``.format_bibliography()`` method.  Pybtex passes the
+    bibliography data (a :py:class:`.BibliographyData` object) and the list of
+    citation keys to ``.format_bibliography()``, along with some other
+    options.
+
+4.  The formatting style formats each of the requested bibliography entries
+    in a style-specific way.
+
+    When it comes to formatting names, a name formatting style is loaded and
+    used. A name formatting style is simply a Python class with a specific
+    interface.  Similarly, a label formatting style is used to format entry
+    labels, and a sorting style is used to sort the resulting style.  Each
+    formatting style has a default name style, a default label style and a
+    default sorting style. The defaults can be overridden with options passed
+    to ``.format_bibliography()``.
+
+    Each formatted entry is put into a :py:class:`.FormattedEntry` object
+    which is just a container for the formatted label, the formatted entry
+    text (as a :py:class:`.RichText` objects) and the entry key.  The reason
+    that the label and the main text are stored separately is to give the
+    output backend more flexibility when converting the
+    :py:class:`.FormattedEntry` object to the actual markup. For example, the
+    HTML backend may want to format the bibliography as a definition list, the
+    LaTeX backend would use ``\bibitem[label]{key} text`` constructs, etc.
+
+    Formatted entries are put into a :py:class:`.FormattedBibliography` object---it
+    simply contains a list of :py:class:`.FormattedEntry` objects and some
+    additional metadata.
+
+5.  The resulting :py:class:`.FormattedBibliography` is passed to the output
+    backend. The default backend is LaTeX. It can be changed with the
+    ``pybtex --output-backend`` option. The output backend converts the
+    formatted bibliography to a specific markup format and writes the output.
