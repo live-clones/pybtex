@@ -1,0 +1,17 @@
+@import url(master.css);
+
+h1 {
+    font-size: 800%;
+    margin-top: 0.3ex;
+    margin-bottom: 0.2ex;
+    border-bottom-style: solid;
+    border-bottom-color: #884400;
+    border-bottom-width: 0.08em;
+    padding-bottom: 0.2ex;
+}
+
+.download-links {
+    margin-bottom: 3ex;
+    width: 100%;
+    text-align: right;
+}

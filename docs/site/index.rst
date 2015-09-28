@@ -2,7 +2,9 @@
 Pybtex!
 =======
 
-Current version is |download_url|_ (`see what's new <docs/history.html>`_)
+.. container:: download-links
+
+    Current version is |download_url|_ (`see what's new <docs/history.html>`_)
 
 
 Pybtex is a drop-in replacement for BibTeX written in Python.
