@@ -213,3 +213,7 @@ th {
     opacity: 0.5;
     clear: both;
 }
+
+.highlighted {
+    background-color: #fbe54e !important;
+}
