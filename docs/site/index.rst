@@ -4,7 +4,7 @@ Pybtex!
 
 .. container:: download-links
 
-    `Bitbucket page`_ | |download_url|_ | :doc:`version history <docs:history>`
+    `Bitbucket page`_ | |download_url|_ (:doc:`what's new <docs:history>`) | :doc:`docs <docs:index>`
 
 
 Pybtex is a BibTeX-compatible bibliography processor written in Python.\ |br|
