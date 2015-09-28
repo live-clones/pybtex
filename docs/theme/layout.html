@@ -23,7 +23,7 @@
     <div class="right">
     {%- if next %}
         <a href="{{ next.link }}">{{ next.title }} →</a>
-    {%- else %}
+    {%- elif prev %}
         {{- toc() }}
     {%- endif %}
     </div>
