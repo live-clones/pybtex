@@ -38,7 +38,7 @@ You probably should not if you ask. But still, Pybtex has Unicode inside.
 It supports BibTeXML and YAML. It can write HTML and plain text.
 It is extensible and fun to hack. It comes with a free database conversion utility.
 And designing new bibliography styles is no more a pain with Pybtex'
-brand new `pythonic style API <docs/api/styles.html>`_.
+brand new :doc:`pythonic style API <docs:api/styles>`.
 
 Hmm nice. Wrap it up, I'll take it! Where is the download link?
 ===============================================================

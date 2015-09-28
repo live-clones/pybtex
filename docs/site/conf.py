@@ -31,7 +31,12 @@ from pybtex import __version__
 # ones.
 extensions = [
     'sphinx.ext.ifconfig',
+    'sphinx.ext.intersphinx',
 ]
+
+intersphinx_mapping = {
+    'docs': ('docs/', '../build/html/objects.inv'),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
