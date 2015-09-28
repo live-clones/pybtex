@@ -3,7 +3,6 @@
 *.swp
 *.orig
 docs/html
-docs/site
 docs/man1/*.1
 examples/xampl.bibtexml
 examples/xampl.yaml

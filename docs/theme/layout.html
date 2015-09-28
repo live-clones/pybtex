@@ -1,28 +1,36 @@
 {%- extends "basic/layout.html" %}
 
+{%- macro toc() %}
+    <a href="{{ pathto(master_doc) }}">Table of contents</a>
+{%- endmacro %}
+
 {%- macro prev_next() %}
 <div class="prev-next">
-    {%- if prev %}
+    {%- if prev and prev != master_doc %}
     <div class="left">
-        <a href="{{ prev.link|e }}">← {{ prev.title }}</a>
+        <a href="{{ prev.link }}">← {{ prev.title }}</a>
     </div>
     {%- endif %}
 
     <div class="middle">
-    {%- if parents %}
-        <a href="{{ parents[0].link|e }}">Table of contents</a>
+    {%- if pagename != master_doc and next %}
+        {{- toc() }}
     {%- else %}
     &nbsp;
     {%- endif %}
     </div>
 
-    {%- if next %}
     <div class="right">
-        <a href="{{ next.link|e }}">{{ next.title }} →</a>
-    </div>
+    {%- if next %}
+        <a href="{{ next.link }}">{{ next.title }} →</a>
+    {%- else %}
+        {{- toc() }}
     {%- endif %}
+    </div>
 </div>
 {%- endmacro %}
 
 {%- block relbar1 %}{% endblock %}
-{%- block relbar2 %}{{ prev_next() }}{% endblock %}
+{%- block relbar2 %}
+{%- if not site %}{{ prev_next() }}{% endif %}
+{%- endblock %}
