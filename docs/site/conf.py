@@ -271,8 +271,11 @@ texinfo_documents = [
 stexinfo_no_detailmenu = False
 
 rst_epilog = """
-.. |download_url| replace:: Pybtex {release}
+.. |download_url| replace:: pybtex-{release}.tar.bz2
 .. _download_url: https://pypi.python.org/packages/source/p/pybtex/pybtex-{release}.tar.bz2
+.. |br| raw:: html
+
+   <br />
 """.format(release=release)
 
 autodoc_member_order = 'bysource'

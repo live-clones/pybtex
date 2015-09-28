@@ -4,63 +4,44 @@ Pybtex!
 
 .. container:: download-links
 
-    Current version is |download_url|_ (`see what's new <docs/history.html>`_)
+    `Bitbucket page`_ | |download_url|_ | :doc:`version history <docs:history>`
 
 
-Pybtex is a drop-in replacement for BibTeX written in Python.
-You can start using it right now by simply typing ``pybtex`` where you would have typed ``bibtex``.
+Pybtex is a BibTeX-compatible bibliography processor written in Python.\ |br|
+You can simply type ``pybtex`` instead of ``bibtex``.
 
-Please note that the correct spelling is just *Pybtex*, without any camel-casing,
-which we considered too annoying to type.
+.. rst-class:: doc-links
 
-We also suggest reading `the Friendly Manual <docs>`_, although it is
-still incomplete.
+    For more details, see :doc:`docs:index`.
 
 
-Oh! Is it really BibTeX-compatible?
+How is Pybtex different from BibTeX
 ===================================
 
-Yes, it really is, most of the time.
+Pybtex aims to be 100% compatible with BibTeX.
+It accepts the same command line options, fully supports BibTeX's ``.bst``
+styles and produces byte-identical output (if not, please `file a bug
+report`_).
 
-BibTeX styles work fine with Pybtex,
-although there are still some minor issues.
-Nevertheless, we are going to achieve 100% compatibility before releasing
-version 1.0.
+Additionally,
 
-If something does not work for you, just `let us know
-<https://bitbucket.org/pybtex-devs/pybtex/issues/new>`_.
+* Pybtex is Unicode-aware.
+
+* Pybtex supports :doc:`bibliography formats <docs:formats>` other than BibTeX.
+
+* It is possible to write formatting styles in Python.\ |br|
+  As a bonus, Pythonic styles can produce HTML, Markdown and other markup
+  besides the usual LaTeX.
+
+Pybtex also includes a :doc:`Python API <docs:api/index>` for managing
+bibliographies from Python.
 
 
-But why should I use it instead of BibTeX?
-==========================================
-
-You probably should not if you ask. But still, Pybtex has Unicode inside.
-It supports BibTeXML and YAML. It can write HTML and plain text.
-It is extensible and fun to hack. It comes with a free database conversion utility.
-And designing new bibliography styles is no more a pain with Pybtex'
-brand new :doc:`pythonic style API <docs:api/styles>`.
-
-Hmm nice. Wrap it up, I'll take it! Where is the download link?
-===============================================================
-.. _download:
+Download and install
+====================
 
 Release tarballs are available from our `PyPI page
 <https://pypi.python.org/pypi/pybtex>`_.
-
-Development sources are available from our `Git repository at Bitbucket
-<https://bitbucket.org/pybtex-devs/pybtex>`_:
-
-.. sourcecode:: bash
-
-    git clone https://bitbucket.org/pybtex-devs/pybtex
-
-To run the tests (need `nose <https://nose.readthedocs.org/>`_):
-
-.. sourcecode:: bash
-
-    cd pybtex
-    python setup.py egg_info  # or python setup.py develop
-    python setup.py nosetests
 
 Pybtex can be also installed with pip:
 
@@ -68,10 +49,17 @@ Pybtex can be also installed with pip:
 
     pip install pybtex
 
-If something goes wrong, just `file a bug report
-<https://bitbucket.org/pybtex-devs/pybtex/issues/new>`_.
+Development sources are available from our `Git repository at Bitbucket
+<Bitbucket page_>`_:
+
+.. sourcecode:: bash
+
+    git clone https://bitbucket.org/pybtex-devs/pybtex
+
+If something goes wrong, just `file a bug report`_.
 
 Have fun!
 
 
 .. _file a bug report: https://bitbucket.org/pybtex-devs/pybtex/issues/new
+.. _Bitbucket page: https://bitbucket.org/pybtex-devs/pybtex

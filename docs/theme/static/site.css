@@ -10,6 +10,10 @@ h1 {
     padding-bottom: 0.2ex;
 }
 
+p {
+    text-align: left;
+}
+
 .download-links {
     margin-bottom: 3ex;
     width: 100%;
