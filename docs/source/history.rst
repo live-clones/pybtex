@@ -1,5 +1,5 @@
-=====================
-The History of Pybtex
-=====================
+======================
+Pybtex version history
+======================
 
 .. include:: ../../CHANGES
