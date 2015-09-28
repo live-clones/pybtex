@@ -4,16 +4,17 @@ Version 0.18
 
 - Pybtex is now fully case-insensitive (like BibTeX). As a consequence, IEEEtran styles now work corretly.
 
-- Added ``--preserve-case`` option to ``pybtex-convert`` (by default all identifiers are converted to lower case).
+- Added ``--preserve-case`` option to ``pybtex-convert`` (default behavior is
+  to converted all identifiers to lower case).
 
 - An erorr is reported if two citations have the same key but different case, like in BibTeX. (Example: ddt1999 and DDT1999).
 
-- Fixed parsing unused bibliography entries with strings containing @ characters.
+- Fixed parsing unused bibliography entries with strings containing ``@`` characters.
 
 - ``entry.max$`` constant is now set to 250, ``global.max$`` is set to 20000, like in BibTeX.
 
 - Added ``--strict`` option to ``pybtex-convert`` and ``pybtex-format`` (turns
-  warning to errors).
+  warning into errors).
 
 - Strict mode is now enabled by default when using pybtex as a library
   (exceptions are raised on all errors instead of just printing warnings to
