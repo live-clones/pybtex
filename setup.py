@@ -161,9 +161,6 @@ setup(name=progname,
             'alpha = pybtex.style.formatting.alpha:Style',
             'unsrtalpha = pybtex.style.formatting.unsrtalpha:Style',
             ],
-        'pygments.styles': [
-            'pybtex = pybtex.docgen.pygments:PybtexStyle',
-            ]
         },
     zip_safe=True,
     **extra

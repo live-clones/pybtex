@@ -1,4 +1,4 @@
-# Copyright (c) 2007, 2008, 2009, 2010, 2011, 2012  Andrey Golovizin
+# Copyright (c) 2007, 2008, 2009, 2010, 2011, 2012, 2015  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,11 +19,15 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 from __future__ import absolute_import
 
 from pygments.style import Style
 from pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Literal, Punctuation
+
+from . import add_entry_point
+
 
 class PybtexStyle(Style):
     """
@@ -75,3 +79,7 @@ class PybtexStyle(Style):
 
         Error:                  'bg:#e3d2d2 #a61717'
     }
+
+
+def setup(app):
+    add_entry_point('pygments.styles', 'pybtex', 'pybtex_doctools.pygments', 'PybtexStyle')
