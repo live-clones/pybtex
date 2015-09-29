@@ -51,7 +51,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Pybtex'
+project = u"Pybtex User’s Guide"
 copyright = u'{}, Andrey Golovizin'.format(datetime.now().year)
 
 # The version info for the project you're documenting, acts as replacement for
