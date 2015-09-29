@@ -87,11 +87,9 @@ div.code-block-caption:hover > a.headerlink {
     color: #884400;
 }
 
-.contents {
-    margin-left: 1em !important;
-    margin-bottom: 3ex !important;
-    color: #884400;
-/*    color: #BB8811;*/
+.contents, .toctree-wrapper {
+    margin-left: 1em;
+    margin-bottom: 3ex;
 }
 
 .contents a, .toctree-wrapper a {
@@ -107,16 +105,6 @@ div.topic {
     padding: 0 !important;
 }
 
-.contents ul {
-    margin: 0px;
-    padding: 0px 0px 0px 1em;
-}
-
-.contents li {
-    margin: 1ex 0px 0px 0px;
-    padding: 0px;
-    list-style: none;
-}
 
 dl.docutils dt {
     margin-bottom: 0.5ex;
