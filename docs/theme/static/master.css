@@ -229,3 +229,18 @@ th {
     opacity: 0.5;
     clear: both;
 }
+
+.admonition {
+    border: 0.4ex solid;
+    margin-top: 1ex !important;
+    margin-bottom: 1ex !important;
+}
+
+.admonition p {
+    margin: 1ex 1em;
+    padding: 0;
+}
+
+.warning {
+    border-color: #D04040;
+}
