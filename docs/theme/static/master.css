@@ -237,6 +237,7 @@ th {
     font-size: 80%;
     opacity: 0.5;
     clear: both;
+    text-align: right;
 }
 
 .admonition {
