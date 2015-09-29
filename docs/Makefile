@@ -162,13 +162,15 @@ changes:
 	@echo
 	@echo "the overview file is in $(builddir)/changes."
 
-linkcheck:
+linkcheck: linkcheck-site linkcheck-docs
+
+linkcheck-docs:
 	$(sphinxbuild) -b linkcheck $(allsphinxopts) $(builddir)/linkcheck
 	@echo
 	@echo "link check complete; look for any errors in the above output " \
 	      "or in $(builddir)/linkcheck/output.txt."
 
-site-linkcheck:
+linkcheck-site:
 	$(sphinxbuild) -b linkcheck $(sitesphinxopts) $(builddir)/linkcheck
 	@echo
 	@echo "link check complete; look for any errors in the above output " \
