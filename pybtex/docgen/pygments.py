@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 from pygments.style import Style
 from pygments.token import Keyword, Name, Comment, String, Error, \
-     Number, Operator, Generic
+     Number, Operator, Generic, Literal, Punctuation
 
 class PybtexStyle(Style):
     """
@@ -33,33 +33,33 @@ class PybtexStyle(Style):
     default_style = ''
 
     styles = {
-        Comment:                'italic #999988',
+        Comment:                'italic #999999',
 #        Comment.Preproc:        'bold noitalic #999999',
 #        Comment.Special:        'bold #999999',
 
         Operator:               'bold',
 
-        String:                 '#B81',
-        String.Escape:          '#900',
-#        String.Regex:           '#808000',
-
-        Number:                 '#590 bold',
-
+        String:                 '#609000',
+        Number:                 '#609000',
+        String.Escape:          '#a10',
         Keyword:                'bold',
 #        Keyword.Type:           '#445588',
 
-        Name.Builtin:           '#840',
+        Name.Builtin:           'bold',
         Name.Function:          'bold #840',
-        Name.Class:             'bold #900',
-        Name.Exception:         'bold #A00',
+        Name.Class:             'bold #b30',
+        Name.Exception:         'bold #b30',
         Name.Decorator:         '#840',
-        Name.Namespace:         '#900',
+        Name.Namespace:         '#840',
+        Name.Label:             '#b30',
 #        Name.Variable:          '#088',
 #        Name.Constant:          '#088',
-        Name.Tag:               '#840',
-#        Name.Tag:               '#000080',
-#        Name.Attribute:         '#008080',
+        Name.Tag:               '#666',
 #        Name.Entity:            '#800080',
+
+        # used by YAML lexer
+        Literal.Scalar.Plain:   '',
+        Punctuation.Indicator:  '#888',
 
 #        Generic.Heading:        '#999999',
 #        Generic.Subheading:     '#aaaaaa',
@@ -68,9 +68,10 @@ class PybtexStyle(Style):
         Generic.Error:          '#aa0000',
         Generic.Emph:           'italic',
         Generic.Strong:         'bold',
-        Generic.Prompt:         '#555555',
-        Generic.Output:         '#888888',
+        Generic.Prompt:         '#666',
+        Generic.Output:         '#666',
         Generic.Traceback:      '#aa0000',
+
 
         Error:                  'bg:#e3d2d2 #a61717'
     }

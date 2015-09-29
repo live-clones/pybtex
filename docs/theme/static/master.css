@@ -175,11 +175,14 @@ a .docutils.literal {
 }
 
 .sourcecode, .highlight {
-    border-left-style: solid;
-    border-left-color: #B81;
-    margin-left: 1em;
-    border-left-width: 0.08em;
-    padding-left: 1em;
+    border: 0.08em solid #B81;
+    margin-bottom: 1ex;
+}
+
+.sourcecode pre, .highlight pre {
+    background: #FFFAEE;
+    padding: 1em;
+    margin: 0;
 }
 
 th {
