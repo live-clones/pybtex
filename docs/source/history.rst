@@ -1,5 +1,5 @@
-======================
-Pybtex version history
-======================
+===============
+Version history
+===============
 
 .. include:: ../../CHANGES
