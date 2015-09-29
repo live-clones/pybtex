@@ -1,1 +1,1 @@
-To generate manpages, run ./generage.py manpages from parent directory.
+To generate manpages, run ./generage_manpages.py from the parent directory.
