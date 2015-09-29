@@ -14,6 +14,10 @@ p {
     text-align: left;
 }
 
+.content {
+    margin-bottom: 2em;
+}
+
 .download-links {
     margin-bottom: 3ex;
     width: 100%;
