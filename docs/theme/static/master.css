@@ -36,6 +36,9 @@ p, dd, li {
 p {
     margin-top: 1ex;
     text-align: justify;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
 }
 
 li {
@@ -135,6 +138,17 @@ code, pre, tt {
     font-size: 1em;
     line-height: 140%;
     font-family: monospace;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    hyphens: none;
+}
+
+code {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
 }
 
 code.descname {
@@ -220,7 +234,7 @@ th {
     margin-top: 3ex;
     clear: both;
     text-align: center;
-    text-wrap: none;
+    word-wrap: none;
 }
 
 .footer {
