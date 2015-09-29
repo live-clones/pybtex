@@ -14,6 +14,8 @@
 
 import sys
 import os
+from datetime import datetime
+
 from pybtex import __version__
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -50,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Pybtex'
-copyright = u'2014, Andrey Golovizin'
+copyright = u'{}, Andrey Golovizin'.format(datetime.now().year)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
