@@ -94,7 +94,7 @@ div.code-block-caption:hover > a.headerlink {
 /*    color: #BB8811;*/
 }
 
-.contents a {
+.contents a, .toctree-wrapper a {
     font-family: sans-serif;
 }
 
