@@ -164,12 +164,12 @@ a .docutils.literal {
 }
 
 .sourcecode, .highlight {
-    border: 0.08em solid #B81;
     margin: 1em 0 1em 0;
 }
 
 .sourcecode pre, .highlight pre {
-    background: #FFFAEE;
+    border: 0.08em solid #d1d1d1;
+    background: #f9f9f9;
     padding: 1em;
     margin: 0;
 }
