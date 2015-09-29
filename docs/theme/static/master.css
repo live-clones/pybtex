@@ -1,7 +1,7 @@
 @import url(basic.css);
 
 @media only screen {
-    body {
+    .content {
         margin-left: auto;
         margin-right: auto;
         padding: 0px 0px;
@@ -86,7 +86,8 @@ div.code-block-caption:hover > a.headerlink {
 }
 
 .contents {
-    margin-bottom: 2ex;
+    margin-left: 1em !important;
+    margin-bottom: 3ex !important;
     color: #884400;
 /*    color: #BB8811;*/
 }
@@ -97,6 +98,11 @@ div.code-block-caption:hover > a.headerlink {
 
 .contents .topic-title {
     display: none;
+}
+
+div.topic {
+    border: none !important;
+    padding: 0 !important;
 }
 
 .contents ul {
@@ -200,6 +206,14 @@ th {
 .middle {
     display: inline-block;
     text-align: center;
+}
+
+.relbar {
+    margin: 1em 1em 3em 1em;
+}
+
+.search input {
+    border: 1pt solid #aaa;
 }
 
 .prev-next {
