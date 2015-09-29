@@ -7,6 +7,12 @@
 {# XXX necessary? #}
 {%- if url_root == '#' %}{% set url_root = '' %}{% endif %}
 
+{%- if not embedded and pagename != master_doc and docstitle %}
+  {%- set titlesuffix = " &mdash; "|safe + docstitle|e %}
+{%- else %}
+  {%- set titlesuffix = "" %}
+{%- endif %}
+
 {%- macro toc() %}
     <a href="{{ url_root }}">Table of contents</a>
 {%- endmacro %}
