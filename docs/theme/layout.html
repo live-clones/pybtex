@@ -139,7 +139,7 @@
 {%- if not site %}{{ relbar() }}{% endif %}
 {%- endblock %}
 
-<div class="content">
+  <div class="content">
     <div class="body" role="main">
     {% block body %} {% endblock %}
     </div>
@@ -147,6 +147,9 @@
     {%- block relbar2 %}
     {%- if not site %}{{ prev_next() }}{% endif %}
     {%- endblock %}
-</div>
+  </div>
 
 {%- endblock %}
+
+  </body>
+</html>
