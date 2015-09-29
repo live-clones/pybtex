@@ -228,10 +228,13 @@ th {
 
 .relbar {
     margin: 1em 1em 3em 1em;
+    font-size: 0.85em;
 }
 
 .search input {
     border: 1pt solid #aaa;
+    font-size: 0.85em;
+    padding: 0.62ex;
 }
 
 .prev-next {
