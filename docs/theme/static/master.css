@@ -254,3 +254,7 @@ th {
 .warning {
     border-color: #D04040;
 }
+
+.highlighted {
+    background-color: #fbe54e;
+}
