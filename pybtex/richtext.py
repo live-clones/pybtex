@@ -123,10 +123,6 @@ class BaseText(object):
         >>> t = Text('a')
         >>> print unicode(t + 'b')
         ab
-        >>> print unicode(t + t)
-        aa
-        >>> print unicode(t)
-        a
         """
 
         return Text(self, other)
@@ -150,22 +146,8 @@ class BaseText(object):
     def join(self, parts):
         """Join a list using this text (like string.join)
 
-        >>> print unicode(Text(' ').join([]))
-        <BLANKLINE>
-        >>> print unicode(Text(' ').join(['a', 'b', 'c']))
-        a b c
-        >>> print unicode(Text(' ').join(['a', Text('b c')]))
-        a b c
-        >>> print unicode(Text(nbsp).join(['a', 'b', 'c']))
-        a<nbsp>b<nbsp>c
-        >>> print unicode(nbsp.join(['a', 'b', 'c']))
-        a<nbsp>b<nbsp>c
         >>> print unicode(String('-').join(['a', 'b', 'c']))
         a-b-c
-        >>> print Tag('em', ' and ').join(['a', 'b', 'c']).render_as('html')
-        a<em> and </em>b<em> and </em>c
-        >>> print HRef('/', ' and ').join(['a', 'b', 'c']).render_as('html')
-        a<a href="/"> and </a>b<a href="/"> and </a>c
         """
 
         if not parts:
@@ -204,40 +186,16 @@ class BaseText(object):
 
     def add_period(self, period='.'):
         """
-        Add a period to the end of text, if necessary.
-
-        >>> Text().endswith(('.', '!', '?'))
-        False
-        >>> textutils.is_terminated(Text())
-        False
-        >>> print unicode(Text().add_period())
-        <BLANKLINE>
+        Add a period to the end of text, if the last character is not ".", "!" or "?".
 
         >>> text = Text("That's all, folks")
         >>> print unicode(text.add_period())
         That's all, folks.
 
-        >>> text = Tag('em', Text("That's all, folks"))
-        >>> print text.add_period().render_as('html')
-        <em>That's all, folks.</em>
-        >>> print text.add_period().add_period().render_as('html')
-        <em>That's all, folks.</em>
+        >>> text = Text("That's all, folks!")
+        >>> print unicode(text.add_period())
+        That's all, folks!
 
-        >>> text = Text("That's all, ", Tag('em', 'folks'))
-        >>> print text.add_period().render_as('html')
-        That's all, <em>folks</em>.
-        >>> print text.add_period().add_period().render_as('html')
-        That's all, <em>folks</em>.
-
-        >>> text = Text("That's all, ", Tag('em', 'folks.'))
-        >>> print text.add_period().render_as('html')
-        That's all, <em>folks.</em>
-
-        >>> text = Text("That's all, ", Tag('em', 'folks'))
-        >>> print text.add_period('!').render_as('html')
-        That's all, <em>folks</em>!
-        >>> print text.add_period('!').add_period('.').render_as('html')
-        That's all, <em>folks</em>!
         """
 
         if self and not textutils.is_terminated(self):
@@ -354,83 +312,6 @@ class BaseMultipartText(BaseText):
         """
         Slicing and extracting characters works like with regular strings,
         formatting is preserved.
-
-        >>> t = Text('123', Text('456', Text('78'), '9'), '0')
-        >>> print unicode(t)
-        1234567890
-        >>> print unicode(t[:0])
-        <BLANKLINE>
-        >>> print unicode(t[:1])
-        1
-        >>> print unicode(t[:3])
-        123
-        >>> print unicode(t[:5])
-        12345
-        >>> print unicode(t[:7])
-        1234567
-        >>> print unicode(t[:10])
-        1234567890
-        >>> print unicode(t[:100])
-        1234567890
-
-        >>> print unicode(t[:-100])
-        <BLANKLINE>
-        >>> print unicode(t[:-10])
-        <BLANKLINE>
-        >>> print unicode(t[:-9])
-        1
-        >>> print unicode(t[:-7])
-        123
-        >>> print unicode(t[:-5])
-        12345
-        >>> print unicode(t[:-3])
-        1234567
-
-        >>> print unicode(t[-100:])
-        1234567890
-        >>> print unicode(t[-10:])
-        1234567890
-        >>> print unicode(t[-9:])
-        234567890
-        >>> print unicode(t[-7:])
-        4567890
-        >>> print unicode(t[-5:])
-        67890
-        >>> print unicode(t[-3:])
-        890
-
-        >>> print unicode(t[1:])
-        234567890
-        >>> print unicode(t[3:])
-        4567890
-        >>> print unicode(t[5:])
-        67890
-        >>> print unicode(t[7:])
-        890
-        >>> print unicode(t[10:])
-        <BLANKLINE>
-        >>> print unicode(t[100:])
-        <BLANKLINE>
-
-        >>> print unicode(t[0:10])
-        1234567890
-        >>> print unicode(t[0:100])
-        1234567890
-        >>> print unicode(t[2:3])
-        3
-        >>> print unicode(t[2:4])
-        34
-        >>> print unicode(t[3:7])
-        4567
-        >>> print unicode(t[4:7])
-        567
-        >>> print unicode(t[4:7])
-        567
-        >>> print unicode(t[7:9])
-        89
-        >>> print unicode(t[100:200])
-        <BLANKLINE>
-
         """
 
         if isinstance(key, (int, long)):
@@ -494,12 +375,6 @@ class BaseMultipartText(BaseText):
         <strong>Chuck Norris</strong> wins!
         >>> print text.append(' wins!').render_as('html')
         <strong>Chuck Norris wins!</strong>
-
-        >>> text = HRef('/', 'Chuck Norris')
-        >>> print (text +  ' wins!').render_as('html')
-        <a href="/">Chuck Norris</a> wins!
-        >>> print text.append(' wins!').render_as('html')
-        <a href="/">Chuck Norris wins!</a>
         """
 
         return self._create_similar(self.parts + [text])
@@ -507,26 +382,11 @@ class BaseMultipartText(BaseText):
     @collect_iterable
     def split(self, sep=None, keep_empty_parts=None):
         """
-        >>> Text().split()
-        []
-        >>> Text().split('abc')
-        [Text()]
-        >>> Text('a').split()
-        [Text('a')]
-        >>> Text('a ').split()
-        [Text('a')]
-        >>> Text('   a   ').split()
-        [Text('a')]
         >>> Text('a + b').split()
         [Text('a'), Text('+'), Text('b')]
-        >>> Text('a + b').split(' + ')
+
+        >>> Text('a, b').split(', ')
         [Text('a'), Text('b')]
-        >>> Text('abc').split('xyz')
-        [Text('abc')]
-        >>> Text('---').split('--')
-        [Text(), Text('-')]
-        >>> Text('---').split('-')
-        [Text(), Text(), Text(), Text()]
         """
 
         if keep_empty_parts is None:
@@ -667,12 +527,10 @@ class BaseMultipartText(BaseText):
 
     @deprecated('0.19', 'use slicing instead')
     def apply_to_start(self, f):
-        """Apply a function to the last part of the text"""
         return self.map(f, lambda index, length: index == 0)
 
     @deprecated('0.19', 'use slicing instead')
     def apply_to_end(self, f):
-        """Apply a function to the last part of the text"""
         return self.map(f, lambda index, length: index == length - 1)
 
     @deprecated('0.19')
