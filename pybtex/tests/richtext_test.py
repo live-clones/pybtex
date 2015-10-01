@@ -11,6 +11,9 @@ from pybtex.richtext import Text, String, Tag, HRef, Symbol, nbsp
 
 class TextTestMixin(object):
     __metaclass__ = ABCMeta
+    @abstractmethod
+    def test__init__(self):
+        raise NotImplementedError
 
     @abstractmethod
     def test__unicode__(self):
@@ -242,6 +245,11 @@ class TestText(TextTestMixin, TestCase):
 
 
 class TestString(TextTestMixin, TestCase):
+    def test__init__(self):
+        assert String().value == ''
+        assert String('').value == ''
+        assert String('Wa', '', 'ke', ' ', 'up!').value == 'Wake up!'
+
     def test__eq__(self):
         assert String() != ''
         assert String('') != ''
