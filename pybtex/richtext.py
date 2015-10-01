@@ -163,7 +163,7 @@ class BaseText(object):
         raise NotImplementedError
 
     @abstractmethod
-    def startswith(prefix):
+    def startswith(self, prefix):
         """
         Return True if string starts with the prefix,
         otherwise return False.
@@ -174,7 +174,7 @@ class BaseText(object):
         raise NotImplementedError
 
     @abstractmethod
-    def endswith(suffix):
+    def endswith(self, suffix):
         """
         Return True if the string ends with the specified suffix,
         otherwise return False.
