@@ -779,67 +779,6 @@ class Text(BaseMultipartText):
     Text is used as an internal formatting language of Pybtex,
     being rendered to to HTML or LaTeX markup or whatever in the end.
 
-    >>> Text()
-    Text()
-    >>> print unicode(Text('a', '', 'c'))
-    ac
-    >>> print unicode(Text('a', Text(), 'c'))
-    ac
-    >>> print unicode(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
-    abcx<nbsp>d
-    >>> Text({}) # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-        ...
-    TypeError: ...
-
-    >>> Text().startswith('.')
-    False
-    >>> Text().startswith(('.', '!'))
-    False
-    >>> Text().endswith('.')
-    False
-    >>> Text().endswith(('.', '!'))
-    False
-
-    >>> text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
-    >>> print unicode(text)
-    mary had a little lamb
-    >>> print unicode(text.capitalize())
-    Mary had a little lamb
-    >>> print unicode(text.upper())
-    MARY HAD A LITTLE LAMB
-    >>> print unicode(text.lower())
-    mary had a little lamb
-
-    >>> 'mary' in text
-    True
-    >>> 'Mary' in text
-    False
-    >>> 'had a little' in text
-    True
-    >>> text.startswith('M')
-    False
-    >>> text.startswith('m')
-    True
-    >>> text.endswith('B')
-    False
-    >>> text.endswith('b')
-    True
-    >>> text = Text('a', 'b', 'c')
-    >>> 'abc' in text
-    True
-    >>> text.startswith('ab')
-    True
-    >>> text.endswith('bc')
-    True
-    >>> Text('This is good').startswith(('This', 'That'))
-    True
-    >>> Text('This is good').startswith(('That', 'Those'))
-    False
-    >>> Text('This is good').endswith(('good', 'wonderful'))
-    True
-    >>> Text('This is good').endswith(('bad', 'awful'))
-    False
     """
 
     def __repr__(self):
