@@ -112,16 +112,6 @@ class TestText(TextTestMixin, TestCase):
         text = Text('a', 'b', 'c')
         assert 'abc' in text
 
-    def test_startswith(self):
-        text = Text('mary ', 'had ', 'a little lamb')
-        assert not Text().startswith('.')
-        assert not Text().startswith(('.', '!'))
-
-    def test_endswith(self):
-        text = Text('mary ', 'had ', 'a little lamb')
-        assert not Text().endswith('.')
-        assert not Text().endswith(('.', '!'))
-
     def test_capitalize(self):
         text = Text('mary ', 'had ', 'a little lamb')
         assert unicode(text.capitalize()) == 'Mary had a little lamb'
@@ -200,6 +190,9 @@ class TestText(TextTestMixin, TestCase):
         assert unicode(text.lower()) == 'mary had a little lamb'
 
     def test_startswith(self):
+        assert not Text().startswith('.')
+        assert not Text().startswith(('.', '!'))
+
         text = Text('mary ', 'had ', 'a little lamb')
         assert not text.startswith('M')
         assert text.startswith('m')
@@ -211,6 +204,9 @@ class TestText(TextTestMixin, TestCase):
         assert not Text('This is good').startswith(('That', 'Those'))
 
     def test_endswith(self):
+        assert not Text().endswith('.')
+        assert not Text().endswith(('.', '!'))
+
         text = Text('mary ', 'had ', 'a little lamb')
         assert not text.endswith('B')
         assert text.endswith('b')
@@ -470,24 +466,6 @@ class TestTag(TextTestMixin, TestCase):
         assert Tag('em', 'Good') + Text(' job!') == Text(Tag('em', 'Good'), ' job!')
         assert Text('Good') + Tag('em', ' job!') == Text('Good', Tag('em', ' job!'))
 
-    def test_append(self):
-        text = Tag('strong', 'Chuck Norris')
-        assert (text +  ' wins!').render_as('html') == '<strong>Chuck Norris</strong> wins!'
-        assert text.append(' wins!').render_as('html') == '<strong>Chuck Norris wins!</strong>'
-        text = HRef('/', 'Chuck Norris')
-        assert (text +  ' wins!').render_as('html') == '<a href="/">Chuck Norris</a> wins!'
-        assert text.append(' wins!').render_as('html') == '<a href="/">Chuck Norris wins!</a>'
-
-    def test_split(self):
-        empty = Tag('em')
-        assert empty.split() == []
-        assert empty.split('abc') == [Tag('em')]
-
-        em = Tag('em', 'Emphasized text')
-        assert em.split() == [Tag('em', 'Emphasized'), Tag('em', 'text')]
-        assert em.split(' ') == [Tag('em', 'Emphasized'), Tag('em', 'text')]
-        assert em.split('no such text') == [em]
-
     def test_upper(self):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
         assert tag.upper().render_as('html') == '<em>MARY HAD A LITTLE LAMB</em>'
@@ -531,6 +509,15 @@ class TestTag(TextTestMixin, TestCase):
         assert not text.endswith('is good')
 
     def test_split(self):
+        empty = Tag('em')
+        assert empty.split() == []
+        assert empty.split('abc') == [Tag('em')]
+
+        em = Tag('em', 'Emphasized text')
+        assert em.split() == [Tag('em', 'Emphasized'), Tag('em', 'text')]
+        assert em.split(' ') == [Tag('em', 'Emphasized'), Tag('em', 'text')]
+        assert em.split('no such text') == [em]
+
         text = Text('Bonnie ', Tag('em', 'and'), ' Clyde')
         assert text.split('and') == [Text('Bonnie '), Text(' Clyde')]
         assert text.split(' and ') == [text]
@@ -562,6 +549,14 @@ class TestTag(TextTestMixin, TestCase):
         assert dashified == Text('From', Tag('em', '-the-very-beginning-'), 'of', Tag('em', '-'), 'things')
 
     def test_append(self):
+        text = Tag('strong', 'Chuck Norris')
+        assert (text +  ' wins!').render_as('html') == '<strong>Chuck Norris</strong> wins!'
+        assert text.append(' wins!').render_as('html') == '<strong>Chuck Norris wins!</strong>'
+
+        text = HRef('/', 'Chuck Norris')
+        assert (text +  ' wins!').render_as('html') == '<a href="/">Chuck Norris</a> wins!'
+        assert text.append(' wins!').render_as('html') == '<a href="/">Chuck Norris wins!</a>'
+
         text = Tag('em', 'Look here')
         assert (text +  '!').render_as('html') == '<em>Look here</em>!'
         assert text.append('!').render_as('html') == '<em>Look here!</em>'
