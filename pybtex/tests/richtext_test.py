@@ -173,6 +173,16 @@ class TestText(TextTestMixin, TestCase):
         assert t[7:9] == Text('89')
         assert t[100:200] == Text('')
 
+        t = Text('123', Tag('em', '456', HRef('/', '789')), '0')
+        assert t[:3] == Text('123')
+        assert t[:5] == Text('123', Tag('em', '45'))
+        assert t[:7] == Text('123', Tag('em', '456', HRef('/', '7')))
+        assert t[:10] == Text('123', Tag('em', '456', HRef('/', '789')), '0')
+        assert t[:100] == Text('123', Tag('em', '456', HRef('/', '789')), '0')
+        assert t[:-7] == Text('123')
+        assert t[:-5] == Text('123', Tag('em', '45'))
+        assert t[:-3] == Text('123', Tag('em', '456', HRef('/', '7')))
+
     def test_append(self):
         text = Tag('strong', 'Chuck Norris')
         assert (text +  ' wins!').render_as('html') == '<strong>Chuck Norris</strong> wins!'
