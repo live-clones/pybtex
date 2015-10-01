@@ -90,7 +90,7 @@ def ensure_text(value):
         return value
     else:
         bad_type = type(value).__name__
-        raise TypeError('parts must be strings or BaseText instances, not ' + bad_type)
+        raise ValueError('parts must be strings or BaseText instances, not ' + bad_type)
 
 
 class BaseText(object):
@@ -284,7 +284,7 @@ class BaseMultipartText(BaseText):
 
         parts = (ensure_text(part) for part in parts)
         nonempty_parts = (part for part in parts if part)
-        unpacked_parts = itertools.chain(*(part._unpack() for part in nonempty_parts))
+        unpacked_parts = itertools.chain(*[part._unpack() for part in nonempty_parts])
         merged_parts = self._merge_similar(unpacked_parts)
         self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
@@ -789,7 +789,7 @@ class Tag(BaseMultipartText):
 
     def __init__(self, name, *args):
         if not isinstance(name, (basestring, Text)):
-            raise TypeError(
+            raise ValueError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
         self.name = self.__check_name(unicode(name))
         self.info = self.name,
@@ -941,7 +941,7 @@ class HRef(BaseMultipartText):
 
     def __init__(self, url, *args):
         if not isinstance(url, (basestring, Text)):
-            raise TypeError(
+            raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
         self.url = unicode(url)
         self.info = self.url,

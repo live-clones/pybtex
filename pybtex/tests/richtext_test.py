@@ -87,7 +87,8 @@ class TestText(TextTestMixin, TestCase):
         text = unicode(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
-        assert_raises(TypeError, Text, {})
+        assert_raises(ValueError, Text, {})
+        assert_raises(ValueError, Text, 0, 0)
 
     def test__eq__(self):
         assert Text() == Text()
