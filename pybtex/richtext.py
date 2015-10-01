@@ -550,33 +550,13 @@ class BaseMultipartText(BaseText):
 class String(BaseText):
     """
     A single Python string wrapped into BaseText interface.
-
-    >>> print unicode(String('').capitalize())
-    <BLANKLINE>
-    >>> print unicode(String('').add_period())
-    <BLANKLINE>
-    >>> print unicode(String('').add_period('!'))
-    <BLANKLINE>
-    >>> print unicode(String('').add_period().add_period())
-    <BLANKLINE>
-    >>> print unicode(String('').add_period().add_period('!'))
-    <BLANKLINE>
-    >>> print unicode(String('').add_period('!').add_period())
-    <BLANKLINE>
-
-    >>> print unicode(String('november').capitalize())
-    November
-    >>> print unicode(String('November').capitalize())
-    November
-    >>> print unicode(String('November').add_period())
-    November.
-    >>> print unicode(String('November').add_period().add_period())
-    November.
-
     """
 
     def __init__(self, *parts):
         """
+        All arguments must be plain unicode strings.
+        Arguments are concatenated together.
+
         >>> print unicode(String('November', ', ', 'December', '.'))
         November, December.
         """
@@ -591,18 +571,9 @@ class String(BaseText):
 
     def __eq__(self, other):
         """
-        >>> String() == ''
-        False
-        >>> String('') == ''
-        False
-        >>> String() == String()
-        True
-        >>> String('') == String()
-        True
-        >>> String('', '', '') == String()
-        True
-        >>> String('Wa', '', 'ke', ' ', 'up') == String('Wake up')
-        True
+        Compare two :py:class:`.String` objects.
+
+
         """
         return type(other) == type(self) and self.value == other.value
 
@@ -610,67 +581,15 @@ class String(BaseText):
         return self.value.__len__()
 
     def __contains__(self, item):
-        """
-        >>> '' in String()
-        True
-        >>> 'abc' in String()
-        False
-        >>> '' in String(' ')
-        True
-        >>> ' + ' in String('2 + 2')
-        True
-        """
-
         return self.value.__contains__(item)
 
     def __getitem__(self, index):
-        """
-        >>> digits = String('0123456789')
-        >>> digits[0] == '0'
-        False
-        >>> digits[0] == String('0')
-        True
-        """
-
         return String(self.value.__getitem__(index))
 
     def __add__(self, other):
-        """
-        >>> String('Python') + String(' 3') == 'Python 3'
-        False
-        >>> String('Python') + String(' 3') == Text('Python 3')
-        True
-        >>> String('A').lower() == String('a')
-        True
-        >>> print unicode(String('Python') + String(' ') + String('3'))
-        Python 3
-        >>> print unicode(String('Python') + Text(' ') + String('3'))
-        Python 3
-        >>> print unicode(String('Python') + ' ' + '3')
-        Python 3
-        >>> print unicode(String('Python').append(' 3'))
-        Python 3
-
-        """
-
         return BaseText.__add__(self, other)
 
     def split(self, sep=None, keep_empty_parts=None):
-        """
-        >>> String().split()
-        []
-        >>> String().split('abc') == [String('')]
-        True
-        >>> String('a').split() == [String('a')]
-        True
-        >>> String('a ').split() == [String('a')]
-        True
-        >>> String('a + b').split() == [String('a'), String('+'), String('b')]
-        True
-        >>> String('a + b').split(' + ') == [String('a'), String('b')]
-        True
-        """
-
         if keep_empty_parts is None:
             keep_empty_parts = sep is not None
 
@@ -687,19 +606,6 @@ class String(BaseText):
         otherwise return False.
 
         prefix can also be a tuple of suffixes to look for.
-
-        >>> String().startswith('n')
-        False
-        >>> String('').startswith('n')
-        False
-        >>> String().endswith('n')
-        False
-        >>> String('').endswith('n')
-        False
-        >>> String('November.').startswith('n')
-        False
-        >>> String('November.').startswith('N')
-        True
         """
         return self.value.startswith(prefix)
 
@@ -711,50 +617,13 @@ class String(BaseText):
 
         suffix can also be a tuple of suffixes to look for.
         return self.value.endswith(text)
-
-        >>> String().endswith('.')
-        False
-        >>> String().endswith(('.', '!'))
-        False
-        >>> String('November.').endswith('r')
-        False
-        >>> String('November.').endswith('.')
-        True
-        >>> String('November.').endswith(('.', '!'))
-        True
-        >>> String('November.').endswith(('?', '!'))
-        False
         """
         return self.value.endswith(suffix)
 
     def lower(self):
-        """
-        >>> String('A').lower() == 'a'
-        False
-        >>> String('A').lower() == String('a')
-        True
-        >>> print unicode(String('').lower())
-        <BLANKLINE>
-        >>> print unicode(String('November').lower())
-        november
-        """
-
         return String(self.value.lower())
 
     def upper(self):
-        """
-        >>> String('a').upper() == 'A'
-        False
-        >>> String('a').upper() == String('A')
-        True
-        >>> print unicode(String('').upper())
-        <BLANKLINE>
-        >>> print unicode(String('', '').upper())
-        <BLANKLINE>
-        >>> print unicode(String('November').upper())
-        NOVEMBER
-        """
-
         return String(self.value.upper())
 
     @property

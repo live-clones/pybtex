@@ -241,6 +241,113 @@ class TestText(TextTestMixin, TestCase):
         assert string.render_as('html') == 'Detektivbyrån &amp; friends'
 
 
+class TestString(TextTestMixin, TestCase):
+    def test__eq__(self):
+        assert String() != ''
+        assert String('') != ''
+        assert String() == String()
+        assert String('') == String()
+        assert String('', '', '') == String()
+        assert String('Wa', '', 'ke', ' ', 'up!') == String('Wake up!')
+
+    def test__len__(self):
+        assert len(String()) == len(String('')) == 0
+
+        val = 'test string'
+        assert len(String(val)) == len(val)
+
+    def test__unicode__(self):
+        val = u'Detektivbyrån'
+        assert unicode(String(val)) == val
+
+    def test__contains__(self):
+        assert '' in String()
+        assert 'abc' not in String()
+        assert '' in String(' ')
+        assert ' + ' in String('2 + 2')
+
+    def test__getitem__(self):
+        digits = String('0123456789')
+        assert digits[0] != '0'
+        assert digits[0] == String('0')
+
+    def test__add__(self):
+        assert String('Python') + String(' 3') != 'Python 3'
+        assert String('Python') + String(' 3') == Text('Python 3')
+        assert String('A').lower() == String('a')
+        assert unicode(String('Python') + String(' ') + String('3')) == 'Python 3'
+        assert unicode(String('Python') + Text(' ') + String('3')) == 'Python 3'
+        assert unicode(String('Python') + ' ' + '3') == 'Python 3'
+        assert unicode(String('Python').append(' 3')) == 'Python 3'
+
+    def test_startswith(self):
+        assert not String().startswith('n')
+        assert not String('').startswith('n')
+        assert not String().endswith('n')
+        assert not String('').endswith('n')
+        assert not String('November.').startswith('n')
+        assert String('November.').startswith('N')
+
+    def test_endswith(self):
+        assert not String().endswith('.')
+        assert not String().endswith(('.', '!'))
+        assert not String('November.').endswith('r')
+        assert String('November.').endswith('.')
+        assert String('November.').endswith(('.', '!'))
+        assert not String('November.').endswith(('?', '!'))
+
+    def test_append(self):
+        assert String().append('') == Text()
+        text = String('The').append(' Adventures of ').append('Tom Sawyer')
+        assert text == Text('The Adventures of Tom Sawyer')
+
+    def test_lower(self):
+        assert String('').lower() == String()
+        assert String('A').lower() == String('a')
+        assert String('November').lower() == String('november')
+
+    def test_upper(self):
+        assert String('').upper() == String()
+        assert String('a').upper() == String('A')
+        assert String('November').upper() == String('NOVEMBER')
+
+    def test_split(self):
+        assert String().split() == []
+        assert String().split('abc') == [String('')]
+        assert String('a').split() == [String('a')]
+        assert String('a ').split() == [String('a')]
+        assert String('a + b').split() == [String('a'), String('+'), String('b')]
+        assert String('a + b').split(' + ') == [String('a'), String('b')]
+
+    def test_join(self):
+        assert String().join([]) == Text()
+        assert String('nothing to see here').join([]) == Text()
+        assert String().join(['a', 'b', 'c']) == Text('abc')
+        assert String(', ').join(['tomatoes']) == Text('tomatoes')
+        assert String(', ').join(['tomatoes', 'cucumbers']) == Text('tomatoes, cucumbers')
+        assert String(', ').join(['tomatoes', 'cucumbers', 'lemons']) == Text('tomatoes, cucumbers, lemons')
+
+    def test_capitalize(self):
+        assert unicode(String('').capitalize()) == ''
+        assert unicode(String('').add_period()) == ''
+        assert unicode(String('').add_period('!')) == ''
+        assert unicode(String('').add_period().add_period()) == ''
+        assert unicode(String('').add_period().add_period('!')) == ''
+        assert unicode(String('').add_period('!').add_period()) == ''
+        assert unicode(String('november').capitalize()) == 'November'
+        assert unicode(String('November').capitalize()) == 'November'
+        assert unicode(String('November').add_period()) == 'November.'
+
+    def test_add_period(self):
+        result = unicode(String('November').add_period().add_period())
+        assert result == 'November.'
+
+    def test_render_as(self):
+        string = String('Detektivbyrån & friends')
+        assert string.render_as('text') == 'Detektivbyrån & friends'
+        assert string.render_as('html') == 'Detektivbyrån &amp; friends'
+
+
 class TestTag(TestCase):
     def test_append(self):
         text = Tag('em', 'Look here')
