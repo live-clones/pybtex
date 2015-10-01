@@ -370,7 +370,197 @@ class TestString(TextTestMixin, TestCase):
         assert string.render_as('html') == 'Detektivbyrån &amp; friends'
 
 
-class TestTag(TestCase):
+class TestTag(TextTestMixin, TestCase):
+    def test__init__(self):
+        empty = Tag('em')
+        assert unicode(empty) == ''
+
+        text = Text('This ', Tag('em', 'is'), ' good')
+        assert 'This is' in unicode(text)
+        assert unicode(text).startswith('This is')
+        assert unicode(text).endswith('is good')
+
+    def test__eq__(self):
+        assert Tag('em', '') != ''
+        assert Tag('em', '') != Text()
+        assert Tag('em', '') != Tag('strong', '')
+        assert Tag('em', '') == Tag('em', '')
+
+        assert Tag('em', 'good') != Tag('em', 'bad')
+        assert Tag('em', 'good') != Text('good')
+        assert Tag('em', 'good') != Tag('em', 'good')
+
+    def test__len__(self):
+        val = 'Tomato apple!'
+        assert len(Tag('em', val)) == len(val)
+
+    def test__unicode__(self):
+        empty = Tag('em')
+        assert unicode(empty.lower()) == ''
+        assert unicode(empty.capitalize()) == ''
+        assert unicode(empty.add_period()) == ''
+
+    def test__contains__(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert 'mary' in tag
+        assert 'Mary' not in tag
+        assert 'had a little' in tag
+
+        text = Text('This ', Tag('em', 'is'), ' good')
+        assert not 'This is' in text
+
+    def test__getitem__(self):
+        t = Tag('em', '1234567890')
+
+        assert_raises(TypeError, lambda: 1 in t)
+
+        assert t == Tag('em', '1234567890')
+        assert t[:] == t
+        assert t[:0] == Tag('em', '')
+        assert t[:1] == Tag('em', '1')
+        assert t[:3] == Tag('em', '123')
+        assert t[:5] == Tag('em', '12345')
+        assert t[:7] == Tag('em', '1234567')
+        assert t[:10] == Tag('em', '1234567890')
+        assert t[:100] == Tag('em', '1234567890')
+        assert t[:-100] == Tag('em', '')
+        assert t[:-10] == Tag('em', '')
+        assert t[:-9] == Tag('em', '1')
+        assert t[:-7] == Tag('em', '123')
+        assert t[:-5] == Tag('em', '12345')
+        assert t[:-3] == Tag('em', '1234567')
+        assert t[-100:] == Tag('em', '1234567890')
+        assert t[-10:] == Tag('em', '1234567890')
+        assert t[-9:] == Tag('em', '234567890')
+        assert t[-7:] == Tag('em', '4567890')
+        assert t[-5:] == Tag('em', '67890')
+        assert t[-3:] == Tag('em', '890')
+        assert t[1:] == Tag('em', '234567890')
+        assert t[3:] == Tag('em', '4567890')
+        assert t[5:] == Tag('em', '67890')
+        assert t[7:] == Tag('em', '890')
+        assert t[10:] == Tag('em', '')
+        assert t[100:] == Tag('em', '')
+        assert t[0:10] == Tag('em', '1234567890')
+        assert t[0:100] == Tag('em', '1234567890')
+        assert t[2:3] == Tag('em', '3')
+        assert t[2:4] == Tag('em', '34')
+        assert t[3:7] == Tag('em', '4567')
+        assert t[4:7] == Tag('em', '567')
+        assert t[4:7] == Tag('em', '567')
+        assert t[7:9] == Tag('em', '89')
+        assert t[100:200] == Tag('em', '')
+
+        t = Tag('strong', '123', Tag('em', '456', HRef('/', '789')), '0')
+        assert t[:3] == Tag('strong', '123')
+        assert t[:5] == Tag('strong', '123', Tag('em', '45'))
+        assert t[:7] == Tag('strong', '123', Tag('em', '456', HRef('/', '7')))
+        assert t[:10] == Tag('strong', '123', Tag('em', '456', HRef('/', '789')), '0')
+        assert t[:100] == Tag('strong', '123', Tag('em', '456', HRef('/', '789')), '0')
+        assert t[:-7] == Tag('strong', '123')
+        assert t[:-5] == Tag('strong', '123', Tag('em', '45'))
+        assert t[:-3] == Tag('strong', '123', Tag('em', '456', HRef('/', '7')))
+
+    def test__add__(self):
+        assert Tag('em', '') + Tag('em', '') == Text(Tag('em', ''))
+        assert Tag('em', '') + Tag('strong', '') == Text(Tag('em', ''), Tag('strong', ''))
+        assert Tag('em', 'Good') + Tag('em', '') == Text(Tag('em', 'Good'))
+        assert Tag('em', 'Good') + Tag('em', ' job!') == Text(Tag('em', 'Good job!'))
+        assert Tag('em', 'Good') + Tag('strong', ' job!') == Text(Tag('em', 'Good'), Tag('strong', ' job!'))
+        assert Tag('em', 'Good') + Text(' job!') == Text(Tag('em', 'Good'), ' job!')
+        assert Text('Good') + Tag('em', ' job!') == Text('Good', Tag('em', ' job!'))
+
+    def test_append(self):
+        text = Tag('strong', 'Chuck Norris')
+        assert (text +  ' wins!').render_as('html') == '<strong>Chuck Norris</strong> wins!'
+        assert text.append(' wins!').render_as('html') == '<strong>Chuck Norris wins!</strong>'
+        text = HRef('/', 'Chuck Norris')
+        assert (text +  ' wins!').render_as('html') == '<a href="/">Chuck Norris</a> wins!'
+        assert text.append(' wins!').render_as('html') == '<a href="/">Chuck Norris wins!</a>'
+
+    def test_split(self):
+        empty = Tag('em')
+        assert empty.split() == []
+        assert empty.split('abc') == [Tag('em')]
+
+        em = Tag('em', 'Emphasized text')
+        assert em.split() == [Tag('em', 'Emphasized'), Tag('em', 'text')]
+        assert em.split(' ') == [Tag('em', 'Emphasized'), Tag('em', 'text')]
+        assert em.split('no such text') == [em]
+
+    def test_upper(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert tag.upper().render_as('html') == '<em>MARY HAD A LITTLE LAMB</em>'
+
+    def test_lower(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert tag.lower().render_as('html') == '<em>mary had a little lamb</em>'
+
+    def test_capitalize(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert tag.capitalize().render_as('html') == '<em>Mary had a little lamb</em>'
+
+    def test_startswith(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert not tag.startswith('M')
+        assert tag.startswith('m')
+
+        tag = Tag('em', 'a', 'b', 'c')
+        assert tag.startswith('ab')
+
+        tag = Tag('em', 'This is good')
+        assert tag.startswith(('This', 'That'))
+        assert not tag.startswith(('That', 'Those'))
+
+        text = Text('This ', Tag('em', 'is'), ' good')
+        assert not text.startswith('This is')
+
+    def test_endswith(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert not tag.endswith('B')
+        assert tag.endswith('b')
+
+        tag = Tag('em', 'a', 'b', 'c')
+        assert tag.endswith('bc')
+
+        tag = Tag('em', 'This is good')
+        assert tag.endswith(('good', 'wonderful'))
+        assert not tag.endswith(('bad', 'awful'))
+
+        text = Text('This ', Tag('em', 'is'), ' good')
+        assert not text.endswith('is good')
+
+    def test_split(self):
+        text = Text('Bonnie ', Tag('em', 'and'), ' Clyde')
+        assert text.split('and') == [Text('Bonnie '), Text(' Clyde')]
+        assert text.split(' and ') == [text]
+
+        text = Text('Bonnie', Tag('em', ' and '), 'Clyde')
+        assert text.split('and') == [Text('Bonnie', Tag('em', ' ')), Text(Tag('em', ' '), 'Clyde')]
+        assert text.split(' and ') == [Text('Bonnie'), Text('Clyde')]
+
+        text = Text('From ', Tag('em', 'the very beginning'), ' of things')
+        assert text.split() == [
+            Text('From'), Text(Tag('em', 'the')), Text(Tag('em', 'very')),
+            Text(Tag('em', 'beginning')), Text('of'), Text('things'),
+        ]
+
+        parts = text.split()
+        assert parts == [
+            Text('From'),
+            Text(Tag('em', 'the')),
+            Text(Tag('em', 'very')),
+            Text(Tag('em', 'beginning')),
+            Text('of'), Text('things'),
+        ]
+
+    def test_join(self):
+        text = Text('From ', Tag('em', 'the very beginning'), ' of things')
+        dashified = String('-').join(text.split())
+        assert dashified == Text('From-', Tag('em', 'the'), '-', Tag('em', 'very'), '-', Tag('em', 'beginning'), '-of-things')
+        dashified = Tag('em', '-').join(text.split())
+        assert dashified == Text('From', Tag('em', '-the-very-beginning-'), 'of', Tag('em', '-'), 'things')
+
     def test_append(self):
         text = Tag('em', 'Look here')
         assert (text +  '!').render_as('html') == '<em>Look here</em>!'
@@ -393,3 +583,29 @@ class TestTag(TestCase):
 
         text = text.add_period('!').add_period('.').render_as('html')
         assert text == "That's all, <em>folks</em>!"
+
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert tag.add_period().render_as('html') == '<em>mary had a little lamb.</em>'
+        assert tag.add_period().add_period().render_as('html') == '<em>mary had a little lamb.</em>'
+
+    def test_render_as(self):
+        empty = Tag('em')
+        assert empty.render_as('html') == ''
+        assert empty.render_as('latex') == ''
+
+        tag = Tag('em', 'a', 'b')
+        assert tag.render_as('html') == '<em>ab</em>'
+        assert tag.render_as('latex') == '\\emph{ab}'
+
+        em = Tag('em', 'Emphasized text')
+        assert em.render_as('latex') == '\\emph{Emphasized text}'
+        assert em.upper().render_as('latex') == '\\emph{EMPHASIZED TEXT}'
+        assert em.lower().render_as('latex') == '\\emph{emphasized text}'
+        assert em.render_as('html') == '<em>Emphasized text</em>'
+
+        t = Tag(u'em', u'123', Tag(u'em', u'456', Text(u'78'), u'9'), u'0')
+        assert t[:2].render_as('html') == '<em>12</em>'
+        assert t[2:4].render_as('html') == '<em>3<em>4</em></em>'
+
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        assert tag.render_as('html') == '<em>mary had a little lamb</em>'

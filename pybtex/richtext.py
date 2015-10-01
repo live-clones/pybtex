@@ -803,19 +803,6 @@ class Tag(BaseMultipartText):
             return 'Tag({})'.format(str_repr(self.name))
 
     def render(self, backend):
-        r"""
-        >>> empty = Tag('em')
-        >>> print empty.render_as('html')
-        <BLANKLINE>
-        >>> print empty.render_as('latex')
-        <BLANKLINE>
-        >>> tag = Tag('em', 'a', 'b')
-        >>> print tag.render_as('html')
-        <em>ab</em>
-        >>> print tag.render_as('latex')
-        \emph{ab}
-        """
-
         text = super(Tag, self).render(backend)
         return backend.format_tag(self.name, text)
 
