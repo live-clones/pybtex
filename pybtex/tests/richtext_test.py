@@ -134,6 +134,9 @@ class TestText(TextTestMixin, TestCase):
 
     def test__getitem__(self):
         t = Text('123', Text('456', Text('78'), '9'), '0')
+
+        assert_raises(TypeError, lambda: 1 in t)
+
         assert t == Text('1234567890')
         assert t[:0] == Text('')
         assert t[:1] == Text('1')

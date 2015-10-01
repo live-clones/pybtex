@@ -305,7 +305,7 @@ class BaseMultipartText(BaseText):
 
     def __contains__(self, item):
         if not isinstance(item, basestring):
-            raise ValueError(item)
+            raise TypeError(item)
         return not item or any(part.__contains__(item) for part in self.parts)
 
     def __getitem__(self, key):
@@ -322,7 +322,7 @@ class BaseMultipartText(BaseText):
             if step != 1:
                 raise NotImplementedError
         else:
-            raise ValueError(key, type(key))
+            raise TypeError(key, type(key))
 
         if start < 0:
             start = len(self) + start
