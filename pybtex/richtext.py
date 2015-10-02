@@ -723,38 +723,6 @@ class Symbol(BaseText):
 
     Examples of special symbols are non-breaking spaces and dashes.
 
-    >>> print nbsp.render_as('latex')
-    ~
-    >>> print nbsp.render_as('html')
-    &nbsp;
-
-    >>> Text(nbsp, nbsp)
-    Text(Symbol('nbsp'), Symbol('nbsp'))
-    >>> print Text(nbsp, nbsp).render_as('html')
-    &nbsp;&nbsp;
-    >>> print Text(nbsp, nbsp).capitalize().render_as('html')
-    &nbsp;&nbsp;
-    >>> print nbsp.upper().render_as('html')
-    &nbsp;
-    >>> print nbsp.lower().render_as('html')
-    &nbsp;
-    >>> print nbsp.add_period().render_as('html')
-    &nbsp;.
-    >>> print nbsp.add_period().add_period().render_as('html')
-    &nbsp;.
-    >>> print (nbsp + '.').render_as('html')
-    &nbsp;.
-    >>> print nbsp.append('.').render_as('html')
-    &nbsp;.
-
-    >>> nbsp.startswith('.')
-    False
-    >>> nbsp.startswith(('.', '?!'))
-    False
-    >>> nbsp.endswith('.')
-    False
-    >>> nbsp.endswith(('.', '?!'))
-    False
     """
 
     def __init__(self, name):
@@ -768,46 +736,16 @@ class Symbol(BaseText):
         return "Symbol(%s)" % str_repr(self.name)
 
     def __unicode__(self):
+        # XXX
         return u'<%s>' % self.name
 
     def __eq__(self, other):
-        """
-        >>> Symbol('nbsp') == Symbol('nbsp')
-        True
-        >>> Symbol('nbsp') == Symbol('ndash')
-        False
-        """
         return self.name == other.name
 
     def __contains__(self, item):
-        """
-        >>> '' in nbsp
-        False
-        >>> 'abc' in nbsp
-        False
-        """
-
         return False
 
     def __getitem__(self, index):
-        """
-        >>> symbol = Symbol('nbsp')
-        >>> symbol[0]
-        Symbol('nbsp')
-        >>> symbol[0:]
-        Symbol('nbsp')
-        >>> symbol[0:5]
-        Symbol('nbsp')
-        >>> print symbol[1:].render_as('html')
-        <BLANKLINE>
-        >>> print symbol[1:5].render_as('html')
-        <BLANKLINE>
-        >>> symbol[1]
-        Traceback (most recent call last):
-            ...
-        IndexError: richtext.Symbol index out of range
-        """
-
         # mimic the behavior of a 1-element string
         try:
             result = 'a'[index]
@@ -817,13 +755,6 @@ class Symbol(BaseText):
             return self if result else String()
 
     def split(self, sep=None, keep_empty_parts=None):
-        """
-        >>> nbsp.split() == [nbsp]
-        True
-        >>> text = Text('F.', nbsp, 'Miller')
-        >>> text.split() == [text]
-        True
-        """
         return [self]
 
     def startswith(self, text):
@@ -833,19 +764,6 @@ class Symbol(BaseText):
         return False
 
     def render(self, backend):
-        """
-        >>> empty = HRef('/')
-        >>> print empty.render_as('html')
-        <BLANKLINE>
-        >>> print empty.render_as('latex')
-        <BLANKLINE>
-        >>> tag = HRef('/', 'a', 'b')
-        >>> print tag.render_as('html')
-        <a href="/">ab</a>
-        >>> print tag.render_as('latex')
-        \href{/}{ab}
-        """
-
         return backend.symbols[self.name]
 
     def upper(self):

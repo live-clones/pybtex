@@ -11,6 +11,7 @@ from pybtex.richtext import Text, String, Tag, HRef, Symbol, nbsp
 
 class TextTestMixin(object):
     __metaclass__ = ABCMeta
+
     @abstractmethod
     def test__init__(self):
         raise NotImplementedError
@@ -878,3 +879,74 @@ class TestHRef(TextTestMixin, TestCase):
 
         tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
         assert tag.render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
+
+
+class TestSymbol(TextTestMixin, TestCase):
+    def test__init__(self):
+        symbol = Symbol(nbsp)
+        assert nbsp.name == 'nbsp'
+
+    def test__eq__(self):
+        assert Symbol('nbsp') == Symbol('nbsp')
+        assert not Symbol('nbsp') == Symbol('ndash')
+
+        assert Text(nbsp, nbsp) == Text(Symbol('nbsp'), Symbol('nbsp'))
+
+    def test__unicode__(self):
+        assert unicode(nbsp) == '<nbsp>'
+
+    def test__len__(self):
+        assert len(nbsp) == 1
+
+    def test__contains__(self):
+        assert not '' in nbsp
+        assert not 'abc' in nbsp
+
+    def test__getitem__(self):
+        symbol = Symbol('nbsp')
+        assert symbol[0] == Symbol('nbsp')
+        assert symbol[0:] == Symbol('nbsp')
+        assert symbol[0:5] == Symbol('nbsp')
+        assert symbol[1:] == String()
+        assert symbol[1:5] == String()
+        assert_raises(IndexError, lambda: symbol[1])
+
+    def test__add__(self):
+        assert (nbsp + '.').render_as('html') == '&nbsp;.'
+
+    def test_split(self):
+        assert nbsp.split() == [nbsp]
+        text = Text('F.', nbsp, 'Miller')
+        assert text.split() == [text]
+
+    def test_join(self):
+        assert nbsp.join(['S.', 'Jerusalem']) == Text('S.', nbsp, 'Jerusalem')
+
+    def test_upper(self):
+        assert nbsp.upper().render_as('html') == '&nbsp;'
+
+    def test_lower(self):
+        assert nbsp.lower().render_as('html') == '&nbsp;'
+
+    def test_capitalize(self):
+        assert Text(nbsp, nbsp).capitalize().render_as('html') == '&nbsp;&nbsp;'
+
+    def test_add_period(self):
+        assert nbsp.add_period().render_as('html') == '&nbsp;.'
+        assert nbsp.add_period().add_period().render_as('html') == '&nbsp;.'
+
+    def test_append(self):
+        assert nbsp.append('.').render_as('html') == '&nbsp;.'
+
+    def test_startswith(self):
+        assert not nbsp.startswith('.')
+        assert not nbsp.startswith(('.', '?!'))
+
+    def test_endswith(self):
+        assert not nbsp.endswith('.')
+        assert not nbsp.endswith(('.', '?!'))
+
+    def test_render_as(self):
+        assert nbsp.render_as('latex') == '~'
+        assert nbsp.render_as('html') == '&nbsp;'
+        assert Text(nbsp, nbsp).render_as('html') == '&nbsp;&nbsp;'
