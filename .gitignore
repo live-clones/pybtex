@@ -13,4 +13,5 @@ MANIFEST
 .ropeproject
 .coverage
 .tox
+.cache
 __pycache__

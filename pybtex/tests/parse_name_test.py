@@ -178,6 +178,6 @@ def parse_name(name, correct_result, expected_errors=None):
     assert captured_errors == expected_errors
 
 
-def parse_name_test():
+def test_parse_name():
     for test_args in sample_names:
         yield (parse_name,) + test_args

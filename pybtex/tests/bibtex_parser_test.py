@@ -38,9 +38,9 @@ from itertools import izip_longest
 from unittest import TestCase
 
 
-class TestParser(Parser):
+class _TestParser(Parser):
     def __init__(self, *args, **kwargs):
-        super(TestParser, self).__init__(*args, **kwargs)
+        super(_TestParser, self).__init__(*args, **kwargs)
         self.errors = []
 
     def handle_error(self, error):
@@ -59,7 +59,7 @@ class ParserTest(object):
             self.input_strings = [self.input_string]
 
     def test_parser(self):
-        parser = TestParser(encoding='UTF-8', **self.parser_options)
+        parser = _TestParser(encoding='UTF-8', **self.parser_options)
         for input_string in self.input_strings:
             parser.parse_string(input_string)
         result = parser.data
