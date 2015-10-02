@@ -104,6 +104,9 @@ class BaseText(object):
     def __eq__(self, other):
         raise NotImplementedError
 
+    def __ne__(self, other):
+        return not self == other
+
     @abstractmethod
     def __len__(self):
         raise NotImplementedError

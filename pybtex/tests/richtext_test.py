@@ -97,6 +97,15 @@ class TestText(TextTestMixin, TestCase):
 
     def test__eq__(self):
         assert Text() == Text()
+        assert not (Text() != Text())
+
+        assert Text('Cat') == Text('Cat')
+        assert not (Text('Cat') != Text('Cat'))
+        assert Text('Cat', ' tail') == Text('Cat tail')
+        assert not (Text('Cat', ' tail') != Text('Cat tail'))
+
+        assert Text('Cat') != Text('Dog')
+        assert not (Text('Cat') == Text('Dog'))
 
     def test__len__(self):
         assert len(Text()) == 0
@@ -389,7 +398,8 @@ class TestTag(TextTestMixin, TestCase):
 
         assert Tag('em', 'good') != Tag('em', 'bad')
         assert Tag('em', 'good') != Text('good')
-        assert Tag('em', 'good') != Tag('em', 'good')
+        assert Tag('em', 'good') == Tag('em', 'good')
+        assert not (Tag('em', 'good') != Tag('em', 'good'))
 
     def test__len__(self):
         val = 'Tomato apple!'
@@ -630,7 +640,8 @@ class TestHRef(TextTestMixin, TestCase):
 
         assert HRef('/', 'good') != HRef('', 'bad')
         assert HRef('/', 'good') != Text('good')
-        assert HRef('/', 'good') != HRef('/', 'good')
+        assert HRef('/', 'good') == HRef('/', 'good')
+        assert not (HRef('/', 'good') != HRef('/', 'good'))
 
         assert HRef('strong', '') != Tag('strong', '')
 
@@ -888,7 +899,10 @@ class TestSymbol(TextTestMixin, TestCase):
 
     def test__eq__(self):
         assert Symbol('nbsp') == Symbol('nbsp')
+        assert not Symbol('nbsp') != Symbol('nbsp')
+
         assert not Symbol('nbsp') == Symbol('ndash')
+        assert Symbol('nbsp') != Symbol('ndash')
 
         assert Text(nbsp, nbsp) == Text(Symbol('nbsp'), Symbol('nbsp'))
 
