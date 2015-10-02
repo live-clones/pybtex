@@ -894,7 +894,6 @@ class TestHRef(TextTestMixin, TestCase):
 
 class TestSymbol(TextTestMixin, TestCase):
     def test__init__(self):
-        symbol = Symbol(nbsp)
         assert nbsp.name == 'nbsp'
 
     def test__eq__(self):
