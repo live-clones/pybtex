@@ -60,6 +60,10 @@ class TextTestMixin(object):
         raise NotImplementedError
 
     @abstractmethod
+    def test_capitalize(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def test_add_period(self):
         raise NotImplementedError
 
