@@ -273,4 +273,3 @@ rst_epilog = """
 """.format(release=release)
 
 autodoc_member_order = 'bysource'
-autoclass_content = 'both'
