@@ -22,7 +22,7 @@
 
 """Miscellaneous small utils."""
 
-
+import itertools
 from functools import wraps
 from collections import deque, Sequence, MutableMapping, MutableSet
 from types import GeneratorType
@@ -61,6 +61,12 @@ def collect_iterable(f):
     def new_f(*args, **kwargs):
         return list(f(*args, **kwargs))
     return new_f
+
+
+def pairwise(iterable):
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return itertools.izip_longest(a, b)
 
 
 class CaseInsensitiveDict(MutableMapping):
