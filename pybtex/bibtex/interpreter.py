@@ -82,9 +82,7 @@ class EntryVariable(Variable):
             return None
 
     def write_code(self, interpreter, code):
-        if self.name not in interpreter.vars:
-            raise BibTeXError('undefined entry variable {}'.format(self.name))
-        code.push('i.current_entry.vars[{!r}]'.format(self.name))
+        code.push('i.current_entry.vars.get({!r})'.format(self.name))
 
 
 class Integer(Variable):
