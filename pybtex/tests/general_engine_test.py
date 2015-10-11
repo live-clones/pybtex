@@ -112,6 +112,7 @@ def test_bibtex_engine():
         ('xampl.bib', 'unsrt.bst'),
         ('xampl.bib', 'plain.bst'),
         ('xampl.bib', 'alpha.bst'),
+        ('xampl.bib', 'jurabib.bst'),
         ('cyrillic.bib', 'unsrt.bst'),
         ('cyrillic.bib', 'alpha.bst'),
         ('xampl_mixed.bib', 'unsrt_mixed.bst', 'xampl_mixed_unsrt_mixed.aux'),
