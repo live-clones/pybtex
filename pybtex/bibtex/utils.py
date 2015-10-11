@@ -24,41 +24,30 @@ import re
 import pybtex.io
 from pybtex.errors import report_error
 from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.utils import pairwise
 
-whitespace_re = re.compile('(\s)')
+whitespace_re = re.compile(r'(\s)')
 tex_whitespace_re = re.compile('[\s~]+')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
 
-def wrap(string, width=79):
-    def wrap_chunks(chunks, width, initial_indent='', subsequent_indent='  '):
-        space_len = 1
-        line = []
-        lines = []
-        current_width = 0
-        indent = initial_indent
+def wrap(string, width=79, subsequent_indent='  '):
+    def find_break(string):
+        for prev_match, match in pairwise(whitespace_re.finditer(string)):
+            if match is None or match.start() > width:
+                return prev_match.start()
 
-        def output(line, indent):
-            if line:
-                if line[0] == ' ':
-                    line.pop(0)
-                lines.append(indent + ''.join(line).rstrip())
+    def iter_chunks(string):
+        while len(string) > width:
+            break_pos = find_break(string)
+            if not break_pos:
+                yield string
+                return
+            yield string[:break_pos]
+            string = subsequent_indent + string[break_pos + 1:]
+        if string:
+            yield string
 
-        for chunk in chunks:
-            max_width = width - len(indent)
-            chunk_len = len(chunk)
-            if current_width + chunk_len <= max_width:
-                line.append(chunk)
-                current_width += chunk_len
-            else:
-                output(line, indent)
-                indent = subsequent_indent
-                line = [chunk]
-                current_width = chunk_len
-        output(line, indent)
-        return lines
-
-    chunks = whitespace_re.split(string)
-    return '\n'.join(wrap_chunks(chunks, width))
+    return '\n'.join(chunk.rstrip() for chunk in iter_chunks(string))
 
 
 class BibTeXString(object):
