@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.bibtex.builtins import inline_builtins
+from pybtex.bibtex.builtins import builtins
 from pybtex.bibtex import utils
 import pybtex.io
 from .codegen import PythonFunction
@@ -230,22 +230,6 @@ class Function(object):
         code.stmt('{}()'.format(self.python_name), stack_safe=False)
 
 
-class InlineBuiltin(object):
-    def __init__(self, name, write_code):
-        self.name = name
-        self.write_code = write_code
-
-    def execute(self, interpreter):
-        self.f(interpreter)
-
-    def f(self, interpreter):
-        function = PythonFunction('_builtin_', hint=self.name, args=['i'])
-        self.write_code(interpreter, function)
-        context = interpreter.exec_code(function)
-        self.f = context[function.name]
-        self.f(interpreter)
-
-
 class Interpreter(object):
     def __init__(self, bib_format, bib_encoding):
         self.bib_format = bib_format
@@ -254,8 +238,8 @@ class Interpreter(object):
         self.push = self.stack.append
         self.pop = self.stack.pop
         self.vars = {}
-        for name, inline_builtin in inline_builtins.items():
-            self.add_variable(InlineBuiltin(name, inline_builtin))
+        for builtin_cls in builtins.values():
+            self.add_variable(builtin_cls())
         self.add_variable(Integer('global.max$', 20000))  # constants taken from
         self.add_variable(Integer('entry.max$', 250))     # BibTeX 0.99d (TeX Live 2012)
         self.add_variable(EntryString('sort.key$', self))

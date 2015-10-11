@@ -29,106 +29,159 @@ from pybtex.utils import memoize
 from pybtex.bibtex import utils
 from pybtex.bibtex.names import format_name as format_bibtex_name
 
+from .codegen import PythonFunction
 
-inline_builtins = {}
-
-
-def inline_builtin(name):
-    def _builtin(f):
-        inline_builtins[name] = f
-        return f
-    return _builtin
+builtins = {}
 
 
-@inline_builtin('>')
-def operator_more(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('1 if {} > {} else 0', (a1, a2))
+def builtin(cls):
+    builtins[cls.name] = cls
+    return cls
 
 
-@inline_builtin('<')
-def operator_less(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('1 if {} < {} else 0', (a1, a2))
+class Builtin(object):
+    def execute(self, interpreter):
+        self.f(interpreter)
+
+    def f(self, interpreter):
+        function = PythonFunction('_builtin_', hint=self.name, args=['i'])
+        self.write_code(interpreter, function)
+        context = interpreter.exec_code(function)
+        self.f = context[function.name]
+        self.f(interpreter)
 
 
-@inline_builtin('=')
-def operator_equals(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('1 if {} == {} else 0', (a1, a2))
+@builtin
+class OperatorMore(Builtin):
+    name = '>'
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('1 if {} > {} else 0', (a1, a2))
 
 
-@inline_builtin('*')
-def operator_asterisk(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('{} + {}', (a1, a2))
+@builtin
+class OperatorLess(Builtin):
+    name = '<'
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('1 if {} < {} else 0', (a1, a2))
 
 
-@inline_builtin(':=')
-def operator_assign(i, code):
-    var = code.pop()
-    val = code.pop()
-    code.stmt('{}.set({})', (var, val))
+@builtin
+class OperatorEquals(Builtin):
+    name = '='
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('1 if {} == {} else 0', (a1, a2))
 
 
-@inline_builtin('+')
-def operator_plus(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('{} + {}', (a1, a2))
+@builtin
+class OperatorAsterisk(Builtin):
+    name = '*'
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('{} + {}', (a1, a2))
 
 
-@inline_builtin('-')
-def operator_minus(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('{} - {}', (a1, a2))
+@builtin
+class OperatorAssign(Builtin):
+    name = ':='
+
+    def write_code(self, i, code):
+        var = code.pop()
+        val = code.pop()
+        code.stmt('{}.set({})', (var, val))
 
 
-@inline_builtin('add.period$')
-def add_period(i, code):
-    text = code.pop()
-    code.push('utils.bibtex_add_period({})', (text,))
+@builtin
+class OperatorPlus(Builtin):
+    name = '+'
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('{} + {}', (a1, a2))
 
 
-@inline_builtin('call.type$')
-def call_type(i, code):
-    code.stmt('i.call_type()')
+@builtin
+class OperatorMinus(Builtin):
+    name = '-'
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('{} - {}', (a1, a2))
 
 
-@inline_builtin('change.case$')
-def change_case(i, code):
-    a2 = code.pop()
-    a1 = code.pop()
-    code.push('utils.change_case({}, {})', (a1, a2))
+@builtin
+class AddPeriod(Builtin):
+    name = 'add.period$'
+
+    def write_code(self, i, code):
+        text = code.pop()
+        code.push('utils.bibtex_add_period({})', (text,))
 
 
-@inline_builtin('chr.to.int$')
-def chr_to_int(i, code):
-    a1 = code.pop()
-    code.push('utils.chr_to_int({})', (a1,))
+@builtin
+class CallType(Builtin):
+    name = 'call.type$'
+
+    def write_code(self, i, code):
+        code.stmt('i.call_type()')
 
 
-@inline_builtin('cite$')
-def cite(i, code):
-    code.push('i.current_entry_key')
+@builtin
+class ChangeCase(Builtin):
+    name = 'change.case$'
+
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        code.push('utils.change_case({}, {})', (a1, a2))
 
 
-@inline_builtin('duplicate$')
-def duplicate(i, code):
-    a1 = code.pop()
-    code.push_var(a1)
-    code.push_var(a1)
+@builtin
+class ChrToInt(Builtin):
+    name = 'chr.to.int$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('utils.chr_to_int({})', (a1,))
 
 
-@inline_builtin('empty$')
-def empty(i, code):
-    a1 = code.pop()
-    code.push('0 if {0} and not {0}.isspace() else 1', (a1,))
+@builtin
+class Cite(Builtin):
+    name = 'cite$'
+
+    def write_code(self, i, code):
+        code.push('i.current_entry_key')
+
+
+@builtin
+class Duplicate(Builtin):
+    name = 'duplicate$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push_var(a1)
+        code.push_var(a1)
+
+
+@builtin
+class Empty(Builtin):
+    name = 'empty$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('0 if {0} and not {0}.isspace() else 1', (a1,))
 
 
 @memoize
@@ -142,12 +195,15 @@ def _format_name(names, n, format):
     return format_bibtex_name(name, format)
 
 
-@inline_builtin('format.name$')
-def format_name(i, code):
-    format = code.pop()
-    n = code.pop()
-    names = code.pop()
-    code.push('_format_name({}, {}, {})', (names, n, format))
+@builtin
+class ChangeCase(Builtin):
+    name = 'format.name$'
+
+    def write_code(self, i, code):
+        format = code.pop()
+        n = code.pop()
+        names = code.pop()
+        code.push('_format_name({}, {}, {})', (names, n, format))
 
 
 def _execute(var, i, code, target_code):
@@ -159,145 +215,209 @@ def _execute(var, i, code, target_code):
         obj.write_code(i, target_code)
 
 
-@inline_builtin('if$')
-def if_(i, code):
+@builtin
+class If(Builtin):
+    name = 'if$'
 
-    a2 = code.pop()
-    a1 = code.pop()
-    cond = code.pop()
-    code.stmt('if {0}:', (cond,), stack_safe=False)
-    with code.nested() as block:
-        _execute(a1, i, code, block)
-    code.stmt('else:')
-    with code.nested() as block:
-        _execute(a2, i, code, block)
-
-
-@inline_builtin('int.to.chr$')
-def int_to_chr(i, code):
-    a1 = code.pop()
-    code.push('utils.int_to_chr({})', (a1,))
+    def write_code(self, i, code):
+        a2 = code.pop()
+        a1 = code.pop()
+        cond = code.pop()
+        code.stmt('if {0}:', (cond,), stack_safe=False)
+        with code.nested() as block:
+            _execute(a1, i, code, block)
+        code.stmt('else:')
+        with code.nested() as block:
+            _execute(a2, i, code, block)
 
 
-@inline_builtin('int.to.str$')
-def int_to_str(i, code):
-    a1 = code.pop()
-    code.push('str({})', (a1,))
+@builtin
+class IntToChr(Builtin):
+    name = 'int.to.chr$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('utils.int_to_chr({})', (a1,))
 
 
-@inline_builtin('missing$')
-def missing(i, code):
-    a1 = code.pop()
-    code.push('1 if i.is_missing_field({}) else 0', (a1,))
+@builtin
+class IntToStr(Builtin):
+    name = 'int.to.str$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('str({})', (a1,))
 
 
-@inline_builtin('newline$')
-def newline(i, code):
-    code.stmt('i.newline()')
+@builtin
+class Missing(Builtin):
+    name = 'missing$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('1 if i.is_missing_field({}) else 0', (a1,))
 
 
-@inline_builtin('num.names$')
-def num_names(i, code):
-    a1 = code.pop()
-    code.push('len(utils.split_name_list({}))', (a1,))
+@builtin
+class Newline(Builtin):
+    name = 'newline$'
+
+    def write_code(self, i, code):
+        code.stmt('i.newline()')
 
 
-@inline_builtin('pop$')
-def pop(i, code):
-    code.pop(discard=True)
+@builtin
+class NumNames(Builtin):
+    name = 'num.names$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('len(utils.split_name_list({}))', (a1,))
 
 
-@inline_builtin('preamble$')
-def preamble(i, code):
-    code.push('i.bib_data.get_preamble()')
+@builtin
+class Pop(Builtin):
+    name = 'pop$'
+
+    def write_code(self, i, code):
+        code.pop(discard=True)
 
 
-@inline_builtin('purify$')
-def purify(i, code):
-    a1 = code.pop()
-    code.push('utils.bibtex_purify({})', (a1,))
+@builtin
+class Preamble(Builtin):
+    name = 'preamble$'
+
+    def write_code(self, i, code):
+        code.push('i.bib_data.get_preamble()')
 
 
-@inline_builtin('quote$')
-def quote(i, code):
-    code.push('{!r}'.format('"'))
+@builtin
+class Purify(Builtin):
+    name = 'purify$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('utils.bibtex_purify({})', (a1,))
 
 
-@inline_builtin('skip$')
-def skip(i, code):
-    code.stmt('pass')
-    pass
+@builtin
+class Quote(Builtin):
+    name = 'quote$'
+
+    def write_code(self, i, code):
+        code.push('{!r}'.format('"'))
 
 
-@inline_builtin('substring$')
-def substring(i, code):
-    stop = code.pop()
-    start = code.pop()
-    string = code.pop()
-    code.push('utils.bibtex_substring({}, {}, {})', (string, start, stop))
+@builtin
+class Skip(Builtin):
+    name = 'skip$'
+
+    def write_code(self, i, code):
+        code.stmt('pass')
 
 
-@inline_builtin('stack$')
-def stack(i, code):
-    code.stmt('i.print_stack()')
+@builtin
+class Substring(Builtin):
+    name = 'substring$'
+
+    def write_code(self, i, code):
+        stop = code.pop()
+        start = code.pop()
+        string = code.pop()
+        code.push('utils.bibtex_substring({}, {}, {})', (string, start, stop))
 
 
-@inline_builtin('swap$')
-def swap(i, code):
-    a1 = code.pop()
-    a2 = code.pop()
-    code.push_var(a1)
-    code.push_var(a2)
+@builtin
+class Stack(Builtin):
+    name = 'stack$'
+
+    def write_code(self, i, code):
+        code.stmt('i.print_stack()')
 
 
-@inline_builtin('text.length$')
-def text_length(i, code):
-    a1 = code.pop()
-    code.push('utils.bibtex_len({})', (a1,))
+@builtin
+class Swap(Builtin):
+    name = 'swap$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        a2 = code.pop()
+        code.push_var(a1)
+        code.push_var(a2)
 
 
-@inline_builtin('text.prefix$')
-def text_prefix(i, code):
-    length = code.pop()
-    string = code.pop()
-    code.push('utils.bibtex_prefix({}, {})', (string, length))
+@builtin
+class TextLength(Builtin):
+    name = 'text.length$'
+
+    def write_code(self, i, code):
+        a1 = code.pop()
+        code.push('utils.bibtex_len({})', (a1,))
 
 
-@inline_builtin('top$')
-def top(i, code):
-    top = code.pop()
-    code.stmt('utils.print_message({})', (top,))
+@builtin
+class TextPrefix(Builtin):
+    name = 'text.prefix$'
+
+    def write_code(self, i, code):
+        length = code.pop()
+        string = code.pop()
+        code.push('utils.bibtex_prefix({}, {})', (string, length))
 
 
-@inline_builtin('type$')
-def type_(i, code):
-    code.push('i.current_entry.type')
+@builtin
+class Top(Builtin):
+    name = 'top$'
+
+    def write_code(self, i, code):
+        top = code.pop()
+        code.stmt('utils.print_message({})', (top,))
 
 
-@inline_builtin('warning$')
-def warning(i, code):
-    top = code.pop()
-    code.stmt('utils.print_warning({})', (top,))
+@builtin
+class Type(Builtin):
+    name = 'type$'
+
+    def write_code(self, i, code):
+        code.push('i.current_entry.type')
 
 
-@inline_builtin('while$')
-def while_(i, code):
-    func = code.pop()
-    cond = code.pop()
-    code.stmt('while True:', stack_safe=False)
-    with code.nested() as body:
-        _execute(cond, i, code, body)
-        body.stmt('if pop() <= 0: break', stack_safe=False)
-        _execute(func, i, code, body)
+@builtin
+class Warning(Builtin):
+    name = 'warning$'
+
+    def write_code(self, i, code):
+        top = code.pop()
+        code.stmt('utils.print_warning({})', (top,))
 
 
-@inline_builtin('width$')
-def width(i, code):
-    string = code.pop()
-    code.push('utils.bibtex_width({})', (string,))
+@builtin
+class While(Builtin):
+    name = 'while$'
+
+    def write_code(self, i, code):
+        func = code.pop()
+        cond = code.pop()
+        code.stmt('while True:', stack_safe=False)
+        with code.nested() as body:
+            _execute(cond, i, code, body)
+            body.stmt('if pop() <= 0: break', stack_safe=False)
+            _execute(func, i, code, body)
 
 
-@inline_builtin('write$')
-def write(i, code):
-    string = code.pop()
-    code.stmt('i.output({})', (string,))
+@builtin
+class Width(Builtin):
+    name = 'width$'
+
+    def write_code(self, i, code):
+        string = code.pop()
+        code.push('utils.bibtex_width({})', (string,))
+
+
+@builtin
+class Write(Builtin):
+    name = 'write$'
+
+    def write_code(self, i, code):
+        string = code.pop()
+        code.stmt('i.output({})', (string,))
