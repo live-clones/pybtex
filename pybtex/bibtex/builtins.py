@@ -223,7 +223,7 @@ class If(Builtin):
         a2 = code.pop()
         a1 = code.pop()
         cond = code.pop()
-        code.stmt('if {0}:', (cond,), stack_safe=False)
+        code.stmt('if {0} > 0:', (cond,), stack_safe=False)
         with code.nested() as block:
             _execute(a1, i, code, block)
         code.stmt('else:')
