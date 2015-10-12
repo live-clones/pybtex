@@ -31,12 +31,55 @@ tex_whitespace_re = re.compile('[\s~]+')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
 
 def wrap(string, width=79, subsequent_indent='  '):
+    """
+    Wrap long string into multiple lines by inserting line breaks.
+
+    The string is broken at whitespace characters so that each line is as long
+    as possible, but no longer than ``width`` characters.
+
+    If there are no possible break points in the first ``width`` characters, a
+    longer line will be produced, with the line break inserted at the first
+    possible whitespace characters after ``width``.
+
+    After each line break, the subsequent line is indented with
+    ``subsequent_indent`` (two spaces by default).
+
+    The lines are not allowed to be shorter than ``len(subsequent_indent) + 1``
+    (3 characters by default), so that each line contains at least one
+    non-whitespace character after the indent.
+
+    >>> print wrap('', width=3)
+    <BLANKLINE>
+    >>> print wrap('0123456789 12345', width=10)
+    0123456789
+      12345
+    >>> print wrap('01234 6789 12345', width=10)
+    01234 6789
+      12345
+    >>> print wrap('01234 6789 12345', width=11)
+    01234 6789
+      12345
+    >>> print wrap('01234 6789 12345', width=9)
+    01234
+      6789
+      12345
+    >>> print wrap(' a b c', width=3)
+     a b
+      c
+    >>> print wrap('aa bb c', width=3)
+    aa bb
+      c
+
+    """
+
+    min_width = len(subsequent_indent)
+
     def find_break(string):
         for prev_match, match in pairwise(whitespace_re.finditer(string)):
-            if match is None or match.start() > width:
+            if (match is None or match.start() > width) and prev_match.start() > min_width:
                 return prev_match.start()
 
-    def iter_chunks(string):
+    def iter_lines(string):
         while len(string) > width:
             break_pos = find_break(string)
             if not break_pos:
@@ -47,7 +90,7 @@ def wrap(string, width=79, subsequent_indent='  '):
         if string:
             yield string
 
-    return '\n'.join(chunk.rstrip() for chunk in iter_chunks(string))
+    return '\n'.join(line.rstrip() for line in iter_lines(string))
 
 
 class BibTeXString(object):

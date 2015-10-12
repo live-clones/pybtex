@@ -76,10 +76,7 @@ class EntryVariable(Variable):
             self.interpreter.current_entry.vars[self.name] = value
 
     def value(self):
-        try:
-            return self.interpreter.current_entry.vars[self.name]
-        except KeyError:
-            return None
+        return self.interpreter.current_entry.vars.get(self.name, self.default)
 
     def write_code(self, interpreter, code):
         code.push('i.current_entry.vars.get({!r}, {!r})'.format(self.name, self.default))
