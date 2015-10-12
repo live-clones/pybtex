@@ -82,7 +82,7 @@ class EntryVariable(Variable):
             return None
 
     def write_code(self, interpreter, code):
-        code.push('i.current_entry.vars.get({!r})'.format(self.name))
+        code.push('i.current_entry.vars.get({!r}, {!r})'.format(self.name, self.default))
 
 
 class Integer(Variable):
