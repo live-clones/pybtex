@@ -68,10 +68,7 @@ class EntryVariable(Variable):
             self.validate(value)
             self.interpreter.current_entry.vars[self.name] = value
     def value(self):
-        try:
-            return self.interpreter.current_entry.vars[self.name]
-        except KeyError:
-            return None
+        return self.interpreter.current_entry.vars.get(self.name, self.default)
 
 
 class Integer(Variable):
