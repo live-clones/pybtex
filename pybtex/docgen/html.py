@@ -43,7 +43,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
-from pybtex.__version__ import version
+from pybtex import __version__
 from .mystyle import MyHiglightStyle
 
 e = Environment(loader=PackageLoader('pybtex', 'docgen'))
@@ -73,11 +73,11 @@ class DownloadLinks(Directive):
     has_content = False
 
     def run(self):
-        tarball_uri = 'http://pypi.python.org/packages/source/p/pybtex/pybtex-%s.tar.bz2' % version
+        tarball_uri = 'http://pypi.python.org/packages/source/p/pybtex/pybtex-%s.tar.bz2' % __version__
 
         current_version_is = nodes.Text('Current version is ')
-        pybtex_xx = nodes.reference('', 'Pybtex %s' % version,
-            name='Pybtex %s' % version,
+        pybtex_xx = nodes.reference('', 'Pybtex %s' % __version__,
+            name='Pybtex %s' % __version__,
             refuri=tarball_uri)
         see_whats_new = nodes.reference('', "see what's new",
             name="see what's new", refuri='history.txt')

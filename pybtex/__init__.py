@@ -26,6 +26,9 @@ from __future__ import absolute_import
 from os import path
 
 
+__version__  = '0.18'
+
+
 class Engine(object):
     def make_bibliography(self, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs):
         from pybtex import auxfile

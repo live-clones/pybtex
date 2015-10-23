@@ -30,7 +30,7 @@ import os
 import sys
 from datetime import datetime
 
-from pybtex.__version__ import version
+from pybtex import __version__
 
 
 def man_escape(string):
@@ -103,7 +103,7 @@ def format_head(main_obj):
     now = datetime.utcnow()
     yield man_head % {
         'cmd': main_obj.prog,
-        'version': version,
+        'version': __version__,
         'description': main_obj.description,
         'datestamp': now.strftime('%Y-%m-%d'),
         'timestamp': now.strftime('%Y-%m-%d %H:%M:%S +0000'),

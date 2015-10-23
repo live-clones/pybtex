@@ -19,4 +19,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-version = '0.18'
+import warnings
+
+msg = 'pybtex.__version__.version is deprecated since 0.19: use pybtex.__version__ attribute'
+warnings.warn(msg, DeprecationWarning)
+
+from pybtex import __version__ as version
