@@ -319,7 +319,7 @@ class BaseMultipartText(BaseText):
 
         if isinstance(key, (int, long)):
             start = key
-            end = key + 1
+            end = None
         elif isinstance(key, slice):
             start, end, step = key.indices(len(self))
             if step != 1:
@@ -329,6 +329,8 @@ class BaseMultipartText(BaseText):
 
         if start < 0:
             start = len(self) + start
+        if end is None:
+            end = start + 1
         if end < 0:
             end = len(self) + end
         return self._slice_end(len(self) - start)._slice_beginning(end - start)
