@@ -277,12 +277,12 @@ class BaseMultipartText(BaseText):
         >>> Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
         Tag('strong', 'Multi ', Tag('em', 'part'), ' text!')
 
-        Similar objects are merged into one:
+        Similar objects are merged together:
 
         >>> Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
         Text('Multi', Tag('em', 'part text!'))
-        >>> Text('Please ', HRef('http://example.com/', 'click'), HRef('http://example.com/', ' here'), '.')
-        Text('Please ', HRef('http://example.com/', 'click here'), '.')
+        >>> Text('Please ', HRef('/', 'click'), HRef('/', ' here'), '.')
+        Text('Please ', HRef('/', 'click here'), '.')
         """
 
         parts = (ensure_text(part) for part in parts)
@@ -552,7 +552,15 @@ class BaseMultipartText(BaseText):
 
 class String(BaseText):
     """
-    A single Python string wrapped into BaseText interface.
+    A :py:class:`String` is a wrapper for a plain Python string.
+    It supports the same methods as :py:class:`Text`.
+
+    >>> from pybtex.richtext import String
+    >>> print String('Crime & Punishment').render_as('text')
+    Crime & Punishment
+    >>> print String('Crime & Punishment').render_as('html')
+    Crime &amp; Punishment
+
     """
 
     def __init__(self, *parts):
@@ -642,14 +650,8 @@ class String(BaseText):
 
 class Text(BaseMultipartText):
     """
-    Rich text is basically a list of:
-
-    - plain strings
-    - Text objects, including objects derived from Text (Tag, HRef, ...)
-    - Symbol objects
-
-    Text is used as an internal formatting language of Pybtex,
-    being rendered to to HTML or LaTeX markup or whatever in the end.
+    The :py:class:`Text` class is the top level container that may contain
+    :py:class:`String`, :py:class:`Tag` or :py:class:`HRef` objects.
 
     """
 
@@ -662,9 +664,16 @@ class Text(BaseMultipartText):
 
 
 class Tag(BaseMultipartText):
-    """A tag is somethins like <foo>some text</foo> in HTML
-    or \\foo{some text} in LaTeX. 'foo' is the tag's name, and
-    'some text' is tag's text.
+    r"""
+    A :py:class:`Tag` represents something like an HTML tag
+    or a LaTeX formatting command:
+
+    >>> from pybtex.richtext import Tag
+    >>> tag = Tag('em', 'The TeXbook')
+    >>> print tag.render_as('html')
+    <em>The TeXbook</em>
+    >>> print tag.render_as('latex')
+    \emph{The TeXbook}
 
     """
 
@@ -699,8 +708,15 @@ class Tag(BaseMultipartText):
 
 
 class HRef(BaseMultipartText):
-    """A href is somethins like <href url="URL">some text</href> in HTML
-    or \href{URL}{some text} in LaTeX.
+    r"""
+    A :py:class:`HRef` represends a hyperlink:
+
+    >>> from pybtex.richtext import Tag
+    >>> href = HRef('http://ctan.org/', 'CTAN')
+    >>> print href.render_as('html')
+    <a href="http://ctan.org/">CTAN</a>
+    >>> print href.render_as('latex')
+    \href{http://ctan.org/}{CTAN}
 
     """
 

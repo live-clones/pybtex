@@ -29,8 +29,8 @@ A :py:class:`Text` is basically a container that holds a list of
 
 The basic workflow is:
 
-1. Construct some formatted :py:class:`Text`.
-2. Render it as some markup format.
+1. Construct a :py:class:`Text` object.
+2. Render it as LaTeX, HTML or other markup.
 
 .. doctest::
 
@@ -45,47 +45,25 @@ The basic workflow is:
 Rich text classes
 -----------------
 
-A :py:class:`Text` is the top level container that contains
-:py:class:`String`, :py:class:`Tag` or :py:class:`HRef` objects.
+There are four main rich text classes in Pybtex:
 
-A :py:class:`String` is just a wrapper for a Python unicode string:
-
-.. doctest::
-
-    >>> from pybtex.richtext import String
-    >>> print String('Crime & Punishment').render_as('text')
-    Crime & Punishment
-    >>> print String('Crime & Punishment').render_as('html')
-    Crime &amp; Punishment
-
-A :py:class:`Tag` represents something like an HTML tag
-or a LaTeX formatting command:
-
-.. doctest::
-
-    >>> from pybtex.richtext import Tag
-    >>> tag = Tag('em', 'The TeXbook')
-    >>> print tag.render_as('html')
-    <em>The TeXbook</em>
-    >>> print tag.render_as('latex')
-    \emph{The TeXbook}
+- :py:class:`Text`
+- :py:class:`String`
+- :py:class:`Tag`
+- :py:class:`HRef`
 
 
-A :py:class:`HRef` represends a hyperlink:
+:py:class:`Text` is the top level container that may contain
+:py:class:`String`, :py:class:`Tag`, and :py:class:`HRef` objects.
+When a :py:class:`Text` object is rendered into markup,
+it renders all of its child objects, then concatenates the result.
 
-.. doctest::
+:py:class:`String` is just a wrapper for a single Python string.
 
-    >>> from pybtex.richtext import Tag
-    >>> href = HRef('http://ctan.org/', 'CTAN')
-    >>> print href.render_as('html')
-    <a href="http://ctan.org/">CTAN</a>
-    >>> print href.render_as('latex')
-    \href{http://ctan.org/}{CTAN}
+:py:class:`Tag` and :py:class:`HRef` are also containers that may
+contain other :py:class:`String`, :py:class:`Tag`, and :py:class:`HRef`
+objects, so nested formatting is possible.  For example, this formatted text
 
-Like :py:class:`Text`, both :py:class:`Tag` and :py:class:`HRef` are also
-containers that hold a list of plain text strings or other :py:class:`Tag` or
-:py:class:`HRef` objects, so formatting can be nested.
-For example, this formatted text
 
     |CTAN hyperlink|_ is *comprehensive*.
 
@@ -106,12 +84,26 @@ is represented by this object tree:
     <a href="http://ctan.org/"><em>Comprehensive</em> TeX Archive Network</a> is <em>comprehensive</em>.
 
 
+All rich text classes share the same API more or less similar to plain
+:ref:`Python strings <python:textseq>`.
+
+Like Python strings, rich text objects are supposed to be immutable. Methods like
+:py:meth:`Text.append` or :py:meth:`Text.upper` return a new :py:class:`Text`
+object instead of modifying the data in place.
+Attempting to modify the contents of an existing :py:class:`Text` object is
+not supported and may lead to weird results.
+
+Here we document the methods of the :py:class:`Text` class.
+The other classes have similar methods.
+
 .. autoclass:: pybtex.richtext.Text
     :members:
     :inherited-members:
 
     .. automethod:: Text.__init__
 
+
+.. autoclass:: pybtex.richtext.String
 
 .. autoclass:: pybtex.richtext.Tag
 
