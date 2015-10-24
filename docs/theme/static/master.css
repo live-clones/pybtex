@@ -232,11 +232,11 @@ th {
 }
 
 .footer {
-    margin-top: 7ex;
+    margin-top: 7em;
     font-size: 80%;
     opacity: 0.5;
     clear: both;
-    text-align: right;
+    text-align: center;
 }
 
 .admonition {
