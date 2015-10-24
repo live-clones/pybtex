@@ -407,9 +407,13 @@ class Entry(object):
         )
 
     def __repr__(self):
+        # representing fields as FieldDict causes problems with representing
+        # fields.parent, so represent it as a list of tuples
+        repr_fields = repr(self.fields.items())
+
         return 'Entry({type_}, fields={fields}, persons={persons})'.format(
             type_=repr(self.type),
-            fields=repr(self.fields),
+            fields=repr_fields,
             persons=repr(self.persons),
         )
 
