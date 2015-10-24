@@ -162,9 +162,3 @@ To make things easier we designed a simple template language:
                     tag('emph') [field('journal')], volume_and_pages, date],
             ]
             return template.format_data(entry)
-
-Is that all?
-============
-
-More documentation will be written when our style API
-gets some form. Use the source for now.
