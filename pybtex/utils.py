@@ -153,12 +153,6 @@ class CaseInsensitiveDict(MutableMapping):
     def __contains__(self, key):
         return key.lower() in self._dict
 
-    def __deepcopy__(self, memo):
-        from copy import deepcopy
-        return CaseInsensitiveDict(
-            (key, deepcopy(value, memo)) for key, value in self.iteritems()
-        )
-
     def __repr__(self):
         """A caselessDict version of __repr__ """
         dct = dict((key, self[key]) for key in self)
@@ -290,12 +284,6 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
 
     def __iter__(self):
         return iter(self.order)
-
-    def __deepcopy__(self, memo):
-        from copy import deepcopy
-        return OrderedCaseInsensitiveDict(
-            (key, deepcopy(value, memo)) for key, value in self.iteritems()
-        )
 
     def iterkeys(self):
         return iter(self.order)
