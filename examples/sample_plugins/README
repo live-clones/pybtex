@@ -1,5 +1,5 @@
 A sample project with two Pybtex plugins: a bibliography parser and a
-bibliography writer, which parse/write bibliography data as plain Python code.
+bibliography writer that parse/write bibliography data as plain Python code.
 
 Usage:
 $ python setup.py develop

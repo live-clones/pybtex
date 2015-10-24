@@ -29,8 +29,7 @@ from pybtex.utils import OrderedCaseInsensitiveDict
 
 from pybtex.database.output import BaseWriter
 from pybtex.database.input import BaseParser
-from pybtex.database import BibliographyData
-from pybtex.database import Entry, Person
+from pybtex.database import BibliographyData, Entry, Person, FieldDict
 
 
 class PythonWriter(BaseWriter):
@@ -49,6 +48,7 @@ class PythonParser(BaseParser):
             'OrderedCaseInsensitiveDict': OrderedCaseInsensitiveDict,
             'Entry': Entry,
             'Person': Person,
+            'FieldDict': FieldDict,
         }
         code = stream.read()
         self.data = eval(code, context)
