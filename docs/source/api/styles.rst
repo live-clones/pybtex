@@ -162,8 +162,8 @@ Pybtex has a small template language to simplify common formatting tasks,
 like joining words with spaces, adding commas and periods, or handling missing fields.
 
 The template language is is not very documented for now, so you should look at
-the code in the :py:mod:`pybtex.style.template` module
-and the existing styles in :py:mod:`pybtex.style.formatting.*` modules.
+the code in the :source:`pybtex.style.template <pybtex/style/template.py>` module
+and the :source:`existing styles <pybtex/style/formatting>`.
 
 An example formatting style using template language:
 
