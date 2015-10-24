@@ -123,9 +123,8 @@ class BaseText(object):
         """
         Concatenate this Text with another Text or string.
 
-        >>> t = Text('a')
-        >>> print unicode(t + 'b')
-        ab
+        >>> Text('Longcat is ') + Tag('em', 'long')
+        Text('Longcat is ', Tag('em', 'long'))
         """
 
         return Text(self, other)
@@ -226,9 +225,26 @@ class BaseText(object):
     def render(self, backend):
         raise NotImplementedError
 
-    def render_as(self, format_name):
+    def render_as(self, backend_name):
+        r"""
+        Render this :py:class:`Text` into markup.
+        This is a wrapper method that loads a formatting backend plugin
+        and calls :py:meth:`Text.render`.
+
+        >>> text = Text('Longcat is ', Tag('em', 'looooooong'), '!')
+        >>> print text.render_as('html')
+        Longcat is <em>looooooong</em>!
+        >>> print text.render_as('latex')
+        Longcat is \emph{looooooong}!
+        >>> print text.render_as('text')
+        Longcat is looooooong!
+
+        :param backend_name: The name of the output backend (like ``"latex"`` or
+            ``"html"``).
+
+        """
         from pybtex.plugin import find_plugin
-        backend_cls = find_plugin('pybtex.backends', format_name)
+        backend_cls = find_plugin('pybtex.backends', backend_name)
         return self.render(backend_cls())
 
     def _unpack(self):
@@ -296,6 +312,15 @@ class BaseMultipartText(BaseText):
         return ''.join(unicode(part) for part in self.parts)
 
     def __eq__(self, other):
+        """
+        Rich text objects support equality comparison:
+
+        >>> Text('Cat') == Text('cat')
+        False
+        >>> Text('Cat') == Text('Cat')
+        True
+
+        """
         return (
             isinstance(other, BaseText) and
             self._typeinfo() == other._typeinfo() and
@@ -303,10 +328,34 @@ class BaseMultipartText(BaseText):
         )
 
     def __len__(self):
-        """Return the number of characters in this Text."""
+        """
+        ``len(text)`` returns the number of characters in the text, ignoring
+        the markup:
+
+        >>> len(Text('Long cat'))
+        8
+        >>> len(Text(Tag('em', 'Long'), ' cat'))
+        8
+        >>> len(Text(HRef('http://example.com/', 'Long'), ' cat'))
+        8
+
+        """
         return self.length
 
     def __contains__(self, item):
+        """
+        ``value in text`` returns ``True`` if any part of the ``text``
+        contains the substring ``value``:
+
+        >>> 'cat' in Text('Long cat!')
+        True
+
+        Substrings splitted across multiple text parts are not matched:
+
+        >>> 'long cat' in Text(Tag('em', 'Long'), 'cat!')
+        False
+
+        """
         if not isinstance(item, basestring):
             raise TypeError(item)
         return not item or any(part.__contains__(item) for part in self.parts)
@@ -315,6 +364,11 @@ class BaseMultipartText(BaseText):
         """
         Slicing and extracting characters works like with regular strings,
         formatting is preserved.
+
+        >>> Text('Longcat is ', Tag('em', 'looooooong!'))[:15]
+        Text('Longcat is ', Tag('em', 'looo'))
+        >>> Text('Longcat is ', Tag('em', 'looooooong!'))[-1]
+        Text(Tag('em', '!'))
         """
 
         if isinstance(key, (int, long)):
@@ -416,27 +470,69 @@ class BaseMultipartText(BaseText):
                 yield tail_text
 
 
-    def startswith(self, text):
-        if not self.parts:
-            return False
-        else:
-            return self.parts[0].startswith(text)
+    def startswith(self, prefix):
+        """
+        Return True if the text starts with the given prefix.
 
-    def endswith(self, text):
+        >>> Text('Longcat!').startswith('Longcat')
+        True
+
+        Prefixes split across multiple parts are not matched:
+
+        >>> Text(Tag('emph', 'Long'), 'cat!').startswith('Longcat')
+        False
+
+        """
+
         if not self.parts:
             return False
         else:
-            return self.parts[-1].endswith(text)
+            return self.parts[0].startswith(prefix)
+
+    def endswith(self, suffix):
+        """
+        Return True if the text ends with the given suffix.
+
+        >>> Text('Longcat!').endswith('cat!')
+        True
+
+        Suffixes split across multiple parts are not matched:
+
+        >>> Text('Long', Tag('em', 'cat'), '!').endswith('cat!')
+        False
+
+        """
+
+        if not self.parts:
+            return False
+        else:
+            return self.parts[-1].endswith(suffix)
 
     def lower(self):
+        """
+        Convert rich text to lowercase.
+
+        >>> Text(Tag('em', 'Long cat')).lower()
+        Text(Tag('em', 'long cat'))
+        """
+
         return self._create_similar(part.lower() for part in self.parts)
 
     def upper(self):
+        """
+        Convert rich text to uppsercase.
+
+        >>> Text(Tag('em', 'Long cat')).upper()
+        Text(Tag('em', 'LONG CAT'))
+        """
         return self._create_similar(part.upper() for part in self.parts)
 
     def render(self, backend):
         """
-        Return backend-dependent textual representation of this Text.
+        Render this :py:class:`Text` into markup.
+
+        :param backend: The formatting backend (an instance of
+            :py:class:`pybtex.backends.BaseBackend`).
         """
 
         rendered_list = [part.render(backend) for part in self.parts]

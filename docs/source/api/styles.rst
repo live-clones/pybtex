@@ -101,6 +101,11 @@ The other classes have similar methods.
     :inherited-members:
 
     .. automethod:: Text.__init__
+    .. automethod:: Text.__eq__
+    .. automethod:: Text.__len__
+    .. automethod:: Text.__contains__
+    .. automethod:: Text.__getitem__
+    .. automethod:: Text.__add__
 
 
 .. autoclass:: pybtex.richtext.String
