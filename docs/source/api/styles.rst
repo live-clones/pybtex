@@ -11,6 +11,10 @@ Designing new styles
 .. currentmodule:: pybtex.richtext
 
 
+.. contents::
+    :local:
+
+
 Rich text
 =========
 
