@@ -31,6 +31,10 @@ def toplevel(children, data):
 
 
 class BaseStyle(Plugin):
+    """
+    The base class for pythonic formatting styles.
+    """
+
     default_name_style = None
     default_label_style = None
     default_sorting_style = None
@@ -58,6 +62,14 @@ class BaseStyle(Plugin):
             yield FormattedEntry(entry.key, text, label)
 
     def format_bibliography(self, bib_data, citations=None):
+        """
+        Format bibliography entries with the given keys and return a
+        ``FormattedBibliography`` object.
+
+        :param bib_data: A :py:class:`pybtex.database.BibliographyData` object.
+        :param citations: A list of citation keys.
+        """
+
         if citations is None:
             citations = bib_data.entries.keys()
         citations = bib_data.add_extra_citations(citations, self.min_crossrefs)

@@ -117,16 +117,32 @@ The other classes have similar methods.
 .. autoclass:: pybtex.richtext.Symbol
 
 
-Template language
-=================
+Style API
+=========
 
-BibTeX uses has a simple stack oriented language for defining bibliography
-styles. This is what is inside of ``.bst`` files.  For a Pythonic bibliography
-processor it is natural to use Python for writing styles. A Pybtex style file
-is basically a Python module containing a class named ``Formatter``. This
-class has methods like ``format_article``, ``format_book``, etc. They accept a
-bibliography entry (an instance of :py:class:`pybtex.database.Entry` class) and return a
-formatted entry (an instance of :py:class:`pybtex.richtex.Text`).
+A formatting style in Pybtex is a class inherited from
+:py:class:`pybtex.style.formatting.BaseStyle`.
+
+.. autoclass:: pybtex.style.formatting.BaseStyle
+    :members:
+
+.. currentmodule:: pybtex.richtext
+
+
+Pybtex loads the style class as a :doc:`plugin <plugins>`,
+instantiates it with proper parameters and
+calls the :py:meth:`~.BaseStyle.format_bibliography` method that does
+the actual formatting job.
+The default implementation of :py:meth:`~.BaseStyle.format_bibliography`
+calls a ``format_<type>()`` method for each bibliography entry, where ``<type>``
+is the entry type, in lowercase. For example, to format
+an entry of type ``book``, the ``format_book()`` method is called.
+The method must return a :py:class:`.Text` object.
+Style classes are supposed to implement ``format_<type>()`` methods
+for every entry type they support. If a formatting method
+is not found for some entry, Pybtex complains about unsupported entry type.
+
+An example minimalistic style:
 
 .. sourcecode:: python
 
@@ -137,7 +153,19 @@ formatted entry (an instance of :py:class:`pybtex.richtex.Text`).
         def format_article(self, entry):
             return Text('Article ', Tag('em', entry.fields['title']))
 
-To make things easier we designed a simple template language:
+
+Template language
+=================
+
+Manually creating :py:class:`.Text` objects may be tedious sometimes.
+Pybtex has a small template language to simplify common formatting tasks,
+like joining words with spaces, adding commas and periods, or handling missing fields.
+
+The template language is is not very documented for now, so you should look at
+the code in the :py:mod:`pybtex.style.template` module
+and the existing styles in :py:mod:`pybtex.style.formatting.*` modules.
+
+An example formatting style using template language:
 
 .. sourcecode:: python
 
