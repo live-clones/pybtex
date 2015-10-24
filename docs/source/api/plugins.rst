@@ -1,31 +1,36 @@
-==============
-Pybtex plugins
-==============
+=============================
+Extending Pybtex with plugins
+=============================
 
-Starting from version 0.15, it is possible to extend Pybtex without hacking
-the sources via setuptools/distribute entry points.
+
+.. contents::
+    :local:
+
+
+Pybtex uses plugins for bibliography formats, markup formans and formatting
+styles. This allows to add new formats or styles to Pybtex withoud modifying
+Pybtex itself.
+
+The plugins are based on `Setuptools' entry points <Setuptools' documentation>`_.
+
 
 Entry Points
 ============
 
 Here is the list of entry points supported by Pybtex:
 
-``pybtex.database.input`` and ``pybtex.database.output``
---------------------------------------------------------
 
-This entry points are for extending Pybtex with new bibliography formats. The
-first entry point is used for reading bibliography data, the second one is
-used by for writing, so you can convert your data to another format with ``pybtex-convert``.
+pybtex.database.input
+---------------------
 
-All input and output plugin classes should inherit
-``pybtex.database.input.BaseParser`` and
-``pybtex.database.output.BaseWriter``, respectively.
+This entry point is used for bibliography parsers.
+Must point to a subclass of :py:class:`pybtex.database.input.BaseParser`.
 
-There are also additional entry points ``pybtex.database.input.suffixes`` and
-``pybtex.database.output.suffixes``, which are used for
-registering default plugins for specific file suffixes.
+There is also an additional entry point called ``pybtex.database.output.suffixes``.
+It is used for registering bibliography formats for specific file suffixes
+(like BibTeX for ``.bib``).
 
-For example, if you are writing a JSON input plugin for Pybtex, you entry points can be:
+For example, a JSON input plugin for Pybtex could use these entry points:
 
 .. sourcecode:: ini
 
@@ -36,31 +41,44 @@ For example, if you are writing a JSON input plugin for Pybtex, you entry points
     .json = pybtexjson:JSONParser
 
 
+pybtex.database.output
+----------------------
 
-``pybtex.backends``
--------------------
+This entry poing is used for bibliography writers.
+Must point to a subclass of :py:class:`pybtex.database.output.BaseWriter`.
+
+There is also an additional entry point called ``pybtex.database.output.suffixes``.
+It is used for registering default plugins for specific file suffixes in the
+same way as ``pybtex.database.input.suffixes`` described above.
+
+
+pybtex.backends
+---------------
 
 This entry point is for adding new markup types for Pythonic bibliography
 styles. Existing plugins are ``latex``, ``html``, ``markdown``, and ``plaintext``.
+Must point to a :py:class:`pybtex.backends.BaseBackend`
+subclass.
 
 
-``pybtex.style.labels``
+pybtex.style.formatting
 -----------------------
+
+Pythonic bibliography styles themselves. Must point to a
+:py:class:`pybtex.style.formatting.BaseStyle` subclass.
+
+
+pybtex.style.labels
+-------------------
 
 Label styles for Pythonic bibliography styles.
 
 
-``pybtex.style.names``
-----------------------
+pybtex.style.names
+------------------
 
 Name styles for Pythonic bibliography styles.
 
-
-``pybtex.style.formatting``
----------------------------
-
-Pythonic bibliography styles themselves. The only style existing is ``unsrt``.
-Please contribute more styles. :)
 
 
 Registering Plugins
@@ -76,4 +94,4 @@ Example Plugins
 ===============
 
 An example project directory with two simple plugins and a ``setup.py`` file can
-be found in ``examples/sample_plugins``.
+be found in the :source:`examples/sample_plugins` subdirectory.
