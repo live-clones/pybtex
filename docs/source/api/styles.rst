@@ -1,6 +1,6 @@
-====================
-Designing new styles
-====================
+================
+Designing styles
+================
 
 
 .. testsetup:: *
