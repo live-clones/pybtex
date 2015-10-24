@@ -651,13 +651,14 @@ class BaseMultipartText(BaseText):
 class String(BaseText):
     """
     A :py:class:`String` is a wrapper for a plain Python string.
-    It supports the same methods as :py:class:`Text`.
 
     >>> from pybtex.richtext import String
     >>> print String('Crime & Punishment').render_as('text')
     Crime & Punishment
     >>> print String('Crime & Punishment').render_as('html')
     Crime &amp; Punishment
+
+    :py:class:`String` supports the same methods as :py:class:`Text`.
 
     """
 
@@ -773,6 +774,7 @@ class Tag(BaseMultipartText):
     >>> print tag.render_as('latex')
     \emph{The TeXbook}
 
+    :py:class:`Tag` supports the same methods as :py:class:`Text`.
     """
 
     def __check_name(self, name):
@@ -816,6 +818,8 @@ class HRef(BaseMultipartText):
     >>> print href.render_as('latex')
     \href{http://ctan.org/}{CTAN}
 
+    :py:class:`HRef` supports the same methods as :py:class:`Text`.
+
     """
 
     def __init__(self, url, *args):
@@ -836,10 +840,12 @@ class HRef(BaseMultipartText):
 
 
 class Symbol(BaseText):
-    """A special symbol.
+    """A special symbol. This class is rarely used and may be removed in
+    future versions.
 
     Examples of special symbols are non-breaking spaces and dashes.
 
+    :py:class:`Symbol` supports the same methods as :py:class:`Text`.
     """
 
     def __init__(self, name):

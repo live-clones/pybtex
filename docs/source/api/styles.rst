@@ -114,8 +114,6 @@ The other classes have similar methods.
 
 .. autoclass:: pybtex.richtext.HRef
 
-.. autoclass:: pybtex.richtext.String
-
 .. autoclass:: pybtex.richtext.Symbol
 
 
