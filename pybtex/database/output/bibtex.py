@@ -111,7 +111,13 @@ class Writer(BaseWriter):
                 stream.write(u'@preamble{%s}\n\n' % self.quote(preamble))
 
         write_preamble(bib_data.preamble)
+
+        first = True
         for key, entry in bib_data.entries.iteritems():
+            if not first:
+                stream.write(u'\n')
+            first = False
+
             stream.write(u'@%s' % entry.original_type)
             stream.write(u'{%s' % key)
 #            for role in ('author', 'editor'):
@@ -119,4 +125,4 @@ class Writer(BaseWriter):
                 write_persons(persons, role)
             for type, value in entry.fields.iteritems():
                 write_field(type, value)
-            stream.write(u'\n}\n\n')
+            stream.write(u'\n}\n')
