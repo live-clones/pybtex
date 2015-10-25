@@ -36,14 +36,14 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.ifconfig',
-    'sphinx.ext.intersphinx',
+    # 'sphinx.ext.intersphinx',
     'sphinx.ext.extlinks',
     'pybtex_doctools.pygments',
 ]
 
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-}
+# intersphinx_mapping = {
+#     'python': ('https://docs.python.org/3/', None),
+# }
 
 extlinks = {
     'source': ('https://bitbucket.org/pybtex-devs/pybtex/src/HEAD/%s', ''),

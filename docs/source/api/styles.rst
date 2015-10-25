@@ -85,7 +85,10 @@ is represented by this object tree:
 
 
 All rich text classes share the same API more or less similar to plain
-:ref:`Python strings <python:textseq>`.
+`Python strings`_.
+
+.. _Python strings: https://docs.python.org/3/library/stdtypes.html#textseq
+
 
 Like Python strings, rich text objects are supposed to be immutable. Methods like
 :py:meth:`Text.append` or :py:meth:`Text.upper` return a new :py:class:`Text`
