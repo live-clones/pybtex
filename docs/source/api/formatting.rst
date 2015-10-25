@@ -26,11 +26,11 @@ and formats it like this:
     *Concrete mathematics: a foundation for computer science*.
     A foundation for computer science. Addison-Wesley, 1989.
 
-Pybtex contains two different engines for formatting bibliographies:
+Pybtex contains two different formatting engines:
 
-- The :ref:`BibTeX engine <bibtex-engine>` that is compatible with the original BibTeX ``.bst`` styles.
+- The :ref:`BibTeX engine <bibtex-engine>` is compatible with the original BibTeX ``.bst`` styles.
 
-- The :ref:`Python engine <python-engine>` that uses styles written in Python.
+- The :ref:`Python engine <python-engine>` uses styles written in Python.
 
 
 .. _bibtex-engine:
@@ -38,64 +38,68 @@ Pybtex contains two different engines for formatting bibliographies:
 BibTeX engine
 =============
 
-The BibTeX is backward compatible with BibTeX and is used by default.
+The BibTeX engine is fully compatible with BibTeX style files and is used by default.
 
 
 How it works
 ------------
 
-When you type ``pybtex mydocument`` the following things happen:
+When you type :command:`pybtex mydocument`, the following things happen:
 
 
-1.  Pybtex reads the file ``mydocument.aux`` in the current directory.
+1.  Pybtex reads the file :file:`mydocument.aux` in the current directory.
     This file is normally created by LaTeX and contains all sorts of auxiliary information
     collected during processing the LaTeX document.
 
     Pybtex is interested in these pieces of information:
 
     Bibliography style:
-        First, Pybtex searches the ``.aux`` file for a ``\bibstyle`` tells what formatting style to use.
+        First, Pybtex searches the :file:`.aux` file for a ``\bibstyle``
+        command that specifies which formatting style will be used.
 
-        For example, ``\bibstyle{unsrt}`` instructs Pybtex to use formatting style defined by ``unsrt.bst``.
+        For example, ``\bibstyle{unsrt}`` instructs Pybtex to use formatting
+        style defined in the file :file:`unsrt.bst`.
 
     Bibliography data:
-        Next, Pybtex expects to find at least one ``\bibdata`` command in the aux file that tells
-        where to look for the bibliography data.
+        Next, Pybtex expects to find at least one ``\bibdata`` command in the
+        :file:`.aux` file that tells where to look for the bibliography data.
 
-        For example, ``\bibdata{mydocument}`` means "use the bibliography data from ``mydocument.bib``".
+        For example, ``\bibdata{mydocument}`` means "use the bibliography data
+        from :file:`mydocument.bib`".
 
     Citations:
-        Finally, Pybtex needs to know what entries to put into the resulting bibliography.
-        Pybtex gets the list of citation keys from ``\citation`` commands in the ``.aux`` file.
+        Finally, Pybtex needs to know which entries to put into the resulting
+        bibliography.  Pybtex gets the list of citation keys from
+        ``\citation`` commands in the :file:`.aux` file.
 
-        For example, ``\citation{graham1989concrete}`` means "include the entry with key
-        ``graham1989concrete`` into the resulting bibliograhy".
+        For example, ``\citation{graham1989concrete}`` means "include the
+        entry with the key ``graham1989concrete`` into the resulting bibliograhy".
 
-        A wildcard citation ``\citation{*}`` tells Pybtex to format the bibliography for all
-        entries from all data files specified by ``\bibdata`` commands.
+        A wildcard citation ``\citation{*}`` tells Pybtex to format the
+        bibliography for all entries from all data files specified by
+        all ``\bibdata`` commands.
 
-2.  Pybtex executes the style program in the ``.bst`` file specified by the ``\bibstyle`` command.
-    As a result, a ``.bbl`` file containing the resulting formatted is created.
+2.  Pybtex executes the style program in the :file:`.bst` file specified by
+    the ``\bibstyle`` command.  As a result, a :file:`.bbl` file containing
+    the resulting formatted bibliography is created.
 
-    A ``.bst`` style is a program in a domain-specific stack-based language.
-    It contains complete instructions on how to create the formatted bibliography
-    from the given bibliography data and citation keys.
-    For example, a ``READ`` command tells Pybtex to read the data from all
-    files specified earlier by ``\bibdata`` commands in the ``.aux`` file,
-    an ``ITERATE`` command tells Pybtex to execute a piece of code for each
-    citation key specified by ``\citation`` commands, and so on.
-    The built-in ``write$`` function tells Pybtex to output the given string to
-    the resulting ``.bbl`` file.
-    Pybtex simply executes the ``.bst`` program and implements all the built-in
-    functions and commands.
+    A :file:`.bst` style is a program in a domain-specific stack-based
+    language.  It contains the complete step-by-step instructions on how to
+    create the formatted bibliography from the given bibliography data and
+    citation keys.  For example, a ``READ`` command tells Pybtex to read the
+    bibliography data from all files specified by ``\bibdata`` commands in the
+    ``.aux`` file, an ``ITERATE`` command tells Pybtex to execute a piece of
+    code for each citation key specified by ``\citation`` commands, and so on.
+    The built-in ``write$`` function tells Pybtex to write the given string
+    into the resulting :file:`.bbl` file.  Pybtex implements all these
+    commands and built-in functions and simply executes the :file:`.bst`
+    program step by step.
 
-    A complete reference of the ``.bst`` language can be found in the `BibTeX hacking guide`_ by Oren Patashnik.
-    It is available by running ``texdoc btxhak`` in most TeX distributions.
+    A complete reference of the :file:`.bst` language can be found in the
+    `BibTeX hacking guide`_ by Oren Patashnik.  It is available by running
+    :command:`texdoc btxhak` in most TeX distributions.
 
 .. _`BibTeX hacking guide`: http://mirrors.ctan.org/biblio/bibtex/base/btxhak.pdf
-
-Most ``.bst`` styles contain hardcoded LaTeX markup. Because of that the BibTeX engine
-is limited to LaTeX and cannot produce HTML or Markdown output.
 
 
 .. _python-engine:
@@ -103,17 +107,17 @@ is limited to LaTeX and cannot produce HTML or Markdown output.
 Python engine
 =============
 
-The Python engine is enabled by running ``pybtex`` with  the ``-l python`` option.
+The Python engine is enabled by running :command:`pybtex` with  the :option:`-l python` option.
 
 
 Differences from the BibTeX engine
 ----------------------------------
 
-* Formatting styles are written in Python instead of the ``.bst`` language.
+* Formatting styles are written in Python instead of the :file:`.bst` language.
 
 * Formatting styles are not tied to LaTeX and do not use hardcoded LaTeX
-  markup. Instead of that they produce format-agnostic :py:class:`.RichText`
-  objects that can be converted to any markup (LaTeX, Markdown, HTML, etc.).
+  markup. Instead of that they produce format-agnostic :py:class:`pybtex.richtext.Text`
+  objects that can be converted to any markup format (LaTeX, Markdown, HTML, etc.).
 
 * Name formatting, label formatting, and sorting styles are defined separately
   from the main style.
@@ -122,37 +126,35 @@ Differences from the BibTeX engine
 How it works
 ------------
 
-So, when you type ``pybtex -l python mydocument``, this happens:
+When you type :command:`pybtex -l python mydocument`, this happens:
 
-1.  Pybtex reads the file ``mydocument.aux`` in the current directory and
+1.  Pybtex reads the file :file:`mydocument.aux` in the current directory and
     extracts the name of the the bibliography style, the list of bibliography
     data files and the list of citation keys.
-
     This step is exactly the same as with the BibTeX engine.
 
-2.  Pybtex reads biliography data from all data files specified in the ``.aux`` file
+2.  Pybtex reads biliography data from all data files specified in the :file:`.aux` file
     into a single :py:class:`.BibliographyData` object.
 
-3.  Then the formatting style is loaded. The formatting style is simply a
-    Python class with a ``.format_bibliography()`` method.  Pybtex passes the
+3.  Then the formatting style is loaded. The formatting style is a
+    Python class with a :py:meth:`~.format_bibliography()` method.  Pybtex passes the
     bibliography data (a :py:class:`.BibliographyData` object) and the list of
-    citation keys to ``.format_bibliography()``, along with some other
-    options.
+    citation keys to :py:meth:`~.format_bibliography()`.
 
 4.  The formatting style formats each of the requested bibliography entries
     in a style-specific way.
 
     When it comes to formatting names, a name formatting style is loaded and
-    used. A name formatting style is simply a Python class with a specific
+    used. A name formatting style is also a Python class with a specific
     interface.  Similarly, a label formatting style is used to format entry
     labels, and a sorting style is used to sort the resulting style.  Each
     formatting style has a default name style, a default label style and a
     default sorting style. The defaults can be overridden with options passed
-    to ``.format_bibliography()``.
+    to the main style class.
 
     Each formatted entry is put into a :py:class:`.FormattedEntry` object
     which is just a container for the formatted label, the formatted entry
-    text (as a :py:class:`.RichText` objects) and the entry key.  The reason
+    text (as a :py:class:`pybtex.richtext.Text` object) and the entry key.  The reason
     that the label and the main text are stored separately is to give the
     output backend more flexibility when converting the
     :py:class:`.FormattedEntry` object to the actual markup. For example, the
