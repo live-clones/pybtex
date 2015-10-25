@@ -24,7 +24,7 @@
 """Generate man pages for pybtex and pybtex-convert.
 """
 
-from __future__ import with_statement
+from __future__ import with_statement, print_function
 
 import os
 import sys
@@ -132,6 +132,7 @@ def write(outfile, lines, escape=True):
 
 def generate_manpage(man_dir, main_obj):
     man_filename = os.path.join(man_dir, '%s.1' % main_obj.prog)
+    print('Writing', man_filename, file=sys.stderr)
     with open(man_filename, 'w') as man_file:
         write_manpage(man_file, main_obj)
 
