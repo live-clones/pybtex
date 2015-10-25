@@ -8,9 +8,16 @@ Reading and writing bibliography data
     from pybtex.database import BibliographyData, Entry, Person, parse_string
 
 
+.. contents::
+    :local:
+
+
+Reading bibliography data
+=========================
+
 One of the most common things to do with Pybtex API is parsing BibTeX files.
 There are several high level functions in the :py:mod:`pybtex.database` module
-for that.
+for reading bibliography databases.
 
 .. autofunction:: pybtex.database.parse_string
 
@@ -37,20 +44,52 @@ Here is a quick example:
     MacKay, Pierre
 
 
+Writing bibliography data
+=========================
+
+The :py:class:`.BibliographyData` has several methods that are symmetrical to
+the functions described above:
+
+- :py:meth:`.BibliographyData.to_string` formats the bibliograhy data into a string,
+- :py:meth:`.BibliographyData.to_bytes` formats the bibliograhy data into a byte string,
+- :py:meth:`.BibliographyData.to_file` writes the  bibliograhy data into a file.
+
+
+.. doctest::
+
+    >>> from pybtex.database import BibliographyData, Entry
+    >>> bib_data = BibliographyData({
+    ...     'article-minimal': Entry('article', [
+    ...         ('author', 'L[eslie] B. Lamport'),
+    ...         ('title', 'The Gnats and Gnus Document Preparation System'),
+    ...         ('journal', "G-Animal's Journal"),
+    ...         ('year', '1986'),
+    ...     ]),
+    ... })
+    >>> print bib_data.to_string('bibtex')
+    @article{article-minimal,
+        author = "L[eslie] B. Lamport",
+        title = "The Gnats and Gnus Document Preparation System",
+        journal = "G-Animal's Journal",
+        year = "1986"
+    }
+    <BLANKLINE>
+
+
 Bibliography data classes
 =========================
 
-Pybtex uses these classes to represent bibligraphy databases:
+Pybtex uses several classes to represent bibligraphy databases:
 
 - :py:class:`.BibliographyData` is a collection of individual bibliography
-  entries and possibly some additional metadata.
+  entries and some additional metadata.
 
 - :py:class:`.Entry` is a single bibliography entry (a book, an article, etc.).
 
   An entry has a key (like ``'knuth74'``), a type (``'book'``, ``'article'``, etc.) and a number of key-value fields.
 
-- :py:class:`.Person` is a person or an organization related to a bibliography entry
-  (usually an author or an editor).
+- :py:class:`.Person` is a person related to a bibliography entry
+  (usually as an author or an editor).
 
 .. autoclass:: pybtex.database.BibliographyData
     :members:
