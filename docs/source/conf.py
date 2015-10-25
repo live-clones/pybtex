@@ -195,6 +195,10 @@ html_short_title = 'Docs'
 # This is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = None
 
+html_context = {
+    'site_url': 'http://pybtex.org/',
+}
+
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Pybtexdoc'
 

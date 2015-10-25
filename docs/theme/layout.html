@@ -20,7 +20,7 @@
 {%- macro relbar() %}
 <div class="relbar">
     <div class="left">
-        <a href="http://pybtex.org/">Pybtex</a> /
+        <a href="{{ site_url }}">Pybtex</a> /
         {%- if pagename != master_doc %}
             <a href="{{ url_root }}">{{ shorttitle|e }}</a> /
             {%- for parent in parents %}
