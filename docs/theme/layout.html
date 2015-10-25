@@ -97,7 +97,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset={{ encoding }}" />
     {{ metatags }}
     {%- block htmltitle %}
-    <title>{{ title|striptags|e }}{{ titlesuffix }} ({{ release }})</title>
+    <title>{{ title|striptags|e }}{{ titlesuffix }} {% if not site %}({{ release }}){% endif %}</title>
     {%- endblock %}
     {{ css() }}
     {%- if not embedded %}
