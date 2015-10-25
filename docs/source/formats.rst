@@ -110,4 +110,4 @@ and can output these formats:
 - HTML
 - plain text
 
-Support for other formats can be added with :doc:`api/plugins`.
+Support for other formats can be added with :doc:`plugins <api/plugins>`.
