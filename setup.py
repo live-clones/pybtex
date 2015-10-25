@@ -29,7 +29,7 @@ from distutils.command.sdist import sdist
 from distutils.dep_util import newer
 
 progname = 'pybtex'
-from pybtex.__version__ import version
+from pybtex import __version__
 
 class Sdist(sdist):
     def run(self):
@@ -65,7 +65,7 @@ if sys.version_info < (2, 7):
     install_requires += ['Counter>=1.0.0']
 
 setup(name=progname,
-    version=version,
+    version=__version__,
     description='A BibTeX-compatible bibliography processor in Python',
     long_description=README,
     author='Andrey Golovizin',

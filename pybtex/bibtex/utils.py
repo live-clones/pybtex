@@ -22,40 +22,72 @@
 import re
 
 from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.utils import pairwise
 
-whitespace_re = re.compile('(\s)')
+whitespace_re = re.compile(r'(\s)')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
 
-def wrap(string, width=79):
-    def wrap_chunks(chunks, width, initial_indent='', subsequent_indent='  '):
-        space_len = 1
-        line = []
-        lines = []
-        current_width = 0
-        indent = initial_indent
+def wrap(string, width=79, subsequent_indent='  '):
+    """
+    Wrap long string into multiple lines by inserting line breaks.
 
-        def output(line, indent):
-            if line:
-                if line[0] == ' ':
-                    line.pop(0)
-                lines.append(indent + ''.join(line).rstrip())
+    The string is broken at whitespace characters so that each line is as long
+    as possible, but no longer than ``width`` characters.
 
-        for chunk in chunks:
-            max_width = width - len(indent)
-            chunk_len = len(chunk)
-            if current_width + chunk_len <= max_width:
-                line.append(chunk)
-                current_width += chunk_len
-            else:
-                output(line, indent)
-                indent = subsequent_indent
-                line = [chunk]
-                current_width = chunk_len
-        output(line, indent)
-        return lines
+    If there are no possible break points in the first ``width`` characters, a
+    longer line will be produced, with the line break inserted at the first
+    possible whitespace characters after ``width``.
 
-    chunks = whitespace_re.split(string)
-    return '\n'.join(wrap_chunks(chunks, width))
+    After each line break, the subsequent line is indented with
+    ``subsequent_indent`` (two spaces by default).
+
+    The lines are not allowed to be shorter than ``len(subsequent_indent) + 1``
+    (3 characters by default), so that each line contains at least one
+    non-whitespace character after the indent.
+
+    >>> print wrap('', width=3)
+    <BLANKLINE>
+    >>> print wrap('0123456789 12345', width=10)
+    0123456789
+      12345
+    >>> print wrap('01234 6789 12345', width=10)
+    01234 6789
+      12345
+    >>> print wrap('01234 6789 12345', width=11)
+    01234 6789
+      12345
+    >>> print wrap('01234 6789 12345', width=9)
+    01234
+      6789
+      12345
+    >>> print wrap(' a b c', width=3)
+     a b
+      c
+    >>> print wrap('aa bb c', width=3)
+    aa bb
+      c
+
+    """
+
+    min_width = len(subsequent_indent)
+
+    def find_break(string):
+        for prev_match, match in pairwise(whitespace_re.finditer(string)):
+            if (match is None or match.start() > width) and prev_match.start() > min_width:
+                return prev_match.start()
+
+    def iter_lines(string):
+        while len(string) > width:
+            break_pos = find_break(string)
+            if not break_pos:
+                yield string
+                return
+            yield string[:break_pos]
+            string = subsequent_indent + string[break_pos + 1:]
+        if string:
+            yield string
+
+    return '\n'.join(line.rstrip() for line in iter_lines(string))
 
 
 class BibTeXString(object):

@@ -24,9 +24,7 @@
 import sys
 import optparse
 
-from pybtex.__version__ import version
-
-from pybtex import errors
+from pybtex import errors, __version__
 from pybtex.textutils import add_period
 from pybtex.plugin import find_plugin, enumerate_plugin_names
 
@@ -187,7 +185,7 @@ class CommandLine(object):
             formatter=PybtexHelpFormatter(),
             usage='%prog ' + self.args,
             description=add_period(self.description.capitalize()),
-            version='%%prog-%s' % version
+            version='%%prog-%s' % __version__
         )
         for option_group, option_list in self.options:
             if option_group is None:

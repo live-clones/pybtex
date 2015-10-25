@@ -30,7 +30,7 @@ class SortingStyle(BaseSortingStyle):
         elif 'author' in entry.persons:
             author_key = self.persons_key(entry.persons['author'])
         else:
-            author_key = None
+            author_key = ''
         return (author_key, entry.fields.get('year', ''), entry.fields.get('title', ''))
 
     def persons_key(self, persons):
@@ -48,3 +48,5 @@ class SortingStyle(BaseSortingStyle):
             return self.persons_key(entry.persons['author'])
         elif entry.persons.get('editor'):
             return self.persons_key(entry.persons['editor'])
+        else:
+            return ''
