@@ -79,13 +79,19 @@ bibliography formatting styles. Pybtex supports it too.
 
 The code in the BibTeX style language looks like this:
 
-.. code-block:: bst
+.. code-block:: bst-pybtex
 
-    FUNCTION {new.block}
-    { output.state before.all =
-        'skip$
-        { after.block 'output.state := }
-      if$
+    FUNCTION {format.bvolume}
+    { volume empty$
+        { "" }
+        { "volume" volume tie.or.space.connect
+        series empty$
+            'skip$
+            { " of " * series emphasize * }
+        if$
+        "volume and number" number either.or.check
+        }
+    if$
     }
 
 This code is hidden inside :file:`.bst` files and you don't have to worry

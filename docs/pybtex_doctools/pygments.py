@@ -26,7 +26,7 @@ import re
 from string import ascii_letters, digits
 
 from pygments.style import Style
-from pygments.lexer import ExtendedRegexLexer, include, default
+from pygments.lexer import RegexLexer, ExtendedRegexLexer, include, default, words
 from pygments.token import Keyword, Name, Comment, String, Error, \
      Number, Operator, Generic, Literal, Punctuation, Text
 
@@ -173,6 +173,45 @@ class BibTeXLexer(ExtendedRegexLexer):
     }
 
 
+class BSTLexer(RegexLexer):
+    name = 'BST'
+    aliases = ['bst', 'bst-pybtex']
+    filenames = ['*.bst']
+    flags = re.IGNORECASE | re.MULTILINE
+
+    tokens = {
+        'root': [
+            include('whitespace'),
+            (words(['read', 'sort']), Name.Class),
+            (words(['execute', 'integers', 'iterate', 'reverse', 'strings']), Name.Class, ('group')),
+            (words(['function', 'macro']), Name.Class, ('group', 'group')),
+            (words(['entry']), Name.Class, ('group', 'group', 'group')),
+        ],
+        'group': [
+            include('whitespace'),
+            ('{', Text.Punctuation, ('#pop', 'group-end', 'body')),
+        ],
+        'group-end': [
+            include('whitespace'),
+            ('}', Text.Punctuation, '#pop'),
+        ],
+        'body': [
+            include('whitespace'),
+            (r'[^#\"\{\}\s]+\$', Name.Builtin),
+            (r'[^#\"\{\}\s]+', Name.Variable),
+            (r'"[^\"]*"', String),
+            (ur'#-?\d+', Number),
+            ('{', Text.Punctuation, ('group-end', 'body')),
+            default('#pop'),
+        ],
+        'whitespace': [
+            ('\s+', Text),
+            ('%.*?$', Comment.SingleLine),
+        ],
+    }
+
+
 def setup(app):
     add_entry_point('pygments.styles', 'pybtex', 'pybtex_doctools.pygments', 'PybtexStyle')
     add_entry_point('pygments.lexers', 'bibtex-pybtex', 'pybtex_doctools.pygments', 'BibTeXLexer')
+    add_entry_point('pygments.lexers', 'bst-pybtex', 'pybtex_doctools.pygments', 'BSTLexer')
