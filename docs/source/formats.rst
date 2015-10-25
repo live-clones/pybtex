@@ -2,15 +2,19 @@
 Supported formats
 =================
 
+
+.. contents::
+    :local:
+
+
 Bibliography formats
 ====================
+
 
 BibTeX
 ------
 
-BibTeX format is quite simple. Those who have used BibTeX should be already
-familiar with it. The others will probably catch the idea from the following
-example:
+BibTeX is the default bibliography format used by Pybtex:
 
 .. sourcecode:: bibtex
 
@@ -27,43 +31,44 @@ Here is a `more detailed description of the BibTeX format`_.
 
 .. _more detailed description of the BibTeX format: http://www.miwie.org/tex-refs/html/bibtex-bib-files.html
 
+
 BibTeXML
 --------
 
-`BibTeXML <http://bibtexml.sourceforge.net>`_ format attempts to combine the
-simplicity of BibTeX format with the power of XML. Here is what the above
-BibTeX bibliography entry wolud look like:
+`BibTeXML`_ is an attempt to translate
+the BibTeX format into XML.
+The above BibTeX snippet translates into this XML:
 
 .. sourcecode:: xml
 
     <bibtex:entry id="strunk-and-white">
-    <bibtex:book>
-    <bibtex:title>The Elements of Style</bibtex:title>
-    <bibtex:publisher>Macmillan<bibtex:publisher>
-    <bibtex:edition>Third</bibtex:edition>
-    <bibtex:year>1979</bibtex:year>
-    <bibtex:author>
-            <bibtex:person>
-                <bibtex:first>William</bibtex:first>
-                <bibtex:last>Strunk</bibtex:last>
-                <bibtex:lineage>Jr.</bibtex:lineage>
-            </bibtex:person>
-            <bibtex:person>
-                <bibtex:first>E.</bibtex:first>
-                <bibtex:middle>B.</bibtex:first>
-                <bibtex:last>White</bibtex:last>
-            </bibtex:person>
-    </bibtex:author>
-    </bibtex:book>
+        <bibtex:book>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>William</bibtex:first>
+                    <bibtex:last>Strunk</bibtex:last>
+                    <bibtex:lineage>Jr.</bibtex:lineage>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>E.</bibtex:first>
+                    <bibtex:middle>B.</bibtex:first>
+                    <bibtex:last>White</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+            <bibtex:title>The Elements of Style</bibtex:title>
+            <bibtex:publisher>Macmillan<bibtex:publisher>
+            <bibtex:edition>Third</bibtex:edition>
+            <bibtex:year>1979</bibtex:year>
+        </bibtex:book>
     </bibtex:entry>
+
 
 YAML
 ----
 
-We chose to create our own format to use with Pybtex. It is quite similar to
-`BibTeXML <http://bibtexml.sourceforge.net>`_
-but based on `YAML <http://yaml.org>`_ instead of XML and therefore
-is much less verbose.
+We added our own experimental YAML-based bibliography format to Pybtex.
+It is mostly a straightforward translation of `BibTeXML`_
+into YAML:
 
 .. sourcecode:: yaml
 
@@ -82,27 +87,27 @@ is much less verbose.
         year: 1979
 
 
+.. _BibTeXML: http://bibtexml.sourceforge.net
+
 Bibliography style formats
 ==========================
 
-- BibTeX ``.bst`` files
-- Pybtex own pythonic :doc:`style API <api/styles>`
+Pybtex currently supports bibliography styles in two formats:
+
+- BibTeX' ``.bst`` files
+- Pybtex' :doc:`Pythonic styles <api/styles>`
 
 
 Output formats
 ==============
 
-Unlike BibTeX ``.bst`` styles, which can only output LaTeX or whatever is
-hardcoded in them, Pybtex pythonic styles are output format agnostic and can
-produce:
+BibTeX's :file:`.bst` styles usually contain hardcoded LaTeX markup
+and are LaTeX-only. Pythonic styles in Pybtex are markup-independent
+and can output these formats:
 
 - LaTeX
+- Markdown
+- HTML
 - plain text
-- HTML (work in progress)
 
-Support for other formats can be added easily. If you really need it,
-please `file a feature request`_.
-
-.. _file a feature request: https://bitbucket.org/pybtex-devs/pybtex/issues/new
-
-
+Support for other formats can be added with :doc:`api/plugins`.
