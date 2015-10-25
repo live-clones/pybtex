@@ -2,16 +2,20 @@
 Command line interface
 ======================
 
-.. highlight:: sh
+.. contents::
+    :local:
 
 
 Making bibliographies with :command:`pybtex`
 ============================================
 
-:command:`pybtex` executable is fully compatible with :command:`bibtex` and accepts the same command line options.
-So you basically just type :command:`pybtex` instead of :command:`bibtex`.
+The :command:`pybtex` executable is used in the same was as the original :command:`bibtex`
+command and accepts the same command line options.
+The only difference is that you type :command:`pybtex` instead of
+:command:`bibtex`.
 
-For example, to compile a LaTex file named :file:`book.tex`, you run:
+For example, to compile the bibliography for a LaTeX file named
+:file:`book.tex`, you need to type:
 
 .. code-block:: shell
 
@@ -21,7 +25,11 @@ For example, to compile a LaTex file named :file:`book.tex`, you run:
     $ latex book  # to get cross-references right
 
 
-.. todo:: link to BibTeX manual
+See the `BibTeX tutorial`_ by Andrew Roberts for a basic explanation of how to use
+BibTeX.
+
+
+.. _BibTeX tutorial: http://www.andy-roberts.net/writing/latex/bibliographies
 
 
 Bibliography formats other then BibTeX
@@ -30,24 +38,35 @@ Bibliography formats other then BibTeX
 .. todo::
     link to BibTeX format description
 
-Besides standard :file:`.bib` files, Pybtex supports bibliography data
-in other formats. A (short) list of supported formats can bee seen in :command:`pybtex --help` output.
 
-By default, BibTeX format is used. That is, if your LaTeX file contains:
+Pybtex is fully compatible with BibTeX' :file:`.bib` files.
+Besides that, Pybtex supports other bibliography formats.
+The list of supported formats can bee seen in the output of :command:`pybtex --help`.
+
+By default, the BibTeX format is used. If a LaTeX file :file:`book.tex` contains:
 
 .. code-block:: latex
 
-    \bibliogrpahy{report}
+    \bibliogrpahy{mybook}
 
-Pybtex will try to read the bibliography data from a file named :file:`report.bib`.
-You can change that with the :option:`-f` option:
+
+Then this command
 
 .. code-block:: shell
 
-    $ pybtex -f yaml book
+    $ pybtex book
 
-(In this case Pybtex will look for a YAML-formatted file :file:`report.yaml` instead of
-`report.bib`).
+will expect to find the bibliography data in a BibTeX-formatted file :file:`mybook.bib`.
+
+Pybtex can be instructed to use a different format with the :option:`--format` option.
+
+For example this command
+
+.. code-block:: shell
+
+    $ pybtex --format yaml book
+
+will tell Pybtex to look for a YAML-formatted file :file:`mybook.yaml` instead of :file:`mybook.bib`).
 
 Support for additional bibliography formats can be added by :doc:`plugins <api/plugins>`.
 
@@ -55,9 +74,10 @@ Support for additional bibliography formats can be added by :doc:`plugins <api/p
 Pythonic bibliography styles
 ----------------------------
 
-BibTeX has a particular built-in programming language for defining
-bibliography formatting styles, and Pybtex supports it too. Basically, it
-looks like this:
+BibTeX has a built-in stack oriented programming language for defining
+bibliography formatting styles. Pybtex supports it too.
+
+The code in the BibTeX style language looks like this:
 
 .. code-block:: bst
 
@@ -68,59 +88,62 @@ looks like this:
       if$
     }
 
-Usually it is hidden inside :file:`.bst` files and you don't have to worry
+This code is hidden inside :file:`.bst` files and you don't have to worry
 about that unless you are designing your own BibTeX styles.
 
-Additionally, Pybtex allows writing bibliography styles in Python (although
-this feature is still experimental and under development).
-Some base BibTeX styles, including ``plain``, ``alpha``, ``unsrt`` have been already ported to Python.
-They can be found in :file:`pybtex/style/formatting` subdirectory in Pybtex sources. Additional styles can be added as :doc:`plugins <api/plugins>`.
+Additionally, Pybtex allows
+:doc:`to write bibliography styles in Python <api/styles>`.
+Some base BibTeX styles, including ``plain``, ``alpha``, ``unsrt`` have been
+already ported to Python.  They can be found in
+:source:`pybtex/style/formatting` subdirectory. Additional
+styles can be added as :doc:`plugins <api/plugins>`.
 
-By default, Pybtex used BibTeX :file:`.bst` styles. You can switch the style
-language from BibTeX to Python with the :option:`-l` option:
-
-.. code-block:: shell
-
-    $ pybtex -l python foo
-
-Unlike the old BibTeX styles, Pythonic styles are not tied to LaTeX markup. They can also
-produce HTML or plain text output (enabled with :option:`-b` command line
-option):
+By default, Pybtex uses BibTeX' :file:`.bst` styles. You can switch the style
+language from BibTeX to Python with the :option:`--style-language` option:
 
 .. code-block:: shell
 
-    $ pybtex -l python -b html foo
-    $ pybtex -l python -b plaintext foo
+    $ pybtex --style-language python book
 
-Support for other output formats can be allso added by :doc:`plugins <api/plugins>`.
-
-It is also possible to override the default label and name styles with
-command line options:
+One of the advantage of using Pythonic styles is that they can produce HTML,
+Markdown or plain text output besides the usual LaTeX markup.
+To change the output backend from LaTeX to something else,
+use the :option:`--output-backend` option:
 
 .. code-block:: shell
 
-    $ pybtex -l python --label-style number --name-style last_first foo
+    $ pybtex --style-language python --output-backend html book
+    $ pybtex --style-language python --output-backend plaintext book
 
-(Again, support for label and name styles can be added by :doc:`plugins <api/plugins>`.)
+(In this case Pybtex will write the bibliography to :file:`book.html` or
+:file:`book.txt` instead of :file:`book.bbl`).
+
+Support for other markup formats can be added by :doc:`plugins <api/plugins>`.
+
+Additionally, Pythonic styles are configurable with command line options to
+some extent. For example, the :option:`--name-style` option tells Pybtex to
+use a different name formatting style, :option:`--abbreviate-names` forces
+Pybtex to use the abbreviated name format, etc. See :command:`pybtex --help`
+for more options.
 
 
 Converting bibliography databases with :command:`bibtex-convert`
 ================================================================
 
-Pybtex comes with an additional ``pybtex-convert`` utillty, which can convert bibliography
-databases between supported formats:
+Pybtex comes with an additional utility called :command:`pybtex-convert`.
+It converts bibliography databases between supported formats:
 
 .. code-block:: shell
 
     $ pybtex-convert book.bib book.yaml
 
-Be aware, that the conversion is not always lossless. For example:
+Be aware that the conversion is not always lossless. For example:
 
-- BibTeXML format does not support LaTeX preambles.
+- BibTeX' string macros are substituted by their values during conversion.
 
-- Conversion from/to YAML format does not preserve order of entries (PyYAML limitation, may be fixed some day).
+- BibTeXML does not support LaTeX preambles.
 
-- In the standard BibTeX format names are stored as single strings while BibTexML
+- In the standard BibTeX format, names are stored as single strings. BibTexML
   and Pybtex' YAML format store first name, last name, and other name parts
   seprately.
 
@@ -129,17 +152,17 @@ Pretty-printing bibliography databases with :command:`bibtex-format`
 ====================================================================
 
 Sometimes you would want to convert a bibliography database to a
-human-readable format (for example, for printing). That can be achieved with
-:command:`pybtex-format`:
+human-readable format. Pybtex has the :command:`pybtex-format` utility for
+that:
 
 .. code-block:: shell
 
     $ pybtex-format book.bib book.txt
     $ pybtex-format book.bib book.html
 
-By default ``unsrt`` formatting style is used. This can be changed with the
-:option:`-s` option:
+By default, the ``unsrt`` style is used for formatting. This can be changed with the
+:option:`--style` option:
 
 .. code-block:: shell
 
-    $ pybtex-format -s plain book.bib book.txt
+    $ pybtex-format --style alpha book.bib book.txt
