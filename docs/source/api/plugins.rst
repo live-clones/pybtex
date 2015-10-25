@@ -11,7 +11,7 @@ Pybtex uses plugins for bibliography formats, markup formans and formatting
 styles. This allows to add new formats or styles to Pybtex withoud modifying
 Pybtex itself.
 
-The plugins are based on `Setuptools' entry points <Setuptools' documentation>`_.
+The plugins are based on `Setuptools' entry points <Setuptools' documentation_>`_.
 
 
 Entry Points
