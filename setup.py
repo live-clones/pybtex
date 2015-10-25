@@ -151,6 +151,8 @@ setup(name=progname,
         'pybtex.style.names': [
             'plain = pybtex.style.names.plain:NameStyle',
             'lastfirst = pybtex.style.names.lastfirst:NameStyle',
+        ],
+        'pybtex.style.names.aliases': [
             'last_first = pybtex.style.names.lastfirst:NameStyle',
             ],
         'pybtex.style.sorting': [
