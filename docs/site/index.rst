@@ -61,5 +61,5 @@ If something goes wrong, just `file a bug report`_.
 Have fun!
 
 
-.. _file a bug report: https://bitbucket.org/pybtex-devs/pybtex/issues/new
+.. _file a bug report: https://bitbucket.org/pybtex-devs/pybtex/issues?status=new&status=open
 .. _Bitbucket page: https://bitbucket.org/pybtex-devs/pybtex
