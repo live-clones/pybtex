@@ -99,7 +99,7 @@ about that unless you are designing your own BibTeX styles.
 
 Additionally, Pybtex allows
 :doc:`to write bibliography styles in Python <api/styles>`.
-Some base BibTeX styles, including ``plain``, ``alpha``, ``unsrt`` have been
+Some base BibTeX styles, including ``plain``, ``alpha``, ``unsrt``, have been
 already ported to Python.  They can be found in
 :source:`pybtex/style/formatting` subdirectory. Additional
 styles can be added as :doc:`plugins <api/plugins>`.
