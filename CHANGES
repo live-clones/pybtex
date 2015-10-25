@@ -1,3 +1,46 @@
+Version 0.19
+------------
+(not released yet)
+
+- Added Markdown output format (contributed by Jorrit Wronski).
+
+- Incorrectly formatted author and editor names now result in warnings instead of errors,
+  unless ``--strict`` mode is enabled.
+
+- Fixed HTML escaping.
+
+- Fixed parsing nested ``.aux`` files.
+
+- Fixed splitting names separated by non-lowercase ``" and "``.
+
+- Fixed line numbers in error messages when parsing strings with DOS/Windows line breaks.
+
+- Fixed compatibility with BibTeX when parsing certain weird "von" names.
+
+- Removed excessive trailing newline from ``.bib`` output.
+
+- Text wrapping now works exactly as in BibTeX.
+
+- Added new API for :doc:`reading and writing bibliography data <api/parsing>`.
+
+- Pythonic styles: reworked and extended the :ref:`rich text API <rich-text>`.
+
+- Pythonic styles: added ``strong``, ``i``, ``b``, ``tt`` tags, renamed the old
+  ``emph`` tag to ``em``.
+
+- Pythonic styles: the ``author_year_title`` style now returns ``""`` instead of ``None``
+  (fixes unorderable types error in Python 3).
+
+- Ported the documentation_ to Sphinx_.
+
+Thanks to Jorrit Wronski and Matthias Troffaes for their fixes and improvements!
+
+
+.. _documentation: http://docs.pybtex.org/
+
+.. _Sphinx: http://sphinx-doc.org/
+
+
 Version 0.18
 ------------
 (released on July 6, 2014)

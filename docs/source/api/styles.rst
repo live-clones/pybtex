@@ -15,6 +15,8 @@ Designing styles
     :local:
 
 
+.. _rich-text:
+
 Rich text
 =========
 
