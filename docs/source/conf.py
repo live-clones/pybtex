@@ -70,7 +70,7 @@ copyright = u'{}, Andrey Golovizin'.format(datetime.now().year)
 # built documents.
 #
 # The short X.Y version.
-version = __version__.version
+version = __version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
