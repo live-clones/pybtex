@@ -14,7 +14,7 @@ Pybtex itself.
 The plugins are based on `Setuptools' entry points <Setuptools' documentation_>`_.
 
 
-Entry Points
+Entry points
 ============
 
 Here is the list of entry points supported by Pybtex:
@@ -81,7 +81,7 @@ Name styles for Pythonic bibliography styles.
 
 
 
-Registering Plugins
+Registering plugins
 ===================
 
 see `Setuptools' documentation`_.
@@ -90,7 +90,7 @@ see `Setuptools' documentation`_.
 .. _Setuptools' documentation: https://pythonhosted.org/setuptools/setuptools.html#extensible-applications-and-frameworks
 
 
-Example Plugins
+Example plugins
 ===============
 
 An example project directory with two simple plugins and a ``setup.py`` file can
