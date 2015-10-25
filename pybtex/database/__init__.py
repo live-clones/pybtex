@@ -116,15 +116,15 @@ class BibliographyData(object):
         >>> print bib_data.preamble
         \newcommand{\noopsort}[1]{}
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`.get_preamble()`, which is now deprecated.
         '''
         return ''.join(self._preamble)
 
-    @deprecated('1.19', 'use BibliographyData.preamble instead')
+    @deprecated('0.19', 'use BibliographyData.preamble instead')
     def get_preamble(self):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.preamble` instead.
         """
         return self.preamble
@@ -273,7 +273,7 @@ class BibliographyData(object):
 
         :param bib_format: Data format ("bibtex", "yaml", etc.).
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
         """
         writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_string(self)
@@ -284,7 +284,7 @@ class BibliographyData(object):
 
         :param bib_format: Data format ("bibtex", "yaml", etc.).
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
         """
         writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_bytes(self)
@@ -297,7 +297,7 @@ class BibliographyData(object):
         :param bib_format: Data format ("bibtex", "yaml", etc.).
             If not specified, Pybtex will try to guess by the file name.
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
         """
         if isinstance(file, basestring):
             filename = file
@@ -469,7 +469,7 @@ class Person(object):
         """
         A list of first names.
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`.first`, which is now deprecated.
         """
 
@@ -477,7 +477,7 @@ class Person(object):
         """
         A list of middle names.
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`.middle`, which is now deprecated.
         """
 
@@ -485,7 +485,7 @@ class Person(object):
         """
         A list of pre-last (aka von) name parts.
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`.middle`, which is now deprecated.
         """
 
@@ -493,7 +493,7 @@ class Person(object):
         """
         A list of last names.
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`.last`, which is now deprecated.
         """
 
@@ -501,7 +501,7 @@ class Person(object):
         """
         A list of linage (aka Jr) name parts.
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`.lineage`, which is now deprecated.
         """
 
@@ -519,7 +519,7 @@ class Person(object):
         """A list of first and middle names together.
         (BibTeX treats all middle names as first.)
 
-        .. versionadded:: 1.19
+        .. versionadded:: 0.19
             Earlier versions used :py:meth:`Person.bibtex_first`, which is now deprecated.
 
 
@@ -701,50 +701,50 @@ class Person(object):
             names = [abbreviate(name) for name in names]
         return names
 
-    @deprecated('1.19', 'use Person.first_names instead')
+    @deprecated('0.19', 'use Person.first_names instead')
     def first(self, abbr=False):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.first_names` instead.
         """
         return self.get_part('first', abbr)
 
-    @deprecated('1.19', 'use Person.middle_names instead')
+    @deprecated('0.19', 'use Person.middle_names instead')
     def middle(self, abbr=False):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.middle_names` instead.
         """
         return self.get_part('middle', abbr)
 
-    @deprecated('1.19', 'use Person.prelast_names instead')
+    @deprecated('0.19', 'use Person.prelast_names instead')
     def prelast(self, abbr=False):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.prelast_names` instead.
         """
         return self.get_part('prelast', abbr)
 
-    @deprecated('1.19', 'use Person.last_names instead')
+    @deprecated('0.19', 'use Person.last_names instead')
     def last(self, abbr=False):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.last_names` instead.
         """
         return self.get_part('last', abbr)
 
-    @deprecated('1.19', 'use Person.lineage_names instead')
+    @deprecated('0.19', 'use Person.lineage_names instead')
     def lineage(self, abbr=False):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.lineage_names` instead.
         """
         return self.get_part('lineage', abbr)
 
-    @deprecated('1.19', 'use Person.bibtex_first_names instead')
+    @deprecated('0.19', 'use Person.bibtex_first_names instead')
     def bibtex_first(self):
         """
-        .. deprecated:: 1.19
+        .. deprecated:: 0.19
             Use :py:attr:`.bibtex_first_names` instead.
         """
         return self.bibtex_first_names
@@ -758,7 +758,7 @@ def parse_file(file, bib_format=None, **kwargs):
     :param bib_format: Data format ("bibtex", "yaml", etc.).
         If not specified, Pybtex will try to guess by the file name.
 
-    .. versionadded:: 1.19
+    .. versionadded:: 0.19
     """
 
     if isinstance(file, basestring):
@@ -777,7 +777,7 @@ def parse_string(value, bib_format, **kwargs):
     :param value: Unicode string.
     :param bib_format: Data format ("bibtex", "yaml", etc.).
 
-    .. versionadded:: 1.19
+    .. versionadded:: 0.19
     """
 
     parser = find_plugin('pybtex.database.input', bib_format)(**kwargs)
@@ -791,7 +791,7 @@ def parse_bytes(value, bib_format, **kwargs):
     :param value: Byte string.
     :param bib_format: Data format (for example, "bibtexml").
 
-    .. versionadded:: 1.19
+    .. versionadded:: 0.19
     """
 
     parser = find_plugin('pybtex.database.input', bib_format)(**kwargs)
