@@ -57,7 +57,6 @@ html:
 
 site: html
 	$(sphinxbuild) -b html $(sitesphinxopts) $(builddir)/site
-	ln -fns ../html $(builddir)/site/docs
 	@echo
 	@echo "build finished. the site pages are in $(builddir)/site."
 
@@ -197,9 +196,9 @@ RSYNC = rsync -rv --delete
 RSYNC_SERVER = www-pybtex@sologoc.com
 
 upload-docs: html
-	$(RSYNC) $(builddir)/html/ $(RSYNC_SERVER):html/docs
+	$(RSYNC) $(builddir)/html/ $(RSYNC_SERVER):docs/html/
 
 upload-site: site
-	$(RSYNC) --exclude site/docs $(builddir)/site/ $(RSYNC_SERVER):html
+	$(RSYNC) $(builddir)/site/ $(RSYNC_SERVER):www/html/
 
 upload: upload-site upload-docs
