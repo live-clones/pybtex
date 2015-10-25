@@ -100,6 +100,9 @@ month_names = {
 }
 
 
+NAME_CHARS = ascii_letters + u'@!$&*+-./:;<>?[\\]^_`|~\x7f'
+
+
 class SkipEntry(Exception):
     pass
 
@@ -108,7 +111,6 @@ class UndefinedMacro(PybtexSyntaxError):
     error_type = 'undefined string'
 
 class BibTeXEntryIterator(Scanner):
-    NAME_CHARS = ascii_letters + u'@!$&*+-./:;<>?[\\]^_`|~\x7f'
     NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
     KEY_PAREN = Pattern(ur'[^\s\,]+', 'entry key')
     KEY_BRACE = Pattern(ur'[^\s\,}]+', 'entry key')

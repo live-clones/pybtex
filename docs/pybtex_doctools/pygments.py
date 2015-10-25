@@ -22,9 +22,15 @@
 
 from __future__ import absolute_import
 
+import re
+from string import ascii_letters, digits
+
 from pygments.style import Style
+from pygments.lexer import ExtendedRegexLexer, include, default
 from pygments.token import Keyword, Name, Comment, String, Error, \
-     Number, Operator, Generic, Literal, Punctuation
+     Number, Operator, Generic, Literal, Punctuation, Text
+
+from pybtex.database.input.bibtex import NAME_CHARS
 
 from . import add_entry_point
 
@@ -55,7 +61,7 @@ class PybtexStyle(Style):
         Name.Exception:         'bold #b30',
         Name.Decorator:         '#A20',
         Name.Namespace:         '#A20',
-        Name.Label:             '#A20',
+        Name.Label:             '#840',
 #        Name.Variable:          '#088',
 #        Name.Constant:          '#088',
         Name.Tag:               '#666',
@@ -81,5 +87,92 @@ class PybtexStyle(Style):
     }
 
 
+class BibTeXLexer(ExtendedRegexLexer):
+    name = 'BibTeX'
+    aliases = ['bibtex', 'bibtex-pybtex']
+    filenames = ['*.bib']
+    flags = re.IGNORECASE
+
+    IDENTIFIER = ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits))
+
+    def open_brace_callback(self, match, ctx):
+        opening_brace = match.group()
+        ctx.opening_brace = opening_brace
+        yield match.start(), Text.Punctuation, opening_brace
+        ctx.pos = match.end()
+
+    def close_brace_callback(self, match, ctx):
+        closing_brace = match.group()
+        if (
+            ctx.opening_brace == '{' and closing_brace != '}' or
+            ctx.opening_brace == '(' and closing_brace != ')'
+        ):
+            yield match.start(), Error, closing_brace
+        else:
+            yield match.start(), Text.Punctuation, closing_brace
+        del ctx.opening_brace
+        ctx.pos = match.end()
+
+    tokens = {
+        'root': [
+            include('whitespace'),
+            ('@comment', Comment),
+            ('@preamble', Name.Class, ('closing-brace', 'value', 'opening-brace')),
+            ('@string', Name.Class, ('closing-brace', 'field', 'opening-brace')),
+            ('@' + IDENTIFIER, Name.Class, ('closing-brace', 'command-body', 'opening-brace')),
+            ('.+', Comment),
+        ],
+        'opening-brace': [
+            include('whitespace'),
+            (r'[\{\(]', open_brace_callback, '#pop'),
+        ],
+        'closing-brace': [
+            include('whitespace'),
+            (r'[\}\)]', close_brace_callback, '#pop'),
+        ],
+        'command-body': [
+            include('whitespace'),
+            (r'[^\s\,\}]+', Name.Label, ('#pop', 'fields')),
+        ],
+        'fields': [
+            include('whitespace'),
+            (',', Text.Punctuation, 'field'),
+            default('#pop'),
+        ],
+        'field': [
+            include('whitespace'),
+            (IDENTIFIER, Text.Punctuation, ('value', '=')),
+            default('#pop'),
+        ],
+        '=': [
+            include('whitespace'),
+            ('=', Text.Punctuation, '#pop'),
+        ],
+        'value': [
+            include('whitespace'),
+            (IDENTIFIER, Name.Variable),
+            ('"', String, 'quoted-string'),
+            (r'\{', String, 'braced-string'),
+            (r'[\d]+', Number),
+            ('#', Text.Punctuation),
+            default('#pop'),
+        ],
+        'quoted-string': [
+            (r'\{', String, 'braced-string'),
+            ('"', String, '#pop'),
+            ('[^\{\"]+', String),
+        ],
+        'braced-string': [
+            (r'\{', String, '#push'),
+            (r'\}', String, '#pop'),
+            ('[^\{\}]+', String),
+        ],
+        'whitespace': [
+            (r'\s+', Text),
+        ],
+    }
+
+
 def setup(app):
     add_entry_point('pygments.styles', 'pybtex', 'pybtex_doctools.pygments', 'PybtexStyle')
+    add_entry_point('pygments.lexers', 'bibtex-pybtex', 'pybtex_doctools.pygments', 'BibTeXLexer')

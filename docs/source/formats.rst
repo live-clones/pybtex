@@ -16,7 +16,7 @@ BibTeX
 
 BibTeX is the default bibliography format used by Pybtex:
 
-.. sourcecode:: bibtex
+.. sourcecode:: bibtex-pybtex
 
     @BOOK{strunk-and-white,
         author = "Strunk, Jr., William and E. B. White",
