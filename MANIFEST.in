@@ -3,9 +3,13 @@ include examples/xampl.bib examples/xampl.bibtexml examples/xampl.yaml examples/
 include examples/tugboat/tugboat.aux examples/tugboat/tugboat.bib examples/tugboat/README
 include examples/make.sh
 include COPYING CHANGES
-include pybtex/docgen/template.html
+include tox.ini test_requirements.txt
+include docs/generate_manpages.py docs/Makefile docs/make.bat
 recursive-include pybtex/tests/data *.bst *.bib *.bbl *.aux
-recursive-include docs/html *.html *.css
-recursive-include docs/rst *.rst *.css
+include docs/source/conf.py docs/site/conf.py
+recursive-include docs/source *.rst
+recursive-include docs/site *.rst
+recursive-include docs/theme *.html *.css *.conf
+recursive-include docs/pybtex_doctools *.py
 recursive-include docs/man1 *.1
 recursive-include examples/sample_plugins *.py README
