@@ -13,9 +13,7 @@ Pybtex reads bibliography data that looks like this:
 
     @book{graham1989concrete,
         title = "Concrete mathematics: a foundation for computer science",
-        author = "Graham, Ronald Lewis and Knuth, Donald Ervin"
-            # " and Patashnik, Oren",
-        series = "A foundation for computer science",
+        author = "Graham, Ronald Lewis and Knuth, Donald Ervin and Patashnik, Oren",
         year = "1989",
         publisher = "Addison-Wesley"
     }
@@ -24,11 +22,11 @@ and formats it like this:
 
     R. L. Graham, D. E. Knuth, and O. Patashnik.
     *Concrete mathematics: a foundation for computer science*.
-    A foundation for computer science. Addison-Wesley, 1989.
+    Addison-Wesley, 1989.
 
 Pybtex contains two different formatting engines:
 
-- The :ref:`BibTeX engine <bibtex-engine>` is compatible with the original BibTeX ``.bst`` styles.
+- The :ref:`BibTeX engine <bibtex-engine>` uses BibTeX ``.bst`` styles.
 
 - The :ref:`Python engine <python-engine>` uses styles written in Python.
 
@@ -49,9 +47,9 @@ When you type :command:`pybtex mydocument`, the following things happen:
 
 1.  Pybtex reads the file :file:`mydocument.aux` in the current directory.
     This file is normally created by LaTeX and contains all sorts of auxiliary information
-    collected during processing the LaTeX document.
+    collected during processing of the LaTeX document.
 
-    Pybtex is interested in these pieces of information:
+    Pybtex is interested in these three pieces of information:
 
     Bibliography style:
         First, Pybtex searches the :file:`.aux` file for a ``\bibstyle``
@@ -80,8 +78,9 @@ When you type :command:`pybtex mydocument`, the following things happen:
         all ``\bibdata`` commands.
 
 2.  Pybtex executes the style program in the :file:`.bst` file specified by
-    the ``\bibstyle`` command.  As a result, a :file:`.bbl` file containing
-    the resulting formatted bibliography is created.
+    the ``\bibstyle`` command in the :file:`.aux` file. As a result, a
+    :file:`.bbl` file containing the resulting formatted bibliography is
+    created.
 
     A :file:`.bst` style file is a program in a domain-specific stack-based
     language. A typical piece of the :file:`.bst` code looks like this:
@@ -143,15 +142,15 @@ Differences from the BibTeX engine
 How it works
 ------------
 
-When you type :command:`pybtex -l python mydocument`, this happens:
+When you type :command:`pybtex -l python mydocument`, this things happen:
 
 1.  Pybtex reads the file :file:`mydocument.aux` in the current directory and
     extracts the name of the the bibliography style, the list of bibliography
     data files and the list of citation keys.
     This step is exactly the same as with the BibTeX engine.
 
-2.  Pybtex reads biliography data from all data files specified in the :file:`.aux` file
-    into a single :py:class:`.BibliographyData` object.
+2.  Pybtex reads the biliography data from all data files specified in the
+    :file:`.aux` file into a single :py:class:`.BibliographyData` object.
 
 3.  Then the formatting style is loaded. The formatting style is a
     Python class with a :py:meth:`~.format_bibliography()` method.  Pybtex passes the
@@ -171,21 +170,22 @@ When you type :command:`pybtex -l python mydocument`, this happens:
 
     Each formatted entry is put into a :py:class:`.FormattedEntry` object
     which is just a container for the formatted label, the formatted entry
-    text (as a :py:class:`pybtex.richtext.Text` object) and the entry key.  The reason
-    that the label and the main text are stored separately is to give the
+    text (a :py:class:`pybtex.richtext.Text` object) and the entry key.  The reason
+    that the label, the key and the main text are stored separately is to give the
     output backend more flexibility when converting the
     :py:class:`.FormattedEntry` object to the actual markup. For example, the
     HTML backend may want to format the bibliography as a definition list, the
     LaTeX backend would use ``\bibitem[label]{key} text`` constructs, etc.
 
-    Formatted entries are put into a :py:class:`.FormattedBibliography` object---it
-    simply contains a list of :py:class:`.FormattedEntry` objects and some
-    additional metadata.
+    Formatted entries are put into a :py:class:`.FormattedBibliography`
+    object---it simply contains a list of :py:class:`.FormattedEntry` objects
+    and some additional metadata.
 
 5.  The resulting :py:class:`.FormattedBibliography` is passed to the output
-    backend. The default backend is LaTeX. It can be changed with the
-    ``pybtex --output-backend`` option. The output backend converts the
-    formatted bibliography to a specific markup format and writes the output.
+    backend. The default backend is LaTeX. It can be changed with the ``pybtex
+    --output-backend`` option. The output backend converts the formatted
+    bibliography to the specific markup format and writes it to the output
+    file.
 
 
 Python API

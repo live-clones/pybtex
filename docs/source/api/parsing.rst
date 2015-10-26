@@ -31,7 +31,6 @@ It reads the bibliography data from a string or a file and returns a
 :py:class:`.BibliographyData` object containing all the bibliography data.
 
 Here is a quick example:
-
 .. doctest::
 
     >>> from pybtex.database import parse_file
@@ -47,12 +46,12 @@ Here is a quick example:
 Writing bibliography data
 =========================
 
-The :py:class:`.BibliographyData` has several methods that are symmetrical to
-the functions described above:
+The :py:class:`.BibliographyData` class has several methods that are
+symmetrical to the functions described above:
 
 - :py:meth:`.BibliographyData.to_string` formats the bibliograhy data into a string,
 - :py:meth:`.BibliographyData.to_bytes` formats the bibliograhy data into a byte string,
-- :py:meth:`.BibliographyData.to_file` writes the  bibliograhy data into a file.
+- :py:meth:`.BibliographyData.to_file` writes the bibliograhy data to a file.
 
 
 .. doctest::
@@ -86,7 +85,8 @@ Pybtex uses several classes to represent bibligraphy databases:
 
 - :py:class:`.Entry` is a single bibliography entry (a book, an article, etc.).
 
-  An entry has a key (like ``'knuth74'``), a type (``'book'``, ``'article'``, etc.) and a number of key-value fields.
+  An entry has a key (like ``"knuth74"``), a type (``"book"``, ``"article"``, etc.),
+  and a number of key-value fields (``"author"``, ``"title"``, etc.).
 
 - :py:class:`.Person` is a person related to a bibliography entry
   (usually as an author or an editor).

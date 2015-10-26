@@ -26,8 +26,8 @@ A piece of formatted text in Pybtex is represented by a :py:class:`Text`
 object.
 A :py:class:`Text` is basically a container that holds a list of
 
-* plain text strings represented by :py:class:`String` objects,
-* or formatted parts, represented by :py:class:`Tag` and :py:class:`HRef` objects.
+* plain text parts, represented by :py:class:`String` objects,
+* formatted parts, represented by :py:class:`Tag` and :py:class:`HRef` objects.
 
 The basic workflow is:
 
@@ -62,9 +62,9 @@ it renders all of its child objects, then concatenates the result.
 
 :py:class:`String` is just a wrapper for a single Python string.
 
-:py:class:`Tag` and :py:class:`HRef` are also containers that may
-contain other :py:class:`String`, :py:class:`Tag`, and :py:class:`HRef`
-objects, so nested formatting is possible.  For example, this formatted text
+:py:class:`Tag` and :py:class:`HRef` are also containers that may contain
+other :py:class:`String`, :py:class:`Tag`, and :py:class:`HRef` objects. This
+makes nested formatting possible.  For example, this stupidly formatted text:
 
 
     |CTAN hyperlink|_ is *comprehensive*.
@@ -86,10 +86,10 @@ is represented by this object tree:
     <a href="http://ctan.org/"><em>Comprehensive</em> TeX Archive Network</a> is <em>comprehensive</em>.
 
 
-All rich text classes share the same API more or less similar to plain
+All rich text classes share the same API which is more or less similar to plain
 `Python strings`_.
 
-.. _Python strings: https://docs.python.org/3/library/stdtypes.html#textseq
+.. _Python strings: https://docs.python.org/3/library/stdtypes.html#string-methods
 
 
 Like Python strings, rich text objects are supposed to be immutable. Methods like
@@ -99,7 +99,7 @@ Attempting to modify the contents of an existing :py:class:`Text` object is
 not supported and may lead to weird results.
 
 Here we document the methods of the :py:class:`Text` class.
-The other classes have similar methods.
+The other classes have the same methods.
 
 .. autoclass:: pybtex.richtext.Text
     :members:
@@ -144,7 +144,7 @@ is the entry type, in lowercase. For example, to format
 an entry of type ``book``, the ``format_book()`` method is called.
 The method must return a :py:class:`.Text` object.
 Style classes are supposed to implement ``format_<type>()`` methods
-for every entry type they support. If a formatting method
+for all entry types they support. If a formatting method
 is not found for some entry, Pybtex complains about unsupported entry type.
 
 An example minimalistic style:
@@ -162,7 +162,7 @@ An example minimalistic style:
 Template language
 =================
 
-Manually creating :py:class:`.Text` objects may be tedious sometimes.
+Manually creating :py:class:`.Text` objects may be tedious.
 Pybtex has a small template language to simplify common formatting tasks,
 like joining words with spaces, adding commas and periods, or handling missing fields.
 

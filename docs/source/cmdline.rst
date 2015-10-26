@@ -50,7 +50,7 @@ By default, the BibTeX format is used. If a LaTeX file :file:`book.tex` contains
     \bibliogrpahy{mybook}
 
 
-Then this command
+Then this command:
 
 .. code-block:: shell
 
@@ -59,8 +59,7 @@ Then this command
 will expect to find the bibliography data in a BibTeX-formatted file :file:`mybook.bib`.
 
 Pybtex can be instructed to use a different format with the :option:`--format` option.
-
-For example this command
+For example this command:
 
 .. code-block:: shell
 
@@ -139,7 +138,7 @@ Pretty-printing bibliography databases with :command:`bibtex-format`
 ====================================================================
 
 Sometimes you would want to convert a bibliography database to a
-human-readable format. Pybtex has the :command:`pybtex-format` utility for
+human-readable format. Pybtex has another utility called :command:`pybtex-format` for
 that:
 
 .. code-block:: shell

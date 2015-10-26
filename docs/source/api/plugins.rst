@@ -7,9 +7,9 @@ Extending Pybtex with plugins
     :local:
 
 
-Pybtex uses plugins for bibliography formats, markup formans and formatting
-styles. This allows to add new formats or styles to Pybtex withoud modifying
-Pybtex itself.
+Pybtex uses plugins for bibliography data formats, output markup formats and
+bibliography formatting styles. This allows to add new formats or styles to
+Pybtex withoud modifying Pybtex itself.
 
 The plugins are based on `Setuptools' entry points <Setuptools' documentation_>`_.
 
@@ -17,7 +17,7 @@ The plugins are based on `Setuptools' entry points <Setuptools' documentation_>`
 Entry points
 ============
 
-Here is the list of entry points supported by Pybtex:
+Here is the list of entry points supported by Pybtex.
 
 
 pybtex.database.input
@@ -28,9 +28,9 @@ Must point to a subclass of :py:class:`pybtex.database.input.BaseParser`.
 
 There is also an additional entry point called ``pybtex.database.output.suffixes``.
 It is used for registering bibliography formats for specific file suffixes
-(like BibTeX for ``.bib``).
+(like BibTeX for :file:`.bib` files).
 
-For example, a JSON input plugin for Pybtex could use these entry points:
+For example, a JSON input plugin could use these entry points:
 
 .. sourcecode:: ini
 
@@ -55,16 +55,15 @@ same way as ``pybtex.database.input.suffixes`` described above.
 pybtex.backends
 ---------------
 
-This entry point is for adding new markup types for Pythonic bibliography
-styles. Existing plugins are ``latex``, ``html``, ``markdown``, and ``plaintext``.
-Must point to a :py:class:`pybtex.backends.BaseBackend`
-subclass.
+This entry point is for adding new output markup formats for Pythonic bibliography
+styles. The built-in plugins are ``latex``, ``html``, ``markdown``, and ``plaintext``.
+Must point to a :py:class:`pybtex.backends.BaseBackend` subclass.
 
 
 pybtex.style.formatting
 -----------------------
 
-Pythonic bibliography styles themselves. Must point to a
+This is the entry point for Pythonic bibliography styles. Must point to a
 :py:class:`pybtex.style.formatting.BaseStyle` subclass.
 
 
@@ -79,12 +78,17 @@ pybtex.style.names
 
 Name styles for Pythonic bibliography styles.
 
+pybtex.style.sorting
+--------------------
+
+Sorting styles for Pythonic bibliography styles.
+
 
 
 Registering plugins
 ===================
 
-see `Setuptools' documentation`_.
+See `Setuptools' documentation`_.
 
 
 .. _Setuptools' documentation: https://pythonhosted.org/setuptools/setuptools.html#extensible-applications-and-frameworks

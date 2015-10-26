@@ -161,7 +161,7 @@ class BaseText(object):
         return Text(*joined)
 
     @abstractmethod
-    def split(sep=None):
+    def split(self, sep=None, keep_empty_parts=None):
         raise NotImplementedError
 
     @abstractmethod
@@ -210,7 +210,13 @@ class BaseText(object):
         return self.capitalize()
 
     def capitalize(self):
-        """Capitalize the first letter of the text."""
+        """
+        Capitalize the first letter of the text.
+
+        >>> Text(Tag('em', 'long cat')).capitalize()
+        Text(Tag('em', 'Long cat'))
+
+        """
         return self[:1].upper() + self[1:]
 
     @abstractmethod
@@ -347,12 +353,12 @@ class BaseMultipartText(BaseText):
         ``value in text`` returns ``True`` if any part of the ``text``
         contains the substring ``value``:
 
-        >>> 'cat' in Text('Long cat!')
+        >>> 'Long cat' in Text('Long cat!')
         True
 
         Substrings splitted across multiple text parts are not matched:
 
-        >>> 'long cat' in Text(Tag('em', 'Long'), 'cat!')
+        >>> 'Long cat' in Text(Tag('em', 'Long'), 'cat!')
         False
 
         """
@@ -427,7 +433,7 @@ class BaseMultipartText(BaseText):
         """
         Append text to the end of this text.
 
-        For Tags, HRefs, etc. the appended text is placed _inside_ the tag.
+        For Tags, HRefs, etc. the appended text is placed *inside* the tag.
 
         >>> text = Tag('strong', 'Chuck Norris')
         >>> print (text +  ' wins!').render_as('html')
