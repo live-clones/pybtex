@@ -196,6 +196,7 @@ RSYNC = rsync -rv --delete
 RSYNC_SERVER = www-pybtex@sologoc.com
 
 upload-docs: html
+	(cd .. && ./setup.py upload_docs --upload-dir docs/$(builddir)/html)
 	$(RSYNC) $(builddir)/html/ $(RSYNC_SERVER):docs/html/
 
 upload-site: site
