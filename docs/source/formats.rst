@@ -27,10 +27,11 @@ BibTeX is the default bibliography format used by Pybtex:
     }
 
 
-Here is a `more detailed description of the BibTeX format`_.
+Some links:
 
-.. _more detailed description of the BibTeX format: http://www.miwie.org/tex-refs/html/bibtex-bib-files.html
+- `A basic description of the BibTeX format. <http://www.miwie.org/tex-refs/html/bibtex-bib-files.html>`_
 
+- `An in-depth description of the quirky BibTeX syntax. <http://artis.imag.fr/~Xavier.Decoret/resources/xdkbibtex/bibtex_summary.html>`_
 
 BibTeXML
 --------
@@ -103,11 +104,17 @@ Output formats
 
 BibTeX's :file:`.bst` styles usually contain hardcoded LaTeX markup
 and are LaTeX-only. Pythonic styles in Pybtex are markup-independent
-and can output these formats:
+and can output multiplie formats, including:
 
 - LaTeX
 - Markdown
 - HTML
 - plain text
 
-Support for other formats can be added with :doc:`plugins <api/plugins>`.
+There is also `pybtex-docutils`_ by Matthias Troffaes that integrates Pybtex with Docutils_,
+and `sphinxcontrib-bibtex`_ by the same author, integrating Pybtex with Sphinx_.
+
+.. _pybtex-docutils: https://github.com/mcmtroffaes/pybtex-docutils
+.. _sphinxcontrib-bibtex: https://github.com/mcmtroffaes/sphinxcontrib-bibtex
+.. _Docutils: http://docutils.sourceforge.net/
+.. _Sphinx: http://sphinx-doc.org/
