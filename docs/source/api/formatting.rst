@@ -83,17 +83,34 @@ When you type :command:`pybtex mydocument`, the following things happen:
     the ``\bibstyle`` command.  As a result, a :file:`.bbl` file containing
     the resulting formatted bibliography is created.
 
-    A :file:`.bst` style is a program in a domain-specific stack-based
-    language.  It contains the complete step-by-step instructions on how to
-    create the formatted bibliography from the given bibliography data and
-    citation keys.  For example, a ``READ`` command tells Pybtex to read the
-    bibliography data from all files specified by ``\bibdata`` commands in the
-    ``.aux`` file, an ``ITERATE`` command tells Pybtex to execute a piece of
-    code for each citation key specified by ``\citation`` commands, and so on.
-    The built-in ``write$`` function tells Pybtex to write the given string
-    into the resulting :file:`.bbl` file.  Pybtex implements all these
-    commands and built-in functions and simply executes the :file:`.bst`
-    program step by step.
+    A :file:`.bst` style file is a program in a domain-specific stack-based
+    language. A typical piece of the :file:`.bst` code looks like this:
+
+    .. code-block:: bst-pybtex
+
+        FUNCTION {format.bvolume}
+        { volume empty$
+            { "" }
+            { "volume" volume tie.or.space.connect
+            series empty$
+                'skip$
+                { " of " * series emphasize * }
+            if$
+            "volume and number" number either.or.check
+            }
+        if$
+        }
+
+    The code in a :file:`.bst` file contains the complete step-by-step
+    instructions on how to create the formatted bibliography from the given
+    bibliography data and citation keys.  For example, a ``READ`` command
+    tells Pybtex to read the bibliography data from all files specified by
+    ``\bibdata`` commands in the ``.aux`` file, an ``ITERATE`` command tells
+    Pybtex to execute a piece of code for each citation key specified by
+    ``\citation`` commands, and so on.  The built-in ``write$`` function tells
+    Pybtex to write the given string into the resulting :file:`.bbl` file.
+    Pybtex implements all these commands and built-in functions and simply
+    executes the :file:`.bst` program step by step.
 
     A complete reference of the :file:`.bst` language can be found in the
     `BibTeX hacking guide`_ by Oren Patashnik.  It is available by running

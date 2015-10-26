@@ -75,27 +75,8 @@ Pythonic bibliography styles
 ----------------------------
 
 BibTeX has a built-in stack oriented programming language for defining
-bibliography formatting styles. Pybtex supports it too.
-
-The code in the BibTeX style language looks like this:
-
-.. code-block:: bst-pybtex
-
-    FUNCTION {format.bvolume}
-    { volume empty$
-        { "" }
-        { "volume" volume tie.or.space.connect
-        series empty$
-            'skip$
-            { " of " * series emphasize * }
-        if$
-        "volume and number" number either.or.check
-        }
-    if$
-    }
-
-This code is hidden inside :file:`.bst` files and you don't have to worry
-about that unless you are designing your own BibTeX styles.
+bibliography formatting styles. This language is used in :file:`.bst`
+style files. Pybtex is fully compatible with BIbTeX' :file:`.bst` style files.
 
 Additionally, Pybtex allows
 :doc:`to write bibliography styles in Python <api/styles>`.
