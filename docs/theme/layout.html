@@ -100,7 +100,7 @@
     <title>{{ title|striptags|e }}{{ titlesuffix }} {% if not site %}({{ release }}){% endif %}</title>
     {%- endblock %}
     {{ css() }}
-    {%- if not embedded %}
+    {%- if pagename == 'search' and not embedded %}
     {{ script() }}
     {%- if use_opensearch %}
     <link rel="search" type="application/opensearchdescription+xml"
