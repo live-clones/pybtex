@@ -112,7 +112,7 @@ dl.docutils dt {
 
 dl.docutils dd {
     margin: 0px 0px 0px 2em;
-    padding 0px;
+    padding: 0px;
 }
 
 dl, dt {
@@ -228,7 +228,7 @@ th {
     margin-top: 3ex;
     clear: both;
     text-align: center;
-    word-wrap: none;
+    word-wrap: normal;
 }
 
 .footer {
