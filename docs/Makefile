@@ -55,7 +55,7 @@ html:
 	@echo
 	@echo "build finished. the html pages are in $(builddir)/html."
 
-site: html
+site:
 	$(sphinxbuild) -b html $(sitesphinxopts) $(builddir)/site
 	@echo
 	@echo "build finished. the site pages are in $(builddir)/site."
