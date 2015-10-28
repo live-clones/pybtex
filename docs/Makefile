@@ -20,7 +20,7 @@ sitesphinxopts   = -d $(builddir)/site-doctrees $(paperopt_$(paper)) $(sphinxopt
 # the i18n builder cannot share the environment and doctrees with the others
 i18nsphinxopts  = $(paperopt_$(paper)) $(sphinxopts) source
 
-.phony: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
+.PHONY: help clean html site dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext upload-docs upload-site upload
 
 help:
 	@echo "please use \`make <target>' where <target> is one of"
@@ -55,7 +55,7 @@ html:
 	@echo
 	@echo "build finished. the html pages are in $(builddir)/html."
 
-site: html
+site:
 	$(sphinxbuild) -b html $(sitesphinxopts) $(builddir)/site
 	@echo
 	@echo "build finished. the site pages are in $(builddir)/site."

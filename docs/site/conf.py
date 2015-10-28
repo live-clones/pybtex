@@ -38,7 +38,7 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    'docs': ('http://docs.pybtex.org/', '../build/html/objects.inv'),
+    'docs': ('http://docs.pybtex.org/', None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -115,6 +115,7 @@ html_context = {
     'site': True,
 }
 html_style = 'site.css'
+html_add_permalinks = ''
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
