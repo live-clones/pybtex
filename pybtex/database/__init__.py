@@ -764,7 +764,7 @@ def parse_file(file, bib_format=None, **kwargs):
     if isinstance(file, basestring):
         filename = file
     else:
-        filename = geattr(file, 'name', None)
+        filename = getattr(file, 'name', None)
 
     parser = find_plugin('pybtex.database.input', bib_format, filename=filename)(**kwargs)
     return parser.parse_file(file)
