@@ -22,7 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from pybtex.cmdline import CommandLine, make_option, standard_option
+from pybtex.cmdline import CommandLine, standard_option
 
 
 class PybtexFormatCommandLine(CommandLine):

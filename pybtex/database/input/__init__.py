@@ -22,7 +22,6 @@
 from __future__ import with_statement
 
 import io
-from os import path
 
 import pybtex.io
 from pybtex.plugin import Plugin

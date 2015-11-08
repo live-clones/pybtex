@@ -173,7 +173,6 @@ class CommandLine(object):
 
     def __call__(self):
         from pybtex.exceptions import PybtexError
-        import pybtex.io
         try:
             self.main()
         except PybtexError, error:

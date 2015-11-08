@@ -21,7 +21,6 @@
 
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
-from unittest import TestCase
 from io import BytesIO, TextIOWrapper
 import pickle
 

@@ -21,7 +21,6 @@
 
 import re
 
-from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import pairwise
 
 whitespace_re = re.compile(r'(\s)')

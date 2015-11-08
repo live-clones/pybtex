@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import pybtex.io
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import scan_bibtex_string
 from pybtex.database.output import BaseWriter

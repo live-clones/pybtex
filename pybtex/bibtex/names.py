@@ -230,7 +230,6 @@ class NameFormat(object):
 
     def to_python(self):
         """Convert BibTeX name format to Python (inexactly)."""
-        from pybtex.style.names import join
         parts = ',\n'.join(' ' * 8 + part.to_python() for part in self.parts)
         comment = ' ' * 4 + (
             '"""Format names similarly to %s in BibTeX."""' % self.format_string

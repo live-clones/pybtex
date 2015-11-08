@@ -21,7 +21,7 @@
 
 from pybtex.style import FormattedEntry, FormattedBibliography
 from pybtex.style.template import node, join
-from pybtex.richtext import Symbol, Text
+from pybtex.richtext import Symbol
 from pybtex.plugin import Plugin, find_plugin
 
 

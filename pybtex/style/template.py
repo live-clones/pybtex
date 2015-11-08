@@ -322,7 +322,7 @@ def tag(children, data, name):
     """
 
     parts = _format_list(children, data)
-    return richtext.Tag(name, *_format_list(children, data))
+    return richtext.Tag(name, *parts)
 
 
 @node

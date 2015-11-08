@@ -363,7 +363,6 @@ class FieldDict(OrderedCaseInsensitiveDict):
                 raise KeyError(key)
 
     def lower(self):
-        lower_dict = super(FieldDict, self).lower()
         return type(self)(self.parent, self.iteritems_lower())
 
 

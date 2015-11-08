@@ -75,8 +75,7 @@ pybtex-convert converts bibliography database files between supported formats
         keyless_entries,
         **options
     ):
-        from pybtex.database.convert import convert, ConvertError
-
+        from pybtex.database.convert import convert
         convert(
             from_filename, to_filename,
             input_encoding=input_encoding or encoding,

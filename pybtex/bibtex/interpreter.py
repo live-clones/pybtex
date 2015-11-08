@@ -36,8 +36,7 @@ class Variable(object):
 
     def __init__(self, value=None):
         self.set(value)
-    def __repr__(self):
-        return '{0}({1})'.format(type(self).__name__, repr(self._value))
+
     def set(self, value):
         if value is None:
             value = self.default

@@ -21,7 +21,7 @@
 
 import re
 from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
-        Identifier, FunctionLiteral, BibTeXError)
+        Identifier, FunctionLiteral)
 import pybtex.io
 
 #ParserElement.enablePackrat()
@@ -117,7 +117,7 @@ class BstParser(Scanner):
                 yield list(self.parse_command())
             except EOFError:
                 break
-            except PybtexSyntaxError, e:
+            except PybtexSyntaxError:
                 raise
                 break
 

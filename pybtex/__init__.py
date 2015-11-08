@@ -142,7 +142,6 @@ class PybtexEngine(Engine):
             name (``.bbl`` for LaTeX, ``.html`` for HTML, etc.).
         """
 
-        from pybtex import database
         from pybtex.plugin import find_plugin
 
         bib_parser = find_plugin('pybtex.database.input', bib_format)

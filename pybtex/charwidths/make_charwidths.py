@@ -29,8 +29,6 @@ Make a table of character widths to use with bibtex width$ function.
 
 def make_table(font_filename, output):
     import sys
-    import pprint
-    from os import path
     from datetime import datetime
     from freetype import Face
     from pprint import pformat

@@ -29,7 +29,6 @@ else:
    from collections import Counter
 
 import re
-import string
 import unicodedata
 
 from pybtex.textutils import abbreviate

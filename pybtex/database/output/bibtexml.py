@@ -22,7 +22,6 @@
 import io
 
 from xml.etree import cElementTree as ET
-from pybtex.database import Entry
 from pybtex.database.output import BaseWriter
 
 
@@ -115,7 +114,7 @@ class Writer(BaseWriter):
                 w.end()
 
         w = PrettyTreeBuilder()
-        bibtex_file = w.start('bibtex:file', {'xmlns:bibtex': 'http://bibtexml.sf.net/'})
+        w.start('bibtex:file', {'xmlns:bibtex': 'http://bibtexml.sf.net/'})
         w.newline()
 
         for key, entry in bib_data.entries.iteritems():

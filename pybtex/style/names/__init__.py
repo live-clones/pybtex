@@ -24,8 +24,8 @@
 
 from pybtex.plugin import Plugin
 from pybtex.textutils import abbreviate
-from pybtex.richtext import Symbol, Text, nbsp
-from pybtex.style.template import join, together, node, _format_list
+from pybtex.richtext import Text, nbsp
+from pybtex.style.template import together, node
 
 
 class BaseNameStyle(Plugin):
