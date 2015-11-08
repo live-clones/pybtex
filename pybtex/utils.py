@@ -25,6 +25,7 @@
 import itertools
 from functools import wraps
 from collections import deque, Sequence, MutableMapping, MutableSet
+from collections import OrderedDict
 from types import GeneratorType
 
 
@@ -290,6 +291,22 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
 
     def __iter__(self):
         return iter(self.order)
+
+    def __eq__(self, other):
+        """
+        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == OrderedCaseInsensitiveDict([('a', 1), ('b', 2)])
+        True
+        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == OrderedCaseInsensitiveDict([('b', 2), ('a', 1)])
+        False
+        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == dict([('b', 2), ('a', 1)])
+        True
+        >>> OrderedCaseInsensitiveDict([('a', 1), ('B', 2)]) == OrderedCaseInsensitiveDict([('A', 1), ('b', 2)])
+        False
+        """
+        if isinstance(other, (OrderedCaseInsensitiveDict, OrderedDict)):
+            return list(self.items()) == list(other.items())
+        else:
+            return super(OrderedCaseInsensitiveDict, self).__eq__(other)
 
     def iterkeys(self):
         return iter(self.order)
