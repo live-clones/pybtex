@@ -7,12 +7,17 @@ Pybtex!
     `Bitbucket page`_ | |download_url|_ (:doc:`what's new <docs:history>`) | :doc:`docs <docs:index>`
 
 
+.. meta::
+    :description: Pybtex is a BibTeX-compatible bibliography processor written in Python.
+    :keywords: Python, BibTeX
+
+
 Pybtex is a BibTeX-compatible bibliography processor written in Python.\ |br|
 You can simply type ``pybtex`` instead of ``bibtex``.
 
 .. rst-class:: doc-links
 
-    For more details, see :doc:`docs:index`.
+    For more details, see the :doc:`docs:index`.
 
 
 How is Pybtex different from BibTeX
