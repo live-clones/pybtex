@@ -26,7 +26,7 @@ from __future__ import absolute_import
 from os import path
 
 
-__version__  = '0.20a0'
+__version__ = '0.20a0'
 
 
 class Engine(object):
@@ -154,11 +154,11 @@ class PybtexEngine(Engine):
 
         style_cls = find_plugin('pybtex.style.formatting', style)
         style = style_cls(
-                label_style=kwargs.get('label_style'),
-                name_style=kwargs.get('name_style'),
-                sorting_style=kwargs.get('sorting_style'),
-                abbreviate_names=kwargs.get('abbreviate_names'),
-                min_crossrefs=min_crossrefs,
+            label_style=kwargs.get('label_style'),
+            name_style=kwargs.get('name_style'),
+            sorting_style=kwargs.get('sorting_style'),
+            abbreviate_names=kwargs.get('abbreviate_names'),
+            min_crossrefs=min_crossrefs,
         )
         formatted_bibliography = style.format_bibliography(bib_data, citations)
 
@@ -174,6 +174,7 @@ class PybtexEngine(Engine):
 def make_bibliography(*args, **kwargs):
     """A convenience function that calls :py:meth:`.PybtexEngine.make_bibliography`."""
     return PybtexEngine().make_bibliography(*args, **kwargs)
+
 
 def format_from_file(*args, **kwargs):
     """A convenience function that calls :py:meth:`.PybtexEngine.format_from_file`."""

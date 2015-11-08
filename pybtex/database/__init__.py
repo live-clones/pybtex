@@ -361,7 +361,7 @@ class FieldDict(OrderedCaseInsensitiveDict):
                 return self.parent.get_crossref().fields[key]
             else:
                 raise KeyError(key)
-    
+
     def lower(self):
         lower_dict = super(FieldDict, self).lower()
         return type(self)(self.parent, self.iteritems_lower())
@@ -401,9 +401,9 @@ class Entry(object):
         if not isinstance(other, Entry):
             return super(Entry, self) == other
         return (
-                self.type == other.type
-                and self.fields == other.fields
-                and self.persons == other.persons
+            self.type == other.type
+            and self.fields == other.fields
+            and self.persons == other.persons
         )
 
     def __repr__(self):
@@ -432,7 +432,6 @@ class Entry(object):
         )
 
 
-
 class Person(object):
     """A person or some other person-like entity.
 
@@ -445,7 +444,8 @@ class Person(object):
     ['Knuth']
 
     """
-    valid_roles = ['author', 'editor'] 
+
+    valid_roles = ['author', 'editor']
     style1_re = re.compile('^(.+),\s*(.+)$')
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
 
@@ -623,7 +623,7 @@ class Person(object):
 
         def special_char_islower(special_char):
             control_sequence = True
-            for char in special_char[1:]: # skip the backslash
+            for char in special_char[1:]:  # skip the backslash
                 if control_sequence:
                     if not char.isalpha():
                         control_sequence = False
@@ -632,21 +632,20 @@ class Person(object):
                         return char.islower()
             return False
 
-
         parts = split_tex_string(name, ',')
         if len(parts) > 3:
             report_error(InvalidNameString(name))
             last_parts = parts[2:]
             parts = parts[:2] + [' '.join(last_parts)]
 
-        if len(parts) == 3: # von Last, Jr, First
+        if len(parts) == 3:  # von Last, Jr, First
             process_von_last(split_tex_string(parts[0]))
             self.lineage_names.extend(split_tex_string(parts[1]))
             process_first_middle(split_tex_string(parts[2]))
-        elif len(parts) == 2: # von Last, First
+        elif len(parts) == 2:  # von Last, First
             process_von_last(split_tex_string(parts[0]))
             process_first_middle(split_tex_string(parts[1]))
-        elif len(parts) == 1: # First von Last
+        elif len(parts) == 1:  # First von Last
             parts = split_tex_string(name)
             first_middle, von_last = split_at(parts, is_von_name)
             if not von_last and first_middle:
@@ -662,11 +661,11 @@ class Person(object):
         if not isinstance(other, Person):
             return super(Person, self) == other
         return (
-                self.first_names == other.first_names
-                and self.middle_names == other.middle_names
-                and self.prelast_names == other.prelast_names
-                and self.last_names == other.last_names
-                and self.lineage_names == other.lineage_names
+            self.first_names == other.first_names
+            and self.middle_names == other.middle_names
+            and self.prelast_names == other.prelast_names
+            and self.last_names == other.last_names
+            and self.lineage_names == other.lineage_names
         )
 
     def __unicode__(self):

@@ -145,6 +145,8 @@ make_standard_option(
 
 
 BaseHelpFormatter = optparse.IndentedHelpFormatter
+
+
 class PybtexHelpFormatter(BaseHelpFormatter):
     def get_plugin_choices(self, plugin_group):
         return ', '.join(sorted(enumerate_plugin_names(plugin_group)))

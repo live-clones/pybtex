@@ -24,13 +24,13 @@
 >>> parser = Parser()
 >>> bib_data = parser.parse_string(u'''
 ... @String{SCI = "Science"}
-... 
+...
 ... @String{JFernandez = "Fernandez, Julio M."}
 ... @String{HGaub = "Gaub, Hermann E."}
 ... @String{MGautel = "Gautel, Mathias"}
 ... @String{FOesterhelt = "Oesterhelt, Filipp"}
 ... @String{MRief = "Rief, Matthias"}
-... 
+...
 ... @Article{rief97b,
 ...   author =       MRief #" and "# MGautel #" and "# FOesterhelt
 ...                  #" and "# JFernandez #" and "# HGaub,
@@ -110,6 +110,7 @@ class SkipEntry(Exception):
 class UndefinedMacro(PybtexSyntaxError):
     error_type = 'undefined string'
 
+
 class BibTeXEntryIterator(Scanner):
     NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
     KEY_PAREN = Pattern(ur'[^\s\,]+', 'entry key')
@@ -132,7 +133,14 @@ class BibTeXEntryIterator(Scanner):
     current_field_name = None
     current_field_value = None
 
-    def __init__(self, text, keyless_entries=False, macros=month_names, handle_error=None, want_entry=None, filename=None):
+    def __init__(
+        self, text,
+        keyless_entries=False,
+        macros=month_names,
+        handle_error=None,
+        want_entry=None,
+        filename=None
+    ):
         super(BibTeXEntryIterator, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
         self.macros = macros
@@ -148,7 +156,7 @@ class BibTeXEntryIterator(Scanner):
         return self.command_start, self.lineno, self.pos
 
     def get_error_context(self, context_info):
-        error_start, lineno, error_pos  = context_info
+        error_start, lineno, error_pos = context_info
         before_error = self.text[error_start:error_pos]
         if not before_error.endswith('\n'):
             eol = self.NEWLINE.search(self.text, error_pos)
@@ -310,13 +318,14 @@ class Parser(BaseParser):
 
     macros = None
 
-    def __init__(self,
-            encoding=None,
-            macros=month_names,
-            person_fields=Person.valid_roles,
-            keyless_entries=False,
-            **kwargs
-        ):
+    def __init__(
+        self,
+        encoding=None,
+        macros=month_names,
+        person_fields=Person.valid_roles,
+        keyless_entries=False,
+        **kwargs
+    ):
         BaseParser.__init__(self, encoding, **kwargs)
 
         self.macros = CaseInsensitiveDict(macros)

@@ -31,6 +31,7 @@ doctype = """<!DOCTYPE bibtex:file PUBLIC
         "bibtexml.dtd" >
 """
 
+
 class PrettyTreeBuilder(object):
     def __init__(self):
         self.tree_builder = ET.TreeBuilder()

@@ -31,6 +31,7 @@ def remove_ns(s):
     if s.startswith(bibtexns):
         return s[len(bibtexns):]
 
+
 class Parser(BaseParser):
     default_suffix = '.xml'
 
@@ -65,7 +66,6 @@ class Parser(BaseParser):
                     for name in person_entry.getchildren():
                         names[remove_ns(name.tag)] = name.text
                     e.add_person(Person(**names), role)
-                        
 
         id_ = entry.get('id')
         item = entry.getchildren()[0]

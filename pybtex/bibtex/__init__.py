@@ -27,13 +27,13 @@ from os import path
 
 from pybtex import Engine
 
+
 class BibTeXEngine(Engine):
     """
     The Python fomatting engine.
 
     See :py:class:`pybtex.Engine` for inherited methods.
     """
-
 
     def format_from_files(
         self,
@@ -83,7 +83,7 @@ class BibTeXEngine(Engine):
         if add_output_suffix:
             output_filename = output_filename + '.bbl'
         if output_filename:
-            output_file = pybtex.io.open_unicode(output_filename, 'w', encoding=output_encoding) 
+            output_file = pybtex.io.open_unicode(output_filename, 'w', encoding=output_encoding)
         else:
             output_file = StringIO()
         with output_file:

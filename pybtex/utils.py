@@ -46,6 +46,7 @@ def deprecated(since, reason=None):
 def memoize(f, capacity=1024):
     memory = {}
     history = deque()
+
     @wraps(f)
     def new_f(*args):
         if args not in memory:
@@ -176,7 +177,7 @@ class CaseInsensitiveDict(MutableMapping):
 
 class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
     """CaseInseisitiveDict with default factory, like collections.defaultdict
-    
+
     >>> d = CaseInsensitiveDefaultDict(int)
     >>> d['a']
     0

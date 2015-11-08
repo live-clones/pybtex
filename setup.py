@@ -31,6 +31,7 @@ from distutils.dep_util import newer
 progname = 'pybtex'
 from pybtex import __version__
 
+
 class Sdist(sdist):
     def run(self):
         from pybtex.database.convert import convert
@@ -64,7 +65,8 @@ install_requires = ['PyYAML>=3.01']
 if sys.version_info < (2, 7):
     install_requires += ['Counter>=1.0.0']
 
-setup(name=progname,
+setup(
+    name=progname,
     version=__version__,
     description='A BibTeX-compatible bibliography processor in Python',
     long_description=README,
@@ -86,7 +88,7 @@ setup(name=progname,
         'Topic :: Text Processing :: Markup :: XML',
         'Topic :: Utilities',
     ],
-    install_requires = install_requires,
+    install_requires=install_requires,
     packages=find_packages(exclude=['docs']),
     scripts=[
         os.path.join('scripts', progname),
@@ -94,7 +96,7 @@ setup(name=progname,
         os.path.join('scripts', progname + "-format"),
     ],
     include_package_data=True,
-    cmdclass={'sdist' : Sdist},
+    cmdclass={'sdist': Sdist},
     entry_points={
         'pybtex.database.input': [
             'bibtex = pybtex.database.input.bibtex:Parser',

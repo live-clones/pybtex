@@ -25,17 +25,19 @@ from os import path
 from pybtex.exceptions import PybtexError
 from pybtex import database
 
+
 class ConvertError(PybtexError):
     pass
 
 
-def convert(from_filename, to_filename,
-        from_format=None, to_format=None,
-        input_encoding=None, output_encoding=None,
-        parser_options=None,
-        preserve_case=True,
-        **kwargs
-        ):
+def convert(
+    from_filename, to_filename,
+    from_format=None, to_format=None,
+    input_encoding=None, output_encoding=None,
+    parser_options=None,
+    preserve_case=True,
+    **kwargs
+):
     if parser_options is None:
         parser_options = {}
 

@@ -28,13 +28,16 @@ from pybtex.style.template import (
 )
 from pybtex.richtext import Text, Symbol
 
+
 def dashify(text):
     dash_re = re.compile(r'-+')
     return Text(Symbol('ndash')).join(dash_re.split(text))
 
+
 pages = field('pages', apply_func=dashify)
 
 date = words [optional_field('month'), field('year')]
+
 
 class Style(BaseStyle):
 
@@ -111,10 +114,10 @@ class Style(BaseStyle):
         ]
         series = optional_field('series')
         result = first_of [
-                volume_and_series,
-                number_and_series,
-                series,
-            ]
+            volume_and_series,
+            number_and_series,
+            series,
+        ]
         if as_sentence:
             return sentence(capitalize=False) [result]
         else:

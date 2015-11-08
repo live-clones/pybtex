@@ -35,7 +35,7 @@ from pybtex.kpathsea import kpsewhich
 def get_default_encoding():
     return 'UTF-8'
 
-    
+
 def get_stream_encoding(stream):
     stream_encoding = getattr(stream, 'encoding', None)
     return stream_encoding or get_default_encoding()

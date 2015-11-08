@@ -24,6 +24,7 @@
 
 from pybtex.cmdline import CommandLine, make_option, standard_option
 
+
 class PybtexFormatCommandLine(CommandLine):
     prog = 'pybtex-format'
     args = '[options] in_filename out_filename'

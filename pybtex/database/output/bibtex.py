@@ -85,6 +85,7 @@ class Writer(BaseWriter):
     def write_stream(self, bib_data, stream):
         def write_field(type, value):
             stream.write(u',\n    %s = %s' % (type, self.quote(value)))
+
         def format_name(person):
             def join(l):
                 return ' '.join([name for name in l if name])
@@ -93,7 +94,7 @@ class Writer(BaseWriter):
             prelast = person.get_part_as_text('prelast')
             last = person.get_part_as_text('last')
             lineage = person.get_part_as_text('lineage')
-            s = '' 
+            s = ''
             if last:
                 s += join([prelast, last])
             if lineage:
@@ -102,10 +103,12 @@ class Writer(BaseWriter):
                 s += ', '
                 s += join([first, middle])
             return s
+
         def write_persons(persons, role):
-#            persons = getattr(entry, role + 's')
+            # persons = getattr(entry, role + 's')
             if persons:
                 write_field(role, u' and '.join([format_name(person) for person in persons]))
+
         def write_preamble(preamble):
             if preamble:
                 stream.write(u'@preamble{%s}\n\n' % self.quote(preamble))

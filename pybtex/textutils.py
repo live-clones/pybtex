@@ -139,7 +139,7 @@ def width(string):
     r"""
     Get the width of the typeset string, in relative units.  Similar to
     BibTeX's width$, but does not care about any "special characters".
-    
+
     >>> width('')
     0
     >>> width('abc')

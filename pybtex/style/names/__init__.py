@@ -38,7 +38,7 @@ def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
         return tie
     else:
         return space
-    
+
 
 @node
 def name_part(children, data, before='', tie=False, abbr=False):

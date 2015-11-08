@@ -45,7 +45,7 @@ one two three four
 from pybtex import richtext
 from pybtex.exceptions import PybtexError
 
-__test__ = {} # for doctest
+__test__ = {}  # for doctest
 
 
 class Proto(object):
@@ -111,8 +111,9 @@ class Node(object):
         args_repr = ', '.join(repr(arg) for arg in self.args)
         if args_repr:
             params.append(args_repr)
-        kwargs_repr = ', '.join('%s=%s' % (key, repr(value))
-                for (key, value) in self.kwargs.iteritems())
+        kwargs_repr = ', '.join(
+            '%s=%s' % (key, repr(value)) for (key, value) in self.kwargs.iteritems()
+        )
         if kwargs_repr:
             params.append(kwargs_repr)
         if params:
@@ -121,8 +122,9 @@ class Node(object):
             params_repr = ''
 
         if self.children:
-            children_repr = ' [%s]' % ', '.join(repr(child)
-                    for child in self.children)
+            children_repr = ' [%s]' % ', '.join(
+                repr(child) for child in self.children
+            )
         else:
             children_repr = ''
 
@@ -214,8 +216,10 @@ def together(children, data, last_tie=True):
         return tie2.join(parts)
     else:
         last_tie = tie if last_tie else tie_or_space(parts[-1], tie, space)
-        return richtext.Text(parts[0], tie_or_space(parts[0], tie, space),
-                space.join(parts[1:-1]), last_tie, parts[-1])
+        return richtext.Text(
+            parts[0], tie_or_space(parts[0], tie, space),
+            space.join(parts[1:-1]), last_tie, parts[-1]
+        )
 
 
 @node
@@ -300,10 +304,12 @@ def optional(children, data):
     except FieldIsMissing:
         return richtext.Text()
 
+
 @node
 def optional_field(children, data, *args, **kwargs):
     assert not children
     return optional [field(*args, **kwargs)].format_data(data)
+
 
 @node
 def tag(children, data, name):
@@ -314,8 +320,10 @@ def tag(children, data, name):
     >>> print sentence ['ready', 'set', tag('em') ['go']].format().render_as('html')
     Ready, set, <em>go</em>.
     """
+
     parts = _format_list(children, data)
     return richtext.Tag(name, *_format_list(children, data))
+
 
 @node
 def href(children, data):
@@ -328,6 +336,7 @@ def href(children, data):
     """
     parts = _format_list(children, data)
     return richtext.HRef(*parts)
+
 
 @node
 def first_of(children, data):

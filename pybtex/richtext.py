@@ -82,7 +82,6 @@ def str_repr(string):
         return result
 
 
-
 def ensure_text(value):
     if isinstance(value, basestring):
         return String(value)
@@ -422,7 +421,7 @@ class BaseMultipartText(BaseText):
         length = 0
         for part in reversed(self.parts):
             if length + len(part) > slice_length:
-                parts.append(part[len(part) -(slice_length - length):])
+                parts.append(part[len(part) - (slice_length - length):])
                 break
             else:
                 parts.append(part)
@@ -474,7 +473,6 @@ class BaseMultipartText(BaseText):
             tail_text = self._create_similar(tail)
             if tail_text or keep_empty_parts:
                 yield tail_text
-
 
     def startswith(self, prefix):
         """
@@ -644,6 +642,7 @@ class BaseMultipartText(BaseText):
     def map(self, f, condition=None):
         if condition is None:
             condition = lambda index, length: True
+
         def iter_map_with_condition():
             length = len(self)
             for index, child in enumerate(self.parts):
@@ -725,7 +724,6 @@ class String(BaseText):
         """
         return self.value.startswith(prefix)
 
-
     def endswith(self, suffix):
         """
         Return True if the string ends with the specified suffix,
@@ -787,7 +785,7 @@ class Tag(BaseMultipartText):
         depr_map = {}
         depr_map[u'emph'] = u'em'
         if name in depr_map:
-            msg  = u"The tag '%s' is deprecated" % name
+            msg = u"The tag '%s' is deprecated" % name
             msg += u", use '%s' instead." % depr_map[name]
             warnings.warn(msg, DeprecationWarning, stacklevel=3)
             return depr_map[name]

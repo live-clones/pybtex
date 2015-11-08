@@ -35,7 +35,7 @@ class AuxDataError(PybtexError):
     def __init__(self, message, context=None):
         super(AuxDataError, self).__init__(message, context.filename)
         self.context = context
-    
+
     def get_context(self):
         if self.context.line:
             marker = '^' * len(self.context.line)

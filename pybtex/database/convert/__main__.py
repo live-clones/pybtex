@@ -24,9 +24,10 @@
 
 from pybtex.cmdline import CommandLine, make_option, standard_option
 
+
 class PybtexConvertCommandLine(CommandLine):
     prog = 'pybtex-convert'
-    args = '[options] in_filename out_filename' 
+    args = '[options] in_filename out_filename'
     description = 'convert between bibliography database formats'
     long_description = """
 
@@ -76,10 +77,11 @@ pybtex-convert converts bibliography database files between supported formats
     ):
         from pybtex.database.convert import convert, ConvertError
 
-        convert(from_filename, to_filename,
+        convert(
+            from_filename, to_filename,
             input_encoding=input_encoding or encoding,
             output_encoding=output_encoding or encoding,
-            parser_options = {'keyless_entries': keyless_entries},
+            parser_options={'keyless_entries': keyless_entries},
             **options
         )
 

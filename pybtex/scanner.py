@@ -73,9 +73,9 @@ class Scanner(object):
                 end = match.end()
                 winning_pattern = pattern
         if winning_pattern:
-            value = self.text[self.pos : end]
+            value = self.text[self.pos: end]
             self.pos = end
-            #print '>>', value
+            # print '>>', value
             self.update_lineno(value)
             return Token(value, winning_pattern)
 
@@ -104,14 +104,14 @@ class Scanner(object):
             if match:
                 value = match.group()
                 self.pos = match.end()
-                #print '->', value
+                # print '->', value
                 return Token(value, pattern)
 
     def optional(self, patterns, allow_eof=False):
         return self.get_token(patterns, allow_eof=allow_eof)
 
     def required(self, patterns, description=None, allow_eof=False):
-        token =  self.get_token(patterns, allow_eof=allow_eof)
+        token = self.get_token(patterns, allow_eof=allow_eof)
         if token is None:
             if not description:
                 description = ' or '.join(pattern.description for pattern in patterns)
@@ -123,7 +123,7 @@ class Scanner(object):
         return self.lineno, self.pos
 
     def get_error_context(self, context_info):
-        error_lineno, error_pos  = context_info
+        error_lineno, error_pos = context_info
         if error_lineno is not None:
             error_lineno0 = error_lineno - 1
             lines = self.text.splitlines(True)
