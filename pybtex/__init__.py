@@ -26,7 +26,7 @@ from __future__ import absolute_import
 from os import path
 
 
-__version__  = '0.20-dev'
+__version__  = '0.20a0'
 
 
 class Engine(object):
