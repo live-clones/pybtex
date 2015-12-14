@@ -199,6 +199,7 @@ class Style(BaseStyle):
                 self.format_edition(e),
                 date
             ],
+            optional[ sentence [ self.format_isbn(e) ] ],
             sentence(capitalize=False) [ optional_field('note') ],
             self.format_web_refs(e),
         ]
@@ -459,3 +460,6 @@ class Style(BaseStyle):
                 field('eprint')
                 ]
             ]
+
+    def format_isbn(self, e):
+        return join(sep=' ') [ 'ISBN', field('isbn') ]
