@@ -414,13 +414,15 @@ class Style(BaseStyle):
 
     def format_url(self, e):
         # based on urlbst format.url
-        return href [
-            field('url'),
-            join(' ') [
-                'URL:',
-                field('url')
+        return words [
+            'URL:',
+            href [
+                field('url'),
+                join(' ') [
+                    field('url')
+                    ]
                 ]
-            ]
+        ]
 
     def format_pubmed(self, e):
         # based on urlbst format.pubmed

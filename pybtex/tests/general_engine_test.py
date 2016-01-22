@@ -127,6 +127,7 @@ def test_pybtex_engine():
         ('cyrillic.bib', 'unsrt.bst'),
         ('cyrillic.bib', 'plain.bst'),
         ('cyrillic.bib', 'alpha.bst'),
+        ('extrafields.bib', 'unsrt.bst'),
     ]:
         yield check_make_bibliography, pybtex, filenames
         yield check_format_from_string, pybtex, filenames
