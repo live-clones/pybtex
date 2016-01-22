@@ -33,6 +33,8 @@ LaTeX output backend.
 <BLANKLINE>
 >>> print HRef('/', 'Non-', 'empty').render(latex)
 \href{/}{Non-empty}
+>>> print HRef('http://example.org/', 'http://example.org/').render(latex)
+\url{/}
 """
 
 
@@ -62,7 +64,12 @@ class Backend(BaseBackend):
             return ur'\%s{%s}' % (tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'\href{%s}{%s}' % (url, text) if text else u''
+        if not text:
+            return ''
+        elif text == url:
+            return u'\\url{%s}' % url
+        else:
+            return ur'\href{%s}{%s}' % (url, text) if text else u''
 
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
