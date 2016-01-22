@@ -74,6 +74,15 @@ class BaseBackend(Plugin):
 
         raise NotImplementedError
 
+    def format_protected(self, text):
+        """Format a "protected" piece of text.
+
+        In LaTeX backend, it is formatted as a {braced group}.
+        Most other backends would just output the text as-is.
+        """
+
+        return text
+
     def render_sequence(self, rendered_list):
         """Render a sequence of rendered Text objects.
         The default implementation simply concatenates

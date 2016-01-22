@@ -71,6 +71,15 @@ class Backend(BaseBackend):
         else:
             return ur'\href{%s}{%s}' % (url, text) if text else u''
 
+    def format_protected(self, text):
+        """
+        >>> from pybtex.richtext import Protected
+        >>> print Protected('CTAN').render_as('latex')
+        {CTAN}
+        """
+
+        return '{%s}' % text
+
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
             self.output(self.formatted_bibliography.preamble + u'\n')
