@@ -711,8 +711,15 @@ class String(BaseText):
         if sep is None:
             from .textutils import whitespace_re
             parts = whitespace_re.split(self.value)
-        else:
+        elif isinstance(sep, basestring):
             parts = self.value.split(sep)
+        else:
+            try:
+                split_method = sep.split
+            except AttributeError:
+                raise TypeError('sep must be None, string or compiled regular expression')
+            else:
+                parts = split_method(self.value)
         return [String(part) for part in parts if part or keep_empty_parts]
 
     def startswith(self, prefix):

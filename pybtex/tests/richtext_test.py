@@ -1,5 +1,6 @@
 #! vim:fileencoding=utf-8
 
+import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase
 
@@ -249,6 +250,7 @@ class TestText(TextTestMixin, TestCase):
         assert Text('   a   ').split() == [Text('a')]
         assert Text('a + b').split() == [Text('a'), Text('+'), Text('b')]
         assert Text('a + b').split(' + ') == [Text('a'), Text('b')]
+        assert Text('a + b').split(re.compile(r'\s')) == [Text('a'), Text('+'), Text('b')]
         assert Text('abc').split('xyz') == [Text('abc')]
         assert Text('---').split('--') == [Text(), Text('-')]
         assert Text('---').split('-') == [Text(), Text(), Text(), Text()]
@@ -350,6 +352,7 @@ class TestString(TextTestMixin, TestCase):
         assert String('a ').split() == [String('a')]
         assert String('a + b').split() == [String('a'), String('+'), String('b')]
         assert String('a + b').split(' + ') == [String('a'), String('b')]
+        assert String('a + b').split(re.compile(r'\s')) == [String('a'), String('+'), String('b')]
 
     def test_join(self):
         assert String().join([]) == Text()
