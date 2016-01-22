@@ -34,7 +34,7 @@ LaTeX output backend.
 >>> print HRef('/', 'Non-', 'empty').render(latex)
 \href{/}{Non-empty}
 >>> print HRef('http://example.org/', 'http://example.org/').render(latex)
-\url{/}
+\url{http://example.org/}
 """
 
 
