@@ -62,6 +62,10 @@ class TextTestMixin(object):
         raise NotImplementedError
 
     @abstractmethod
+    def test_capfirst(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def test_capitalize(self):
         raise NotImplementedError
 
@@ -127,8 +131,12 @@ class TestText(TextTestMixin, TestCase):
         text = Text('a', 'b', 'c')
         assert 'abc' in text
 
+    def test_capfirst(self):
+        text = Text('dear ', 'Alice')
+        assert unicode(text.capfirst()) == 'Dear Alice'
+
     def test_capitalize(self):
-        text = Text('mary ', 'had ', 'a little lamb')
+        text = Text('mary ', 'had ', 'a Little Lamb')
         assert unicode(text.capitalize()) == 'Mary had a little lamb'
 
     def test__add__(self):
@@ -362,18 +370,27 @@ class TestString(TextTestMixin, TestCase):
         assert String(', ').join(['tomatoes', 'cucumbers']) == Text('tomatoes, cucumbers')
         assert String(', ').join(['tomatoes', 'cucumbers', 'lemons']) == Text('tomatoes, cucumbers, lemons')
 
-    def test_capitalize(self):
+    def test_capfirst(self):
         assert unicode(String('').capitalize()) == ''
+        assert unicode(String('november december').capitalize()) == 'November december'
+        assert unicode(String('November December').capitalize()) == 'November december'
+        assert unicode(String('NOVEMBER DECEMBER').capitalize()) == 'November december'
+
+    def test_capitalize(self):
+        assert unicode(String('').capfirst()) == ''
+        assert unicode(String('november').capfirst()) == 'November'
+        assert unicode(String('November').capfirst()) == 'November'
+        assert unicode(String('november december').capfirst()) == 'November december'
+        assert unicode(String('November December').capfirst()) == 'November December'
+        assert unicode(String('NOVEMBER DECEMBER').capfirst()) == 'NOVEMBER DECEMBER'
+
+    def test_add_period(self):
         assert unicode(String('').add_period()) == ''
         assert unicode(String('').add_period('!')) == ''
         assert unicode(String('').add_period().add_period()) == ''
         assert unicode(String('').add_period().add_period('!')) == ''
         assert unicode(String('').add_period('!').add_period()) == ''
-        assert unicode(String('november').capitalize()) == 'November'
-        assert unicode(String('November').capitalize()) == 'November'
-        assert unicode(String('November').add_period()) == 'November.'
-
-    def test_add_period(self):
+        unicode(String('November').add_period()) == 'November.'
         result = unicode(String('November').add_period().add_period())
         assert result == 'November.'
 
@@ -494,8 +511,12 @@ class TestTag(TextTestMixin, TestCase):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
         assert tag.lower().render_as('html') == '<em>mary had a little lamb</em>'
 
+    def test_capfirst(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a Little Lamb'))
+        assert tag.capfirst().render_as('html') == '<em>Mary had a Little Lamb</em>'
+
     def test_capitalize(self):
-        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a Little Lamb'))
         assert tag.capitalize().render_as('html') == '<em>Mary had a little lamb</em>'
 
     def test_startswith(self):
@@ -745,10 +766,17 @@ class TestHRef(TextTestMixin, TestCase):
         tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
         assert tag.upper().render_as('html') == '<a href="info.html">MARY HAD A LITTLE LAMB</a>'
 
+    def test_capfirst(self):
+        assert HRef('/').capfirst() == Text(HRef('/'))
+
+        tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a Little Lamb'))
+        assert tag.capfirst().render_as('html') == '<a href="info.html">Mary had a Little Lamb</a>'
+        assert tag.lower().capfirst().render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
+
     def test_capitalize(self):
         assert HRef('/').capitalize() == Text(HRef('/'))
 
-        tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
+        tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a Little Lamb'))
         assert tag.capitalize().render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
         assert tag.lower().capitalize().render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
 
@@ -941,6 +969,10 @@ class TestProtected(TextTestMixin, TestCase):
         text = Protected('a', 'b', 'c')
         assert 'abc' in text
 
+    def test_capfirst(self):
+        text = Protected('mary ', 'had ', 'a Little Lamb')
+        assert unicode(text.capitalize()) == 'mary had a Little Lamb'
+
     def test_capitalize(self):
         text = Protected('mary ', 'had ', 'a little lamb')
         assert unicode(text.capitalize()) == 'mary had a little lamb'
@@ -1129,6 +1161,9 @@ class TestSymbol(TextTestMixin, TestCase):
 
     def test_lower(self):
         assert nbsp.lower().render_as('html') == '&nbsp;'
+
+    def test_capfirst(self):
+        assert Text(nbsp, nbsp).capfirst().render_as('html') == '&nbsp;&nbsp;'
 
     def test_capitalize(self):
         assert Text(nbsp, nbsp).capitalize().render_as('html') == '&nbsp;&nbsp;'

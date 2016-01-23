@@ -204,19 +204,25 @@ class BaseText(object):
         else:
             return self
 
-    @deprecated('0.19', 'renamed to capitalize()')
     def capfirst(self):
-        return self.capitalize()
-
-    def capitalize(self):
         """
         Capitalize the first letter of the text.
 
-        >>> Text(Tag('em', 'long cat')).capitalize()
-        Text(Tag('em', 'Long cat'))
+        >>> Text(Tag('em', 'long Cat')).capfirst()
+        Text(Tag('em', 'Long Cat'))
 
         """
         return self[:1].upper() + self[1:]
+
+    def capitalize(self):
+        """
+        Capitalize the first letter of the text and lowercase the rest.
+
+        >>> Text(Tag('em', 'LONG CAT')).capitalize()
+        Text(Tag('em', 'Long cat'))
+
+        """
+        return self[:1].upper() + self[1:].lower()
 
     @abstractmethod
     def lower(self):
@@ -858,9 +864,9 @@ class Protected(BaseMultipartText):
     r"""
     A :py:class:`Protected` represents a "protected" piece of text.
 
-    - :py:meth:`Protected.lower`, :py:meth:`Protected.upper`, and
-      :py:meth:`Protected.capitalize` are no-ops and just return the
-      :py:class:`Protected` object itself.
+    - :py:meth:`Protected.lower`, :py:meth:`Protected.upper`,
+      :py:meth:`Protected.capitalize`, and :py:meth:`Protected.capitalize()`
+      are no-ops and just return the :py:class:`Protected` object itself.
     - :py:meth:`Protected.split` never splits the text. It always returns a
       one-element list containing the :py:class:`Protected` object itself.
     - In LaTeX output, :py:class:`Protected` is {surrounded by braces}.  HTML
@@ -887,6 +893,9 @@ class Protected(BaseMultipartText):
     def __repr__(self):
         reprparts = ', '.join(repr(part) for part in self.parts)
         return 'Protected({})'.format(reprparts)
+
+    def capfirst(self):
+        return self
 
     def capitalize(self):
         return self
