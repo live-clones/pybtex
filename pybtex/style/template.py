@@ -33,7 +33,7 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 ...         'year': '2000',
 ... }
 >>> e = Entry('book', fields=fields)
->>> book_format = sentence(sep=', ') [
+>>> book_format = sentence(capfirst=True, sep=', ') [
 ...     field('title'), field('year'), optional [field('sdf')]
 ... ]
 >>> print unicode(book_format.format_data(e))
@@ -223,27 +223,20 @@ def together(children, data, last_tie=True):
 
 
 @node
-def sentence(children, data, capfirst=None, capitalize=True, add_period=True, sep=', '):
+def sentence(children, data, capfirst=False, capitalize=False, add_period=True, sep=', '):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
     >>> print unicode(sentence.format())
     <BLANKLINE>
-    >>> print unicode(sentence(sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format())
+    >>> print unicode(sentence(capitalize=True, sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format())
     Mary had a little lamb.
     >>> print unicode(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format())
     uno, dos, tres
     """
 
-    if capfirst is not None:
-        from warnings import warn
-        message = (
-            'sentence(capfirst={0}) is deprecated since 0.19: '
-            'use sentence(capitalize={0}) instead'
-        )
-        warn(message.format(capfirst), DeprecationWarning)
-        capitalize = capfirst
-
     text = join(sep) [children].format_data(data)
+    if capfirst:
+        text = text.capfirst()
     if capitalize:
         text = text.capitalize()
     if add_period:
@@ -268,6 +261,7 @@ def field(children, data, name, apply_func=None):
     except KeyError:
         raise FieldIsMissing(name, data)
     else:
+        field = richtext.String(field)
         if apply_func:
             field = apply_func(field)
         return field
@@ -318,6 +312,8 @@ def tag(children, data, name):
     >>> print tag('em') ['important'].format().render_as('html')
     <em>important</em>
     >>> print sentence ['ready', 'set', tag('em') ['go']].format().render_as('html')
+    ready, set, <em>go</em>.
+    >>> print sentence(capitalize=True) ['ready', 'set', tag('em') ['go']].format().render_as('html')
     Ready, set, <em>go</em>.
     """
 
@@ -332,7 +328,7 @@ def href(children, data):
     >>> print href ['www.test.org', 'important'].format().render_as('html')
     <a href="www.test.org">important</a>
     >>> print sentence ['ready', 'set', href ['www.test.org', 'go']].format().render_as('html')
-    Ready, set, <a href="www.test.org">go</a>.
+    ready, set, <a href="www.test.org">go</a>.
     """
     parts = _format_list(children, data)
     return richtext.HRef(*parts)

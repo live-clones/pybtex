@@ -31,7 +31,7 @@ from pybtex.richtext import Text, Symbol
 
 def dashify(text):
     dash_re = re.compile(r'-+')
-    return Text(Symbol('ndash')).join(dash_re.split(text))
+    return Text(Symbol('ndash')).join(text.split(dash_re))
 
 
 pages = field('pages', apply_func=dashify)
@@ -44,7 +44,7 @@ class Style(BaseStyle):
     def format_names(self, role, as_sentence=True):
         formatted_names = names(role, sep=', ', sep2 = ' and ', last_sep=', and ')
         if as_sentence:
-            return sentence(capitalize=False) [formatted_names]
+            return sentence [formatted_names]
         else:
             return formatted_names
 
@@ -64,11 +64,11 @@ class Style(BaseStyle):
         template = toplevel [
             self.format_names('author'),
             self.format_title(e, 'title'),
-            sentence(capitalize=False) [
+            sentence [
                 tag('em') [field('journal')],
                 optional[ volume_and_pages ],
                 date],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -92,7 +92,7 @@ class Style(BaseStyle):
             word = 'editor'
         result = join(sep=', ') [editors, word]
         if as_sentence:
-            return sentence(capitalize=False) [result]
+            return sentence [result]
         else:
             return result
 
@@ -119,7 +119,7 @@ class Style(BaseStyle):
             series,
         ]
         if as_sentence:
-            return sentence(capitalize=False) [result]
+            return sentence [result]
         else:
             return result
 
@@ -138,12 +138,11 @@ class Style(BaseStyle):
         ]
 
     def format_title(self, e, which_field, as_sentence=True):
-        from pybtex.bibtex.utils import change_case
-
         formatted_title = field(
-            which_field, apply_func=lambda text: change_case(text, 't'))
+            which_field, apply_func=lambda text: text.capitalize()
+        )
         if as_sentence:
-            return sentence(capitalize=False) [ formatted_title ]
+            return sentence [ formatted_title ]
         else:
             return formatted_title
 
@@ -200,7 +199,7 @@ class Style(BaseStyle):
                 date
             ],
             optional[ sentence [ self.format_isbn(e) ] ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -246,7 +245,7 @@ class Style(BaseStyle):
             self.format_title(e, 'title'),
             words [
                 'In',
-                sentence(capitalize=False) [
+                sentence [
                     optional[ self.format_editor(e, as_sentence=False) ],
                     self.format_btitle(e, 'booktitle', as_sentence=False),
                     self.format_volume_and_series(e, as_sentence=False),
@@ -269,7 +268,7 @@ class Style(BaseStyle):
             self.format_title(e, 'title'),
             words [
                 'In',
-                sentence(capitalize=False) [
+                sentence [
                     optional[ self.format_editor(e, as_sentence=False) ],
                     self.format_btitle(e, 'booktitle', as_sentence=False),
                     self.format_volume_and_series(e, as_sentence=False),
@@ -277,7 +276,7 @@ class Style(BaseStyle):
                 ],
                 self.format_address_organization_publisher_date(e),
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -294,7 +293,7 @@ class Style(BaseStyle):
                 self.format_edition(e),
                 optional[ date ],
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -309,7 +308,7 @@ class Style(BaseStyle):
                 optional_field('address'),
                 date,
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -322,7 +321,7 @@ class Style(BaseStyle):
                 optional[ field('howpublished') ],
                 optional[ date ],
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -337,7 +336,7 @@ class Style(BaseStyle):
                 optional_field('address'),
                 date,
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -365,7 +364,7 @@ class Style(BaseStyle):
                         e, include_organization=False),
                 ],
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -386,7 +385,7 @@ class Style(BaseStyle):
                 optional_field('address'),
                 date,
             ],
-            sentence(capitalize=False) [ optional_field('note') ],
+            sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
         return template.format_data(e)
@@ -395,7 +394,7 @@ class Style(BaseStyle):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
-            sentence(capitalize=False) [
+            sentence [
                 field('note'),
                 optional[ date ]
             ],
@@ -405,7 +404,7 @@ class Style(BaseStyle):
 
     def format_web_refs(self, e):
         # based on urlbst output.web.refs
-        return sentence(capitalize=False) [
+        return sentence [
             optional [ self.format_url(e) ],
             optional [ self.format_eprint(e) ],
             optional [ self.format_pubmed(e) ],
