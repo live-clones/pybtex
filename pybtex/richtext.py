@@ -829,12 +829,16 @@ class HRef(BaseMultipartText):
     >>> print href.render_as('latex')
     \href{http://ctan.org/}{CTAN}
 
+    >>> href = HRef(String('http://ctan.org/'), String('http://ctan.org/'))
+    >>> print href.render_as('latex')
+    \url{http://ctan.org/}
+
     :py:class:`HRef` supports the same methods as :py:class:`Text`.
 
     """
 
     def __init__(self, url, *args):
-        if not isinstance(url, (basestring, Text)):
+        if not isinstance(url, (basestring, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
         self.url = unicode(url)
