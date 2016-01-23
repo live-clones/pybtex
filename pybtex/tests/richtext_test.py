@@ -265,9 +265,9 @@ class TestText(TextTestMixin, TestCase):
         assert unicode(text.add_period()) == "That's all, folks."
 
     def test_render_as(self):
-        string = Text('Detektivbyrån & friends')
-        assert string.render_as('text') == 'Detektivbyrån & friends'
-        assert string.render_as('html') == 'Detektivbyrån &amp; friends'
+        string = Text(u'Detektivbyrån & friends')
+        assert string.render_as('text') == u'Detektivbyrån & friends'
+        assert string.render_as('html') == u'Detektivbyrån &amp; friends'
 
 
 class TestString(TextTestMixin, TestCase):
@@ -378,9 +378,9 @@ class TestString(TextTestMixin, TestCase):
         assert result == 'November.'
 
     def test_render_as(self):
-        string = String('Detektivbyrån & friends')
-        assert string.render_as('text') == 'Detektivbyrån & friends'
-        assert string.render_as('html') == 'Detektivbyrån &amp; friends'
+        string = String(u'Detektivbyrån & friends')
+        assert string.render_as('text') == u'Detektivbyrån & friends'
+        assert string.render_as('html') == u'Detektivbyrån &amp; friends'
 
 
 class TestTag(TextTestMixin, TestCase):
