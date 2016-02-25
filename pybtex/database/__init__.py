@@ -366,6 +366,24 @@ class FieldDict(OrderedCaseInsensitiveDict):
         return type(self)(self.parent, self.iteritems_lower())
 
 
+class RichFieldProxyDict(Mapping):
+    def __init__(self, fields):
+        self._fields = fields
+
+    def __contains__(self):
+        return self._fields.__contains__()
+
+    def __iter__(self):
+        return self._fields.__iter__()
+
+    def __len__(self):
+        return self._fields.__len__()
+
+    def __getitem__(self, key):
+        from pybtex.richtext import String
+        return String(self._fields[key])
+
+
 class Entry(object):
     """A bibliography entry."""
 
@@ -384,6 +402,7 @@ class Entry(object):
         self.fields = FieldDict(self, fields)
         """A dictionary of entry fields.
         The dictionary is ordered and case-insensitive."""
+        self.rich_fields = RichFieldProxyDict(self.fields)
 
         self.persons = OrderedCaseInsensitiveDict(persons)
         """A dictionary of entry persons, by their roles.

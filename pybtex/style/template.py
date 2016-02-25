@@ -257,11 +257,10 @@ def field(children, data, name, apply_func=None):
 
     assert not children
     try:
-        field = data.fields[name]
+        field = data.rich_fields[name]
     except KeyError:
         raise FieldIsMissing(name, data)
     else:
-        field = richtext.String(field)
         if apply_func:
             field = apply_func(field)
         return field
