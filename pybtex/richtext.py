@@ -147,16 +147,20 @@ class BaseText(object):
     def join(self, parts):
         """Join a list using this text (like string.join)
 
-        >>> print unicode(String('-').join(['a', 'b', 'c']))
+        >>> letters = ['a', 'b', 'c']
+        >>> print unicode(String('-').join(letters))
+        a-b-c
+        >>> print unicode(String('-').join(iter(letters)))
         a-b-c
         """
 
         if not parts:
             return Text()
         joined = []
-        for part in parts[:-1]:
-            joined.extend([part, self])
-        joined.append(parts[-1])
+        for part in parts:
+            if joined:
+                joined.append(self)
+            joined.append(part)
         return Text(*joined)
 
     @abstractmethod
