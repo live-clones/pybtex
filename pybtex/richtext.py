@@ -796,6 +796,13 @@ class Text(BaseMultipartText):
         for part in self.parts:
             yield part
 
+    @classmethod
+    def from_latex(cls, latex):
+        # XXX use plugins?
+        # TODO use latexcodec
+        # TODO parse braces
+        return String(latex)
+
 
 class Tag(BaseMultipartText):
     r"""

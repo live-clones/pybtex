@@ -30,6 +30,7 @@ from pybtex.utils import (
     deprecated,
     OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
 )
+from pybtex.richtext import Text
 from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
 from pybtex.errors import report_error
 
@@ -380,8 +381,7 @@ class RichFieldProxyDict(Mapping):
         return self._fields.__len__()
 
     def __getitem__(self, key):
-        from pybtex.richtext import String
-        return String(self._fields[key])
+        return Text.from_latex(self._fields[key])
 
 
 class Entry(object):
