@@ -100,9 +100,6 @@ def abbreviate(text, split=delimiter_re.split):
     'F.-S.'
     """
 
-    def split(string):
-        return delimiter_re.split(string)
-
     def abbreviate(part):
         if part.isalpha():
             return part[0] + '.'
