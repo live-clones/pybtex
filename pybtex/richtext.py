@@ -212,6 +212,16 @@ class BaseText(object):
         else:
             return self
 
+    def abbreviate(self):
+        def abbreviate_word(word):
+            if word.isalpha():
+                return word[0].add_period()
+            else:
+                return word
+
+        parts = self.split(textutils.delimiter_re)
+        return String('').join(abbreviate_word(part) for part in parts)
+
     def capfirst(self):
         """
         Capitalize the first letter of the text.
