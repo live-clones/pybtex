@@ -43,7 +43,7 @@ def tie_or_space(word, tie='~', space = ' ', enough_chars=3):
 @node
 def name_part(children, data, before='', tie=False, abbr=False):
     if abbr:
-        children = [abbreviate(child) for child in children]
+        children = [child.abbreviate() for child in children]
     parts = together [children].format_data(data)
     if not parts:
         return Text()
