@@ -718,6 +718,26 @@ class Person(object):
             names = [abbreviate(name) for name in names]
         return names
 
+    @property
+    def rich_first_names(self):
+        return [Text.from_latex(name) for name in self.first_names]
+
+    @property
+    def rich_middle_names(self):
+        return [Text.from_latex(name) for name in self.middle_names]
+
+    @property
+    def rich_prelast_names(self):
+        return [Text.from_latex(name) for name in self.prelast_names]
+
+    @property
+    def rich_last_names(self):
+        return [Text.from_latex(name) for name in self.last_names]
+
+    @property
+    def rich_lineage_names(self):
+        return [Text.from_latex(name) for name in self.lineage_names]
+
     @deprecated('0.19', 'use Person.first_names instead')
     def first(self, abbr=False):
         """
