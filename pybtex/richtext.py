@@ -189,6 +189,10 @@ class BaseText(object):
 
         raise NotImplementedError
 
+    @abstractmethod
+    def isalpha(self):
+        raise NotImplementedError
+
     def add_period(self, period='.'):
         """
         Add a period to the end of text, if the last character is not ".", "!" or "?".
@@ -522,6 +526,13 @@ class BaseMultipartText(BaseText):
         else:
             return self.parts[-1].endswith(suffix)
 
+    def isalpha(self):
+        """
+        Return True if all characters in the string are alphabetic and there is
+        at least one character, False otherwise.
+        """
+        return bool(self) and all(part.isalpha() for part in self.parts)
+
     def lower(self):
         """
         Convert rich text to lowercase.
@@ -751,6 +762,9 @@ class String(BaseText):
         """
         return self.value.endswith(suffix)
 
+    def isalpha(self):
+        return self.value.isalpha()
+
     def lower(self):
         return String(self.value.lower())
 
@@ -963,6 +977,9 @@ class Symbol(BaseText):
         return False
 
     def endswith(self, text):
+        return False
+
+    def isalpha(self):
         return False
 
     def render(self, backend):

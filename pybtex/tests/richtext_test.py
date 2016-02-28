@@ -62,6 +62,10 @@ class TextTestMixin(object):
         raise NotImplementedError
 
     @abstractmethod
+    def test_isalpha(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def test_capfirst(self):
         raise NotImplementedError
 
@@ -240,6 +244,14 @@ class TestText(TextTestMixin, TestCase):
         assert Text('This is good').endswith(('good', 'wonderful'))
         assert not Text('This is good').endswith(('bad', 'awful'))
 
+    def test_isalpha(self):
+        assert not Text().isalpha()
+        assert not Text('a b c').isalpha()
+        assert Text('abc').isalpha()
+        assert Text(u'文字').isalpha()
+        assert Text('ab', Tag('em', 'cd'), 'ef').isalpha()
+        assert not Text('ab', Tag('em', '12'), 'ef').isalpha()
+
     def test_join(self):
         assert unicode(Text(' ').join(['a', Text('b c')])) == 'a b c'
         assert unicode(Text(nbsp).join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
@@ -337,6 +349,12 @@ class TestString(TextTestMixin, TestCase):
         assert String('November.').endswith('.')
         assert String('November.').endswith(('.', '!'))
         assert not String('November.').endswith(('?', '!'))
+
+    def test_isalpha(self):
+        assert not String().isalpha()
+        assert not String('a b c').isalpha()
+        assert String('abc').isalpha()
+        assert String(u'文字').isalpha()
 
     def test_append(self):
         assert String().append('') == Text()
@@ -533,6 +551,12 @@ class TestTag(TextTestMixin, TestCase):
 
         text = Text('This ', Tag('em', 'is'), ' good')
         assert not text.startswith('This is')
+
+    def test_isalpha(self):
+        assert not Tag('em').isalpha()
+        assert not Tag('em', 'a b c').isalpha()
+        assert Tag('em', 'abc').isalpha()
+        assert Tag('em', u'文字').isalpha()
 
     def test_endswith(self):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
@@ -913,6 +937,12 @@ class TestHRef(TextTestMixin, TestCase):
         text = Text('This ', HRef('/', 'is'), ' good')
         assert not text.endswith('is good')
 
+    def test_isalpha(self):
+        assert not HRef('/').isalpha()
+        assert not HRef('/', 'a b c').isalpha()
+        assert HRef('/', 'abc').isalpha()
+        assert HRef('/', u'文字').isalpha()
+
     def test_render_as(self):
         href = HRef('http://www.example.com', 'Hyperlinked text.')
         assert href.render_as('latex') == '\\href{http://www.example.com}{Hyperlinked text.}'
@@ -1078,6 +1108,12 @@ class TestProtected(TextTestMixin, TestCase):
         assert Protected('This is good').endswith(('good', 'wonderful'))
         assert not Protected('This is good').endswith(('bad', 'awful'))
 
+    def test_isalpha(self):
+        assert not Protected().isalpha()
+        assert not Protected('a b c').isalpha()
+        assert Protected('abc').isalpha()
+        assert Protected(u'文字').isalpha()
+
     def test_join(self):
         assert Protected(' ').join(['a', Protected('b c')]).render_as('latex') == 'a{ b c}'
         assert Protected(nbsp).join(['a', 'b', 'c']).render_as('latex') == 'a{~}b{~}c'
@@ -1182,6 +1218,9 @@ class TestSymbol(TextTestMixin, TestCase):
     def test_endswith(self):
         assert not nbsp.endswith('.')
         assert not nbsp.endswith(('.', '?!'))
+
+    def test_isalpha(self):
+        assert not nbsp.isalpha()
 
     def test_render_as(self):
         assert nbsp.render_as('latex') == '~'
