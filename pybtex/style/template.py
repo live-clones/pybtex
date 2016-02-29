@@ -147,7 +147,7 @@ def _format_data(node, data):
     try:
         f = node.format_data
     except AttributeError:
-        return unicode(node)
+        return node
     else:
         return f(data)
 
