@@ -205,9 +205,9 @@ def together(children, data, last_tie=True):
     >>> print unicode(together ['a', 'very', 'long', 'road'].format())
     a<nbsp>very long<nbsp>road
     """
-    from pybtex.bibtex.names import tie_or_space
-    tie = richtext.Text(richtext.nbsp)
-    space = richtext.Text(' ')
+    from pybtex.textutils import tie_or_space
+    tie = richtext.nbsp
+    space = richtext.String(' ')
     parts = [part for part in _format_list(children, data) if part]
     if not parts:
         return richtext.Text()

@@ -155,3 +155,10 @@ def width(string):
 
     from pybtex.charwidths import charwidths
     return sum(charwidths.get(char, 0) for char in string)
+
+
+def tie_or_space(word, tie='~', space=' ', enough_chars=3):
+    if len(word) < enough_chars:
+        return tie
+    else:
+        return space
