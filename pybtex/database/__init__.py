@@ -30,6 +30,7 @@ from pybtex.utils import (
     deprecated,
     OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
 )
+from pybtex.richtext import Text
 from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
 from pybtex.errors import report_error
 
@@ -366,6 +367,23 @@ class FieldDict(OrderedCaseInsensitiveDict):
         return type(self)(self.parent, self.iteritems_lower())
 
 
+class RichFieldProxyDict(Mapping):
+    def __init__(self, fields):
+        self._fields = fields
+
+    def __contains__(self):
+        return self._fields.__contains__()
+
+    def __iter__(self):
+        return self._fields.__iter__()
+
+    def __len__(self):
+        return self._fields.__len__()
+
+    def __getitem__(self, key):
+        return Text.from_latex(self._fields[key])
+
+
 class Entry(object):
     """A bibliography entry."""
 
@@ -384,6 +402,7 @@ class Entry(object):
         self.fields = FieldDict(self, fields)
         """A dictionary of entry fields.
         The dictionary is ordered and case-insensitive."""
+        self.rich_fields = RichFieldProxyDict(self.fields)
 
         self.persons = OrderedCaseInsensitiveDict(persons)
         """A dictionary of entry persons, by their roles.
@@ -698,6 +717,26 @@ class Person(object):
             from pybtex.textutils import abbreviate
             names = [abbreviate(name) for name in names]
         return names
+
+    @property
+    def rich_first_names(self):
+        return [Text.from_latex(name) for name in self.first_names]
+
+    @property
+    def rich_middle_names(self):
+        return [Text.from_latex(name) for name in self.middle_names]
+
+    @property
+    def rich_prelast_names(self):
+        return [Text.from_latex(name) for name in self.prelast_names]
+
+    @property
+    def rich_last_names(self):
+        return [Text.from_latex(name) for name in self.last_names]
+
+    @property
+    def rich_lineage_names(self):
+        return [Text.from_latex(name) for name in self.lineage_names]
 
     @deprecated('0.19', 'use Person.first_names instead')
     def first(self, abbr=False):

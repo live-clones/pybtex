@@ -5,7 +5,7 @@ Designing styles
 
 .. testsetup:: *
 
-    from pybtex.richtext import Text, String, Tag, HRef, Symbol, nbsp, textutils
+    from pybtex.richtext import Text, String, Tag, HRef, Protected, Symbol, nbsp, textutils
 
 
 .. currentmodule:: pybtex.richtext
@@ -47,12 +47,13 @@ The basic workflow is:
 Rich text classes
 -----------------
 
-There are four main rich text classes in Pybtex:
+There are several rich text classes in Pybtex:
 
 - :py:class:`Text`
 - :py:class:`String`
 - :py:class:`Tag`
 - :py:class:`HRef`
+- :py:class:`Protected`
 
 
 :py:class:`Text` is the top level container that may contain
@@ -65,7 +66,6 @@ it renders all of its child objects, then concatenates the result.
 :py:class:`Tag` and :py:class:`HRef` are also containers that may contain
 other :py:class:`String`, :py:class:`Tag`, and :py:class:`HRef` objects. This
 makes nested formatting possible.  For example, this stupidly formatted text:
-
 
     |CTAN hyperlink|_ is *comprehensive*.
 
@@ -85,6 +85,10 @@ is represented by this object tree:
     >>> print text.render_as('html')
     <a href="http://ctan.org/"><em>Comprehensive</em> TeX Archive Network</a> is <em>comprehensive</em>.
 
+:py:class:`Protected` represents a "protected" piece of text, something like
+{braced text} in BibTeX. It is not affected by case-changing operations, like
+:py:meth:`Text.upper()` or :py:meth:`Text.lower()`, and is not splittable by
+:py:meth:`Text.split()`.
 
 All rich text classes share the same API which is more or less similar to plain
 `Python strings`_.
@@ -118,6 +122,8 @@ The other classes have the same methods.
 .. autoclass:: pybtex.richtext.Tag
 
 .. autoclass:: pybtex.richtext.HRef
+
+.. autoclass:: pybtex.richtext.Protected
 
 .. autoclass:: pybtex.richtext.Symbol
 

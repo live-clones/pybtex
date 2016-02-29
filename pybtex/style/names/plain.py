@@ -33,23 +33,32 @@ class NameStyle(BaseNameStyle):
         >>> from pybtex.database import Person
         >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
         >>> plain = NameStyle().format
-        >>> print unicode(plain(name).format())
-        Charles Louis Xavier<nbsp>Joseph de<nbsp>la Vall{\'e}e<nbsp>Poussin
-        >>> print unicode(plain(name, abbr=True).format())
-        C.<nbsp>L. X.<nbsp>J. de<nbsp>la Vall{\'e}e<nbsp>Poussin
+
+        >>> print plain(name).format().render_as('latex')
+        Charles Louis Xavier~Joseph de~la Vall{\'e}e~Poussin
+        >>> print plain(name).format().render_as('html')
+        Charles Louis Xavier&nbsp;Joseph de&nbsp;la Vall\'ee&nbsp;Poussin
+
+        >>> print plain(name, abbr=True).format().render_as('latex')
+        C.~L. X.~J. de~la Vall{\'e}e~Poussin
+        >>> print plain(name, abbr=True).format().render_as('html')
+        C.&nbsp;L. X.&nbsp;J. de&nbsp;la Vall\'ee&nbsp;Poussin
 
         >>> name = Person(first='First', last='Last', middle='Middle')
-        >>> print unicode(plain(name).format())
-        First<nbsp>Middle Last
-        >>> print unicode(plain(name, abbr=True).format())
-        F.<nbsp>M. Last
-        >>> print unicode(plain(Person('de Last, Jr., First Middle')).format())
-        First<nbsp>Middle de<nbsp>Last, Jr.
+        >>> print plain(name).format().render_as('latex')
+        First~Middle Last
+
+        >>> print plain(name, abbr=True).format().render_as('latex')
+        F.~M. Last
+
+        >>> print plain(Person('de Last, Jr., First Middle')).format().render_as('latex')
+        First~Middle de~Last, Jr.
+
         """
         return join [
-            name_part(tie=True, abbr=abbr) [person.first_names + person.middle_names],
-            name_part(tie=True) [person.prelast_names],
-            name_part [person.last_names],
-            name_part(before=', ') [person.lineage_names]
+            name_part(tie=True, abbr=abbr) [person.rich_first_names + person.rich_middle_names],
+            name_part(tie=True) [person.rich_prelast_names],
+            name_part [person.rich_last_names],
+            name_part(before=', ') [person.rich_lineage_names]
         ]
 

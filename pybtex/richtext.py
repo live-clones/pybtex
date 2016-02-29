@@ -147,16 +147,20 @@ class BaseText(object):
     def join(self, parts):
         """Join a list using this text (like string.join)
 
-        >>> print unicode(String('-').join(['a', 'b', 'c']))
+        >>> letters = ['a', 'b', 'c']
+        >>> print unicode(String('-').join(letters))
+        a-b-c
+        >>> print unicode(String('-').join(iter(letters)))
         a-b-c
         """
 
         if not parts:
             return Text()
         joined = []
-        for part in parts[:-1]:
-            joined.extend([part, self])
-        joined.append(parts[-1])
+        for part in parts:
+            if joined:
+                joined.append(self)
+            joined.append(part)
         return Text(*joined)
 
     @abstractmethod
@@ -185,6 +189,10 @@ class BaseText(object):
 
         raise NotImplementedError
 
+    @abstractmethod
+    def isalpha(self):
+        raise NotImplementedError
+
     def add_period(self, period='.'):
         """
         Add a period to the end of text, if the last character is not ".", "!" or "?".
@@ -204,19 +212,35 @@ class BaseText(object):
         else:
             return self
 
-    @deprecated('0.19', 'renamed to capitalize()')
-    def capfirst(self):
-        return self.capitalize()
+    def abbreviate(self):
+        def abbreviate_word(word):
+            if word.isalpha():
+                return word[0].add_period()
+            else:
+                return word
 
-    def capitalize(self):
+        parts = self.split(textutils.delimiter_re)
+        return String('').join(abbreviate_word(part) for part in parts)
+
+    def capfirst(self):
         """
         Capitalize the first letter of the text.
 
-        >>> Text(Tag('em', 'long cat')).capitalize()
-        Text(Tag('em', 'Long cat'))
+        >>> Text(Tag('em', 'long Cat')).capfirst()
+        Text(Tag('em', 'Long Cat'))
 
         """
         return self[:1].upper() + self[1:]
+
+    def capitalize(self):
+        """
+        Capitalize the first letter of the text and lowercase the rest.
+
+        >>> Text(Tag('em', 'LONG CAT')).capitalize()
+        Text(Tag('em', 'Long cat'))
+
+        """
+        return self[:1].upper() + self[1:].lower()
 
     @abstractmethod
     def lower(self):
@@ -512,6 +536,13 @@ class BaseMultipartText(BaseText):
         else:
             return self.parts[-1].endswith(suffix)
 
+    def isalpha(self):
+        """
+        Return True if all characters in the string are alphabetic and there is
+        at least one character, False otherwise.
+        """
+        return bool(self) and all(part.isalpha() for part in self.parts)
+
     def lower(self):
         """
         Convert rich text to lowercase.
@@ -711,8 +742,15 @@ class String(BaseText):
         if sep is None:
             from .textutils import whitespace_re
             parts = whitespace_re.split(self.value)
-        else:
+        elif isinstance(sep, basestring):
             parts = self.value.split(sep)
+        else:
+            try:
+                split_method = sep.split
+            except AttributeError:
+                raise TypeError('sep must be None, string or compiled regular expression')
+            else:
+                parts = split_method(self.value)
         return [String(part) for part in parts if part or keep_empty_parts]
 
     def startswith(self, prefix):
@@ -733,6 +771,9 @@ class String(BaseText):
         return self.value.endswith(text)
         """
         return self.value.endswith(suffix)
+
+    def isalpha(self):
+        return self.value.isalpha()
 
     def lower(self):
         return String(self.value.lower())
@@ -764,6 +805,13 @@ class Text(BaseMultipartText):
     def _unpack(self):
         for part in self.parts:
             yield part
+
+    @classmethod
+    def from_latex(cls, latex):
+        # XXX use plugins?
+        # TODO use latexcodec
+        from pybtex.markup import LaTeXParser
+        return LaTeXParser(latex).parse()
 
 
 class Tag(BaseMultipartText):
@@ -822,12 +870,16 @@ class HRef(BaseMultipartText):
     >>> print href.render_as('latex')
     \href{http://ctan.org/}{CTAN}
 
+    >>> href = HRef(String('http://ctan.org/'), String('http://ctan.org/'))
+    >>> print href.render_as('latex')
+    \url{http://ctan.org/}
+
     :py:class:`HRef` supports the same methods as :py:class:`Text`.
 
     """
 
     def __init__(self, url, *args):
-        if not isinstance(url, (basestring, Text)):
+        if not isinstance(url, (basestring, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
         self.url = unicode(url)
@@ -841,6 +893,60 @@ class HRef(BaseMultipartText):
     def render(self, backend):
         text = super(HRef, self).render(backend)
         return backend.format_href(self.url, text)
+
+
+class Protected(BaseMultipartText):
+    r"""
+    A :py:class:`Protected` represents a "protected" piece of text.
+
+    - :py:meth:`Protected.lower`, :py:meth:`Protected.upper`,
+      :py:meth:`Protected.capitalize`, and :py:meth:`Protected.capitalize()`
+      are no-ops and just return the :py:class:`Protected` object itself.
+    - :py:meth:`Protected.split` never splits the text. It always returns a
+      one-element list containing the :py:class:`Protected` object itself.
+    - In LaTeX output, :py:class:`Protected` is {surrounded by braces}.  HTML
+      and plain text backends just output the text as-is.
+
+    >>> from pybtex.richtext import Protected
+    >>> text = Protected('The CTAN archive')
+    >>> text.lower()
+    Protected('The CTAN archive')
+    >>> text.split()
+    [Protected('The CTAN archive')]
+    >>> print text.render_as('latex')
+    {The CTAN archive}
+    >>> print text.render_as('html')
+    The CTAN archive
+
+    .. versionadded:: 0.20
+
+    """
+
+    def __init__(self, *args):
+        super(Protected, self).__init__(*args)
+
+    def __repr__(self):
+        reprparts = ', '.join(repr(part) for part in self.parts)
+        return 'Protected({})'.format(reprparts)
+
+    def capfirst(self):
+        return self
+
+    def capitalize(self):
+        return self
+
+    def lower(self):
+        return self
+
+    def upper(self):
+        return self
+
+    def split(self, sep=None, keep_empty_parts=None):
+        return [self]
+
+    def render(self, backend):
+        text = super(Protected, self).render(backend)
+        return backend.format_protected(text)
 
 
 class Symbol(BaseText):
@@ -888,6 +994,9 @@ class Symbol(BaseText):
         return False
 
     def endswith(self, text):
+        return False
+
+    def isalpha(self):
         return False
 
     def render(self, backend):

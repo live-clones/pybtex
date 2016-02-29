@@ -33,22 +33,28 @@ class NameStyle(BaseNameStyle):
         >>> from pybtex.database import Person
         >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
         >>> lastfirst = NameStyle().format
-        >>> print unicode(lastfirst(name).format())
-        de<nbsp>la Vall{\'e}e<nbsp>Poussin, Charles Louis Xavier<nbsp>Joseph
-        >>> print unicode(lastfirst(name, abbr=True).format())
-        de<nbsp>la Vall{\'e}e<nbsp>Poussin, C.<nbsp>L. X.<nbsp>J.
+
+        >>> print lastfirst(name).format().render_as('latex')
+        de~la Vall{\'e}e~Poussin, Charles Louis Xavier~Joseph
+        >>> print lastfirst(name).format().render_as('html')
+        de&nbsp;la Vall\'ee&nbsp;Poussin, Charles Louis Xavier&nbsp;Joseph
+
+        >>> print lastfirst(name, abbr=True).format().render_as('latex')
+        de~la Vall{\'e}e~Poussin, C.~L. X.~J.
+        >>> print lastfirst(name, abbr=True).format().render_as('html')
+        de&nbsp;la Vall\'ee&nbsp;Poussin, C.&nbsp;L. X.&nbsp;J.
 
         >>> name = Person(first='First', last='Last', middle='Middle')
-        >>> print unicode(lastfirst(name).format())
-        Last, First<nbsp>Middle
-        >>> print unicode(lastfirst(name, abbr=True).format())
-        Last, F.<nbsp>M.
+        >>> print lastfirst(name).format().render_as('latex')
+        Last, First~Middle
+        >>> print lastfirst(name, abbr=True).format().render_as('latex')
+        Last, F.~M.
 
         """
         return join [
-            name_part(tie=True) [person.prelast_names],
-            name_part [person.last_names],
-            name_part(before=', ') [person.lineage_names],
-            name_part(before=', ', abbr=abbr) [person.first_names + person.middle_names],
+            name_part(tie=True) [person.rich_prelast_names],
+            name_part [person.rich_last_names],
+            name_part(before=', ') [person.rich_lineage_names],
+            name_part(before=', ', abbr=abbr) [person.rich_first_names + person.rich_middle_names],
         ]
 

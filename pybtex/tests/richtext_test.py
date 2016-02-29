@@ -1,12 +1,13 @@
 #! vim:fileencoding=utf-8
 
+import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase
 
 from nose.tools import assert_raises
 
 from pybtex import textutils
-from pybtex.richtext import Text, String, Tag, HRef, Symbol, nbsp
+from pybtex.richtext import Text, String, Tag, HRef, Protected, Symbol, nbsp
 
 
 class TextTestMixin(object):
@@ -58,6 +59,14 @@ class TextTestMixin(object):
 
     @abstractmethod
     def test_endswith(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def test_isalpha(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def test_capfirst(self):
         raise NotImplementedError
 
     @abstractmethod
@@ -126,8 +135,12 @@ class TestText(TextTestMixin, TestCase):
         text = Text('a', 'b', 'c')
         assert 'abc' in text
 
+    def test_capfirst(self):
+        text = Text('dear ', 'Alice')
+        assert unicode(text.capfirst()) == 'Dear Alice'
+
     def test_capitalize(self):
-        text = Text('mary ', 'had ', 'a little lamb')
+        text = Text('mary ', 'had ', 'a Little Lamb')
         assert unicode(text.capitalize()) == 'Mary had a little lamb'
 
     def test__add__(self):
@@ -231,6 +244,14 @@ class TestText(TextTestMixin, TestCase):
         assert Text('This is good').endswith(('good', 'wonderful'))
         assert not Text('This is good').endswith(('bad', 'awful'))
 
+    def test_isalpha(self):
+        assert not Text().isalpha()
+        assert not Text('a b c').isalpha()
+        assert Text('abc').isalpha()
+        assert Text(u'文字').isalpha()
+        assert Text('ab', Tag('em', 'cd'), 'ef').isalpha()
+        assert not Text('ab', Tag('em', '12'), 'ef').isalpha()
+
     def test_join(self):
         assert unicode(Text(' ').join(['a', Text('b c')])) == 'a b c'
         assert unicode(Text(nbsp).join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
@@ -249,6 +270,7 @@ class TestText(TextTestMixin, TestCase):
         assert Text('   a   ').split() == [Text('a')]
         assert Text('a + b').split() == [Text('a'), Text('+'), Text('b')]
         assert Text('a + b').split(' + ') == [Text('a'), Text('b')]
+        assert Text('a + b').split(re.compile(r'\s')) == [Text('a'), Text('+'), Text('b')]
         assert Text('abc').split('xyz') == [Text('abc')]
         assert Text('---').split('--') == [Text(), Text('-')]
         assert Text('---').split('-') == [Text(), Text(), Text(), Text()]
@@ -263,9 +285,9 @@ class TestText(TextTestMixin, TestCase):
         assert unicode(text.add_period()) == "That's all, folks."
 
     def test_render_as(self):
-        string = Text('Detektivbyrån & friends')
-        assert string.render_as('text') == 'Detektivbyrån & friends'
-        assert string.render_as('html') == 'Detektivbyrån &amp; friends'
+        string = Text(u'Detektivbyrån & friends')
+        assert string.render_as('text') == u'Detektivbyrån & friends'
+        assert string.render_as('html') == u'Detektivbyrån &amp; friends'
 
 
 class TestString(TextTestMixin, TestCase):
@@ -328,6 +350,12 @@ class TestString(TextTestMixin, TestCase):
         assert String('November.').endswith(('.', '!'))
         assert not String('November.').endswith(('?', '!'))
 
+    def test_isalpha(self):
+        assert not String().isalpha()
+        assert not String('a b c').isalpha()
+        assert String('abc').isalpha()
+        assert String(u'文字').isalpha()
+
     def test_append(self):
         assert String().append('') == Text()
         text = String('The').append(' Adventures of ').append('Tom Sawyer')
@@ -350,6 +378,7 @@ class TestString(TextTestMixin, TestCase):
         assert String('a ').split() == [String('a')]
         assert String('a + b').split() == [String('a'), String('+'), String('b')]
         assert String('a + b').split(' + ') == [String('a'), String('b')]
+        assert String('a + b').split(re.compile(r'\s')) == [String('a'), String('+'), String('b')]
 
     def test_join(self):
         assert String().join([]) == Text()
@@ -359,25 +388,34 @@ class TestString(TextTestMixin, TestCase):
         assert String(', ').join(['tomatoes', 'cucumbers']) == Text('tomatoes, cucumbers')
         assert String(', ').join(['tomatoes', 'cucumbers', 'lemons']) == Text('tomatoes, cucumbers, lemons')
 
-    def test_capitalize(self):
+    def test_capfirst(self):
         assert unicode(String('').capitalize()) == ''
+        assert unicode(String('november december').capitalize()) == 'November december'
+        assert unicode(String('November December').capitalize()) == 'November december'
+        assert unicode(String('NOVEMBER DECEMBER').capitalize()) == 'November december'
+
+    def test_capitalize(self):
+        assert unicode(String('').capfirst()) == ''
+        assert unicode(String('november').capfirst()) == 'November'
+        assert unicode(String('November').capfirst()) == 'November'
+        assert unicode(String('november december').capfirst()) == 'November december'
+        assert unicode(String('November December').capfirst()) == 'November December'
+        assert unicode(String('NOVEMBER DECEMBER').capfirst()) == 'NOVEMBER DECEMBER'
+
+    def test_add_period(self):
         assert unicode(String('').add_period()) == ''
         assert unicode(String('').add_period('!')) == ''
         assert unicode(String('').add_period().add_period()) == ''
         assert unicode(String('').add_period().add_period('!')) == ''
         assert unicode(String('').add_period('!').add_period()) == ''
-        assert unicode(String('november').capitalize()) == 'November'
-        assert unicode(String('November').capitalize()) == 'November'
-        assert unicode(String('November').add_period()) == 'November.'
-
-    def test_add_period(self):
+        unicode(String('November').add_period()) == 'November.'
         result = unicode(String('November').add_period().add_period())
         assert result == 'November.'
 
     def test_render_as(self):
-        string = String('Detektivbyrån & friends')
-        assert string.render_as('text') == 'Detektivbyrån & friends'
-        assert string.render_as('html') == 'Detektivbyrån &amp; friends'
+        string = String(u'Detektivbyrån & friends')
+        assert string.render_as('text') == u'Detektivbyrån & friends'
+        assert string.render_as('html') == u'Detektivbyrån &amp; friends'
 
 
 class TestTag(TextTestMixin, TestCase):
@@ -491,8 +529,12 @@ class TestTag(TextTestMixin, TestCase):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
         assert tag.lower().render_as('html') == '<em>mary had a little lamb</em>'
 
+    def test_capfirst(self):
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a Little Lamb'))
+        assert tag.capfirst().render_as('html') == '<em>Mary had a Little Lamb</em>'
+
     def test_capitalize(self):
-        tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
+        tag = Tag('em', Text(), Text('mary ', 'had ', 'a Little Lamb'))
         assert tag.capitalize().render_as('html') == '<em>Mary had a little lamb</em>'
 
     def test_startswith(self):
@@ -509,6 +551,12 @@ class TestTag(TextTestMixin, TestCase):
 
         text = Text('This ', Tag('em', 'is'), ' good')
         assert not text.startswith('This is')
+
+    def test_isalpha(self):
+        assert not Tag('em').isalpha()
+        assert not Tag('em', 'a b c').isalpha()
+        assert Tag('em', 'abc').isalpha()
+        assert Tag('em', u'文字').isalpha()
 
     def test_endswith(self):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
@@ -742,10 +790,17 @@ class TestHRef(TextTestMixin, TestCase):
         tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
         assert tag.upper().render_as('html') == '<a href="info.html">MARY HAD A LITTLE LAMB</a>'
 
+    def test_capfirst(self):
+        assert HRef('/').capfirst() == Text(HRef('/'))
+
+        tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a Little Lamb'))
+        assert tag.capfirst().render_as('html') == '<a href="info.html">Mary had a Little Lamb</a>'
+        assert tag.lower().capfirst().render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
+
     def test_capitalize(self):
         assert HRef('/').capitalize() == Text(HRef('/'))
 
-        tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
+        tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a Little Lamb'))
         assert tag.capitalize().render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
         assert tag.lower().capitalize().render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
 
@@ -882,6 +937,12 @@ class TestHRef(TextTestMixin, TestCase):
         text = Text('This ', HRef('/', 'is'), ' good')
         assert not text.endswith('is good')
 
+    def test_isalpha(self):
+        assert not HRef('/').isalpha()
+        assert not HRef('/', 'a b c').isalpha()
+        assert HRef('/', 'abc').isalpha()
+        assert HRef('/', u'文字').isalpha()
+
     def test_render_as(self):
         href = HRef('http://www.example.com', 'Hyperlinked text.')
         assert href.render_as('latex') == '\\href{http://www.example.com}{Hyperlinked text.}'
@@ -890,6 +951,202 @@ class TestHRef(TextTestMixin, TestCase):
 
         tag = HRef('info.html', Text(), Text('Mary ', 'had ', 'a little lamb'))
         assert tag.render_as('html') == '<a href="info.html">Mary had a little lamb</a>'
+
+
+class TestProtected(TextTestMixin, TestCase):
+    def test__init__(self):
+        assert unicode(Protected('a', '', 'c')) == 'ac'
+        assert unicode(Protected('a', Text(), 'c')) == 'ac'
+
+        text = Protected(Protected(), Protected('mary ', 'had ', 'a little lamb'))
+        assert text == Protected(Protected('mary had a little lamb'))
+        assert unicode(text) == 'mary had a little lamb'
+
+        text = unicode(Protected('a', Protected('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+        assert text == 'abcx<nbsp>d'
+
+        assert_raises(ValueError, Protected, {})
+        assert_raises(ValueError, Protected, 0, 0)
+
+    def test__eq__(self):
+        assert Protected() == Protected()
+        assert not (Protected() != Protected())
+
+        assert Protected('Cat') == Protected('Cat')
+        assert not (Protected('Cat') != Protected('Cat'))
+        assert Protected('Cat', ' tail') == Protected('Cat tail')
+        assert not (Protected('Cat', ' tail') != Protected('Cat tail'))
+
+        assert Protected('Cat') != Protected('Dog')
+        assert not (Protected('Cat') == Protected('Dog'))
+
+    def test__len__(self):
+        assert len(Protected()) == 0
+        assert len(Protected('Never', ' ', 'Knows', ' ', 'Best')) == len('Never Knows Best')
+        assert len(Protected('Never', ' ', Tag('em', 'Knows', ' '), 'Best')) == len('Never Knows Best')
+        assert len(Protected('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
+
+    def test__unicode__(self):
+        assert unicode(Protected()) == ''
+        assert unicode(Protected(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
+
+    def test__contains__(self):
+        text = Protected('mary ', 'had ', 'a little lamb')
+        assert 'mary' in text
+        assert 'Mary' not in text
+        assert 'had a little' in text
+
+        text = Protected('a', 'b', 'c')
+        assert 'abc' in text
+
+    def test_capfirst(self):
+        text = Protected('mary ', 'had ', 'a Little Lamb')
+        assert unicode(text.capitalize()) == 'mary had a Little Lamb'
+
+    def test_capitalize(self):
+        text = Protected('mary ', 'had ', 'a little lamb')
+        assert unicode(text.capitalize()) == 'mary had a little lamb'
+
+    def test__add__(self):
+        t = Protected('a')
+        assert t + 'b' == Text(Protected('a'), 'b')
+        assert t + t == Text(Protected('aa'))
+
+    def test__getitem__(self):
+        t = Protected('1234567890')
+
+        assert_raises(TypeError, lambda: 1 in t)
+
+        assert t == Protected('1234567890')
+        assert t[:0] == Protected('')
+        assert t[:1] == Protected('1')
+        assert t[:3] == Protected('123')
+        assert t[:5] == Protected('12345')
+        assert t[:7] == Protected('1234567')
+        assert t[:10] == Protected('1234567890')
+        assert t[:100] == Protected('1234567890')
+        assert t[:-100] == Protected('')
+        assert t[:-10] == Protected('')
+        assert t[:-9] == Protected('1')
+        assert t[:-7] == Protected('123')
+        assert t[:-5] == Protected('12345')
+        assert t[:-3] == Protected('1234567')
+        assert t[-100:] == Protected('1234567890')
+        assert t[-10:] == Protected('1234567890')
+        assert t[-9:] == Protected('234567890')
+        assert t[-7:] == Protected('4567890')
+        assert t[-5:] == Protected('67890')
+        assert t[-3:] == Protected('890')
+        assert t[1:] == Protected('234567890')
+        assert t[3:] == Protected('4567890')
+        assert t[5:] == Protected('67890')
+        assert t[7:] == Protected('890')
+        assert t[10:] == Protected('')
+        assert t[100:] == Protected('')
+        assert t[0:10] == Protected('1234567890')
+        assert t[0:100] == Protected('1234567890')
+        assert t[2:3] == Protected('3')
+        assert t[2:4] == Protected('34')
+        assert t[3:7] == Protected('4567')
+        assert t[4:7] == Protected('567')
+        assert t[4:7] == Protected('567')
+        assert t[7:9] == Protected('89')
+        assert t[100:200] == Protected('')
+
+        t = Protected('123', Protected('456', Protected('789')), '0')
+        assert t[:3] == Protected('123')
+        assert t[:5] == Protected('123', Protected('45'))
+        assert t[:7] == Protected('123', Protected('456', Protected('7')))
+        assert t[:10] == Protected('123', Protected('456', Protected('789')), '0')
+        assert t[:100] == Protected('123', Protected('456', Protected('789')), '0')
+        assert t[:-7] == Protected('123')
+        assert t[:-5] == Protected('123', Protected('45'))
+        assert t[:-3] == Protected('123', Protected('456', Protected('7')))
+
+    def test_append(self):
+        text = Protected('Chuck Norris')
+        assert (text + ' wins!').render_as('latex') == '{Chuck Norris} wins!'
+        assert text.append(' wins!').render_as('latex') == '{Chuck Norris wins!}'
+
+    def test_upper(self):
+        text = Protected('Mary ', 'had ', 'a little lamb')
+        assert unicode(text.upper()) == 'Mary had a little lamb'
+        text = Protected('mary ', 'had ', 'a little lamb')
+        assert unicode(text.upper()) == 'mary had a little lamb'
+
+    def test_lower(self):
+        text = Protected('Mary ', 'had ', 'a little lamb')
+        assert unicode(text.lower()) == 'Mary had a little lamb'
+        text = Protected('MARY ', 'HAD ', 'A LITTLE LAMB')
+        assert unicode(text.lower()) == 'MARY HAD A LITTLE LAMB'
+
+    def test_startswith(self):
+        assert not Protected().startswith('.')
+        assert not Protected().startswith(('.', '!'))
+
+        text = Protected('mary ', 'had ', 'a little lamb')
+        assert not text.startswith('M')
+        assert text.startswith('m')
+
+        text = Protected('a', 'b', 'c')
+        assert text.startswith('ab')
+
+        assert Protected('This is good').startswith(('This', 'That'))
+        assert not Protected('This is good').startswith(('That', 'Those'))
+
+    def test_endswith(self):
+        assert not Protected().endswith('.')
+        assert not Protected().endswith(('.', '!'))
+
+        text = Protected('mary ', 'had ', 'a little lamb')
+        assert not text.endswith('B')
+        assert text.endswith('b')
+
+        text = Protected('a', 'b', 'c')
+        assert text.endswith('bc')
+
+        assert Protected('This is good').endswith(('good', 'wonderful'))
+        assert not Protected('This is good').endswith(('bad', 'awful'))
+
+    def test_isalpha(self):
+        assert not Protected().isalpha()
+        assert not Protected('a b c').isalpha()
+        assert Protected('abc').isalpha()
+        assert Protected(u'文字').isalpha()
+
+    def test_join(self):
+        assert Protected(' ').join(['a', Protected('b c')]).render_as('latex') == 'a{ b c}'
+        assert Protected(nbsp).join(['a', 'b', 'c']).render_as('latex') == 'a{~}b{~}c'
+        assert nbsp.join(['a', Protected('b'), 'c']).render_as('latex') == 'a~{b}~c'
+        assert String('-').join([Protected('a'), Protected('b'), Protected('c')]).render_as('latex') == '{a}-{b}-{c}'
+        result = Protected(' and ').join(['a', 'b', 'c']).render_as('latex')
+        assert result == 'a{ and }b{ and }c'
+
+    def test_split(self):
+        assert Protected().split() == [Protected()]
+        assert Protected().split('abc') == [Protected()]
+        assert Protected('a').split() == [Protected('a')]
+        assert Protected('a ').split() == [Protected('a ')]
+        assert Protected('   a   ').split() == [Protected('   a   ')]
+        assert Protected('a + b').split() == [Protected('a + b')]
+        assert Protected('a + b').split(' + ') == [Protected('a + b')]
+        assert Protected('abc').split('xyz') == [Protected('abc')]
+        assert Protected('---').split('--') == [Protected('---')]
+        assert Protected('---').split('-') == [Protected('---')]
+
+    def test_add_period(self):
+        assert not Protected().endswith(('.', '!', '?'))
+        assert not textutils.is_terminated(Protected())
+
+        assert Protected().add_period().render_as('latex') == '{}'
+
+        text = Protected("That's all, folks")
+        assert text.add_period().render_as('latex') == "{That's all, folks.}"
+
+    def test_render_as(self):
+        string = Protected('a < b')
+        assert string.render_as('latex') == '{a < b}'
+        assert string.render_as('html') == 'a &lt; b'
 
 
 class TestSymbol(TextTestMixin, TestCase):
@@ -941,6 +1198,9 @@ class TestSymbol(TextTestMixin, TestCase):
     def test_lower(self):
         assert nbsp.lower().render_as('html') == '&nbsp;'
 
+    def test_capfirst(self):
+        assert Text(nbsp, nbsp).capfirst().render_as('html') == '&nbsp;&nbsp;'
+
     def test_capitalize(self):
         assert Text(nbsp, nbsp).capitalize().render_as('html') == '&nbsp;&nbsp;'
 
@@ -958,6 +1218,9 @@ class TestSymbol(TextTestMixin, TestCase):
     def test_endswith(self):
         assert not nbsp.endswith('.')
         assert not nbsp.endswith(('.', '?!'))
+
+    def test_isalpha(self):
+        assert not nbsp.isalpha()
 
     def test_render_as(self):
         assert nbsp.render_as('latex') == '~'
