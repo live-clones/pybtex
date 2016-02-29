@@ -20,8 +20,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from nose.tools import assert_raises
-
 from pybtex.scanner import Scanner, Literal, PybtexSyntaxError
 from pybtex.richtext import String, Text, Protected
 
@@ -32,6 +30,8 @@ class LaTeXParser(Scanner):
 
     def parse(self, level=0):
         """
+        >>> from nose.tools import assert_raises
+
         >>> LaTeXParser('abc').parse()
         Text('abc')
 
