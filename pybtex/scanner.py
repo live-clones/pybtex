@@ -135,6 +135,9 @@ class Scanner(object):
             context = None
         return context, error_lineno, colno
 
+    def get_remainder(self):
+        return self.text[self.pos:]
+
 
 class PybtexSyntaxError(PybtexError):
     error_type = 'syntax error'

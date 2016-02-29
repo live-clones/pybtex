@@ -810,8 +810,8 @@ class Text(BaseMultipartText):
     def from_latex(cls, latex):
         # XXX use plugins?
         # TODO use latexcodec
-        # TODO parse braces
-        return String(latex)
+        from pybtex.markup import LaTeXParser
+        return LaTeXParser(latex).parse()
 
 
 class Tag(BaseMultipartText):
