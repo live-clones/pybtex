@@ -808,10 +808,11 @@ class Text(BaseMultipartText):
 
     @classmethod
     def from_latex(cls, latex):
-        # XXX use plugins?
-        # TODO use latexcodec
+        import codecs
+        import latexcodec
         from pybtex.markup import LaTeXParser
-        return LaTeXParser(latex).parse()
+
+        return LaTeXParser(codecs.decode(latex, 'ulatex')).parse()
 
 
 class Tag(BaseMultipartText):

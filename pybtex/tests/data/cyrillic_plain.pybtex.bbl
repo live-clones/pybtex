@@ -7,8 +7,8 @@ First~Middle de~Last, Jr.
 \newblock Published by Foo, Moscow, January 2006.
 
 \bibitem[2]{test-inbook}
-Peter Jackson.
-\newblock \emph{Some Title}., pages 44--59.
+Péter Jackson.
+\newblock \emph{Some Title}., pages 44–59.
 \newblock number~3 in Some series.
 \newblock Some Publisher, Second edition, 1933.
 
