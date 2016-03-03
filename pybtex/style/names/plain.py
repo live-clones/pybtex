@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2010, 2011, 2012  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -27,7 +29,7 @@ from pybtex.style.names import BaseNameStyle, name_part
 class NameStyle(BaseNameStyle):
 
     def format(self, person, abbr=False):
-        r"""
+        ur"""
         Format names similarly to {ff~}{vv~}{ll}{, jj} in BibTeX.  
 
         >>> from pybtex.database import Person
@@ -35,14 +37,14 @@ class NameStyle(BaseNameStyle):
         >>> plain = NameStyle().format
 
         >>> print plain(name).format().render_as('latex')
-        Charles Louis Xavier~Joseph de~la Vall{\'e}e~Poussin
+        Charles Louis Xavier~Joseph de~la Vall{é}e~Poussin
         >>> print plain(name).format().render_as('html')
-        Charles Louis Xavier&nbsp;Joseph de&nbsp;la Vall\'ee&nbsp;Poussin
+        Charles Louis Xavier&nbsp;Joseph de&nbsp;la Vallée&nbsp;Poussin
 
         >>> print plain(name, abbr=True).format().render_as('latex')
-        C.~L. X.~J. de~la Vall{\'e}e~Poussin
+        C.~L. X.~J. de~la Vall{é}e~Poussin
         >>> print plain(name, abbr=True).format().render_as('html')
-        C.&nbsp;L. X.&nbsp;J. de&nbsp;la Vall\'ee&nbsp;Poussin
+        C.&nbsp;L. X.&nbsp;J. de&nbsp;la Vallée&nbsp;Poussin
 
         >>> name = Person(first='First', last='Last', middle='Middle')
         >>> print plain(name).format().render_as('latex')
