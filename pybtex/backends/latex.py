@@ -56,6 +56,13 @@ class Backend(BaseBackend):
         u'tt'     : u'texttt'
     }
 
+    def __init__(self, encoding=None):
+        super(Backend, self).__init__(encoding)
+
+        import latexcodec
+        if self.encoding != 'latex' and not self.encoding.startswith('latex+'):
+            self.encoding = 'latex+' + self.encoding
+
     def format_tag(self, tag_name, text):
         tag = self.tags.get(tag_name)
         if tag is None:

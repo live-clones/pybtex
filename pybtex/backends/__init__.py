@@ -43,7 +43,7 @@ class BaseBackend(Plugin):
     default_suffix = None  #: the default suffix for an output file
 
     def __init__(self, encoding=None):
-        self.encoding = encoding
+        self.encoding = encoding or pybtex.io.get_default_encoding()
 
     def write_prologue(self):
         pass
