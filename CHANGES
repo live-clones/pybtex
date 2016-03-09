@@ -1,3 +1,28 @@
+Version 0.20
+------------
+(not yet released)
+
+- YAML reader and writer now preserve the order of bibliography entries.
+
+- Improved URL formatting in pythonic styles.
+
+- Built-in pythonic styles now support the `ISBN` field.
+
+- Pythonic styles now treat LaTeX braces correctly:
+
+  - case conversion does not affect {braced substrings},
+
+  - braces are stripped from non-LaTeX output: ``"{P}ython"`` becomes ``"Python"``.
+
+- Pythonic styles now use latexcodec_ to decode LaTeX markup. For example,
+  ``"Schr\"odinger"`` is now correctly rendered as ``"Schrödinger"`` in
+  HTML or plain text.
+
+Thanks to Hong Xu for his contributions!
+
+.. _latexcodec: https://github.com/mcmtroffaes/latexcodec/
+
+
 Version 0.19
 ------------
 (released on October 26, 2015)
