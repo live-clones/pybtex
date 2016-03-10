@@ -1,6 +1,6 @@
 Version 0.20
 ------------
-(not yet released)
+(released on March 10, 2016)
 
 - YAML reader and writer now preserve the order of bibliography entries.
 
