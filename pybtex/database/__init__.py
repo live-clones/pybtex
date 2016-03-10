@@ -1,5 +1,5 @@
 # vim: fileencoding=utf-8
-# Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011, 2012  Andrey Golovizin
+# Copyright (c) 2006-2016  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
