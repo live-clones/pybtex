@@ -387,8 +387,28 @@ class RichFieldProxyDict(Mapping):
 class Entry(object):
     """A bibliography entry."""
 
+    type = None
+    """Entry type (``'book'``, ``'article'``, etc.)."""
+
     key = None
     """Entry key (for example, ``'fukushima1980neocognitron'``)."""
+
+    fields = None
+    """A dictionary of entry fields.
+    The dictionary is ordered and case-insensitive."""
+
+    rich_fields = None
+    """A dictionary of entry fields, converted to :ref:`rich text <rich-text>`."""
+
+    persons = None
+    """
+    A dictionary of entry persons, by their roles.
+
+    The most often used roles are ``'author'`` and ``'editor'``.
+    """
+
+    collection = None
+    """A reference to the containing :py:class:`.BibliographyData` object. Used to resolve crossrefs."""
 
     def __init__(self, type_, fields=None, persons=None, collection=None):
         if fields is None:
@@ -396,19 +416,12 @@ class Entry(object):
         if persons is None:
             persons = {}
         self.type = type_.lower()
-        """Entry type (``'book'``, ``'article'``, etc.)."""
         self.original_type = type_
 
         self.fields = FieldDict(self, fields)
-        """A dictionary of entry fields.
-        The dictionary is ordered and case-insensitive."""
         self.rich_fields = RichFieldProxyDict(self.fields)
 
         self.persons = OrderedCaseInsensitiveDict(persons)
-        """A dictionary of entry persons, by their roles.
-
-        The most often used roles are ``'author'`` and ``'editor'``.
-        """
 
         self.collection = collection
 
@@ -463,6 +476,46 @@ class Person(object):
 
     """
 
+    first_names = None
+    """
+    A list of first names.
+
+    .. versionadded:: 0.19
+        Earlier versions used :py:meth:`.first`, which is now deprecated.
+    """
+
+    middle_names = None
+    """
+    A list of middle names.
+
+    .. versionadded:: 0.19
+        Earlier versions used :py:meth:`.middle`, which is now deprecated.
+    """
+
+    prelast_names = None
+    """
+    A list of pre-last (aka von) name parts.
+
+    .. versionadded:: 0.19
+        Earlier versions used :py:meth:`.middle`, which is now deprecated.
+    """
+
+    last_names = None
+    """
+    A list of last names.
+
+    .. versionadded:: 0.19
+        Earlier versions used :py:meth:`.last`, which is now deprecated.
+    """
+
+    lineage_names = None
+    """
+    A list of linage (aka Jr) name parts.
+
+    .. versionadded:: 0.19
+        Earlier versions used :py:meth:`.lineage`, which is now deprecated.
+    """
+
     valid_roles = ['author', 'editor']
     style1_re = re.compile('^(.+),\s*(.+)$')
     style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
@@ -484,44 +537,10 @@ class Person(object):
         """
 
         self.first_names = []
-        """
-        A list of first names.
-
-        .. versionadded:: 0.19
-            Earlier versions used :py:meth:`.first`, which is now deprecated.
-        """
-
         self.middle_names = []
-        """
-        A list of middle names.
-
-        .. versionadded:: 0.19
-            Earlier versions used :py:meth:`.middle`, which is now deprecated.
-        """
-
         self.prelast_names = []
-        """
-        A list of pre-last (aka von) name parts.
-
-        .. versionadded:: 0.19
-            Earlier versions used :py:meth:`.middle`, which is now deprecated.
-        """
-
         self.last_names = []
-        """
-        A list of last names.
-
-        .. versionadded:: 0.19
-            Earlier versions used :py:meth:`.last`, which is now deprecated.
-        """
-
         self.lineage_names = []
-        """
-        A list of linage (aka Jr) name parts.
-
-        .. versionadded:: 0.19
-            Earlier versions used :py:meth:`.lineage`, which is now deprecated.
-        """
 
         string = string.strip()
         if string:
@@ -720,22 +739,48 @@ class Person(object):
 
     @property
     def rich_first_names(self):
+        """
+        A list of first names converted to :ref:`rich text <rich-text>`.
+
+        .. versionadded:: 0.20
+        """
+
         return [Text.from_latex(name) for name in self.first_names]
 
     @property
     def rich_middle_names(self):
+        """
+        A list of middle names converted to :ref:`rich text <rich-text>`.
+
+        .. versionadded:: 0.20
+        """
         return [Text.from_latex(name) for name in self.middle_names]
 
     @property
     def rich_prelast_names(self):
+        """
+        A list of pre-last (aka von) name parts converted to :ref:`rich text <rich-text>`.
+
+        .. versionadded:: 0.20
+        """
         return [Text.from_latex(name) for name in self.prelast_names]
 
     @property
     def rich_last_names(self):
+        """
+        A list of last names converted to :ref:`rich text <rich-text>`.
+
+        .. versionadded:: 0.20
+        """
         return [Text.from_latex(name) for name in self.last_names]
 
     @property
     def rich_lineage_names(self):
+        """
+        A list of lineage (aka Jr) name parts converted to :ref:`rich text <rich-text>`.
+
+        .. versionadded:: 0.20
+        """
         return [Text.from_latex(name) for name in self.lineage_names]
 
     @deprecated('0.19', 'use Person.first_names instead')
