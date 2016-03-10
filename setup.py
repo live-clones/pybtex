@@ -91,14 +91,14 @@ setup(
     ],
     install_requires=install_requires,
     packages=find_packages(exclude=['docs']),
-    scripts=[
-        os.path.join('scripts', progname),
-        os.path.join('scripts', progname + "-convert"),
-        os.path.join('scripts', progname + "-format"),
-    ],
     include_package_data=True,
     cmdclass={'sdist': Sdist},
     entry_points={
+        'console_scripts': [
+            'pybtex = pybtex.__main__:main',
+            'pybtex-convert = pybtex.database.convert.__main__:main',
+            'pybtex-format = pybtex.database.format.__main__:main',
+        ],
         'pybtex.database.input': [
             'bibtex = pybtex.database.input.bibtex:Parser',
             'bibtexml = pybtex.database.input.bibtexml:Parser',
