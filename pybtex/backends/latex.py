@@ -38,6 +38,10 @@ LaTeX output backend.
 """
 
 
+import codecs
+
+import latexcodec  # noqa
+
 from pybtex.backends import BaseBackend
 
 
@@ -58,10 +62,10 @@ class Backend(BaseBackend):
 
     def __init__(self, encoding=None):
         super(Backend, self).__init__(encoding)
+        self.latex_encoding = 'ulatex+' + self.encoding
 
-        import latexcodec  # noqa
-        if self.encoding != 'latex' and not self.encoding.startswith('latex+'):
-            self.encoding = 'latex+' + self.encoding
+    def format_str(self, str_):
+        return codecs.encode(str_, self.latex_encoding)
 
     def format_tag(self, tag_name, text):
         tag = self.tags.get(tag_name)
