@@ -436,7 +436,7 @@ def split_name_list(string):
 
 
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
-    """Split a string using the given separator (regexp).
+    r"""Split a string using the given separator (regexp).
 
     Everything at brace level > 0 is ignored.
     Separators at the edges of the string are ignored.
@@ -455,6 +455,10 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     ['Matsui', 'Fuuka']
     >>> split_tex_string('{Matsui      Fuuka}')
     ['{Matsui      Fuuka}']
+    >>> split_tex_string(r'Matsui\ Fuuka')
+    ['Matsui', 'Fuuka']
+    >>> split_tex_string('{Matsui\ Fuuka}')
+    ['{Matsui\\ Fuuka}']
     >>> split_tex_string('a')
     ['a']
     >>> split_tex_string('on a')
@@ -462,8 +466,12 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     """
 
     if sep is None:
-        sep = '[\s~]+'
+        # "\ " is a "control space" in TeX,
+        # i. e. "a space that is not to be ignored"
+        # The TeXbook, Chapter 3: Controlling TeX, p 8
+        sep = r'(\\ |[\s~])+'
         filter_empty = True
+
     sep_re = re.compile(sep)
     brace_level = 0
     name_start = 0
