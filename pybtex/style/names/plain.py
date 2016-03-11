@@ -30,7 +30,7 @@ class NameStyle(BaseNameStyle):
 
     def format(self, person, abbr=False):
         ur"""
-        Format names similarly to {ff~}{vv~}{ll}{, jj} in BibTeX.  
+        Format names similarly to {ff~}{vv~}{ll}{, jj} in BibTeX.
 
         >>> from pybtex.database import Person
         >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
@@ -57,10 +57,9 @@ class NameStyle(BaseNameStyle):
         First~Middle de~Last, Jr.
 
         """
-        return join [
-            name_part(tie=True, abbr=abbr) [person.rich_first_names + person.rich_middle_names],
-            name_part(tie=True) [person.rich_prelast_names],
-            name_part [person.rich_last_names],
-            name_part(before=', ') [person.rich_lineage_names]
+        return join[
+            name_part(tie=True, abbr=abbr)[person.rich_first_names + person.rich_middle_names],
+            name_part(tie=True)[person.rich_prelast_names],
+            name_part[person.rich_last_names],
+            name_part(before=', ')[person.rich_lineage_names]
         ]
-

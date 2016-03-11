@@ -49,11 +49,11 @@ class Backend(BaseBackend):
         'nbsp': u'~'
     }
     tags = {
-        u'em'     : u'emph',
-        u'strong' : None,
-        u'i'      : u'textit',
-        u'b'      : u'textbf',
-        u'tt'     : u'texttt'
+        u'em': u'emph',
+        u'strong': None,
+        u'i': u'textit',
+        u'b': u'textbf',
+        u'tt': u'texttt'
     }
 
     def __init__(self, encoding=None):
