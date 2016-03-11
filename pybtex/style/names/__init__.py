@@ -23,7 +23,6 @@
 """
 
 from pybtex.plugin import Plugin
-from pybtex.textutils import abbreviate
 from pybtex.richtext import Text, nbsp
 from pybtex.style.template import together, node
 

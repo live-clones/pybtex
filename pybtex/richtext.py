@@ -809,7 +809,7 @@ class Text(BaseMultipartText):
     @classmethod
     def from_latex(cls, latex):
         import codecs
-        import latexcodec
+        import latexcodec  # noqa
         from pybtex.markup import LaTeXParser
 
         return LaTeXParser(codecs.decode(latex, 'ulatex')).parse()

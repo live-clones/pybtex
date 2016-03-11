@@ -59,7 +59,7 @@ class Backend(BaseBackend):
     def __init__(self, encoding=None):
         super(Backend, self).__init__(encoding)
 
-        import latexcodec
+        import latexcodec  # noqa
         if self.encoding != 'latex' and not self.encoding.startswith('latex+'):
             self.encoding = 'latex+' + self.encoding
 
