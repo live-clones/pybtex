@@ -30,7 +30,8 @@ sample_names = [
     ('Benedict L{\\o}fstedt', (['Benedict'], [], ['L{\\o}fstedt'], [])),
     ('Bogus{\\l}aw Jackowski', (['Bogus{\\l}aw'], [], ['Jackowski'], [])),
     ('Christina A. L.\\ Thiele',
-    (['Christina', 'A.', 'L.\\'], [], ['Thiele'], [])),
+    # (['Christina', 'A.', 'L.\\'], [], ['Thiele'], [])),
+    (['Christina', 'A.', 'L.'], [], ['Thiele'], [])),  # BibTeX incompatible: treat "\ " as a space
     ("D. Men'shikov", (['D.'], [], ["Men'shikov"], [])),
     ("Darko \\v{Z}ubrini{\\'c}", (['Darko'], [], ["\\v{Z}ubrini{\\'c}"], [])),
     ("Dunja Mladeni{\\'c}", (['Dunja'], [], ["Mladeni{\\'c}"], [])),
