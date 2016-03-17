@@ -3,7 +3,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 {%- endblock %}
 
-{%- set url_root = pathto('', 1) %}
+{%- set url_root = pathto('index') %}
 {# XXX necessary? #}
 {%- if url_root == '#' %}{% set url_root = '' %}{% endif %}
 
@@ -100,7 +100,7 @@
     <title>{{ title|striptags|e }}{{ titlesuffix }} {% if not site %}({{ release }}){% endif %}</title>
     {%- endblock %}
     {{ css() }}
-    {%- if pagename == 'search' and not embedded %}
+    {%- if not site and not embedded %}
     {{ script() }}
     {%- if use_opensearch %}
     <link rel="search" type="application/opensearchdescription+xml"
