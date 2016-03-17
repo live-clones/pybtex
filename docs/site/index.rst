@@ -20,7 +20,7 @@ You can simply type ``pybtex`` instead of ``bibtex``.
     For more details, see the :doc:`docs:index`.
 
 
-How is Pybtex different from BibTeX
+How Pybtex is different from BibTeX
 ===================================
 
 Pybtex aims to be 100% compatible with BibTeX.

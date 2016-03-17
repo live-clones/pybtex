@@ -104,7 +104,7 @@ Output formats
 
 BibTeX's :file:`.bst` styles usually contain hardcoded LaTeX markup
 and are LaTeX-only. Pythonic styles in Pybtex are markup-independent
-and can output multiplie formats, including:
+and can output multiple formats, including:
 
 - LaTeX
 - Markdown
