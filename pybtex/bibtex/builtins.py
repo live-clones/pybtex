@@ -23,6 +23,7 @@
 
 CAUTION: functions should PUSH results, not RETURN
 """
+from __future__ import print_function
 
 from functools import update_wrapper
 
@@ -263,7 +264,7 @@ def substring(i):
 @builtin('stack$')
 def stack(i):
     while i.stack:
-        print >>pybtex.io.stdout, i.pop()
+        print(i.pop(), file=pybtex.io.stdout)
 
 @builtin('swap$')
 def swap(i):
@@ -285,7 +286,7 @@ def text_prefix(i):
 
 @builtin('top$')
 def top(i):
-    print >>pybtex.io.stdout, i.pop()
+    print(i.pop(), file=pybtex.io.stdout)
 
 @builtin('type$')
 def type_(i):

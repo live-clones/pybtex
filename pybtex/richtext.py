@@ -646,7 +646,7 @@ class BaseMultipartText(BaseText):
     @deprecated('0.19', 'use slicing instead')
     def get_beginning(self):
         try:
-            l, i = self.enumerate().next()
+            l, i = next(self.enumerate())
         except StopIteration:
             pass
         else:
@@ -655,7 +655,7 @@ class BaseMultipartText(BaseText):
     @deprecated('0.19', 'use slicing instead')
     def get_end(self):
         try:
-            l, i = self.reversed().next()
+            l, i = next(self.reversed())
         except StopIteration:
             pass
         else:

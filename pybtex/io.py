@@ -52,7 +52,7 @@ def _open_existing(opener, filename, mode, locate, **kwargs):
 def _open_or_create(opener, filename, mode, environ, **kwargs):
     try:
         return opener(filename, mode, **kwargs)
-    except EnvironmentError, error:
+    except EnvironmentError as error:
         if 'TEXMFOUTPUT' in environ:
             new_filename = path.join(environ['TEXMFOUTPUT'], filename)
             try:
@@ -73,7 +73,7 @@ def _open(opener, filename_or_file, mode, **kwargs):
             return _open_or_create(opener, filename, mode, environ, **kwargs)
         else:
             return _open_existing(opener, filename, mode, locate=kpsewhich, **kwargs)
-    except EnvironmentError, error:
+    except EnvironmentError as error:
         raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
 
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright (c) 2006-2016  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -195,7 +196,7 @@ class Interpreter(object):
         return value
 
     def get_token(self):
-        return self.bst_script.next()
+        return next(self.bst_script)
 
     def add_variable(self, name, value):
         if name in self.vars:
@@ -226,7 +227,7 @@ class Interpreter(object):
             if hasattr(self, method):
                 getattr(self, method)(*args)
             else:
-                print 'Unknown command', name
+                print('Unknown command', name)
 
         return u''.join(self.output_lines)
 

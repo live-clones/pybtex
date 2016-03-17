@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright (c) 2006-2016  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -62,7 +63,7 @@ def format_error(exception, prefix='ERROR: '):
 
 
 def print_error(exception, prefix='ERROR: '):
-    print >>pybtex.io.stderr, format_error(exception, prefix)
+    print(format_error(exception, prefix), file=pybtex.io.stderr)
 
 
 def report_error(exception):

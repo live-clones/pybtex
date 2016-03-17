@@ -49,7 +49,7 @@ class BaseParser(Plugin):
         with open_file(filename, encoding=self.encoding) as f:
             try:
                 self.parse_stream(f)
-            except UnicodeDecodeError, e:
+            except UnicodeDecodeError as e:
                 raise PybtexError(unicode(e), filename=self.filename)
         return self.data
 

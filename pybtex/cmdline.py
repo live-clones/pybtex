@@ -175,7 +175,7 @@ class CommandLine(object):
         from pybtex.exceptions import PybtexError
         try:
             self.main()
-        except PybtexError, error:
+        except PybtexError as error:
             errors.print_error(error)
             sys.exit(1)
 

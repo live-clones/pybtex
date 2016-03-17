@@ -212,7 +212,7 @@ class BibTeXEntryIterator(Scanner):
         try:
             parse_body(body_end)
             self.required([body_end])
-        except PybtexSyntaxError, error:
+        except PybtexSyntaxError as error:
             self.handle_error(error)
         return make_result()
 

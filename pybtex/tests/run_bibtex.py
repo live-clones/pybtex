@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import with_statement
+from __future__ import print_function
 
 import sys
 import re
@@ -109,10 +110,10 @@ def parse_name(name):
 def main():
     args = sys.argv[1:2]
     if len(args) != 1:
-        print "usage: run_bibtex 'some bibtex code'"
+        print("usage: run_bibtex 'some bibtex code'")
         sys.exit(1)
     code = args[0]
-    print execute(code)
+    print(execute(code))
 
 
 if __name__ == '__main__':
