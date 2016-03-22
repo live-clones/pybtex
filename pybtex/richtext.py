@@ -507,7 +507,7 @@ class BaseMultipartText(BaseText):
 
         Prefixes split across multiple parts are not matched:
 
-        >>> Text(Tag('emph', 'Long'), 'cat!').startswith('Longcat')
+        >>> Text(Tag('em', 'Long'), 'cat!').startswith('Longcat')
         False
 
         """
