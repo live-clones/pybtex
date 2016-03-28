@@ -82,8 +82,12 @@ class Writer(BaseWriter):
                 raise BibTeXError('String has unmatched braces: %s' % s)
 
     def write_stream(self, bib_data, stream):
+        import codecs
+        import latexcodec
+
         def write_field(type, value):
-            stream.write(u',\n    %s = %s' % (type, self.quote(value)))
+            stream.write(u',\n    %s = %s' % (type, self.quote(
+                codecs.encode(value, 'ulatex+{}'.format(self.encoding)))))
 
         def format_name(person):
             def join(l):
@@ -110,7 +114,8 @@ class Writer(BaseWriter):
 
         def write_preamble(preamble):
             if preamble:
-                stream.write(u'@preamble{%s}\n\n' % self.quote(preamble))
+                stream.write(u'@preamble{%s}\n\n' % self.quote(
+                    codecs.encode(preamble, 'ulatex+{}'.format(self.encoding))))
 
         write_preamble(bib_data.preamble)
 
