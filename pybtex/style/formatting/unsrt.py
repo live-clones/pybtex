@@ -427,7 +427,7 @@ class Style(BaseStyle):
         # based on urlbst format.pubmed
         return href [
             join [
-                'http://www.ncbi.nlm.nih.gov/pubmed/',
+                'https://www.ncbi.nlm.nih.gov/pubmed/',
                 field('pubmed')
                 ],
             join [
@@ -440,7 +440,7 @@ class Style(BaseStyle):
         # based on urlbst format.doi
         return href [
             join [
-                'http://dx.doi.org/',
+                'https://doi.org/',
                 field('doi')
                 ],
             join [
@@ -453,7 +453,7 @@ class Style(BaseStyle):
         # based on urlbst format.eprint
         return href [
             join [
-                'http://arxiv.org/abs/',
+                'https://arxiv.org/abs/',
                 field('eprint')
                 ],
             join [
