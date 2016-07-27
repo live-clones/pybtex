@@ -191,7 +191,7 @@ pseudoxml:
 	@echo "build finished. the pseudo-xml files are in $(builddir)/pseudoxml."
 
 
-# http://pybtex.org/ stuff
+# https://pybtex.org/ stuff
 RSYNC = rsync -rv --delete
 RSYNC_SERVER = www-pybtex@sologoc.com
 

@@ -111,8 +111,8 @@ def format_head(main_obj):
 
 def format_see_also(main_obj):
     yield '.SH "SEE ALSO"'
-    yield '.UR http://pybtex.org/'
-    yield '.BR http://pybtex.org/'
+    yield '.UR https://pybtex.org/'
+    yield '.BR https://pybtex.org/'
 
 
 def write_manpage(outfile, main_obj):

@@ -73,7 +73,7 @@ setup(
     long_description=README,
     author='Andrey Golovizin',
     author_email='ag@sologoc.com',
-    url='http://pybtex.org/',
+    url='https://pybtex.org/',
     license='MIT',
     platforms=['platform-independent'],
     classifiers=[

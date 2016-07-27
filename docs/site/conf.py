@@ -38,7 +38,7 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    'docs': ('http://docs.pybtex.org/', None),
+    'docs': ('https://docs.pybtex.org/', None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
