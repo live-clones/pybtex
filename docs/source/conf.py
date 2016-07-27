@@ -196,7 +196,7 @@ html_short_title = 'Docs'
 #html_file_suffix = None
 
 html_context = {
-    'site_url': 'http://pybtex.org/',
+    'site_url': 'https://pybtex.org/',
 }
 
 # Output file base name for HTML help builder.
