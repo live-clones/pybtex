@@ -91,7 +91,7 @@ Registering plugins
 See `Setuptools' documentation`_.
 
 
-.. _Setuptools' documentation: https://pythonhosted.org/setuptools/setuptools.html#extensible-applications-and-frameworks
+.. _Setuptools' documentation: https://setuptools.readthedocs.io/en/latest/setuptools.html#extensible-applications-and-frameworks
 
 
 Example plugins
