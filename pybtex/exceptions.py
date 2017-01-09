@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2016  Andrey Golovizin
+# Copyright (c) 2006-2017  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 class PybtexError(Exception):
     def __init__(self, message, filename=None):
         super(PybtexError, self).__init__(message)
@@ -34,3 +35,6 @@ class PybtexError(Exception):
 
     def __eq__(self, other):
         return unicode(self) == unicode(other)
+
+    def __hash__(self):
+        return hash(unicode(self))
