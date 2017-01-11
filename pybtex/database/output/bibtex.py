@@ -102,6 +102,19 @@ class Writer(BaseWriter):
 
         return text.encode('ulatex+{}'.format(self.encoding))
 
+    def _encode_with_comments(self, text):
+        ur"""Encode text as LaTeX, preserve comments.
+
+        >>> w = Writer(encoding='ASCII')
+        >>> print w._encode_with_comments(u'1970–1971.  %% † RIP †')
+        1970--1971.  %% \dag\ RIP \dag
+
+        >>> w = Writer(encoding='UTF-8')
+        >>> print w._encode_with_comments(u'1970–1971.  %% † RIP †')
+        1970–1971.  %% † RIP †
+        """
+        return u'%'.join(self._encode(part) for part in text.split(u'%'))
+
     def _write_field(self, stream, type, value):
         stream.write(u',\n    %s = %s' % (type, self.quote(self._encode(value))))
 
@@ -131,7 +144,7 @@ class Writer(BaseWriter):
 
     def _write_preamble(self, stream, preamble):
         if preamble:
-            stream.write(u'@preamble{%s}\n\n' % self.quote(self._encode(preamble)))
+            stream.write(u'@preamble{%s}\n\n' % self.quote(self._encode_with_comments(preamble)))
 
     def write_stream(self, bib_data, stream):
 
