@@ -81,43 +81,43 @@ class Writer(BaseWriter):
             if end_brace_level != 0:
                 raise BibTeXError('String has unmatched braces: %s' % s)
 
+    def _write_field(self, stream, type, value):
+        stream.write(u',\n    %s = %s' % (type, self.quote(
+            value.encode('ulatex+{}'.format(self.encoding)))))
+
+    def _format_name(self, stream, person):
+        def join(l):
+            return ' '.join([name for name in l if name])
+        first = person.get_part_as_text('first')
+        middle = person.get_part_as_text('middle')
+        prelast = person.get_part_as_text('prelast')
+        last = person.get_part_as_text('last')
+        lineage = person.get_part_as_text('lineage')
+        s = ''
+        if last:
+            s += join([prelast, last])
+        if lineage:
+            s += ', %s' % lineage
+        if first or middle:
+            s += ', '
+            s += join([first, middle])
+        return s
+
+    def _write_persons(self, stream, persons, role):
+        # persons = getattr(entry, role + 's')
+        if persons:
+            names = u' and '.join(self._format_name(stream, person) for person in persons)
+            self._write_field(stream, role, names)
+
+    def _write_preamble(self, stream, preamble):
+        if preamble:
+            stream.write(u'@preamble{%s}\n\n' % self.quote(
+                preamble.encode('ulatex+{}'.format(self.encoding))))
+
     def write_stream(self, bib_data, stream):
-        import codecs
         import latexcodec
 
-        def write_field(type, value):
-            stream.write(u',\n    %s = %s' % (type, self.quote(
-                codecs.encode(value, 'ulatex+{}'.format(self.encoding)))))
-
-        def format_name(person):
-            def join(l):
-                return ' '.join([name for name in l if name])
-            first = person.get_part_as_text('first')
-            middle = person.get_part_as_text('middle')
-            prelast = person.get_part_as_text('prelast')
-            last = person.get_part_as_text('last')
-            lineage = person.get_part_as_text('lineage')
-            s = ''
-            if last:
-                s += join([prelast, last])
-            if lineage:
-                s += ', %s' % lineage
-            if first or middle:
-                s += ', '
-                s += join([first, middle])
-            return s
-
-        def write_persons(persons, role):
-            # persons = getattr(entry, role + 's')
-            if persons:
-                write_field(role, u' and '.join([format_name(person) for person in persons]))
-
-        def write_preamble(preamble):
-            if preamble:
-                stream.write(u'@preamble{%s}\n\n' % self.quote(
-                    codecs.encode(preamble, 'ulatex+{}'.format(self.encoding))))
-
-        write_preamble(bib_data.preamble)
+        self._write_preamble(stream, bib_data.preamble)
 
         first = True
         for key, entry in bib_data.entries.iteritems():
@@ -129,7 +129,7 @@ class Writer(BaseWriter):
             stream.write(u'{%s' % key)
 #            for role in ('author', 'editor'):
             for role, persons in entry.persons.iteritems():
-                write_persons(persons, role)
+                self._write_persons(stream, persons, role)
             for type, value in entry.fields.iteritems():
-                write_field(type, value)
+                self._write_field(stream, type, value)
             stream.write(u'\n}\n')
