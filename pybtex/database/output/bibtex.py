@@ -1,3 +1,5 @@
+# vim: fileencoding=utf-8
+
 # Copyright (c) 2006-2016  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -81,9 +83,27 @@ class Writer(BaseWriter):
             if end_brace_level != 0:
                 raise BibTeXError('String has unmatched braces: %s' % s)
 
+    def _encode(self, text):
+        ur"""Encode text as LaTeX.
+
+        >>> w = Writer(encoding='ASCII')
+        >>> print w._encode(u'1970–1971.')
+        1970--1971.
+
+        >>> w = Writer(encoding='UTF-8')
+        >>> print w._encode(u'1970–1971.')
+        1970–1971.
+
+        >>> w = Writer(encoding='UTF-8')
+        >>> print w._encode(u'100% noir')
+        100\% noir
+        """
+        import latexcodec  # NOQA
+
+        return text.encode('ulatex+{}'.format(self.encoding))
+
     def _write_field(self, stream, type, value):
-        stream.write(u',\n    %s = %s' % (type, self.quote(
-            value.encode('ulatex+{}'.format(self.encoding)))))
+        stream.write(u',\n    %s = %s' % (type, self.quote(self._encode(value))))
 
     def _format_name(self, stream, person):
         def join(l):
@@ -111,11 +131,9 @@ class Writer(BaseWriter):
 
     def _write_preamble(self, stream, preamble):
         if preamble:
-            stream.write(u'@preamble{%s}\n\n' % self.quote(
-                preamble.encode('ulatex+{}'.format(self.encoding))))
+            stream.write(u'@preamble{%s}\n\n' % self.quote(self._encode(preamble)))
 
     def write_stream(self, bib_data, stream):
-        import latexcodec
 
         self._write_preamble(stream, bib_data.preamble)
 
