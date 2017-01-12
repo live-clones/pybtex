@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2006-2016  Andrey Golovizin
+# Copyright (C) 2006-2017  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -62,7 +62,7 @@ if sys.version_info >= (3, 0):
 else:
     extra = {}
 
-install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.3']
+install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4']
 if sys.version_info < (2, 7):
     install_requires += ['Counter>=1.0.0']
 
