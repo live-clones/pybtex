@@ -21,6 +21,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import codecs
+
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import scan_bibtex_string
 from pybtex.database.output import BaseWriter
@@ -100,7 +102,7 @@ class Writer(BaseWriter):
         """
         import latexcodec  # NOQA
 
-        return text.encode('ulatex+{}'.format(self.encoding))
+        return codecs.encode(text, 'ulatex+{}'.format(self.encoding))
 
     def _encode_with_comments(self, text):
         ur"""Encode text as LaTeX, preserve comments.
