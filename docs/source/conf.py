@@ -63,7 +63,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u"Pybtex User’s Guide"
-copyright = u'2016, Andrey Golovizin'
+copyright = u'2017, Andrey Golovizin'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
