@@ -1,3 +1,13 @@
+Version 0.21
+------------
+(not released yet)
+
+- BibTeX writer now uses latexcodec_ to encode characters that are not directly
+  supported by the output encoding. Thanks, Hong Xu!
+
+- DOI, PubMed and Arxiv links now use HTTPS instead of HTTP.
+
+
 Version 0.20.1
 --------------
 (released on March 17, 2016)
@@ -14,7 +24,7 @@ Version 0.20
 
 - Improved URL formatting in pythonic styles.
 
-- Built-in pythonic styles now support the `ISBN` field.
+- Built-in pythonic styles now support the ``ISBN`` field.
 
 - Pythonic styles now treat LaTeX braces correctly:
 
