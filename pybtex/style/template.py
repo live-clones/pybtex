@@ -252,12 +252,12 @@ class FieldIsMissing(PybtexError):
         )
 
 @node
-def field(children, data, name, apply_func=None):
+def field(children, data, name, apply_func=None, raw=False):
     """Return the contents of the bibliography entry field."""
 
     assert not children
     try:
-        field = data.rich_fields[name]
+        field = data.fields[name] if raw else data.rich_fields[name]
     except KeyError:
         raise FieldIsMissing(name, data)
     else:

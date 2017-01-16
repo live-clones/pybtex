@@ -7,6 +7,8 @@ Version 0.21
 
 - DOI, PubMed and Arxiv links now use HTTPS instead of HTTP.
 
+- Fix formatting urls with percent characters in pythonic styles.
+
 
 Version 0.20.1
 --------------

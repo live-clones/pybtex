@@ -77,7 +77,7 @@ class Backend(BaseBackend):
     def format_href(self, url, text):
         if not text:
             return ''
-        elif text == url:
+        elif text == self.format_str(url):
             return u'\\url{%s}' % url
         else:
             return ur'\href{%s}{%s}' % (url, text) if text else u''

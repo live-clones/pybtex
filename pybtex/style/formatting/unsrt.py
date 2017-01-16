@@ -416,10 +416,8 @@ class Style(BaseStyle):
         return words [
             'URL:',
             href [
-                field('url'),
-                join(' ') [
-                    field('url')
-                    ]
+                field('url', raw=True),
+                field('url', raw=True)
                 ]
         ]
 
@@ -428,11 +426,11 @@ class Style(BaseStyle):
         return href [
             join [
                 'https://www.ncbi.nlm.nih.gov/pubmed/',
-                field('pubmed')
+                field('pubmed', raw=True)
                 ],
             join [
                 'PMID:',
-                field('pubmed')
+                field('pubmed', raw=True)
                 ]
             ]
 
@@ -441,11 +439,11 @@ class Style(BaseStyle):
         return href [
             join [
                 'https://doi.org/',
-                field('doi')
+                field('doi', raw=True)
                 ],
             join [
                 'doi:',
-                field('doi')
+                field('doi', raw=True)
                 ]
             ]
 
@@ -454,11 +452,11 @@ class Style(BaseStyle):
         return href [
             join [
                 'https://arxiv.org/abs/',
-                field('eprint')
+                field('eprint', raw=True)
                 ],
             join [
                 'arXiv:',
-                field('eprint')
+                field('eprint', raw=True)
                 ]
             ]
 
