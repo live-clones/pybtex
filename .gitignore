@@ -15,4 +15,5 @@
 /.tox
 /.cache
 /.eggs
+/Session.vim
 __pycache__
