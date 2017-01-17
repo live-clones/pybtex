@@ -71,6 +71,9 @@ class Backend(BaseBackend):
     def format_str(self, text):
         return escape(text)
 
+    def format_protected(self, text):
+        return ur'<span class="bibtex-protected">{}</span>'.format(text)
+
     def format_tag(self, tag, text):
         return ur'<{0}>{1}</{0}>'.format(tag, text) if text else u''
 

@@ -917,7 +917,7 @@ class Protected(BaseMultipartText):
     >>> print text.render_as('latex')
     {The CTAN archive}
     >>> print text.render_as('html')
-    The CTAN archive
+    <span class="bibtex-protected">The CTAN archive</span>
 
     .. versionadded:: 0.20
 

@@ -39,12 +39,12 @@ class NameStyle(BaseNameStyle):
         >>> print lastfirst(name).format().render_as('latex')
         de~la Vall{é}e~Poussin, Charles Louis Xavier~Joseph
         >>> print lastfirst(name).format().render_as('html')
-        de&nbsp;la Vallée&nbsp;Poussin, Charles Louis Xavier&nbsp;Joseph
+        de&nbsp;la Vall<span class="bibtex-protected">é</span>e&nbsp;Poussin, Charles Louis Xavier&nbsp;Joseph
 
         >>> print lastfirst(name, abbr=True).format().render_as('latex')
         de~la Vall{é}e~Poussin, C.~L. X.~J.
         >>> print lastfirst(name, abbr=True).format().render_as('html')
-        de&nbsp;la Vallée&nbsp;Poussin, C.&nbsp;L. X.&nbsp;J.
+        de&nbsp;la Vall<span class="bibtex-protected">é</span>e&nbsp;Poussin, C.&nbsp;L. X.&nbsp;J.
 
         >>> name = Person(first='First', last='Last', middle='Middle')
         >>> print lastfirst(name).format().render_as('latex')

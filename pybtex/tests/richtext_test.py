@@ -1146,7 +1146,7 @@ class TestProtected(TextTestMixin, TestCase):
     def test_render_as(self):
         string = Protected('a < b')
         assert string.render_as('latex') == '{a < b}'
-        assert string.render_as('html') == 'a &lt; b'
+        assert string.render_as('html') == '<span class="bibtex-protected">a &lt; b</span>'
 
 
 class TestSymbol(TextTestMixin, TestCase):
