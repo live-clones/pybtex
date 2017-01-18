@@ -23,7 +23,7 @@ import re
 
 from pybtex.style.formatting import BaseStyle, toplevel
 from pybtex.style.template import (
-    join, words, field, optional, first_of,
+    join, words, together, field, optional, first_of,
     names, sentence, tag, optional_field, href
 )
 from pybtex.richtext import Text, Symbol
@@ -99,7 +99,7 @@ class Style(BaseStyle):
     def format_volume_and_series(self, e, as_sentence=True):
         volume_and_series = optional [
             words [
-                'Volume' if as_sentence else 'volume', field('volume'), optional [
+                together ['Volume' if as_sentence else 'volume', field('volume')], optional [
                     words ['of', field('series')]
                 ]
             ]
@@ -125,8 +125,8 @@ class Style(BaseStyle):
 
     def format_chapter_and_pages(self, e):
         return join(sep=', ') [
-            optional [words ['chapter', field('chapter')]],
-            optional [words ['pages', pages]],
+            optional [together ['chapter', field('chapter')]],
+            optional [together ['pages', pages]],
         ]
 
     def format_edition(self, e):
