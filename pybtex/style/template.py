@@ -283,6 +283,9 @@ def names(children, data, role, **kwargs):
         # role is a bibtex field so it makes sense
         # to raise FieldIsMissing; optional will catch it
         raise FieldIsMissing(role, data)
+
+    # person.text is set by pybtex.style.formatting.BaseStyle.format_entries()
+    # TODO: do something about it, because it is confusing
     return join(**kwargs) [[person.text for person in persons]].format_data(data)
 
 
