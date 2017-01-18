@@ -196,14 +196,16 @@ def words(children, data, sep=' '):
 
 
 @node
-def together(children, data, last_tie=True):
+def together(children, data, last_tie=False):
     """
     Try to keep words together, like BibTeX does.
 
     >>> print unicode(together ['very', 'long', 'road'].format())
+    very long road
+    >>> print unicode(together(last_tie=True) ['very', 'long', 'road'].format())
     very long<nbsp>road
     >>> print unicode(together ['a', 'very', 'long', 'road'].format())
-    a<nbsp>very long<nbsp>road
+    a<nbsp>very long road
     """
     from pybtex.textutils import tie_or_space
     tie = richtext.nbsp
