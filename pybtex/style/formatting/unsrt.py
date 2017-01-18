@@ -222,7 +222,7 @@ class Style(BaseStyle):
         template = toplevel [
             sentence [self.format_names('author')],
             sentence [
-                self.format_btitle(e, 'title'),
+                self.format_btitle(e, 'title', as_sentence=False),
                 self.format_chapter_and_pages(e),
             ],
             self.format_volume_and_series(e),

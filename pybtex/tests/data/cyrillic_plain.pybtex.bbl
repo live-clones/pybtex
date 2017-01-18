@@ -8,7 +8,7 @@ First~Middle de~Last, Jr.
 
 \bibitem[2]{test-inbook}
 Péter Jackson.
-\newblock \emph{Some Title}., pages 44–59.
+\newblock \emph{Some Title}, pages 44–59.
 \newblock number~3 in Some series.
 \newblock Some Publisher, Second edition, 1933.
 \newblock URL: \url{https://example.com/Peter%20Jackson.html}.
