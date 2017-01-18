@@ -1,5 +1,5 @@
 %%% pybtex example file
-\begin{thebibliography}{Jac33}
+\begin{thebibliography}{Len14}
 
 \bibitem[dL06]{test-booklet}
 First~Middle de~Last, Jr.
@@ -12,6 +12,11 @@ Péter Jackson.
 \newblock Number~3 in Some series.
 \newblock Some Publisher, Second edition, 1933.
 \newblock URL: \url{https://example.com/Peter%20Jackson.html}.
+
+\bibitem[Len14]{inbook-editor}
+Vladimir~Ilyich Lenin, editor.
+\newblock \emph{Lesbian Nurses}, chapter 8.
+\newblock Yale University Press, 1914.
 
 \bibitem[LR97]{ruckenstein-diffusion}
 Hongquin Liu and Eli Ruckenstein.

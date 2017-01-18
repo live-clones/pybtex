@@ -13,12 +13,17 @@ Péter Jackson.
 \newblock Some Publisher, Second edition, 1933.
 \newblock URL: \url{https://example.com/Peter%20Jackson.html}.
 
-\bibitem[3]{ruckenstein-diffusion}
+\bibitem[3]{inbook-editor}
+Vladimir~Ilyich Lenin, editor.
+\newblock \emph{Lesbian Nurses}, chapter 8.
+\newblock Yale University Press, 1914.
+
+\bibitem[4]{ruckenstein-diffusion}
 Hongquin Liu and Eli Ruckenstein.
 \newblock Predicting the diffusion coefficient in supercritical fluids.
 \newblock \emph{Ind. Eng. Chem. Res.}, 36:888--895, 1997.
 
-\bibitem[4]{viktorov-metodoj}
+\bibitem[5]{viktorov-metodoj}
 Михаил~Маркович Викторов.
 \newblock \emph{Методы вычисления физико-химических величин и прикладные расчёты}.
 \newblock Л.: <<Химия>>, 1977.

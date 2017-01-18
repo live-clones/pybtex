@@ -220,7 +220,7 @@ class Style(BaseStyle):
 
     def format_inbook(self, e):
         template = toplevel [
-            sentence [self.format_names('author')],
+            self.format_author_or_editor(e),
             sentence [
                 self.format_btitle(e, 'title', as_sentence=False),
                 self.format_chapter_and_pages(e),

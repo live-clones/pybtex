@@ -11,6 +11,11 @@ P\'eter Jackson.
 \newblock {\em Some Title}, pages 44--59.
 \newblock Number~3 in Some series. Some Publisher, second edition, 1933.
 
+\bibitem[Len14]{inbook-editor}
+Vladimir~Ilyich Lenin, editor.
+\newblock {\em Lesbian Nurses}, chapter~8.
+\newblock Yale University Press, 1914.
+
 \bibitem[LR97]{ruckenstein-diffusion}
 Hongquin Liu and Eli Ruckenstein.
 \newblock Predicting the diffusion coefficient in supercritical fluids.

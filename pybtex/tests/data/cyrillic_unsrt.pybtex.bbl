@@ -19,7 +19,12 @@ Péter Jackson.
 \newblock Some Publisher, Second edition, 1933.
 \newblock URL: \url{https://example.com/Peter%20Jackson.html}.
 
-\bibitem[4]{test-booklet}
+\bibitem[4]{inbook-editor}
+Vladimir~Ilyich Lenin, editor.
+\newblock \emph{Lesbian Nurses}, chapter 8.
+\newblock Yale University Press, 1914.
+
+\bibitem[5]{test-booklet}
 First~Middle de~Last, Jr.
 \newblock Just a booklet.
 \newblock Published by Foo, Moscow, January 2006.
