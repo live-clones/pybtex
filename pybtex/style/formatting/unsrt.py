@@ -99,14 +99,14 @@ class Style(BaseStyle):
     def format_volume_and_series(self, e, as_sentence=True):
         volume_and_series = optional [
             words [
-                'volume', field('volume'), optional [
+                'Volume' if as_sentence else 'volume', field('volume'), optional [
                     words ['of', field('series')]
                 ]
             ]
         ]
         number_and_series = optional [
             words [
-                join(sep=Symbol('nbsp')) ['number', field('number')],
+                join(sep=Symbol('nbsp')) ['Number' if as_sentence else 'number', field('number')],
                 optional [
                     words ['in', field('series')]
                 ]
@@ -119,7 +119,7 @@ class Style(BaseStyle):
             series,
         ]
         if as_sentence:
-            return sentence [result]
+            return sentence(capfirst=True) [result]
         else:
             return result
 
