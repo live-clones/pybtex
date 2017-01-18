@@ -206,6 +206,10 @@ def together(children, data, last_tie=False):
     very long<nbsp>road
     >>> print unicode(together ['a', 'very', 'long', 'road'].format())
     a<nbsp>very long road
+    >>> print unicode(together ['chapter', '8'].format())
+    chapter<nbsp>8
+    >>> print unicode(together ['chapter', '666'].format())
+    chapter 666
     """
     from pybtex.textutils import tie_or_space
     tie = richtext.nbsp
@@ -214,7 +218,7 @@ def together(children, data, last_tie=False):
     if not parts:
         return richtext.Text()
     if len(parts) <= 2:
-        tie2 = tie if last_tie else tie_or_space(parts[0], tie, space)
+        tie2 = tie if last_tie else tie_or_space(parts[0], tie, space, other_word=parts[-1])
         return tie2.join(parts)
     else:
         last_tie = tie if last_tie else tie_or_space(parts[-1], tie, space)

@@ -157,8 +157,12 @@ def width(string):
     return sum(charwidths.get(char, 0) for char in string)
 
 
-def tie_or_space(word, tie='~', space=' ', enough_chars=3):
-    if len(word) < enough_chars:
+def tie_or_space(word, tie='~', space=' ', enough_chars=3, other_word=None):
+    n_chars = len(word)
+    if other_word is not None:
+        n_chars = min(n_chars, len(other_word))
+
+    if n_chars < enough_chars:
         return tie
     else:
         return space
