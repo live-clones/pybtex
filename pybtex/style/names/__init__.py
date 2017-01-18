@@ -23,6 +23,7 @@
 """
 
 from pybtex.plugin import Plugin
+from pybtex.textutils import tie_or_space
 from pybtex.richtext import Text, nbsp
 from pybtex.style.template import together, node
 
@@ -30,13 +31,6 @@ from pybtex.style.template import together, node
 class BaseNameStyle(Plugin):
     def format(self, person, abbr=False):
         raise NotImplementedError
-
-
-def tie_or_space(word, tie='~', space=' ', enough_chars=3):
-    if len(word) < enough_chars:
-        return tie
-    else:
-        return space
 
 
 @node
