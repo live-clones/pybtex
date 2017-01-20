@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2016  Andrey Golovizin
+# Copyright (c) 2006-2017  Andrey Golovigin
 # Copyright (c) 2014  Matthias C. M. Troffaes
 #
 # Permission is hereby granted, free of charge, to any person obtaining
