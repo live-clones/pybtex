@@ -1,13 +1,28 @@
 Version 0.21
 ------------
-(not released yet)
+(released on January 20, 2017)
 
 - BibTeX writer now uses latexcodec_ to encode characters that are not directly
   supported by the output encoding. Thanks, Hong Xu!
 
-- DOI, PubMed and Arxiv links now use HTTPS instead of HTTP.
+- HTML backend: {braced stings} are now wrapped with ``<span class="bibtex-protected">``
+  to enable custom CSS styling.
 
-- Fix formatting urls with percent characters in pythonic styles.
+- unsrt.py: DOI, PubMed and Arxiv links now use HTTPS instead of HTTP.
+
+- unsrt.py: URLs with percent characters are now formatted correctly.
+
+- unsrt.py: short page / volume / chapter numbers are now joined with a
+  non-breaking space, like in BibTeX.
+
+- unsrt.py: ``inbook`` now uses the ``editor`` field if the ``author`` field is
+  missing, like in BibTeX.
+
+- unsrt.py: the words "volume" and "pages" in the beginning of the sentence are
+  now capitalized, like in BibTeX.
+
+- unsrt.py: removed unnecessary period between the book title and the comma in
+  ``inbook``.
 
 
 Version 0.20.1
