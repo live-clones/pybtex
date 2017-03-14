@@ -109,7 +109,7 @@ class UndefinedMacro(PybtexSyntaxError):
     error_type = 'undefined string'
 
 
-class BibTeXEntryIterator(Scanner):
+class LowLevelParser(Scanner):
     NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
     KEY_PAREN = Pattern(ur'[^\s\,]+', 'entry key')
     KEY_BRACE = Pattern(ur'[^\s\,}]+', 'entry key')
@@ -139,7 +139,7 @@ class BibTeXEntryIterator(Scanner):
         want_entry=None,
         filename=None
     ):
-        super(BibTeXEntryIterator, self).__init__(text, filename)
+        super(LowLevelParser, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
         self.macros = macros
         if handle_error:
@@ -310,6 +310,14 @@ class BibTeXEntryIterator(Scanner):
                 raise PybtexSyntaxError('unbalanced braces', self)
 
 
+class BibTeXEntryIterator(LowLevelParser):
+    def __init__(self, *args, **kwargs):
+        import warnings
+        message = 'BibTeXEntryIterator is deprecated since 0.22: renamed to LowLevelParser'
+        warnings.warn(message, DeprecationWarning, stacklevel=2)
+        super(BibTeXEntryIterator, self).__init__(*args, **kwargs)
+
+
 class Parser(BaseParser):
     default_suffix = '.bib'
     unicode_io = True
@@ -361,7 +369,7 @@ class Parser(BaseParser):
         self.unnamed_entry_counter = 1
         self.command_start = 0
 
-        entry_iterator = BibTeXEntryIterator(
+        entry_iterator = LowLevelParser(
             text,
             keyless_entries=self.keyless_entries,
             handle_error=self.handle_error,
