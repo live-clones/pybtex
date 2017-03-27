@@ -73,7 +73,7 @@ from string import ascii_letters, digits
 
 import re
 from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
-from pybtex.database import Entry, Person
+from pybtex.database import Entry, Person, BibliographyDataError
 from pybtex.database.input import BaseParser
 from pybtex.bibtex.utils import split_name_list
 from pybtex import textutils
@@ -107,6 +107,10 @@ class SkipEntry(Exception):
 
 class UndefinedMacro(PybtexSyntaxError):
     error_type = 'undefined string'
+
+
+class DuplicatePersonField(BibliographyDataError):
+    pass
 
 
 class LowLevelParser(Scanner):
@@ -345,11 +349,18 @@ class Parser(BaseParser):
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
+        already_handled_person_fields = set()
         for field_name, field_value_list in fields:
             field_value = textutils.normalize_whitespace(self.flatten_value_list(field_value_list))
             if field_name in self.person_fields:
+                if field_name in already_handled_person_fields:
+                    error_message = 'entry with key {} has a duplicate {} field'.format(
+                        key, field_name)
+                    self.handle_error(DuplicatePersonField(error_message))
+                    continue
                 for name in split_name_list(field_value):
                     entry.add_person(Person(name), field_name)
+                already_handled_person_fields.add(field_name)
             else:
                 entry.fields[field_name] = field_value
         self.data.add_entry(key, entry)
