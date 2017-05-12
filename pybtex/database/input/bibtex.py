@@ -291,7 +291,10 @@ class LowLevelParser(Scanner):
                 self.handle_error(UndefinedMacro(name, self))
             return ''
 
-    def parse_string(self, string_end, level=0):
+    def parse_string(self, string_end, level=0, max_level=100):
+        if level > max_level:
+            raise PybtexSyntaxError('too many nested braces', self)
+
         special_chars = [self.RBRACE, self.LBRACE]
         if string_end is self.QUOTE:
             special_chars = [self.QUOTE] + special_chars
