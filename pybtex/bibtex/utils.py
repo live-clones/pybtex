@@ -22,6 +22,8 @@
 import re
 
 from pybtex.utils import pairwise
+from pybtex.bibtex.exceptions import BibTeXError
+
 
 whitespace_re = re.compile(r'(\s)')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
@@ -90,7 +92,10 @@ def wrap(string, width=79, subsequent_indent='  '):
 
 
 class BibTeXString(object):
-    def __init__(self, chars, level=0):
+    def __init__(self, chars, level=0, max_level=100):
+        if level > max_level:
+            raise BibTeXError('too many nested braces')
+
         self.level = level
         self.is_closed = False
         self.contents = list(self.find_closing_brace(iter(chars)))
