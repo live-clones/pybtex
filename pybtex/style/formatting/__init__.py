@@ -53,13 +53,16 @@ class BaseStyle(Plugin):
         sorted_entries = self.sort(entries)
         labels = self.format_labels(sorted_entries)
         for label, entry in zip(labels, sorted_entries):
+            yield self.format_entry(label, entry)
+
+    def format_entry(self, label, entry):
             for persons in entry.persons.itervalues():
                 for person in persons:
                     person.text = self.format_name(person, self.abbreviate_names)
 
             f = getattr(self, "format_" + entry.type)
             text = f(entry)
-            yield FormattedEntry(entry.key, text, label)
+            return FormattedEntry(entry.key, text, label)
 
     def format_bibliography(self, bib_data, citations=None):
         """
