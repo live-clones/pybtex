@@ -48,7 +48,7 @@ class Style(BaseStyle):
         else:
             return formatted_names
 
-    def format_article(self, e):
+    def get_article_template(self, e):
         volume_and_pages = first_of [
             # volume and pages, with optional issue number
             optional [
@@ -71,7 +71,7 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
     def format_author_or_editor(self, e):
         return first_of [
@@ -187,7 +187,7 @@ class Style(BaseStyle):
             ],
         ]
 
-    def format_book(self, e):
+    def get_book_template(self, e):
         template = toplevel [
             self.format_author_or_editor(e),
             self.format_btitle(e, 'title'),
@@ -202,9 +202,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_booklet(self, e):
+    def get_booklet_template(self, e):
         template = toplevel [
             self.format_names('author'),
             self.format_title(e, 'title'),
@@ -216,9 +216,9 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_inbook(self, e):
+    def get_inbook_template(self, e):
         template = toplevel [
             self.format_author_or_editor(e),
             sentence [
@@ -237,9 +237,9 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_incollection(self, e):
+    def get_incollection_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
@@ -260,9 +260,9 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_inproceedings(self, e):
+    def get_inproceedings_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
@@ -279,9 +279,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_manual(self, e):
+    def get_manual_template(self, e):
         # TODO this only corresponds to the bst style if author is non-empty
         # for empty author we should put the organization first
         template = toplevel [
@@ -296,9 +296,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_mastersthesis(self, e):
+    def get_mastersthesis_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
@@ -311,9 +311,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_misc(self, e):
+    def get_misc_template(self, e):
         template = toplevel [
             optional[ sentence [self.format_names('author')] ],
             optional[ self.format_title(e, 'title') ],
@@ -324,9 +324,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_phdthesis(self, e):
+    def get_phdthesis_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_btitle(e, 'title'),
@@ -339,9 +339,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_proceedings(self, e):
+    def get_proceedings_template(self, e):
         template = toplevel [
             first_of [
                 # there are editors
@@ -367,9 +367,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_techreport(self, e):
+    def get_techreport_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
@@ -388,9 +388,9 @@ class Style(BaseStyle):
             sentence [ optional_field('note') ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
-    def format_unpublished(self, e):
+    def get_unpublished_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
             self.format_title(e, 'title'),
@@ -400,7 +400,7 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template.format_data(e)
+        return template
 
     def format_web_refs(self, e):
         # based on urlbst output.web.refs

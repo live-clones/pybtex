@@ -60,8 +60,13 @@ class BaseStyle(Plugin):
                 for person in persons:
                     person.text = self.format_name(person, self.abbreviate_names)
 
-            f = getattr(self, "format_" + entry.type)
-            text = f(entry)
+            try:
+                get_template = getattr(self, 'get_{}_template'.format(entry.type))
+            except AttributeError:
+                f = getattr(self, "format_" + entry.type)
+                text = f(entry)
+            else:
+                text = get_template(entry).format_data(entry)
             return FormattedEntry(entry.key, text, label)
 
     def format_bibliography(self, bib_data, citations=None):
