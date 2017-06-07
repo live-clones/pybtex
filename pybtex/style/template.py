@@ -48,27 +48,6 @@ from pybtex.exceptions import PybtexError
 __test__ = {}  # for doctest
 
 
-class Proto(object):
-    def __init__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs = kwargs
-
-    def __call__(self, *args, **kwargs):
-        return Node(*self.args, **self.kwargs)(*args, **kwargs)
-
-    def __getitem__(self, children):
-        return Node(*self.args, **self.kwargs)[children]
-
-    def __repr__(self):
-        return repr(Node(*self.args, **self.kwargs))
-
-    def format_data(self, *args, **kwargs):
-        return Node(*self.args, **self.kwargs).format_data(*args, **kwargs)
-
-    def format(self):
-        return self.format_data(None)
-
-
 class Node(object):
     def __init__(self, name, f):
         self.name = name
@@ -168,7 +147,7 @@ def _format_list(list_, data):
 def node(f):
     if f.__doc__:
         __test__[f.__name__] = f
-    return Proto(f.__name__, f)
+    return Node(f.__name__, f)
 
 
 @node
