@@ -77,17 +77,26 @@ class Node(object):
         self.kwargs = {}
         self.children = []
 
+    def _clone(self):
+        result = Node(self.name, self.f)
+        result.args = list(self.args)
+        result.kwargs = dict(self.kwargs)
+        result.children = list(self.children)
+        return result
+
     def __call__(self, *args, **kwargs):
-        self.args = args
-        self.kwargs.update(kwargs)
-        return self
+        result = self._clone()
+        result.args.extend(args)
+        result.kwargs.update(kwargs)
+        return result
 
     def __getitem__(self, children):
+        result = self._clone()
         if isinstance(children, (list, tuple)):
-            self.children = children
+            result.children.extend(children)
         else:
-            self.children.append(children)
-        return self
+            result.children.append(children)
+        return result
 
     def __repr__(self):
         """
