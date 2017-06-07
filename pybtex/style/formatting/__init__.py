@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from pybtex.style import FormattedEntry, FormattedBibliography
-from pybtex.style.template import node, join
+from pybtex.style.template import node, join, Context
 from pybtex.richtext import Symbol
 from pybtex.plugin import Plugin, find_plugin
 
@@ -56,17 +56,14 @@ class BaseStyle(Plugin):
             yield self.format_entry(label, entry)
 
     def format_entry(self, label, entry):
-            for persons in entry.persons.itervalues():
-                for person in persons:
-                    person.text = self.format_name(person, self.abbreviate_names)
-
+            context = Context(entry=entry, style=self)
             try:
                 get_template = getattr(self, 'get_{}_template'.format(entry.type))
             except AttributeError:
                 f = getattr(self, "format_" + entry.type)
-                text = f(entry)
+                text = f(context)
             else:
-                text = get_template(entry).format_data(entry)
+                text = get_template(entry).format_data(context)
             return FormattedEntry(entry.key, text, label)
 
     def format_bibliography(self, bib_data, citations=None):

@@ -36,7 +36,7 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 >>> book_format = sentence(capfirst=True, sep=', ') [
 ...     field('title'), field('year'), optional [field('sdf')]
 ... ]
->>> print unicode(book_format.format_data(e))
+>>> print unicode(book_format.format_data(Context(e)))
 The Book, 2000.
 >>> print unicode(words ['one', 'two', words ['three', 'four']].format_data(e))
 one two three four
@@ -46,6 +46,16 @@ from pybtex import richtext
 from pybtex.exceptions import PybtexError
 
 __test__ = {}  # for doctest
+
+
+class Context(object):
+    """A data object that is passed to templates."""
+
+    __slots__ = 'entry', 'style'
+
+    def __init__(self, entry, style=None):
+        self.entry = entry
+        self.style = style
 
 
 class Node(object):
@@ -246,14 +256,15 @@ class FieldIsMissing(PybtexError):
         )
 
 @node
-def field(children, data, name, apply_func=None, raw=False):
+def field(children, context, name, apply_func=None, raw=False):
     """Return the contents of the bibliography entry field."""
 
     assert not children
+    entry = context.entry
     try:
-        field = data.fields[name] if raw else data.rich_fields[name]
+        field = entry.fields[name] if raw else entry.rich_fields[name]
     except KeyError:
-        raise FieldIsMissing(name, data)
+        raise FieldIsMissing(name, entry)
     else:
         if apply_func:
             field = apply_func(field)
@@ -261,20 +272,19 @@ def field(children, data, name, apply_func=None, raw=False):
 
 
 @node
-def names(children, data, role, **kwargs):
+def names(children, context, role, **kwargs):
     """Return formatted names."""
 
     assert not children
-    try:
-        persons = data.persons[role]
-    except KeyError:
-        # role is a bibtex field so it makes sense
-        # to raise FieldIsMissing; optional will catch it
-        raise FieldIsMissing(role, data)
 
-    # person.text is set by pybtex.style.formatting.BaseStyle.format_entries()
-    # TODO: do something about it, because it is confusing
-    return join(**kwargs) [[person.text for person in persons]].format_data(data)
+    try:
+        persons = context.entry.persons[role]
+    except KeyError:
+        raise FieldIsMissing(role, context.entry)
+
+    style = context.style
+    formatted_names = [style.format_name(person, style.abbreviate_names) for person in persons]
+    return join(**kwargs) [formatted_names].format_data(context)
 
 
 @node
@@ -284,7 +294,7 @@ def optional(children, data):
 
     >>> from pybtex.database import Entry
     >>> template = optional [field('volume'), optional['(', field('number'), ')']]
-    >>> template.format_data(Entry('article'))
+    >>> template.format_data(Context(Entry('article')))
     Text()
 
     """
