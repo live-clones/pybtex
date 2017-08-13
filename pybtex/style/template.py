@@ -36,7 +36,7 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 >>> book_format = sentence(capfirst=True, sep=', ') [
 ...     field('title'), field('year'), optional [field('sdf')]
 ... ]
->>> print unicode(book_format.format_data(Context(e)))
+>>> print unicode(book_format.format_data({'entry': e}))
 The Book, 2000.
 >>> print unicode(words ['one', 'two', words ['three', 'four']].format_data(e))
 one two three four
@@ -46,16 +46,6 @@ from pybtex import richtext
 from pybtex.exceptions import PybtexError
 
 __test__ = {}  # for doctest
-
-
-class Context(object):
-    """A data object that is passed to templates."""
-
-    __slots__ = 'entry', 'style'
-
-    def __init__(self, entry, style=None):
-        self.entry = entry
-        self.style = style
 
 
 class Node(object):
@@ -260,7 +250,7 @@ def field(children, context, name, apply_func=None, raw=False):
     """Return the contents of the bibliography entry field."""
 
     assert not children
-    entry = context.entry
+    entry = context['entry']
     try:
         field = entry.fields[name] if raw else entry.rich_fields[name]
     except KeyError:
@@ -278,11 +268,11 @@ def names(children, context, role, **kwargs):
     assert not children
 
     try:
-        persons = context.entry.persons[role]
+        persons = context['entry'].persons[role]
     except KeyError:
-        raise FieldIsMissing(role, context.entry)
+        raise FieldIsMissing(role, context['entry'])
 
-    style = context.style
+    style = context['style']
     formatted_names = [style.format_name(person, style.abbreviate_names) for person in persons]
     return join(**kwargs) [formatted_names].format_data(context)
 
@@ -294,7 +284,7 @@ def optional(children, data):
 
     >>> from pybtex.database import Entry
     >>> template = optional [field('volume'), optional['(', field('number'), ')']]
-    >>> template.format_data(Context(Entry('article')))
+    >>> template.format_data({'entry': Entry('article')})
     Text()
 
     """
