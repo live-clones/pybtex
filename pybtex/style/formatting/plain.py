@@ -1,8 +1,3 @@
-from __future__ import unicode_literals
-
-from pybtex.style.formatting.unsrt import Style as UnsrtStyle
-
-
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -24,6 +19,9 @@ from pybtex.style.formatting.unsrt import Style as UnsrtStyle
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
+from pybtex.style.formatting.unsrt import Style as UnsrtStyle
 
 
 class Style(UnsrtStyle):
