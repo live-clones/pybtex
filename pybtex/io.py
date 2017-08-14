@@ -22,12 +22,11 @@
 
 """Unicode-aware IO routines."""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import sys
-from os import path, environ
+from os import environ, path
 
 from pybtex.exceptions import PybtexError
 from pybtex.kpathsea import kpsewhich

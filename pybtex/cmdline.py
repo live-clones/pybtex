@@ -22,12 +22,13 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import unicode_literals
-import sys
-import optparse
 
-from pybtex import errors, __version__
+import optparse
+import sys
+
+from pybtex import __version__, errors
+from pybtex.plugin import enumerate_plugin_names, find_plugin
 from pybtex.textutils import add_period
-from pybtex.plugin import find_plugin, enumerate_plugin_names
 
 
 def check_plugin(option, option_string, value):

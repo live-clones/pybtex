@@ -341,4 +341,3 @@ def first_of(children, data):
         if child:
             return child
     return richtext.Text()
-

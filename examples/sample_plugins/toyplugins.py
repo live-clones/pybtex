@@ -25,11 +25,10 @@
 
 import imp
 
-from pybtex.utils import OrderedCaseInsensitiveDict
-
-from pybtex.database.output import BaseWriter
+from pybtex.database import BibliographyData, Entry, FieldDict, Person
 from pybtex.database.input import BaseParser
-from pybtex.database import BibliographyData, Entry, Person, FieldDict
+from pybtex.database.output import BaseWriter
+from pybtex.utils import OrderedCaseInsensitiveDict
 
 
 class PythonWriter(BaseWriter):

@@ -28,17 +28,14 @@ Some tests were adopted from Babybib - another BibTeX parser by Matthew Brett.
 https://github.com/matthew-brett/babybib
 
 """
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
-
-from __future__ import absolute_import
-from pybtex.database import BibliographyData
-from pybtex.database import Entry, Person
-from pybtex.database.input.bibtex import Parser
 from itertools import izip_longest
-
 from unittest import TestCase
+
 import six
+from pybtex.database import BibliographyData, Entry, Person
+from pybtex.database.input.bibtex import Parser
 
 
 class _TestParser(Parser):

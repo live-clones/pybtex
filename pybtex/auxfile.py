@@ -22,14 +22,13 @@
 """parse LaTeX aux file
 """
 
-from __future__ import with_statement
-from __future__ import unicode_literals
+from __future__ import unicode_literals, with_statement
 
 import re
 
 import pybtex.io
-from pybtex.exceptions import PybtexError
 from pybtex.errors import report_error
+from pybtex.exceptions import PybtexError
 
 
 class AuxDataError(PybtexError):

@@ -21,23 +21,19 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import with_statement
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals, with_statement
 
-import sys
 import re
+import sys
 from os import path
-from tempfile import mkdtemp
 from shutil import rmtree
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
+from tempfile import mkdtemp
 
-from pybtex.exceptions import PybtexError
-from pybtex.errors import report_error
+from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.output import bibtex
-from pybtex.database import BibliographyData
-from pybtex.database import Person, Entry
-
+from pybtex.errors import report_error
+from pybtex.exceptions import PybtexError
 
 writer = bibtex.Writer(encoding='ascii')
 

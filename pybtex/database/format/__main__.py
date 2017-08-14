@@ -23,6 +23,7 @@
 
 
 from __future__ import unicode_literals
+
 from pybtex.cmdline import CommandLine, standard_option
 
 

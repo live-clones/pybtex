@@ -1,4 +1,9 @@
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
+import six
+from pybtex.style.labels import BaseLabelStyle
+
+
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,9 +26,6 @@ from __future__ import unicode_literals
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import absolute_import
-from pybtex.style.labels import BaseLabelStyle
-import six
 
 
 class LabelStyle(BaseLabelStyle):

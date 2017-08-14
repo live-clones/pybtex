@@ -22,14 +22,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-import sys
 import os
-from setuptools import setup, find_packages
+import sys
 from distutils.command.sdist import sdist
 from distutils.dep_util import newer
 
-progname = 'pybtex'
 from pybtex import __version__
+from setuptools import find_packages, setup
+
+progname = 'pybtex'
 
 
 class Sdist(sdist):

@@ -21,13 +21,15 @@
 
 
 """Miscellaneous small utils."""
-from __future__ import unicode_literals, print_function
+from __future__ import print_function, unicode_literals
 
 import itertools
+from collections import (
+    MutableMapping, MutableSet, OrderedDict, Sequence, deque
+)
 from functools import wraps
-from collections import deque, Sequence, MutableMapping, MutableSet
-from collections import OrderedDict
 from types import GeneratorType
+
 from .py3compat import fix_unicode_literals_in_doctest
 
 
@@ -427,4 +429,3 @@ class CaseInsensitiveSet(MutableSet):
 
     def lower(self):
         return type(self)(self._set)
-

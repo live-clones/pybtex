@@ -38,10 +38,10 @@ HTML output backend.
 """
 from __future__ import unicode_literals
 
-
 from xml.sax.saxutils import escape
-from pybtex.backends import BaseBackend
+
 import pybtex.io
+from pybtex.backends import BaseBackend
 
 
 PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -91,4 +91,3 @@ class Backend(BaseBackend):
     def write_entry(self, key, label, text):
         self.output(u'<dt>%s</dt>\n' % label)
         self.output(u'<dd>%s</dd>\n' % text)
-

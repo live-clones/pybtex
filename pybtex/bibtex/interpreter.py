@@ -1,5 +1,3 @@
-from __future__ import print_function
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,12 +19,15 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import six
+from __future__ import print_function, unicode_literals
 
-from pybtex.utils import CaseInsensitiveDict
-from pybtex.bibtex.exceptions import BibTeXError
+import six
 from pybtex.bibtex.builtins import builtins, print_warning
+from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import wrap
+from pybtex.utils import CaseInsensitiveDict
+
+
 #from pybtex.database.input import bibtex
 
 

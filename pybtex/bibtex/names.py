@@ -45,11 +45,10 @@ from __future__ import unicode_literals
 
 import re
 
+from pybtex.bibtex.utils import bibtex_abbreviate, bibtex_len
 from pybtex.database import Person
-from pybtex.bibtex.utils import bibtex_len, bibtex_abbreviate
 from pybtex.scanner import (
-    Scanner, Pattern, Literal,
-    PybtexSyntaxError, PrematureEOF
+    Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
 )
 
 
@@ -365,4 +364,3 @@ class NameFormatParser(Scanner):
 
     def eat_whitespace(self):
         pass
-

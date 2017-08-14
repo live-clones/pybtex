@@ -22,20 +22,22 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
+
+import re
 import sys
+import unicodedata
+
 import six
+from pybtex.style.labels import BaseLabelStyle
+from pybtex.textutils import abbreviate
+
 if sys.version_info < (2, 7):
    from counter import Counter
 else:
    from collections import Counter
 
-import re
-import unicodedata
 
-from pybtex.textutils import abbreviate
-from pybtex.style.labels import BaseLabelStyle
 
 _nonalnum_pattern = re.compile('[^A-Za-z0-9]+', re.UNICODE)
 
@@ -177,4 +179,3 @@ class LabelStyle(BaseLabelStyle):
             if len(result) < 2:
                 result = _strip_nonalnum(person.last_names)[:3]
         return result
-

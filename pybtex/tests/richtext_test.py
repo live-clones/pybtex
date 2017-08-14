@@ -1,16 +1,15 @@
 #! vim:fileencoding=utf-8
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
+
 import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase
 
-from nose.tools import assert_raises
-
-from pybtex import textutils
-from pybtex.richtext import Text, String, Tag, HRef, Protected, Symbol, nbsp
 import six
+from nose.tools import assert_raises
+from pybtex import textutils
+from pybtex.richtext import HRef, Protected, String, Symbol, Tag, Text, nbsp
 
 
 class TextTestMixin(object):

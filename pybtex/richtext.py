@@ -57,16 +57,15 @@ one~two~\emph{three}
 >>> print(unicode(t))
 one<nbsp>two<nbsp>three
 """
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
-
-from __future__ import absolute_import
-import warnings
 import itertools
+import warnings
 from abc import ABCMeta, abstractmethod
-from pybtex import textutils
-from pybtex.utils import deprecated, collect_iterable
+
 import six
+from pybtex import textutils
+from pybtex.utils import collect_iterable, deprecated
 
 
 # workaround for doctests in Python 2/3
@@ -1014,4 +1013,3 @@ class Symbol(BaseText):
 
 
 nbsp = Symbol('nbsp')
-

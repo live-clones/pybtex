@@ -1,5 +1,3 @@
-from __future__ import print_function
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,12 +19,12 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 from contextlib import contextmanager
 
 import pybtex.io
 import six
-
 
 strict = True
 error_code = 0

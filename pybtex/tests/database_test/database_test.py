@@ -1,4 +1,18 @@
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
+import pickle
+from abc import ABCMeta, abstractmethod
+from copy import deepcopy
+from io import BytesIO, TextIOWrapper
+
+import six
+from nose.tools import assert_equal, assert_is_instance, assert_true
+from pybtex.database import parse_bytes, parse_string
+from pybtex.plugin import find_plugin
+
+from .data import reference_data
+
+
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,19 +34,9 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import
-from abc import ABCMeta, abstractmethod
-from copy import deepcopy
-from io import BytesIO, TextIOWrapper
-import pickle
 
-from nose.tools import assert_true, assert_equal, assert_is_instance
 
-from pybtex.plugin import find_plugin
-from pybtex.database import parse_string, parse_bytes
 
-from .data import reference_data
-import six
 
 
 class DatabaseIO(object):

@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
+
 import pkgutil
 from itertools import izip_longest
 
 from pybtex.bibtex import bst
-
 
 test_data = (
     'plain',

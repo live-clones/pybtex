@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,14 +19,14 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
+
 from collections import OrderedDict
 
-import yaml
-
-from pybtex.database.input import BaseParser
-from pybtex.database import Entry, Person
 import six
+import yaml
+from pybtex.database import Entry, Person
+from pybtex.database.input import BaseParser
 
 
 class OrderedDictSafeLoader(yaml.SafeLoader):

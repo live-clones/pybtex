@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,14 +19,14 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
+
 import re
 
-from pybtex.utils import pairwise
+import six
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.py3compat import fix_unicode_literals_in_doctest
-import six
-
+from pybtex.utils import pairwise
 
 whitespace_re = re.compile(r'(\s)')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
@@ -561,4 +560,3 @@ def bibtex_abbreviate(string, delimiter=None, separator='-'):
     if delimiter is None:
         delimiter = '.-'
     return delimiter.join(_bibtex_abbreviate())
-

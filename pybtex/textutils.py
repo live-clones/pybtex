@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,11 +19,12 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 import re
 
-from pybtex.utils import deprecated
 from pybtex.py3compat import fix_unicode_literals_in_doctest
-
+from pybtex.utils import deprecated
 
 terminators = '.', '?', '!'
 delimiter_re = re.compile(r'([\s\-])')
@@ -169,4 +169,3 @@ def tie_or_space(word, tie='~', space=' ', enough_chars=3, other_word=None):
         return tie
     else:
         return space
-

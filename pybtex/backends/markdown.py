@@ -39,11 +39,9 @@ Markdown output backend.
 """
 from __future__ import unicode_literals
 
-
 from xml.sax.saxutils import escape
 
 from pybtex.backends import BaseBackend
-
 
 SPECIAL_CHARS = [
     u'\\',  # backslash
@@ -123,4 +121,3 @@ class Backend(BaseBackend):
         else:
             self.output(u'[%s] ' % label)
             self.output(u'%s  \n' % text)
-

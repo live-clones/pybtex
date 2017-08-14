@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,8 +20,8 @@ from __future__ import unicode_literals
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import unicode_literals
-import io
 
+import io
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesImpl
 
@@ -134,4 +133,3 @@ class Writer(BaseWriter):
             writer.newline()
         writer.end()
         writer.close()
-

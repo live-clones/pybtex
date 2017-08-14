@@ -25,12 +25,16 @@ from __future__ import absolute_import
 import re
 from string import ascii_letters, digits
 
-from pygments.style import Style
-from pygments.lexer import RegexLexer, ExtendedRegexLexer, include, default, words
-from pygments.token import Keyword, Name, Comment, String, Error, \
-     Number, Operator, Generic, Literal, Punctuation, Text
-
 from pybtex.database.input.bibtex import NAME_CHARS
+
+from pygments.lexer import (
+    ExtendedRegexLexer, RegexLexer, default, include, words
+)
+from pygments.style import Style
+from pygments.token import (
+    Comment, Error, Generic, Keyword, Literal, Name, Number, Operator,
+    Punctuation, String, Text
+)
 
 from . import add_entry_point
 

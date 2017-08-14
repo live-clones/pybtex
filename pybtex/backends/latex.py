@@ -38,11 +38,9 @@ LaTeX output backend.
 """
 from __future__ import unicode_literals
 
-
 import codecs
 
 import latexcodec  # noqa
-
 from pybtex.backends import BaseBackend
 
 
@@ -105,4 +103,3 @@ class Backend(BaseBackend):
     def write_entry(self, key, label, text):
         self.output(u'\n\n\\bibitem[%s]{%s}\n' % (label, key))
         self.output(text)
-

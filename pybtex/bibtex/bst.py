@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,10 +19,18 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 import re
-from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
-        Identifier, FunctionLiteral)
+
 import pybtex.io
+from pybtex.bibtex.interpreter import (
+    FunctionLiteral, Identifier, Integer, QuotedVar, String
+)
+from pybtex.scanner import (
+    Literal, Pattern, PybtexSyntaxError, Scanner, TokenRequired
+)
+
 
 #ParserElement.enablePackrat()
 
@@ -80,10 +87,6 @@ def strip_comment(line):
     return line
 
 
-from pybtex.scanner import (
-    Scanner, Pattern, Literal,
-    TokenRequired, PybtexSyntaxError,
-)
 
 
 class BstParser(Scanner):
@@ -165,4 +168,3 @@ if __name__ == '__main__':
     import sys
     from pprint import pprint
     pprint(parse_file(sys.argv[1]))
-

@@ -1,9 +1,7 @@
 from __future__ import unicode_literals
+
 from pybtex import errors
-from pybtex.database import Person
-
-from pybtex.database import InvalidNameString
-
+from pybtex.database import InvalidNameString, Person
 
 # name, (bibtex_first, prelast, last, lineage
 # as parsed by the bibtex program itself

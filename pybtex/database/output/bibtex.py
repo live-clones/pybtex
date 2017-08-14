@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import unicode_literals
+
 import codecs
 
 from pybtex.bibtex.exceptions import BibTeXError
@@ -167,4 +168,3 @@ class Writer(BaseWriter):
             for type, value in entry.fields.items():
                 self._write_field(stream, type, value)
             stream.write(u'\n}\n')
-

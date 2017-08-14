@@ -70,18 +70,17 @@ http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 """
 from __future__ import unicode_literals
 
+import re
 from string import ascii_letters, digits
 
-import re
-from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
+from pybtex import textutils
+from pybtex.bibtex.utils import split_name_list
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
-from pybtex.bibtex.utils import split_name_list
-from pybtex import textutils
 from pybtex.scanner import (
-    Scanner, Pattern, Literal,
-    PrematureEOF, PybtexSyntaxError,
+    Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
 )
+from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
 
 month_names = {
     'jan': 'January',
@@ -395,4 +394,3 @@ class Parser(BaseParser):
     def parse_stream(self, stream):
         text = stream.read()
         return self.parse_string(text)
-

@@ -23,8 +23,9 @@
 
 
 from __future__ import unicode_literals
-from pybtex.style.template import join
+
 from pybtex.style.names import BaseNameStyle, name_part
+from pybtex.style.template import join
 
 
 class NameStyle(BaseNameStyle):
@@ -60,5 +61,3 @@ class NameStyle(BaseNameStyle):
             name_part(before=', ') [person.rich_lineage_names],
             name_part(before=', ', abbr=abbr) [person.rich_first_names + person.rich_middle_names],
         ]
-
-
