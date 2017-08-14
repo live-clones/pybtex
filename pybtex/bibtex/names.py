@@ -41,6 +41,7 @@ P.-B.
 >>> print format_name(name, '{v{}}{l{}}')
 PB
 """
+from __future__ import unicode_literals
 
 import re
 

@@ -36,6 +36,7 @@ HTML output backend.
 >>> print HRef('/', 'Hard & heavy').render(html)
 <a href="/">Hard &amp; heavy</a>
 """
+from __future__ import unicode_literals
 
 
 from xml.sax.saxutils import escape

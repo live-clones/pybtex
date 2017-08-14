@@ -26,6 +26,7 @@
 Make a table of character widths to use with bibtex width$ function.
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 
 
 def make_table(font_filename, output):

@@ -21,6 +21,7 @@
 
 """convert bibliography database from one format to another
 """
+from __future__ import unicode_literals
 from pybtex.exceptions import PybtexError
 from pybtex import database
 

@@ -41,9 +41,11 @@ The Book, 2000.
 >>> print unicode(words ['one', 'two', words ['three', 'four']].format_data(e))
 one two three four
 """
+from __future__ import unicode_literals
 
 from pybtex import richtext
 from pybtex.exceptions import PybtexError
+from pybtex.py3compat import fix_unicode_literals_in_doctest
 
 __test__ = {}  # for doctest
 
@@ -77,22 +79,23 @@ class Node(object):
             result.children.append(children)
         return result
 
+    @fix_unicode_literals_in_doctest
     def __repr__(self):
         """
         >>> join(', ')
-        join(', ')
+        join(u', ')
         >>> join
         join
         >>> join ['a']
-        join ['a']
+        join [u'a']
         >>> join ['a', 'b', 'c']
-        join ['a', 'b', 'c']
-        >>> join(' ') ['a', 'b', 'c']
-        join(' ') ['a', 'b', 'c']
-        >>> join(sep=' ') ['a', 'b', 'c']
-        join(sep=' ') ['a', 'b', 'c']
-        >>> join(sep=' ') [tag('em') ['a', 'b', 'c']]
-        join(sep=' ') [tag('em') ['a', 'b', 'c']]
+        join [u'a', u'b', u'c']
+        >>> join(' ') [u'a', u'b', u'c']
+        join(u' ') [u'a', u'b', u'c']
+        >>> join(sep=' ') [u'a', u'b', u'c']
+        join(sep=u' ') [u'a', u'b', u'c']
+        >>> join(sep=u' ') [tag('em') [u'a', u'b', u'c']]
+        join(sep=u' ') [tag(u'em') [u'a', u'b', u'c']]
 
         """
         params = []

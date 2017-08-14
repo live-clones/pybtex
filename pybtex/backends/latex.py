@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-r"""
+"""
 LaTeX output backend.
 
 >>> from pybtex.richtext import Tag, HRef
@@ -28,14 +28,15 @@ LaTeX output backend.
 >>> print Tag('em', '').render(latex)
 <BLANKLINE>
 >>> print Tag('em', 'Non-', 'empty').render(latex)
-\emph{Non-empty}
+\\emph{Non-empty}
 >>> print HRef('/', '').render(latex)
 <BLANKLINE>
 >>> print HRef('/', 'Non-', 'empty').render(latex)
-\href{/}{Non-empty}
+\\href{/}{Non-empty}
 >>> print HRef('http://example.org/', 'http://example.org/').render(latex)
-\url{http://example.org/}
+\\url{http://example.org/}
 """
+from __future__ import unicode_literals
 
 
 import codecs

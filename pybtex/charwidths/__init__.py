@@ -7,6 +7,7 @@
 # Font style: Roman
 # Font version: Version 0.7.0 
 
+from __future__ import unicode_literals
 charwidths = {u' ': 278,
  u'!': 278,
  u'"': 500,

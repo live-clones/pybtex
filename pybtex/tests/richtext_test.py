@@ -1,5 +1,6 @@
 #! vim:fileencoding=utf-8
 
+from __future__ import unicode_literals
 import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase

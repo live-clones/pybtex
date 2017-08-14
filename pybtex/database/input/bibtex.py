@@ -68,6 +68,7 @@ http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 
 """
+from __future__ import unicode_literals
 
 from string import ascii_letters, digits
 

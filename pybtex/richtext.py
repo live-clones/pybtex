@@ -57,6 +57,7 @@ one~two~\emph{three}
 >>> print unicode(t)
 one<nbsp>two<nbsp>three
 """
+from __future__ import unicode_literals
 
 
 import warnings
@@ -861,7 +862,7 @@ class Tag(BaseMultipartText):
 
 
 class HRef(BaseMultipartText):
-    r"""
+    """
     A :py:class:`HRef` represends a hyperlink:
 
     >>> from pybtex.richtext import Tag
@@ -869,11 +870,11 @@ class HRef(BaseMultipartText):
     >>> print href.render_as('html')
     <a href="http://ctan.org/">CTAN</a>
     >>> print href.render_as('latex')
-    \href{http://ctan.org/}{CTAN}
+    \\href{http://ctan.org/}{CTAN}
 
     >>> href = HRef(String('http://ctan.org/'), String('http://ctan.org/'))
     >>> print href.render_as('latex')
-    \url{http://ctan.org/}
+    \\url{http://ctan.org/}
 
     :py:class:`HRef` supports the same methods as :py:class:`Text`.
 

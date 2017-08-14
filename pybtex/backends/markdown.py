@@ -37,6 +37,7 @@ Markdown output backend.
 >>> print HRef('/', 'Non-', 'empty').render(markdown)
 [Non\-empty](/)
 """
+from __future__ import unicode_literals
 
 
 from xml.sax.saxutils import escape

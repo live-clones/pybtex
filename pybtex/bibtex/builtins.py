@@ -24,6 +24,7 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 
 from functools import update_wrapper
 

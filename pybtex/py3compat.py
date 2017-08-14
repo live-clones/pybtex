@@ -1,5 +1,4 @@
-from __future__ import unicode_literals
-# Copyright (c) 2006-2017  Andrey Golovigin
+# Copyright (c) 2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,9 +19,17 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.style.formatting.unsrt import Style as UnsrtStyle
+
+import sys
 
 
-class Style(UnsrtStyle):
-    default_sorting_style = 'author_year_title'
-    default_label_style = 'alpha'
+PY3 = sys.version_info[0] >= 3
+
+
+if PY3:
+    def fix_unicode_literals_in_doctest(obj):
+        obj.__doc__ = obj.__doc__.replace("u'", "'")
+        return obj
+else:
+    def fix_unicode_literals_in_doctest(obj):
+        return obj

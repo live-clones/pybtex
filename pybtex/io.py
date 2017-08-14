@@ -23,6 +23,7 @@
 """Unicode-aware IO routines."""
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import io
 import sys

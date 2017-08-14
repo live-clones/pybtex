@@ -20,6 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import with_statement
+from __future__ import unicode_literals
 
 import io
 

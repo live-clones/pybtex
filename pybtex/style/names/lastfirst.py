@@ -22,6 +22,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+from __future__ import unicode_literals
 from pybtex.style.template import join
 from pybtex.style.names import BaseNameStyle, name_part
 

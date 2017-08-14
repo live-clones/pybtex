@@ -21,12 +21,14 @@
 
 
 """Miscellaneous small utils."""
+from __future__ import unicode_literals
 
 import itertools
 from functools import wraps
 from collections import deque, Sequence, MutableMapping, MutableSet
 from collections import OrderedDict
 from types import GeneratorType
+from .py3compat import fix_unicode_literals_in_doctest
 
 
 def deprecated(since, reason=None):
@@ -71,14 +73,15 @@ def pairwise(iterable):
     return itertools.izip_longest(a, b)
 
 
+@fix_unicode_literals_in_doctest
 class CaseInsensitiveDict(MutableMapping):
     """A dict with case-insensitive lookup.
 
     >>> d = CaseInsensitiveDict(TesT='passed')
     >>> d
-    CaseInsensitiveDict({'TesT': 'passed'})
+    CaseInsensitiveDict({'TesT': u'passed'})
     >>> d.lower()
-    CaseInsensitiveDict({'test': 'passed'})
+    CaseInsensitiveDict({'test': u'passed'})
     >>> print d['TesT']
     passed
     >>> print d['test']
@@ -98,7 +101,7 @@ class CaseInsensitiveDict(MutableMapping):
     >>> 'Test' in d
     True
     >>> print d.keys()
-    ['Test']
+    [u'Test']
     >>> for key in d:
     ...     print key
     Test
@@ -129,7 +132,7 @@ class CaseInsensitiveDict(MutableMapping):
     >>> CaseInsensitiveDict(
     ...     (key, value) for key, value in [('a', 'b')]
     ... )
-    CaseInsensitiveDict({'a': 'b'})
+    CaseInsensitiveDict({u'a': u'b'})
 
     """
 
@@ -205,6 +208,7 @@ class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
             return self.default_factory()
 
 
+@fix_unicode_literals_in_doctest
 class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     """ An (incomplete) ordered case-insensitive dict.
 
@@ -214,24 +218,24 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     ...     ('Tres', 3),
     ... ])
     >>> d
-    OrderedCaseInsensitiveDict([('Uno', 1), ('Dos', 2), ('Tres', 3)])
+    OrderedCaseInsensitiveDict([(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)])
     >>> d.lower()
-    OrderedCaseInsensitiveDict([('uno', 1), ('dos', 2), ('tres', 3)])
+    OrderedCaseInsensitiveDict([(u'uno', 1), (u'dos', 2), (u'tres', 3)])
     >>> d.keys()
-    ['Uno', 'Dos', 'Tres']
+    [u'Uno', u'Dos', u'Tres']
     >>> d.items()
-    [('Uno', 1), ('Dos', 2), ('Tres', 3)]
+    [(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)]
     >>> d.values()
     [1, 2, 3]
     >>> d['Cuatro'] = 4
     >>> d.keys()
-    ['Uno', 'Dos', 'Tres', 'Cuatro']
+    [u'Uno', u'Dos', u'Tres', u'Cuatro']
     >>> d.items()
-    [('Uno', 1), ('Dos', 2), ('Tres', 3), ('Cuatro', 4)]
+    [(u'Uno', 1), (u'Dos', 2), (u'Tres', 3), (u'Cuatro', 4)]
     >>> d.values()
     [1, 2, 3, 4]
     >>> list(d)
-    ['Uno', 'Dos', 'Tres', 'Cuatro']
+    [u'Uno', u'Dos', u'Tres', u'Cuatro']
     >>> list(d.iterkeys()) == d.keys()
     True
     >>> list(d.itervalues()) == d.values()
@@ -258,18 +262,18 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     4
     >>> d['UNO'] = 'one'
     >>> d['uno']
-    'one'
+    u'one'
     >>> d['Uno']
-    'one'
+    u'one'
     >>> d.keys()
-    ['Uno', 'Dos', 'Tres', 'Cuatro']
+    [u'Uno', u'Dos', u'Tres', u'Cuatro']
     >>> d['cuatro'] = 'four'
     >>> d['Cuatro']
-    'four'
+    u'four'
     >>> d['cuatro']
-    'four'
+    u'four'
     >>> d.keys()
-    ['Uno', 'Dos', 'Tres', 'Cuatro']
+    [u'Uno', u'Dos', u'Tres', u'Cuatro']
 
     """
 
@@ -335,6 +339,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
         )
 
 
+@fix_unicode_literals_in_doctest
 class CaseInsensitiveSet(MutableSet):
     """A very basic case-insensitive set.
 
@@ -344,12 +349,12 @@ class CaseInsensitiveSet(MutableSet):
     >>> 'a' in s
     False
     >>> list(CaseInsensitiveSet(['aaa', 'Aaa', 'AAA']))
-    ['aaa']
+    [u'aaa']
     >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
     >>> s
-    CaseInsensitiveSet(['Aaa', 'Bbb'])
+    CaseInsensitiveSet([u'Aaa', u'Bbb'])
     >>> s.lower()
-    CaseInsensitiveSet(['aaa', 'bbb'])
+    CaseInsensitiveSet([u'aaa', u'bbb'])
     >>> len(s)
     2
     >>> 'aaa' in s

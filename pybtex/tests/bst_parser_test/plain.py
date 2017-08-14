@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from pybtex.bibtex.interpreter import (
     Integer, String, QuotedVar, Identifier, FunctionLiteral,
 )

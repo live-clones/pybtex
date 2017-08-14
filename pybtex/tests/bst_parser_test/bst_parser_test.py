@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import pkgutil
 from itertools import izip_longest
 

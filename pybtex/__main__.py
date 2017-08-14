@@ -21,6 +21,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
 from os import path
 
 from pybtex.cmdline import CommandLine, make_option, standard_option

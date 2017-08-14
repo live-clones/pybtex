@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -23,10 +24,12 @@ import re
 
 from pybtex.utils import pairwise
 from pybtex.bibtex.exceptions import BibTeXError
+from pybtex.py3compat import fix_unicode_literals_in_doctest
 
 
 whitespace_re = re.compile(r'(\s)')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
+
 
 def wrap(string, width=79, subsequent_indent='  '):
     """
@@ -416,30 +419,32 @@ def scan_bibtex_string(string):
     )
 
 
+@fix_unicode_literals_in_doctest
 def split_name_list(string):
     """
     Split a list of names, separated by ' and '.
 
     >>> split_name_list('Johnson and Peterson')
-    ['Johnson', 'Peterson']
+    [u'Johnson', u'Peterson']
     >>> split_name_list('Johnson AND Peterson')
-    ['Johnson', 'Peterson']
+    [u'Johnson', u'Peterson']
     >>> split_name_list('Johnson AnD Peterson')
-    ['Johnson', 'Peterson']
+    [u'Johnson', u'Peterson']
     >>> split_name_list('Armand and Peterson')
-    ['Armand', 'Peterson']
+    [u'Armand', u'Peterson']
     >>> split_name_list('Armand and anderssen')
-    ['Armand', 'anderssen']
+    [u'Armand', u'anderssen']
     >>> split_name_list('{Armand and Anderssen}')
-    ['{Armand and Anderssen}']
+    [u'{Armand and Anderssen}']
     >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
-    ['What a Strange{ }and Bizzare Name!', 'Peterson']
+    [u'What a Strange{ }and Bizzare Name!', u'Peterson']
     >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
-    ['What a Strange and{ }Bizzare Name!', 'Peterson']
+    [u'What a Strange and{ }Bizzare Name!', u'Peterson']
     """
     return split_tex_string(string, ' [Aa][Nn][Dd] ')
 
 
+@fix_unicode_literals_in_doctest
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     r"""Split a string using the given separator (regexp).
 
@@ -451,23 +456,23 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     >>> split_tex_string('     ')
     []
     >>> split_tex_string('   ', ' ', strip=False, filter_empty=False)
-    [' ', ' ']
+    [u' ', u' ']
     >>> split_tex_string('.a.b.c.', r'\.')
-    ['.a', 'b', 'c.']
+    [u'.a', u'b', u'c.']
     >>> split_tex_string('.a.b.c.{d.}.', r'\.')
-    ['.a', 'b', 'c', '{d.}.']
+    [u'.a', u'b', u'c', u'{d.}.']
     >>> split_tex_string('Matsui      Fuuka')
-    ['Matsui', 'Fuuka']
+    [u'Matsui', u'Fuuka']
     >>> split_tex_string('{Matsui      Fuuka}')
-    ['{Matsui      Fuuka}']
+    [u'{Matsui      Fuuka}']
     >>> split_tex_string(r'Matsui\ Fuuka')
-    ['Matsui', 'Fuuka']
+    [u'Matsui', u'Fuuka']
     >>> split_tex_string('{Matsui\ Fuuka}')
-    ['{Matsui\\ Fuuka}']
+    [u'{Matsui\\ Fuuka}']
     >>> split_tex_string('a')
-    ['a']
+    [u'a']
     >>> split_tex_string('on a')
-    ['on', 'a']
+    [u'on', u'a']
     """
 
     if sep is None:

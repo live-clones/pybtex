@@ -22,6 +22,7 @@
 """
 Format bibliography database as human-readable text.
 """
+from __future__ import unicode_literals
 
 from pybtex.plugin import find_plugin
 from pybtex import database

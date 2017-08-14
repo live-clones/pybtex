@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from pybtex import errors
 from pybtex.database import Person
 
