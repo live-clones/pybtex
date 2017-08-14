@@ -45,7 +45,7 @@ def process_function(toks):
     return FunctionLiteral(toks[0])
 
 
-quote_or_comment = re.compile(ur'[%"]')
+quote_or_comment = re.compile(r'[%"]')
 def strip_comment(line):
     """Strip the commented part of the line."
 
@@ -87,11 +87,11 @@ from pybtex.scanner import (
 
 
 class BstParser(Scanner):
-    LBRACE = Literal(u'{')
-    RBRACE = Literal(u'}')
-    STRING = Pattern(ur'"[^\"]*"', 'string')
-    INTEGER = Pattern(ur'#-?\d+', 'integer')
-    NAME = Pattern(ur'[^#\"\{\}\s]+', 'name')
+    LBRACE = Literal('{')
+    RBRACE = Literal('}')
+    STRING = Pattern('"[^\"]*"', 'string')
+    INTEGER = Pattern(r'#-?\d+', 'integer')
+    NAME = Pattern(r'[^#\"\{\}\s]+', 'name')
 
     COMMANDS = {
         'ENTRY': 3,

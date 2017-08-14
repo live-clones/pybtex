@@ -73,7 +73,7 @@ class Backend(BaseBackend):
         if tag is None:
             return u'{%s}' % text if text else u''
         else:
-            return ur'\%s{%s}' % (tag, text) if text else u''
+            return r'\%s{%s}' % (tag, text) if text else u''
 
     def format_href(self, url, text):
         if not text:
@@ -81,7 +81,7 @@ class Backend(BaseBackend):
         elif text == self.format_str(url):
             return u'\\url{%s}' % url
         else:
-            return ur'\href{%s}{%s}' % (url, text) if text else u''
+            return r'\href{%s}{%s}' % (url, text) if text else u''
 
     def format_protected(self, text):
         """

@@ -111,10 +111,10 @@ class UndefinedMacro(PybtexSyntaxError):
 
 
 class LowLevelParser(Scanner):
-    NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
-    KEY_PAREN = Pattern(ur'[^\s\,]+', 'entry key')
-    KEY_BRACE = Pattern(ur'[^\s\,}]+', 'entry key')
-    NUMBER = Pattern(ur'[{0}]+'.format(digits), 'a number')
+    NAME = Pattern(r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
+    KEY_PAREN = Pattern(r'[^\s\,]+', 'entry key')
+    KEY_BRACE = Pattern(r'[^\s\,}]+', 'entry key')
+    NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
     LBRACE = Literal(u'{')
     RBRACE = Literal(u'}')
     LPAREN = Literal(u'(')

@@ -73,13 +73,13 @@ class Backend(BaseBackend):
         return escape(text)
 
     def format_protected(self, text):
-        return ur'<span class="bibtex-protected">{}</span>'.format(text)
+        return r'<span class="bibtex-protected">{}</span>'.format(text)
 
     def format_tag(self, tag, text):
-        return ur'<{0}>{1}</{0}>'.format(tag, text) if text else u''
+        return r'<{0}>{1}</{0}>'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'<a href="{0}">{1}</a>'.format(url, text) if text else u''
+        return r'<a href="{0}">{1}</a>'.format(url, text) if text else u''
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()

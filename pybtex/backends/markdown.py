@@ -110,10 +110,10 @@ class Backend(BaseBackend):
         if tag is None:
             return text
         else:
-            return ur'{0}{1}{0}'.format(tag, text) if text else u''
+            return r'{0}{1}{0}'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'[%s](%s)' % (text, url) if text else u''
+        return r'[%s](%s)' % (text, url) if text else u''
 
     def write_entry(self, key, label, text):
         # Support http://www.michelf.com/projects/php-markdown/extra/#def-list

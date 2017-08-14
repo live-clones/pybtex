@@ -287,9 +287,9 @@ class UnbalancedBraceError(PybtexSyntaxError):
 class NameFormatParser(Scanner):
     LBRACE = Literal(u'{')
     RBRACE = Literal(u'}')
-    TEXT = Pattern(ur'[^{}]+', 'text')
-    NON_LETTERS = Pattern(ur'[^{}\w]|\d+', 'non-letter characters', flags=re.IGNORECASE | re.UNICODE)
-    FORMAT_CHARS = Pattern(ur'[^\W\d_]+', 'format chars', flags=re.IGNORECASE | re.UNICODE)
+    TEXT = Pattern(r'[^{}]+', 'text')
+    NON_LETTERS = Pattern(r'[^{}\w]|\d+', 'non-letter characters', flags=re.IGNORECASE | re.UNICODE)
+    FORMAT_CHARS = Pattern(r'[^\W\d_]+', 'format chars', flags=re.IGNORECASE | re.UNICODE)
 
     lineno = None
 
