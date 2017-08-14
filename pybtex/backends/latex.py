@@ -25,15 +25,15 @@ LaTeX output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> latex = Backend()
->>> print Tag('em', '').render(latex)
+>>> print(Tag('em', '').render(latex))
 <BLANKLINE>
->>> print Tag('em', 'Non-', 'empty').render(latex)
+>>> print(Tag('em', 'Non-', 'empty').render(latex))
 \\emph{Non-empty}
->>> print HRef('/', '').render(latex)
+>>> print(HRef('/', '').render(latex))
 <BLANKLINE>
->>> print HRef('/', 'Non-', 'empty').render(latex)
+>>> print(HRef('/', 'Non-', 'empty').render(latex))
 \\href{/}{Non-empty}
->>> print HRef('http://example.org/', 'http://example.org/').render(latex)
+>>> print(HRef('http://example.org/', 'http://example.org/').render(latex))
 \\url{http://example.org/}
 """
 from __future__ import unicode_literals
@@ -86,7 +86,7 @@ class Backend(BaseBackend):
     def format_protected(self, text):
         """
         >>> from pybtex.richtext import Protected
-        >>> print Protected('CTAN').render_as('latex')
+        >>> print(Protected('CTAN').render_as('latex'))
         {CTAN}
         """
 
@@ -105,3 +105,4 @@ class Backend(BaseBackend):
     def write_entry(self, key, label, text):
         self.output(u'\n\n\\bibitem[%s]{%s}\n' % (label, key))
         self.output(text)
+

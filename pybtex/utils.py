@@ -21,7 +21,7 @@
 
 
 """Miscellaneous small utils."""
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 import itertools
 from functools import wraps
@@ -82,31 +82,31 @@ class CaseInsensitiveDict(MutableMapping):
     CaseInsensitiveDict({'TesT': u'passed'})
     >>> d.lower()
     CaseInsensitiveDict({'test': u'passed'})
-    >>> print d['TesT']
+    >>> print(d['TesT'])
     passed
-    >>> print d['test']
+    >>> print(d['test'])
     passed
-    >>> print d['Test']
+    >>> print(d['Test'])
     passed
-    >>> print d.get('test')
+    >>> print(d.get('test'))
     passed
-    >>> print d.get('Test')
+    >>> print(d.get('Test'))
     passed
 
     >>> d['Test'] = 'passed again'
-    >>> print d['test']
+    >>> print(d['test'])
     passed again
     >>> 'test' in d
     True
     >>> 'Test' in d
     True
-    >>> print d.keys()
+    >>> print(d.keys())
     [u'Test']
     >>> for key in d:
-    ...     print key
+    ...     print(key)
     Test
     >>> for key, value in d.items():
-    ...     print key, value
+    ...     print(key, value)
     Test passed again
     >>> bool(d)
     True
@@ -122,11 +122,11 @@ class CaseInsensitiveDict(MutableMapping):
     False
     >>> 'Test' in d
     False
-    >>> print d.get('test')
+    >>> print(d.get('test'))
     None
-    >>> print d.get('Test')
+    >>> print(d.get('Test'))
     None
-    >>> print d.get('Test', 'failed')
+    >>> print(d.get('Test', 'failed'))
     failed
 
     >>> CaseInsensitiveDict(
@@ -427,3 +427,4 @@ class CaseInsensitiveSet(MutableSet):
 
     def lower(self):
         return type(self)(self._set)
+

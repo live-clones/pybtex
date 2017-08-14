@@ -47,7 +47,7 @@ def _strip_accents(s):
 def _strip_nonalnum(parts):
     """Strip all non-alphanumerical characters from a list of strings.
 
-    >>> print _strip_nonalnum([u"ÅA. B. Testing 12+}[.@~_", u" 3%"])
+    >>> print(_strip_nonalnum([u"ÅA. B. Testing 12+}[.@~_", u" 3%"]))
     AABTesting123
     """
     s = u''.join(parts)
@@ -177,3 +177,4 @@ class LabelStyle(BaseLabelStyle):
             if len(result) < 2:
                 result = _strip_nonalnum(person.last_names)[:3]
         return result
+

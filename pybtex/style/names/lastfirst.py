@@ -37,20 +37,20 @@ class NameStyle(BaseNameStyle):
         >>> name = Person(string=r"Charles Louis Xavier Joseph de la Vall{\'e}e Poussin")
         >>> lastfirst = NameStyle().format
 
-        >>> print lastfirst(name).format().render_as('latex')
+        >>> print(lastfirst(name).format().render_as('latex'))
         de~la Vall{é}e~Poussin, Charles Louis Xavier~Joseph
-        >>> print lastfirst(name).format().render_as('html')
+        >>> print(lastfirst(name).format().render_as('html'))
         de&nbsp;la Vall<span class="bibtex-protected">é</span>e&nbsp;Poussin, Charles Louis Xavier&nbsp;Joseph
 
-        >>> print lastfirst(name, abbr=True).format().render_as('latex')
+        >>> print(lastfirst(name, abbr=True).format().render_as('latex'))
         de~la Vall{é}e~Poussin, C.~L. X.~J.
-        >>> print lastfirst(name, abbr=True).format().render_as('html')
+        >>> print(lastfirst(name, abbr=True).format().render_as('html'))
         de&nbsp;la Vall<span class="bibtex-protected">é</span>e&nbsp;Poussin, C.&nbsp;L. X.&nbsp;J.
 
         >>> name = Person(first='First', last='Last', middle='Middle')
-        >>> print lastfirst(name).format().render_as('latex')
+        >>> print(lastfirst(name).format().render_as('latex'))
         Last, First~Middle
-        >>> print lastfirst(name, abbr=True).format().render_as('latex')
+        >>> print(lastfirst(name, abbr=True).format().render_as('latex'))
         Last, F.~M.
 
         """
@@ -60,4 +60,5 @@ class NameStyle(BaseNameStyle):
             name_part(before=', ') [person.rich_lineage_names],
             name_part(before=', ', abbr=abbr) [person.rich_first_names + person.rich_middle_names],
         ]
+
 

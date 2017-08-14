@@ -54,7 +54,7 @@ True
 >>> rief97b = bib_data.entries['rief97b']
 >>> authors = rief97b.persons['author']
 >>> for author in authors:
-...     print unicode(author)
+...     print(unicode(author))
 Rief, Matthias
 Gautel, Mathias
 Oesterhelt, Filipp
@@ -62,9 +62,9 @@ Fernandez, Julio M.
 Gaub, Hermann E.
 
 # field names are case-insensitive
->>> print rief97b.fields['URL']
+>>> print(rief97b.fields['URL'])
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
->>> print rief97b.fields['url']
+>>> print(rief97b.fields['url'])
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 
 """
@@ -395,3 +395,4 @@ class Parser(BaseParser):
     def parse_stream(self, stream):
         text = stream.read()
         return self.parse_string(text)
+

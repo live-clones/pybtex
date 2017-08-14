@@ -36,9 +36,9 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 >>> book_format = sentence(capfirst=True, sep=', ') [
 ...     field('title'), field('year'), optional [field('sdf')]
 ... ]
->>> print unicode(book_format.format_data({'entry': e}))
+>>> print(unicode(book_format.format_data({'entry': e})))
 The Book, 2000.
->>> print unicode(words ['one', 'two', words ['three', 'four']].format_data(e))
+>>> print(unicode(words ['one', 'two', words ['three', 'four']].format_data(e)))
 one two three four
 """
 from __future__ import unicode_literals
@@ -156,13 +156,13 @@ def node(f):
 @node
 def join(children, data, sep='', sep2=None, last_sep=None):
     """Join text fragments together.
-    >>> print unicode(join.format())
+    >>> print(unicode(join.format()))
     <BLANKLINE>
-    >>> print unicode(join ['a', 'b', 'c', 'd', 'e'].format())
+    >>> print(unicode(join ['a', 'b', 'c', 'd', 'e'].format()))
     abcde
-    >>> print unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format())
+    >>> print(unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format()))
     Tom and Jerry
-    >>> print unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format())
+    >>> print(unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format()))
     Billy, Willy, and Dilly
     """
 
@@ -191,15 +191,15 @@ def together(children, data, last_tie=False):
     """
     Try to keep words together, like BibTeX does.
 
-    >>> print unicode(together ['very', 'long', 'road'].format())
+    >>> print(unicode(together ['very', 'long', 'road'].format()))
     very long road
-    >>> print unicode(together(last_tie=True) ['very', 'long', 'road'].format())
+    >>> print(unicode(together(last_tie=True) ['very', 'long', 'road'].format()))
     very long<nbsp>road
-    >>> print unicode(together ['a', 'very', 'long', 'road'].format())
+    >>> print(unicode(together ['a', 'very', 'long', 'road'].format()))
     a<nbsp>very long road
-    >>> print unicode(together ['chapter', '8'].format())
+    >>> print(unicode(together ['chapter', '8'].format()))
     chapter<nbsp>8
-    >>> print unicode(together ['chapter', '666'].format())
+    >>> print(unicode(together ['chapter', '666'].format()))
     chapter 666
     """
     from pybtex.textutils import tie_or_space
@@ -223,11 +223,11 @@ def together(children, data, last_tie=False):
 def sentence(children, data, capfirst=False, capitalize=False, add_period=True, sep=', '):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
-    >>> print unicode(sentence.format())
+    >>> print(unicode(sentence.format()))
     <BLANKLINE>
-    >>> print unicode(sentence(capitalize=True, sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format())
+    >>> print(unicode(sentence(capitalize=True, sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format()))
     Mary had a little lamb.
-    >>> print unicode(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format())
+    >>> print(unicode(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format()))
     uno, dos, tres
     """
 
@@ -308,11 +308,11 @@ def optional_field(children, data, *args, **kwargs):
 def tag(children, data, name):
     """Wrap text into a tag.
 
-    >>> print tag('em') ['important'].format().render_as('html')
+    >>> print(tag('em') ['important'].format().render_as('html'))
     <em>important</em>
-    >>> print sentence ['ready', 'set', tag('em') ['go']].format().render_as('html')
+    >>> print(sentence ['ready', 'set', tag('em') ['go']].format().render_as('html'))
     ready, set, <em>go</em>.
-    >>> print sentence(capitalize=True) ['ready', 'set', tag('em') ['go']].format().render_as('html')
+    >>> print(sentence(capitalize=True) ['ready', 'set', tag('em') ['go']].format().render_as('html'))
     Ready, set, <em>go</em>.
     """
 
@@ -324,9 +324,9 @@ def tag(children, data, name):
 def href(children, data):
     """Wrap text into a href.
 
-    >>> print href ['www.test.org', 'important'].format().render_as('html')
+    >>> print(href ['www.test.org', 'important'].format().render_as('html'))
     <a href="www.test.org">important</a>
-    >>> print sentence ['ready', 'set', href ['www.test.org', 'go']].format().render_as('html')
+    >>> print(sentence ['ready', 'set', href ['www.test.org', 'go']].format().render_as('html'))
     ready, set, <a href="www.test.org">go</a>.
     """
     parts = _format_list(children, data)
@@ -341,3 +341,4 @@ def first_of(children, data):
         if child:
             return child
     return richtext.Text()
+

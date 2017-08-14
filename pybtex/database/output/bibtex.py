@@ -37,16 +37,16 @@ class Writer(BaseWriter):
     def quote(self, s):
         """
         >>> w = Writer()
-        >>> print w.quote('The World')
+        >>> print(w.quote('The World'))
         "The World"
-        >>> print w.quote(r'The \emph{World}')
+        >>> print(w.quote(r'The \emph{World}'))
         "The \emph{World}"
-        >>> print w.quote(r'The "World"')
+        >>> print(w.quote(r'The "World"'))
         {The "World"}
         >>> try:
-        ...     print w.quote(r'The {World')
+        ...     print(w.quote(r'The {World'))
         ... except BibTeXError, error:
-        ...     print error
+        ...     print(error)
         String has unmatched braces: The {World
         """
 
@@ -69,13 +69,13 @@ class Writer(BaseWriter):
         >>> try:
         ...     w.check_braces('{')
         ... except BibTeXError, error:
-        ...     print error
+        ...     print(error)
         String has unmatched braces: {
         >>> w.check_braces('{test}}')
         >>> try:
         ...     w.check_braces('{{test}')
         ... except BibTeXError, error:
-        ...     print error
+        ...     print(error)
         String has unmatched braces: {{test}
 
         """
@@ -90,15 +90,15 @@ class Writer(BaseWriter):
         ur"""Encode text as LaTeX.
 
         >>> w = Writer(encoding='ASCII')
-        >>> print w._encode(u'1970–1971.')
+        >>> print(w._encode(u'1970–1971.'))
         1970--1971.
 
         >>> w = Writer(encoding='UTF-8')
-        >>> print w._encode(u'1970–1971.')
+        >>> print(w._encode(u'1970–1971.'))
         1970–1971.
 
         >>> w = Writer(encoding='UTF-8')
-        >>> print w._encode(u'100% noir')
+        >>> print(w._encode(u'100% noir'))
         100\% noir
         """
         import latexcodec  # NOQA
@@ -109,11 +109,11 @@ class Writer(BaseWriter):
         ur"""Encode text as LaTeX, preserve comments.
 
         >>> w = Writer(encoding='ASCII')
-        >>> print w._encode_with_comments(u'1970–1971.  %% † RIP †')
+        >>> print(w._encode_with_comments(u'1970–1971.  %% † RIP †'))
         1970--1971.  %% \dag\ RIP \dag
 
         >>> w = Writer(encoding='UTF-8')
-        >>> print w._encode_with_comments(u'1970–1971.  %% † RIP †')
+        >>> print(w._encode_with_comments(u'1970–1971.  %% † RIP †'))
         1970–1971.  %% † RIP †
         """
         return u'%'.join(self._encode(part) for part in text.split(u'%'))
@@ -167,3 +167,4 @@ class Writer(BaseWriter):
             for type, value in entry.fields.items():
                 self._write_field(stream, type, value)
             stream.write(u'\n}\n')
+

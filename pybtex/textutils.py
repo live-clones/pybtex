@@ -66,23 +66,23 @@ def is_terminated(text):
 def add_period(text):
     """Add a period to the end of text, if needed.
 
-    >>> print add_period('')
+    >>> print(add_period(''))
     <BLANKLINE>
-    >>> print add_period('.')
+    >>> print(add_period('.'))
     .
-    >>> print add_period('Done')
+    >>> print(add_period('Done'))
     Done.
-    >>> print add_period('Done. ')
+    >>> print(add_period('Done. '))
     Done. .
-    >>> print add_period('Done.')
+    >>> print(add_period('Done.'))
     Done.
-    >>> print add_period('Done...')
+    >>> print(add_period('Done...'))
     Done...
-    >>> print add_period('Done!')
+    >>> print(add_period('Done!'))
     Done!
-    >>> print add_period('Done?')
+    >>> print(add_period('Done?'))
     Done?
-    >>> print add_period('Done?!')
+    >>> print(add_period('Done?!'))
     Done?!
     """
 
@@ -116,19 +116,19 @@ def normalize_whitespace(string):
     r"""
     Replace every sequence of whitespace characters with a single space.
 
-    >>> print normalize_whitespace('abc')
+    >>> print(normalize_whitespace('abc'))
     abc
-    >>> print normalize_whitespace('Abc def.')
+    >>> print(normalize_whitespace('Abc def.'))
     Abc def.
-    >>> print normalize_whitespace(' Abc def.')
+    >>> print(normalize_whitespace(' Abc def.'))
     Abc def.
-    >>> print normalize_whitespace('Abc\ndef.')
+    >>> print(normalize_whitespace('Abc\ndef.'))
     Abc def.
-    >>> print normalize_whitespace('Abc\r\ndef.')
+    >>> print(normalize_whitespace('Abc\r\ndef.'))
     Abc def.
-    >>> print normalize_whitespace('Abc    \r\n\tdef.')
+    >>> print(normalize_whitespace('Abc    \r\n\tdef.'))
     Abc def.
-    >>> print normalize_whitespace('   \nAbc\r\ndef.')
+    >>> print(normalize_whitespace('   \nAbc\r\ndef.'))
     Abc def.
     """
 
@@ -169,3 +169,4 @@ def tie_or_space(word, tie='~', space=' ', enough_chars=3, other_word=None):
         return tie
     else:
         return space
+

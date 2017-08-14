@@ -21,7 +21,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import unicode_literals
-from __future__ import absolute_import
+from __future__ import print_function
 import re
 
 from collections import Mapping
@@ -119,7 +119,7 @@ class BibliographyData(object):
         >>> bib_data = parse_string(r"""
         ...     @PREAMBLE{"\newcommand{\noopsort}[1]{}"}
         ... """, 'bibtex')
-        >>> print bib_data.preamble
+        >>> print(bib_data.preamble)
         \newcommand{\noopsort}[1]{}
 
         .. versionadded:: 0.19
@@ -581,41 +581,41 @@ class Person(object):
         """Extract various parts of the name from a string.
 
         >>> p = Person('Avinash K. Dixit')
-        >>> print p.first_names
+        >>> print(p.first_names)
         [u'Avinash']
-        >>> print p.middle_names
+        >>> print(p.middle_names)
         [u'K.']
-        >>> print p.prelast_names
+        >>> print(p.prelast_names)
         []
-        >>> print p.last_names
+        >>> print(p.last_names)
         [u'Dixit']
-        >>> print p.lineage_names
+        >>> print(p.lineage_names)
         []
-        >>> print unicode(p)
+        >>> print(unicode(p))
         Dixit, Avinash K.
         >>> p == Person(unicode(p))
         True
         >>> p = Person('Dixit, Jr, Avinash K. ')
-        >>> print p.first_names
+        >>> print(p.first_names)
         [u'Avinash']
-        >>> print p.middle_names
+        >>> print(p.middle_names)
         [u'K.']
-        >>> print p.prelast_names
+        >>> print(p.prelast_names)
         []
-        >>> print p.last_names
+        >>> print(p.last_names)
         [u'Dixit']
-        >>> print p.lineage_names
+        >>> print(p.lineage_names)
         [u'Jr']
-        >>> print unicode(p)
+        >>> print(unicode(p))
         Dixit, Jr, Avinash K.
         >>> p == Person(unicode(p))
         True
 
         >>> p = Person('abc')
-        >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
+        >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
         [] [] [] [u'abc'] []
         >>> p = Person('Viktorov, Michail~Markovitch')
-        >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
+        >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
         [u'Michail'] [u'Markovitch'] [] [u'Viktorov'] []
         """
         def process_first_middle(parts):

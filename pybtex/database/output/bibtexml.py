@@ -96,7 +96,7 @@ class Writer(BaseWriter):
         >>> unicode_xml = Writer().to_string(data)
         >>> isinstance(unicode_xml, unicode)
         True
-        >>> print unicode_xml
+        >>> print(unicode_xml)
         <bibtex:file xmlns:bibtex="http://bibtexml.sf.net/">
         <BLANKLINE>
         </bibtex:file>
@@ -134,3 +134,4 @@ class Writer(BaseWriter):
             writer.newline()
         writer.end()
         writer.close()
+

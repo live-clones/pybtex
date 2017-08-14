@@ -27,13 +27,13 @@ HTML output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> html = Backend()
->>> print Tag('em', '').render(html)
+>>> print(Tag('em', '').render(html))
 <BLANKLINE>
->>> print Tag('em', 'Hard &', ' heavy').render(html)
+>>> print(Tag('em', 'Hard &', ' heavy').render(html))
 <em>Hard &amp; heavy</em>
->>> print HRef('/', '').render(html)
+>>> print(HRef('/', '').render(html))
 <BLANKLINE>
->>> print HRef('/', 'Hard & heavy').render(html)
+>>> print(HRef('/', 'Hard & heavy').render(html))
 <a href="/">Hard &amp; heavy</a>
 """
 from __future__ import unicode_literals
@@ -57,7 +57,7 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 class Backend(BaseBackend):
     u"""
     >>> from pybtex.richtext import Text, Tag, Symbol
-    >>> print Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
+    >>> print(Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend()))
     <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
 
     """
@@ -91,3 +91,4 @@ class Backend(BaseBackend):
     def write_entry(self, key, label, text):
         self.output(u'<dt>%s</dt>\n' % label)
         self.output(u'<dd>%s</dd>\n' % text)
+

@@ -51,25 +51,25 @@ def wrap(string, width=79, subsequent_indent='  '):
     (3 characters by default), so that each line contains at least one
     non-whitespace character after the indent.
 
-    >>> print wrap('', width=3)
+    >>> print(wrap('', width=3))
     <BLANKLINE>
-    >>> print wrap('0123456789 12345', width=10)
+    >>> print(wrap('0123456789 12345', width=10))
     0123456789
       12345
-    >>> print wrap('01234 6789 12345', width=10)
+    >>> print(wrap('01234 6789 12345', width=10))
     01234 6789
       12345
-    >>> print wrap('01234 6789 12345', width=11)
+    >>> print(wrap('01234 6789 12345', width=11))
     01234 6789
       12345
-    >>> print wrap('01234 6789 12345', width=9)
+    >>> print(wrap('01234 6789 12345', width=9))
     01234
       6789
       12345
-    >>> print wrap(' a b c', width=3)
+    >>> print(wrap(' a b c', width=3))
      a b
       c
-    >>> print wrap('aa bb c', width=3)
+    >>> print(wrap('aa bb c', width=3))
     aa bb
       c
 
@@ -151,25 +151,25 @@ class BibTeXString(object):
 
 def change_case(string, mode):
     r"""
-    >>> print change_case('aBcD', 'l')
+    >>> print(change_case('aBcD', 'l'))
     abcd
-    >>> print change_case('aBcD', 'u')
+    >>> print(change_case('aBcD', 'u'))
     ABCD
-    >>> print change_case('ABcD', 't')
+    >>> print(change_case('ABcD', 't'))
     Abcd
-    >>> print change_case(r'The {\TeX book \noop}', 'u')
+    >>> print(change_case(r'The {\TeX book \noop}', 'u'))
     THE {\TeX BOOK \noop}
-    >>> print change_case(r'And Now: BOOO!!!', 't')
+    >>> print(change_case(r'And Now: BOOO!!!', 't'))
     And now: Booo!!!
-    >>> print change_case(r'And {Now: BOOO!!!}', 't')
+    >>> print(change_case(r'And {Now: BOOO!!!}', 't'))
     And {Now: BOOO!!!}
-    >>> print change_case(r'And {Now: {BOOO}!!!}', 'l')
+    >>> print(change_case(r'And {Now: {BOOO}!!!}', 'l'))
     and {Now: {BOOO}!!!}
-    >>> print change_case(r'And {\Now: BOOO!!!}', 't')
+    >>> print(change_case(r'And {\Now: BOOO!!!}', 't'))
     And {\Now: booo!!!}
-    >>> print change_case(r'And {\Now: {BOOO}!!!}', 'l')
+    >>> print(change_case(r'And {\Now: {BOOO}!!!}', 'l'))
     and {\Now: {booo}!!!}
-    >>> print change_case(r'{\TeX\ and databases\Dash\TeX DBI}', 't')
+    >>> print(change_case(r'{\TeX\ and databases\Dash\TeX DBI}', 't'))
     {\TeX\ and databases\Dash\TeX DBI}
     """
 
@@ -222,21 +222,21 @@ def bibtex_substring(string, start, length):
     start and length are 1-based. If start is < 0, it is counted from the end
     of the string. If start is 0, an empty string is returned.
 
-    >>> print bibtex_substring('abcdef', 1, 3)
+    >>> print(bibtex_substring('abcdef', 1, 3))
     abc
-    >>> print bibtex_substring('abcdef', 2, 3)
+    >>> print(bibtex_substring('abcdef', 2, 3))
     bcd
-    >>> print bibtex_substring('abcdef', 2, 1000)
+    >>> print(bibtex_substring('abcdef', 2, 1000))
     bcdef
-    >>> print bibtex_substring('abcdef', 0, 1000)
+    >>> print(bibtex_substring('abcdef', 0, 1000))
     <BLANKLINE>
-    >>> print bibtex_substring('abcdef', -1, 1)
+    >>> print(bibtex_substring('abcdef', -1, 1))
     f
-    >>> print bibtex_substring('abcdef', -1, 2)
+    >>> print(bibtex_substring('abcdef', -1, 2))
     ef
-    >>> print bibtex_substring('abcdef', -2, 3)
+    >>> print(bibtex_substring('abcdef', -2, 3))
     cde
-    >>> print bibtex_substring('abcdef', -2, 1000)
+    >>> print(bibtex_substring('abcdef', -2, 1000))
     abcde
     """
 
@@ -258,29 +258,29 @@ def bibtex_len(string):
     is a substring at brace level 1, if the first character after the opening
     brace is a backslash, like in "de la Vall{\'e}e Poussin".
 
-    >>> print bibtex_len(r"de la Vall{\'e}e Poussin")
+    >>> print(bibtex_len(r"de la Vall{\'e}e Poussin"))
     20
-    >>> print bibtex_len(r"de la Vall{e}e Poussin")
+    >>> print(bibtex_len(r"de la Vall{e}e Poussin"))
     20
-    >>> print bibtex_len(r"de la Vallee Poussin")
+    >>> print(bibtex_len(r"de la Vallee Poussin"))
     20
-    >>> print bibtex_len(r'\ABC 123')
+    >>> print(bibtex_len(r'\ABC 123'))
     8
-    >>> print bibtex_len(r'{\abc}')
+    >>> print(bibtex_len(r'{\abc}'))
     1
-    >>> print bibtex_len(r'{\abc')
+    >>> print(bibtex_len(r'{\abc'))
     1
-    >>> print bibtex_len(r'}\abc')
+    >>> print(bibtex_len(r'}\abc'))
     4
-    >>> print bibtex_len(r'\abc}')
+    >>> print(bibtex_len(r'\abc}'))
     4
-    >>> print bibtex_len(r'\abc{')
+    >>> print(bibtex_len(r'\abc{'))
     4
-    >>> print bibtex_len(r'level 0 {1 {2}}')
+    >>> print(bibtex_len(r'level 0 {1 {2}}'))
     11
-    >>> print bibtex_len(r'level 0 {\1 {2}}')
+    >>> print(bibtex_len(r'level 0 {\1 {2}}'))
     9
-    >>> print bibtex_len(r'level 0 {1 {\2}}')
+    >>> print(bibtex_len(r'level 0 {1 {\2}}'))
     12
     """
     length = 0
@@ -330,19 +330,19 @@ def bibtex_prefix(string, num_chars):
     resulting prefix ends at brace level > 0, missing closing braces are
     appended.
 
-    >>> print bibtex_prefix('abc', 1)
+    >>> print(bibtex_prefix('abc', 1))
     a
-    >>> print bibtex_prefix('abc', 5)
+    >>> print(bibtex_prefix('abc', 5))
     abc
-    >>> print bibtex_prefix('ab{c}d', 3)
+    >>> print(bibtex_prefix('ab{c}d', 3))
     ab{c}
-    >>> print bibtex_prefix('ab{cd}', 3)
+    >>> print(bibtex_prefix('ab{cd}', 3))
     ab{c}
-    >>> print bibtex_prefix('ab{cd', 3)
+    >>> print(bibtex_prefix('ab{cd', 3))
     ab{c}
-    >>> print bibtex_prefix(r'ab{\cd}', 3)
+    >>> print(bibtex_prefix(r'ab{\cd}', 3))
     ab{\cd}
-    >>> print bibtex_prefix(r'ab{\cd', 3)
+    >>> print(bibtex_prefix(r'ab{\cd', 3))
     ab{\cd}
 
     """
@@ -362,33 +362,33 @@ def bibtex_prefix(string, num_chars):
 def bibtex_purify(string):
     r"""Strip special characters from the string.
 
-    >>> print bibtex_purify('Abc 1234')
+    >>> print(bibtex_purify('Abc 1234'))
     Abc 1234
-    >>> print bibtex_purify('Abc  1234')
+    >>> print(bibtex_purify('Abc  1234'))
     Abc  1234
-    >>> print bibtex_purify('Abc-Def')
+    >>> print(bibtex_purify('Abc-Def'))
     Abc Def
-    >>> print bibtex_purify('Abc-~-Def')
+    >>> print(bibtex_purify('Abc-~-Def'))
     Abc   Def
-    >>> print bibtex_purify('{XXX YYY}')
+    >>> print(bibtex_purify('{XXX YYY}'))
     XXX YYY
-    >>> print bibtex_purify('{XXX {YYY}}')
+    >>> print(bibtex_purify('{XXX {YYY}}'))
     XXX YYY
-    >>> print bibtex_purify(r'XXX {\YYY} XXX')
+    >>> print(bibtex_purify(r'XXX {\YYY} XXX'))
     XXX  XXX
-    >>> print bibtex_purify(r'{XXX {\YYY} XXX}')
+    >>> print(bibtex_purify(r'{XXX {\YYY} XXX}'))
     XXX YYY XXX
-    >>> print bibtex_purify(r'\\abc def')
+    >>> print(bibtex_purify(r'\\abc def'))
     abc def
-    >>> print bibtex_purify('a@#$@#$b@#$@#$c')
+    >>> print(bibtex_purify('a@#$@#$b@#$@#$c'))
     abc
-    >>> print bibtex_purify(r'{\noopsort{1973b}}1973')
+    >>> print(bibtex_purify(r'{\noopsort{1973b}}1973'))
     1973b1973
-    >>> print bibtex_purify(r'{sort{1973b}}1973')
+    >>> print(bibtex_purify(r'{sort{1973b}}1973'))
     sort1973b1973
-    >>> print bibtex_purify(r'{sort{\abc1973b}}1973')
+    >>> print(bibtex_purify(r'{sort{\abc1973b}}1973'))
     sortabc1973b1973
-    >>> print bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}')
+    >>> print(bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}'))
     1973a901968
     """
 
@@ -514,19 +514,19 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
 def bibtex_first_letter(string):
     """ Return the first letter or special character of the string.
 
-    >>> print bibtex_first_letter('Andrew Blake')
+    >>> print(bibtex_first_letter('Andrew Blake'))
     A
-    >>> print bibtex_first_letter('{Andrew} Blake')
+    >>> print(bibtex_first_letter('{Andrew} Blake'))
     A
-    >>> print bibtex_first_letter('1Andrew')
+    >>> print(bibtex_first_letter('1Andrew'))
     A
-    >>> print bibtex_first_letter('{\TeX} markup')
+    >>> print(bibtex_first_letter('{\TeX} markup'))
     {\TeX}
-    >>> print bibtex_first_letter('')
+    >>> print(bibtex_first_letter(''))
     <BLANKLINE>
-    >>> print bibtex_first_letter('123 123 123 {}')
+    >>> print(bibtex_first_letter('123 123 123 {}'))
     <BLANKLINE>
-    >>> print bibtex_first_letter('\LaTeX Project Team')
+    >>> print(bibtex_first_letter('\LaTeX Project Team'))
     L
 
     """
@@ -543,11 +543,11 @@ def bibtex_abbreviate(string, delimiter=None, separator='-'):
     """
     Abbreviate string.
 
-    >>> print bibtex_abbreviate('Andrew Blake')
+    >>> print(bibtex_abbreviate('Andrew Blake'))
     A
-    >>> print bibtex_abbreviate('Jean-Pierre')
+    >>> print(bibtex_abbreviate('Jean-Pierre'))
     J.-P
-    >>> print bibtex_abbreviate('Jean--Pierre')
+    >>> print(bibtex_abbreviate('Jean--Pierre'))
     J.-P
     
     """
@@ -561,3 +561,4 @@ def bibtex_abbreviate(string, delimiter=None, separator='-'):
     if delimiter is None:
         delimiter = '.-'
     return delimiter.join(_bibtex_abbreviate())
+

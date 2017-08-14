@@ -49,19 +49,19 @@ quote_or_comment = re.compile(r'[%"]')
 def strip_comment(line):
     """Strip the commented part of the line."
 
-    >>> print strip_comment('a normal line')
+    >>> print(strip_comment('a normal line'))
     a normal line
-    >>> print strip_comment('%')
+    >>> print(strip_comment('%'))
     <BLANKLINE>
-    >>> print strip_comment('%comment')
+    >>> print(strip_comment('%comment'))
     <BLANKLINE>
-    >>> print strip_comment('trailing%')
+    >>> print(strip_comment('trailing%'))
     trailing
-    >>> print strip_comment('a normal line% and a comment')
+    >>> print(strip_comment('a normal line% and a comment'))
     a normal line
-    >>> print strip_comment('"100% compatibility" is a myth')
+    >>> print(strip_comment('"100% compatibility" is a myth'))
     "100% compatibility" is a myth
-    >>> print strip_comment('"100% compatibility" is a myth% or not?')
+    >>> print(strip_comment('"100% compatibility" is a myth% or not?'))
     "100% compatibility" is a myth
 
     """
@@ -165,3 +165,4 @@ if __name__ == '__main__':
     import sys
     from pprint import pprint
     pprint(parse_file(sys.argv[1]))
+

@@ -28,13 +28,13 @@ Markdown output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> markdown = Backend()
->>> print Tag('em', '').render(markdown)
+>>> print(Tag('em', '').render(markdown))
 <BLANKLINE>
->>> print Tag('em', 'Non-', 'empty').render(markdown)
+>>> print(Tag('em', 'Non-', 'empty').render(markdown))
 *Non\-empty*
->>> print HRef('/', '').render(markdown)
+>>> print(HRef('/', '').render(markdown))
 <BLANKLINE>
->>> print HRef('/', 'Non-', 'empty').render(markdown)
+>>> print(HRef('/', 'Non-', 'empty').render(markdown))
 [Non\-empty](/)
 """
 from __future__ import unicode_literals
@@ -123,3 +123,4 @@ class Backend(BaseBackend):
         else:
             self.output(u'[%s] ' % label)
             self.output(u'%s  \n' % text)
+

@@ -22,23 +22,23 @@
 """BibTeX-like name formatting.
 
 >>> name = 'Charles Louis Xavier Joseph de la Vallee Poussin'
->>> print format_name(name, '{vv~}{ll}{, jj}{, f.}')
+>>> print(format_name(name, '{vv~}{ll}{, jj}{, f.}'))
 de~la Vallee~Poussin, C.~L. X.~J.
 >>> name = 'abc'
->>> print format_name(name, '{vv~}{ll}{, jj}{, f.}')
+>>> print(format_name(name, '{vv~}{ll}{, jj}{, f.}'))
 abc
 >>> name = 'Jean-Pierre Hansen'
->>> print format_name(name, '{ff~}{vv~}{ll}{, jj}')
+>>> print(format_name(name, '{ff~}{vv~}{ll}{, jj}'))
 Jean-Pierre Hansen
->>> print format_name(name, '{f.~}{vv~}{ll}{, jj}')
+>>> print(format_name(name, '{f.~}{vv~}{ll}{, jj}'))
 J.-P. Hansen
 
 >>> name = 'F. Phidias Phony-Baloney'
->>> print format_name(name, '{v{}}{l}')
+>>> print(format_name(name, '{v{}}{l}'))
 P.-B
->>> print format_name(name, '{v{}}{l.}')
+>>> print(format_name(name, '{v{}}{l.}'))
 P.-B.
->>> print format_name(name, '{v{}}{l{}}')
+>>> print(format_name(name, '{v{}}{l{}}'))
 PB
 """
 from __future__ import unicode_literals
@@ -260,9 +260,9 @@ def join(words, tie='~', space=' '):
     Otherwise space is inserted.
     Should produce the same oubput as BibTeX.
 
-    >>> print join(['a', 'long', 'long', 'road'])
+    >>> print(join(['a', 'long', 'long', 'road']))
     a~long long~road
-    >>> print join(['very', 'long', 'phrase'])
+    >>> print(join(['very', 'long', 'phrase']))
     very long~phrase
     """
 
@@ -365,3 +365,4 @@ class NameFormatParser(Scanner):
 
     def eat_whitespace(self):
         pass
+
