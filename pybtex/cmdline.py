@@ -194,7 +194,8 @@ class CommandLine(object):
             if option_group is None:
                 container = opt_parser
             else:
-                container = opt_parser.add_option_group(option_group)
+                container = optparse.OptionGroup(opt_parser, option_group)
+                opt_parser.add_option_group(container)
             for option in option_list:
                 container.add_option(option)
 
