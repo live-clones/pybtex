@@ -77,7 +77,7 @@ class Parser(BaseParser):
 
         entries = (
             (key, self.process_entry(entry))
-            for (key, entry) in t['entries'].iteritems()
+            for (key, entry) in t['entries'].items()
         )
 
         try:
@@ -90,7 +90,7 @@ class Parser(BaseParser):
 
     def process_entry(self, entry):
         bib_entry = Entry(entry['type'])
-        for (key, value) in entry.iteritems():
+        for (key, value) in entry.items():
             key_lower = key.lower()
             if key_lower in Person.valid_roles:
                 for names in value:

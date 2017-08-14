@@ -287,9 +287,9 @@ class Interpreter(object):
         self.bib_data = p.parse_files(self.bib_files)
         self.citations = self.bib_data.add_extra_citations(self.citations, self.min_crossrefs)
         self.citations = list(self.remove_missing_citations(self.citations))
-#        for k, v in self.bib_data.iteritems():
+#        for k, v in self.bib_data.items():
 #            print k
-#            for field, value in v.fields.iteritems():
+#            for field, value in v.fields.items():
 #                print '\t', field, value
 #        pass
 

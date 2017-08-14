@@ -88,7 +88,7 @@ class BibliographyData(object):
             self.citations = CaseInsensitiveSet()
         if entries:
             if isinstance(entries, Mapping):
-                entries = entries.iteritems()
+                entries = entries.items()
             for (key, entry) in entries:
                 self.add_entry(key, entry)
         if preamble:
@@ -345,7 +345,7 @@ class BibliographyData(object):
 
         '''
 
-        entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.iteritems())
+        entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.items())
         return type(self)(
             entries=entries_lower,
             preamble=self._preamble,
@@ -372,7 +372,7 @@ class FieldDict(OrderedCaseInsensitiveDict):
                 raise KeyError(key)
 
     def lower(self):
-        return type(self)(self.parent, self.iteritems_lower())
+        return type(self)(self.parent, self.items_lower())
 
 
 class RichFieldProxyDict(Mapping):

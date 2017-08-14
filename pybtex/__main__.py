@@ -97,7 +97,7 @@ It is also possible to define bibliography formatting styles in Python.
             'abbreviate_names': 'abbreviated names',
         }
         if style_language != 'python':
-            for option, what_is_not_supported in not_supported_by_bibtex.iteritems():
+            for option, what_is_not_supported in not_supported_by_bibtex.items():
                 if options[option]:
                     self.opt_parser.error(
                         '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported

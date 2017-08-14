@@ -122,12 +122,12 @@ class Writer(BaseWriter):
 
         writer.start('file')
         writer.newline()
-        for key, entry in bib_data.entries.iteritems():
+        for key, entry in bib_data.entries.items():
             writer.start('entry', dict(id=key))
             writer.start(entry.original_type)
-            for field_name, field_value in entry.fields.iteritems():
+            for field_name, field_value in entry.fields.items():
                 writer.element(field_name, field_value)
-            for role, persons in entry.persons.iteritems():
+            for role, persons in entry.persons.items():
                 write_persons(persons, role)
             writer.end()
             writer.end()

@@ -154,7 +154,7 @@ class Writer(BaseWriter):
         self._write_preamble(stream, bib_data.preamble)
 
         first = True
-        for key, entry in bib_data.entries.iteritems():
+        for key, entry in bib_data.entries.items():
             if not first:
                 stream.write(u'\n')
             first = False
@@ -162,8 +162,8 @@ class Writer(BaseWriter):
             stream.write(u'@%s' % entry.original_type)
             stream.write(u'{%s' % key)
 #            for role in ('author', 'editor'):
-            for role, persons in entry.persons.iteritems():
+            for role, persons in entry.persons.items():
                 self._write_persons(stream, persons, role)
-            for type, value in entry.fields.iteritems():
+            for type, value in entry.fields.items():
                 self._write_field(stream, type, value)
             stream.write(u'\n}\n')

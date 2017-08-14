@@ -105,7 +105,7 @@ class CaseInsensitiveDict(MutableMapping):
     >>> for key in d:
     ...     print key
     Test
-    >>> for key, value in d.iteritems():
+    >>> for key, value in d.items():
     ...     print key, value
     Test passed again
     >>> bool(d)
@@ -138,7 +138,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __init__(self, *args, **kwargs):
         initial = dict(*args, **kwargs)
-        self._dict = dict((key.lower(), value) for key, value in initial.iteritems())
+        self._dict = dict((key.lower(), value) for key, value in initial.items())
         self._keys = dict((key.lower(), key) for key in initial)
 
     def __len__(self):
@@ -171,11 +171,11 @@ class CaseInsensitiveDict(MutableMapping):
             type(self).__name__, repr(dct),
         )
 
-    def iteritems_lower(self):
-        return ((key.lower(), value) for key, value in self.iteritems())
+    def items_lower(self):
+        return ((key.lower(), value) for key, value in self.items())
 
     def lower(self):
-        return type(self)(self.iteritems_lower())
+        return type(self)(self.items_lower())
 
 
 class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
@@ -240,7 +240,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     True
     >>> list(d.itervalues()) == d.values()
     True
-    >>> list(d.iteritems()) == d.items()
+    >>> list(d.items()) == d.items()
     True
     >>> 'Uno' in d
     True
@@ -326,7 +326,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     def values(self):
         return [self[key] for key in self.order]
 
-    def iteritems(self):
+    def items(self):
         for key in self.order:
             yield key, self[key]
 

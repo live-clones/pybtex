@@ -44,7 +44,7 @@ class Writer(BaseWriter):
 
     def _to_dict(self, bib_data):
         def process_person_roles(entry):
-            for role, persons in entry.persons.iteritems():
+            for role, persons in entry.persons.items():
                 yield role, list(process_persons(persons))
 
         def process_person(person):
@@ -58,7 +58,7 @@ class Writer(BaseWriter):
                 yield OrderedDict(process_person(person))
 
         def process_entries(bib_data):
-            for key, entry in bib_data.iteritems():
+            for key, entry in bib_data.items():
                 fields = OrderedDict([('type', entry.original_type)])
                 fields.update(entry.fields)
                 fields.update(process_person_roles(entry))
