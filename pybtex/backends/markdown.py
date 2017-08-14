@@ -23,7 +23,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-ur"""
+r"""
 Markdown output backend.
 
 >>> from pybtex.richtext import Tag, HRef
