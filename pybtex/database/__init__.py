@@ -21,10 +21,13 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import unicode_literals
+from __future__ import absolute_import
 import re
 
 from collections import Mapping
 from pybtex.plugin import find_plugin
+
+import six
 
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
@@ -304,7 +307,7 @@ class BibliographyData(object):
 
         .. versionadded:: 0.19
         """
-        if isinstance(file, basestring):
+        if isinstance(file, six.string_types):
             filename = file
         else:
             filename = getattr(file, 'name', None)
@@ -362,7 +365,7 @@ class FieldDict(OrderedCaseInsensitiveDict):
         except KeyError:
             if key in self.parent.persons:
                 persons = self.parent.persons[key]
-                return ' and '.join(unicode(person) for person in persons)
+                return ' and '.join(six.text_type(person) for person in persons)
             elif 'crossref' in self:
                 return self.parent.get_crossref().fields[key]
             else:
@@ -721,7 +724,7 @@ class Person(object):
         return ', '.join(part for part in (von_last, jr, first) if part)
 
     def __repr__(self):
-        return 'Person({0})'.format(repr(unicode(self)))
+        return 'Person({0})'.format(repr(six.text_type(self)))
 
     def get_part_as_text(self, type):
         names = getattr(self, type + '_names')
@@ -852,7 +855,7 @@ def parse_file(file, bib_format=None, **kwargs):
     .. versionadded:: 0.19
     """
 
-    if isinstance(file, basestring):
+    if isinstance(file, six.string_types):
         filename = file
     else:
         filename = getattr(file, 'name', None)

@@ -21,6 +21,8 @@ from __future__ import unicode_literals
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+from __future__ import absolute_import
+import six
 class PybtexError(Exception):
     def __init__(self, message, filename=None):
         super(PybtexError, self).__init__(message)
@@ -35,7 +37,7 @@ class PybtexError(Exception):
         return self.filename
 
     def __eq__(self, other):
-        return unicode(self) == unicode(other)
+        return six.text_type(self) == six.text_type(other)
 
     def __hash__(self):
-        return hash(unicode(self))
+        return hash(six.text_type(self))

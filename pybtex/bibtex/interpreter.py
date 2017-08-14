@@ -21,6 +21,8 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import six
+
 from pybtex.utils import CaseInsensitiveDict
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.builtins import builtins, print_warning
@@ -82,7 +84,7 @@ class EntryInteger(Integer, EntryVariable):
 
 
 class String(Variable):
-    value_type = basestring
+    value_type = six.string_types
     default = ''
 
 
@@ -128,7 +130,7 @@ class Crossref(Field):
 
 
 class Identifier(Variable):
-    value_type = basestring
+    value_type = six.string_types
     def execute(self, interpreter):
         try:
             f = interpreter.vars[self.value()]
@@ -138,7 +140,7 @@ class Identifier(Variable):
 
 
 class QuotedVar(Variable):
-    value_type = basestring
+    value_type = six.string_types
     def execute(self, interpreter):
         try:
             var = interpreter.vars[self.value()]

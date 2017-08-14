@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import absolute_import
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from io import BytesIO, TextIOWrapper
@@ -31,6 +32,7 @@ from pybtex.plugin import find_plugin
 from pybtex.database import parse_string, parse_bytes
 
 from .data import reference_data
+import six
 
 
 class DatabaseIO(object):
@@ -82,7 +84,7 @@ class PybtexStreamIO(PybtexDatabaseIO):
 class PybtexStringIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_string(self.bib_format)
-        assert_is_instance(result, unicode)
+        assert_is_instance(result, six.text_type)
         return result
 
     def deserialize(self, string):

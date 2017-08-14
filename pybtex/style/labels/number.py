@@ -21,11 +21,13 @@ from __future__ import unicode_literals
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+from __future__ import absolute_import
 from pybtex.style.labels import BaseLabelStyle
+import six
 
 
 class LabelStyle(BaseLabelStyle):
 
     def format_labels(self, sorted_entries):
         for number, entry in enumerate(sorted_entries):
-            yield unicode(number + 1)
+            yield six.text_type(number + 1)

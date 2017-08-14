@@ -21,9 +21,11 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import absolute_import
 from contextlib import contextmanager
 
 import pybtex.io
+import six
 
 
 strict = True
@@ -53,7 +55,7 @@ def format_error(exception, prefix='ERROR: '):
     context = exception.get_context()
     if context:
         lines += (context.splitlines())
-    lines.append(u'{0}{1}'.format(prefix, unicode(exception)))
+    lines.append(u'{0}{1}'.format(prefix, six.text_type(exception)))
     filename = exception.get_filename()
     if filename:
         lines = (

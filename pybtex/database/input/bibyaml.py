@@ -20,12 +20,14 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import absolute_import
 from collections import OrderedDict
 
 import yaml
 
 from pybtex.database.input import BaseParser
 from pybtex.database import Entry, Person
+import six
 
 
 class OrderedDictSafeLoader(yaml.SafeLoader):
@@ -96,5 +98,5 @@ class Parser(BaseParser):
             elif key_lower == 'type':
                 pass
             else:
-                bib_entry.fields[key] = unicode(value)
+                bib_entry.fields[key] = six.text_type(value)
         return bib_entry

@@ -60,11 +60,13 @@ one<nbsp>two<nbsp>three
 from __future__ import unicode_literals
 
 
+from __future__ import absolute_import
 import warnings
 import itertools
 from abc import ABCMeta, abstractmethod
 from pybtex import textutils
 from pybtex.utils import deprecated, collect_iterable
+import six
 
 
 # workaround for doctests in Python 2/3
@@ -84,7 +86,7 @@ def str_repr(string):
 
 
 def ensure_text(value):
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         return String(value)
     elif isinstance(value, BaseText):
         return value
@@ -339,7 +341,7 @@ class BaseMultipartText(BaseText):
         self.length = sum(len(part) for part in self.parts)
 
     def __unicode__(self):
-        return ''.join(unicode(part) for part in self.parts)
+        return ''.join(six.text_type(part) for part in self.parts)
 
     def __eq__(self, other):
         """
@@ -386,7 +388,7 @@ class BaseMultipartText(BaseText):
         False
 
         """
-        if not isinstance(item, basestring):
+        if not isinstance(item, six.string_types):
             raise TypeError(item)
         return not item or any(part.__contains__(item) for part in self.parts)
 
@@ -624,7 +626,7 @@ class BaseMultipartText(BaseText):
 
     @deprecated('0.19', 'use __unicode__() instead')
     def plaintext(self):
-        return unicode(self)
+        return six.text_type(self)
 
     @deprecated('0.19')
     def enumerate(self):
@@ -714,7 +716,7 @@ class String(BaseText):
         return str_repr(self.value)
 
     def __unicode__(self):
-        return unicode(self.value)
+        return six.text_type(self.value)
 
     def __eq__(self, other):
         """
@@ -743,7 +745,7 @@ class String(BaseText):
         if sep is None:
             from .textutils import whitespace_re
             parts = whitespace_re.split(self.value)
-        elif isinstance(sep, basestring):
+        elif isinstance(sep, six.string_types):
             parts = self.value.split(sep)
         else:
             try:
@@ -784,7 +786,7 @@ class String(BaseText):
 
     @property
     def parts(self):
-        return [unicode(self)]
+        return [six.text_type(self)]
 
     def _typeinfo(self):
         return String, ()
@@ -842,10 +844,10 @@ class Tag(BaseMultipartText):
         return name
 
     def __init__(self, name, *args):
-        if not isinstance(name, (basestring, Text)):
+        if not isinstance(name, (six.string_types, Text)):
             raise ValueError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
-        self.name = self.__check_name(unicode(name))
+        self.name = self.__check_name(six.text_type(name))
         self.info = self.name,
         super(Tag, self).__init__(*args)
 
@@ -881,10 +883,10 @@ class HRef(BaseMultipartText):
     """
 
     def __init__(self, url, *args):
-        if not isinstance(url, (basestring, BaseText)):
+        if not isinstance(url, (six.string_types, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
-        self.url = unicode(url)
+        self.url = six.text_type(url)
         self.info = self.url,
         super(HRef, self).__init__(*args)
 

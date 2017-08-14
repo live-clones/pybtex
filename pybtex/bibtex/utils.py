@@ -20,11 +20,13 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import absolute_import
 import re
 
 from pybtex.utils import pairwise
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.py3compat import fix_unicode_literals_in_doctest
+import six
 
 
 whitespace_re = re.compile(r'(\s)')
@@ -144,7 +146,7 @@ class BibTeXString(object):
         return ''.join(self.traverse(open=lambda string: '{', close=lambda string: '}'))
 
     def inner_string(self):
-        return ''.join(unicode(child) for child in self.contents)
+        return ''.join(six.text_type(child) for child in self.contents)
 
 
 def change_case(string, mode):

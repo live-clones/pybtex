@@ -31,12 +31,14 @@ https://github.com/matthew-brett/babybib
 from __future__ import unicode_literals
 
 
+from __future__ import absolute_import
 from pybtex.database import BibliographyData
 from pybtex.database import Entry, Person
 from pybtex.database.input.bibtex import Parser
 from itertools import izip_longest
 
 from unittest import TestCase
+import six
 
 
 class _TestParser(Parser):
@@ -67,7 +69,7 @@ class ParserTest(object):
         correct_result = self.correct_result
         assert result == correct_result
         for error, correct_error in izip_longest(parser.errors, self.errors):
-            actual_error = unicode(error)
+            actual_error = six.text_type(error)
             assert actual_error == correct_error
     
 

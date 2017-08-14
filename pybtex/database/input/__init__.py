@@ -22,12 +22,14 @@
 from __future__ import with_statement
 from __future__ import unicode_literals
 
+from __future__ import absolute_import
 import io
 
 import pybtex.io
 from pybtex.plugin import Plugin
 from pybtex.database import BibliographyData
 from pybtex.exceptions import PybtexError
+import six
 
 
 class BaseParser(Plugin):
@@ -51,7 +53,7 @@ class BaseParser(Plugin):
             try:
                 self.parse_stream(f)
             except UnicodeDecodeError as e:
-                raise PybtexError(unicode(e), filename=self.filename)
+                raise PybtexError(six.text_type(e), filename=self.filename)
         return self.data
 
     def parse_files(self, base_filenames, file_suffix=None):
@@ -69,7 +71,7 @@ class BaseParser(Plugin):
             return self.parse_bytes(value.encode(self.encoding))
 
     def parse_bytes(self, value):
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             msg = 'bytes expected. Use {0}.parse_bytes() to parse unicode strings'.format(type(self).__name__)
             raise ValueError(msg)
         if self.unicode_io:

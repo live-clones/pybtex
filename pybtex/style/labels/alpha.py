@@ -23,7 +23,9 @@
 
 
 from __future__ import unicode_literals
+from __future__ import absolute_import
 import sys
+import six
 if sys.version_info < (2, 7):
    from counter import Counter
 else:
@@ -156,7 +158,7 @@ class LabelStyle(BaseLabelStyle):
             while namesleft:
                 person = persons[nameptr - 1]
                 if nameptr == numnames:
-                    if unicode(person) == "others":
+                    if six.text_type(person) == "others":
                         result += "+"
                     else:
                         result += _strip_nonalnum(_abbr(
