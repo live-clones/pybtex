@@ -52,7 +52,7 @@ def make_table(font_filename, output):
     print('# Font style: {0}'.format(font_face.style_name), file=output)
     print('# Font version: {0}'.format(get_font_version(font_face)), file=output)
     print(file=output)
-    print('charwidths = {0}'.format(pformat(charwidths).encode('UTF-8')), file=output)
+    print('charwidths = {0}'.format(pformat(charwidths)), file=output)
 
 
 def get_font_version(font_face):
