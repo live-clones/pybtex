@@ -56,8 +56,6 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README')).read()
 
 install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4', 'six']
-if sys.version_info < (2, 7):
-    install_requires += ['Counter>=1.0.0']
 
 setup(
     name=progname,
