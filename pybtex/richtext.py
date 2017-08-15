@@ -405,7 +405,7 @@ class BaseMultipartText(BaseText):
         Text(Tag('em', '!'))
         """
 
-        if isinstance(key, (int, long)):
+        if isinstance(key, six.integer_types):
             start = key
             end = None
         elif isinstance(key, slice):
