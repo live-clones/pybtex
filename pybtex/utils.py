@@ -104,7 +104,7 @@ class CaseInsensitiveDict(MutableMapping):
     True
     >>> 'Test' in d
     True
-    >>> print(d.keys())
+    >>> list(d.keys())
     [u'Test']
     >>> for key in d:
     ...     print(key)
