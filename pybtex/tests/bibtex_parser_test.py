@@ -30,10 +30,11 @@ https://github.com/matthew-brett/babybib
 """
 from __future__ import absolute_import, unicode_literals
 
-from itertools import izip_longest
 from unittest import TestCase
 
 import six
+from six.moves import zip_longest
+
 from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.input.bibtex import Parser
 
@@ -65,7 +66,7 @@ class ParserTest(object):
         result = parser.data
         correct_result = self.correct_result
         assert result == correct_result
-        for error, correct_error in izip_longest(parser.errors, self.errors):
+        for error, correct_error in zip_longest(parser.errors, self.errors):
             actual_error = six.text_type(error)
             assert actual_error == correct_error
     

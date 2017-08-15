@@ -30,6 +30,8 @@ from collections import (
 from functools import wraps
 from types import GeneratorType
 
+from six.moves import zip_longest
+
 from .py3compat import fix_unicode_literals_in_doctest
 
 
@@ -72,7 +74,7 @@ def collect_iterable(f):
 def pairwise(iterable):
     a, b = itertools.tee(iterable)
     next(b, None)
-    return itertools.izip_longest(a, b)
+    return zip_longest(a, b)
 
 
 @fix_unicode_literals_in_doctest

@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
 import pkgutil
-from itertools import izip_longest
+
+from six.moves import zip_longest
 
 from pybtex.bibtex import bst
 
@@ -18,7 +19,7 @@ def check_bst_parser(dataset_name):
     bst_data = pkgutil.get_data('pybtex.tests.data', dataset_name + '.bst').decode('latin1')
     actual_result = bst.parse_string(bst_data)
 
-    for correct_element, actual_element in izip_longest(actual_result, correct_result):
+    for correct_element, actual_element in zip_longest(actual_result, correct_result):
         assert correct_element == actual_element, '\n{0}\n{1}'.format(correct_element, actual_element)
 
 
