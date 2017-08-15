@@ -439,7 +439,7 @@ class CrossFileMacrosTest(ParserTest, TestCase):
 
 class AtCharacterTest(ParserTest, TestCase):
     input_strings = [
-        ur""",
+        r""",
             @proceedings{acc,
                 title = {Proc.\@ of the American Control Conference},
                 notes = "acc@example.org"
@@ -459,7 +459,7 @@ class AtCharacterTest(ParserTest, TestCase):
 class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': []}
     input_strings = [
-        ur""",
+        r""",
             @proceedings{acc,
                 title = {Proc.\@ of the American Control Conference},
                 notes = "acc@example.org"
@@ -471,7 +471,7 @@ class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
 
 class CaseSensitivityTest(ParserTest, TestCase):
     input_strings = [
-        ur""",
+        r""",
             @Article{CamelCase,
                 Title = {To CamelCase or Under score},
                 year = 2009,

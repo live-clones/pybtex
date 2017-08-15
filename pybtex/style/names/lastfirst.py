@@ -31,7 +31,7 @@ from pybtex.style.template import join
 class NameStyle(BaseNameStyle):
 
     def format(self, person, abbr=False):
-        ur"""
+        r"""
         Format names similarly to {vv~}{ll}{, jj}{, f.} in BibTeX.
 
         >>> from pybtex.database import Person

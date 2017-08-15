@@ -88,7 +88,7 @@ class Writer(BaseWriter):
                 raise BibTeXError('String has unmatched braces: %s' % s)
 
     def _encode(self, text):
-        ur"""Encode text as LaTeX.
+        r"""Encode text as LaTeX.
 
         >>> w = Writer(encoding='ASCII')
         >>> print(w._encode(u'1970–1971.'))
@@ -107,7 +107,7 @@ class Writer(BaseWriter):
         return codecs.encode(text, 'ulatex+{}'.format(self.encoding))
 
     def _encode_with_comments(self, text):
-        ur"""Encode text as LaTeX, preserve comments.
+        r"""Encode text as LaTeX, preserve comments.
 
         >>> w = Writer(encoding='ASCII')
         >>> print(w._encode_with_comments(u'1970–1971.  %% † RIP †'))
