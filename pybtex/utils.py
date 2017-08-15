@@ -287,7 +287,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
         if isinstance(data, Sequence):
             self.order = [key for key, value in data]
         else:
-            self.order = data.keys()
+            self.order = list(data.keys())
         super(OrderedCaseInsensitiveDict, self).__init__(data)
 
     def __setitem__(self, key, value):
