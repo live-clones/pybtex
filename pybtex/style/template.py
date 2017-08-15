@@ -36,12 +36,15 @@ Inspired by Brevé -- http://breve.twisty-industries.com/
 >>> book_format = sentence(capfirst=True, sep=', ') [
 ...     field('title'), field('year'), optional [field('sdf')]
 ... ]
->>> print(unicode(book_format.format_data({'entry': e})))
+>>> print(six.text_type(book_format.format_data({'entry': e})))
 The Book, 2000.
->>> print(unicode(words ['one', 'two', words ['three', 'four']].format_data(e)))
+>>> print(six.text_type(words ['one', 'two', words ['three', 'four']].format_data(e)))
 one two three four
 """
+
 from __future__ import unicode_literals
+
+import  six
 
 from pybtex import richtext
 from pybtex.exceptions import PybtexError
@@ -156,13 +159,13 @@ def node(f):
 @node
 def join(children, data, sep='', sep2=None, last_sep=None):
     """Join text fragments together.
-    >>> print(unicode(join.format()))
+    >>> print(six.text_type(join.format()))
     <BLANKLINE>
-    >>> print(unicode(join ['a', 'b', 'c', 'd', 'e'].format()))
+    >>> print(six.text_type(join ['a', 'b', 'c', 'd', 'e'].format()))
     abcde
-    >>> print(unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format()))
+    >>> print(six.text_type(join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format()))
     Tom and Jerry
-    >>> print(unicode(join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format()))
+    >>> print(six.text_type(join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format()))
     Billy, Willy, and Dilly
     """
 
@@ -191,15 +194,15 @@ def together(children, data, last_tie=False):
     """
     Try to keep words together, like BibTeX does.
 
-    >>> print(unicode(together ['very', 'long', 'road'].format()))
+    >>> print(six.text_type(together ['very', 'long', 'road'].format()))
     very long road
-    >>> print(unicode(together(last_tie=True) ['very', 'long', 'road'].format()))
+    >>> print(six.text_type(together(last_tie=True) ['very', 'long', 'road'].format()))
     very long<nbsp>road
-    >>> print(unicode(together ['a', 'very', 'long', 'road'].format()))
+    >>> print(six.text_type(together ['a', 'very', 'long', 'road'].format()))
     a<nbsp>very long road
-    >>> print(unicode(together ['chapter', '8'].format()))
+    >>> print(six.text_type(together ['chapter', '8'].format()))
     chapter<nbsp>8
-    >>> print(unicode(together ['chapter', '666'].format()))
+    >>> print(six.text_type(together ['chapter', '666'].format()))
     chapter 666
     """
     from pybtex.textutils import tie_or_space
@@ -223,11 +226,11 @@ def together(children, data, last_tie=False):
 def sentence(children, data, capfirst=False, capitalize=False, add_period=True, sep=', '):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
-    >>> print(unicode(sentence.format()))
+    >>> print(six.text_type(sentence.format()))
     <BLANKLINE>
-    >>> print(unicode(sentence(capitalize=True, sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format()))
+    >>> print(six.text_type(sentence(capitalize=True, sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format()))
     Mary had a little lamb.
-    >>> print(unicode(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format()))
+    >>> print(six.text_type(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format()))
     uno, dos, tres
     """
 

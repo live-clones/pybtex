@@ -26,35 +26,35 @@ Usage:
 >>> t = Text('this ', 'is a ', Tag('em', 'very'), Text(' rich', ' text'))
 >>> print(t.render_as('latex'))
 this is a \emph{very} rich text
->>> print(unicode(t))
+>>> print(six.text_type(t))
 this is a very rich text
 >>> t = t.capitalize().add_period()
 >>> print(t.render_as('latex'))
 This is a \emph{very} rich text.
->>> print(unicode(t))
+>>> print(six.text_type(t))
 This is a very rich text.
 >>> print(Symbol('ndash').render_as('latex'))
 --
 >>> t = Text('Some ', Tag('em', Text('nested ', Tag('tt', 'Text', Text(' objects')))), '.')
 >>> print(t.render_as('latex'))
 Some \emph{nested \texttt{Text objects}}.
->>> print(unicode(t))
+>>> print(six.text_type(t))
 Some nested Text objects.
 >>> t = t.upper()
 >>> print(t.render_as('latex'))
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
->>> print(unicode(t))
+>>> print(six.text_type(t))
 SOME NESTED TEXT OBJECTS.
 
 >>> t = Text(', ').join(['one', 'two', Tag('em', 'three')])
 >>> print(t.render_as('latex'))
 one, two, \emph{three}
->>> print(unicode(t))
+>>> print(six.text_type(t))
 one, two, three
 >>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('em', 'three')])
 >>> print(t.render_as('latex'))
 one~two~\emph{three}
->>> print(unicode(t))
+>>> print(six.text_type(t))
 one<nbsp>two<nbsp>three
 """
 from __future__ import absolute_import, unicode_literals
@@ -152,9 +152,9 @@ class BaseText(object):
         """Join a list using this text (like string.join)
 
         >>> letters = ['a', 'b', 'c']
-        >>> print(unicode(String('-').join(letters)))
+        >>> print(six.text_type(String('-').join(letters)))
         a-b-c
-        >>> print(unicode(String('-').join(iter(letters))))
+        >>> print(six.text_type(String('-').join(iter(letters))))
         a-b-c
         """
 
@@ -202,11 +202,11 @@ class BaseText(object):
         Add a period to the end of text, if the last character is not ".", "!" or "?".
 
         >>> text = Text("That's all, folks")
-        >>> print(unicode(text.add_period()))
+        >>> print(six.text_type(text.add_period()))
         That's all, folks.
 
         >>> text = Text("That's all, folks!")
-        >>> print(unicode(text.add_period()))
+        >>> print(six.text_type(text.add_period()))
         That's all, folks!
 
         """
@@ -709,7 +709,7 @@ class String(BaseText):
         All arguments must be plain unicode strings.
         Arguments are concatenated together.
 
-        >>> print(unicode(String('November', ', ', 'December', '.')))
+        >>> print(six.text_type(String('November', ', ', 'December', '.')))
         November, December.
         """
 

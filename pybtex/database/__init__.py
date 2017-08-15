@@ -592,9 +592,9 @@ class Person(object):
         [u'Dixit']
         >>> print(p.lineage_names)
         []
-        >>> print(unicode(p))
+        >>> print(six.text_type(p))
         Dixit, Avinash K.
-        >>> p == Person(unicode(p))
+        >>> p == Person(six.text_type(p))
         True
         >>> p = Person('Dixit, Jr, Avinash K. ')
         >>> print(p.first_names)
@@ -607,9 +607,9 @@ class Person(object):
         [u'Dixit']
         >>> print(p.lineage_names)
         [u'Jr']
-        >>> print(unicode(p))
+        >>> print(six.text_type(p))
         Dixit, Jr, Avinash K.
-        >>> p == Person(unicode(p))
+        >>> p == Person(six.text_type(p))
         True
 
         >>> p = Person('abc')
