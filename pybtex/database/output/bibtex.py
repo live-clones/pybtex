@@ -46,7 +46,7 @@ class Writer(BaseWriter):
         {The "World"}
         >>> try:
         ...     print(w.quote(r'The {World'))
-        ... except BibTeXError, error:
+        ... except BibTeXError as error:
         ...     print(error)
         String has unmatched braces: The {World
         """
@@ -69,13 +69,13 @@ class Writer(BaseWriter):
         >>> w.check_braces('end}')
         >>> try:
         ...     w.check_braces('{')
-        ... except BibTeXError, error:
+        ... except BibTeXError as error:
         ...     print(error)
         String has unmatched braces: {
         >>> w.check_braces('{test}}')
         >>> try:
         ...     w.check_braces('{{test}')
-        ... except BibTeXError, error:
+        ... except BibTeXError as error:
         ...     print(error)
         String has unmatched braces: {{test}
 
