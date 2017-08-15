@@ -97,7 +97,7 @@ class BibTeXLexer(ExtendedRegexLexer):
     filenames = ['*.bib']
     flags = re.IGNORECASE
 
-    IDENTIFIER = ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits))
+    IDENTIFIER = r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits))
 
     def open_brace_callback(self, match, ctx):
         opening_brace = match.group()
@@ -204,7 +204,7 @@ class BSTLexer(RegexLexer):
             (r'[^#\"\{\}\s]+\$', Name.Builtin),
             (r'[^#\"\{\}\s]+', Name.Variable),
             (r'"[^\"]*"', String),
-            (ur'#-?\d+', Number),
+            (r'#-?\d+', Number),
             ('{', Text.Punctuation, ('group-end', 'body')),
             default('#pop'),
         ],
