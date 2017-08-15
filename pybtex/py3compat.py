@@ -29,6 +29,20 @@ if PY3:
     def fix_unicode_literals_in_doctest(obj):
         obj.__doc__ = obj.__doc__.replace("u'", "'")
         return obj
+
+    def python_2_unicode_compatible(obj):
+        return obj
+
+    def __str__(obj):
+        return obj.__str__()
 else:
     def fix_unicode_literals_in_doctest(obj):
         return obj
+
+    def python_2_unicode_compatible(obj):
+        obj.__unicode__ = obj.__str__
+        del obj.__str__
+        return obj
+
+    def __str__(obj):
+        return obj.__unicode__()

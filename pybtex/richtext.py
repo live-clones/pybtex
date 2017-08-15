@@ -66,6 +66,7 @@ from abc import ABCMeta, abstractmethod
 import six
 from pybtex import textutils
 from pybtex.utils import collect_iterable, deprecated
+from pybtex import py3compat
 
 
 # workaround for doctests in Python 2/3
@@ -94,11 +95,12 @@ def ensure_text(value):
         raise ValueError('parts must be strings or BaseText instances, not ' + bad_type)
 
 
+@py3compat.python_2_unicode_compatible
 class BaseText(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __unicode__(self):
+    def __str__(self):
         raise NotImplementedError
 
     @abstractmethod
@@ -304,6 +306,7 @@ class BaseText(object):
         return None, ()
 
 
+@py3compat.python_2_unicode_compatible
 class BaseMultipartText(BaseText):
     info = ()
 
@@ -339,7 +342,7 @@ class BaseMultipartText(BaseText):
         self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
 
-    def __unicode__(self):
+    def __str__(self):
         return ''.join(six.text_type(part) for part in self.parts)
 
     def __eq__(self, other):
@@ -686,6 +689,7 @@ class BaseMultipartText(BaseText):
         return self._create_similar(iter_map_with_condition())
 
 
+@py3compat.python_2_unicode_compatible
 class String(BaseText):
     """
     A :py:class:`String` is a wrapper for a plain Python string.
@@ -714,7 +718,7 @@ class String(BaseText):
     def __repr__(self):
         return str_repr(self.value)
 
-    def __unicode__(self):
+    def __str__(self):
         return six.text_type(self.value)
 
     def __eq__(self, other):
@@ -952,6 +956,7 @@ class Protected(BaseMultipartText):
         return backend.format_protected(text)
 
 
+@py3compat.python_2_unicode_compatible
 class Symbol(BaseText):
     """A special symbol. This class is rarely used and may be removed in
     future versions.
@@ -971,7 +976,7 @@ class Symbol(BaseText):
     def __repr__(self):
         return "Symbol(%s)" % str_repr(self.name)
 
-    def __unicode__(self):
+    def __str__(self):
         # XXX
         return u'<%s>' % self.name
 

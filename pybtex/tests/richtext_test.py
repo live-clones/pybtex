@@ -20,7 +20,7 @@ class TextTestMixin(object):
         raise NotImplementedError
 
     @abstractmethod
-    def test__unicode__(self):
+    def test__str__(self):
         raise NotImplementedError
 
     @abstractmethod
@@ -124,7 +124,7 @@ class TestText(TextTestMixin, TestCase):
         assert len(Text('Never', ' ', Tag('em', 'Knows', ' '), 'Best')) == len('Never Knows Best')
         assert len(Text('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
 
-    def test__unicode__(self):
+    def test__str__(self):
         assert six.text_type(Text()) == ''
         assert six.text_type(Text(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
 
@@ -312,7 +312,7 @@ class TestString(TextTestMixin, TestCase):
         val = 'test string'
         assert len(String(val)) == len(val)
 
-    def test__unicode__(self):
+    def test__str__(self):
         val = u'Detektivbyrån'
         assert six.text_type(String(val)) == val
 
@@ -445,7 +445,7 @@ class TestTag(TextTestMixin, TestCase):
         val = 'Tomato apple!'
         assert len(Tag('em', val)) == len(val)
 
-    def test__unicode__(self):
+    def test__str__(self):
         empty = Tag('em')
         assert six.text_type(empty.lower()) == ''
         assert six.text_type(empty.capitalize()) == ''
@@ -675,7 +675,7 @@ class TestHRef(TextTestMixin, TestCase):
         assert empty.url == '/'
         assert empty.parts == []
 
-    def test__unicode__(self):
+    def test__str__(self):
         empty = HRef('/')
         assert six.text_type(empty) == ''
 
@@ -988,7 +988,7 @@ class TestProtected(TextTestMixin, TestCase):
         assert len(Protected('Never', ' ', Tag('em', 'Knows', ' '), 'Best')) == len('Never Knows Best')
         assert len(Protected('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
 
-    def test__unicode__(self):
+    def test__str__(self):
         assert six.text_type(Protected()) == ''
         assert six.text_type(Protected(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
 
@@ -1164,7 +1164,7 @@ class TestSymbol(TextTestMixin, TestCase):
 
         assert Text(nbsp, nbsp) == Text(Symbol('nbsp'), Symbol('nbsp'))
 
-    def test__unicode__(self):
+    def test__str__(self):
         assert six.text_type(nbsp) == '<nbsp>'
 
     def test__len__(self):

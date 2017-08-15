@@ -27,6 +27,7 @@ import six
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.py3compat import fix_unicode_literals_in_doctest
 from pybtex.utils import pairwise
+from pybtex import py3compat
 
 whitespace_re = re.compile(r'(\s)')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
@@ -95,6 +96,7 @@ def wrap(string, width=79, subsequent_indent='  '):
     return '\n'.join(line.rstrip() for line in iter_lines(string))
 
 
+@py3compat.python_2_unicode_compatible
 class BibTeXString(object):
     def __init__(self, chars, level=0, max_level=100):
         if level > max_level:
@@ -141,7 +143,7 @@ class BibTeXString(object):
         if close is not None and self.level > 0 and self.is_closed:
             yield close(self)
 
-    def __unicode__(self):
+    def __str__(self):
         return ''.join(self.traverse(open=lambda string: '{', close=lambda string: '}'))
 
     def inner_string(self):

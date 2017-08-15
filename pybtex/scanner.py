@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 import re
 
 from pybtex.exceptions import PybtexError
+from pybtex import py3compat
 
 
 class Token(object):
@@ -140,6 +141,7 @@ class Scanner(object):
         return self.text[self.pos:]
 
 
+@py3compat.python_2_unicode_compatible
 class PybtexSyntaxError(PybtexError):
     error_type = 'syntax error'
 
@@ -149,8 +151,8 @@ class PybtexSyntaxError(PybtexError):
         self.parser = parser
         self.error_context_info = parser.get_error_context_info()
 
-    def __unicode__(self):
-        base_message = super(PybtexSyntaxError, self).__unicode__()
+    def __str__(self):
+        base_message = super(PybtexSyntaxError, self).__str__()
         pos = u' in line {0}'.format(self.lineno) if self.lineno is not None else ''
         return u'{error_type}{pos}: {message}'.format(
             error_type=self.error_type,
