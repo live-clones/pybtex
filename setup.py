@@ -55,14 +55,6 @@ class Sdist(sdist):
 ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README')).read()
 
-if sys.version_info >= (3, 0):
-    extra = {
-        'use_2to3': True,
-        'use_2to3_fixers': ['custom_fixers'],
-    }
-else:
-    extra = {}
-
 install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4', 'six']
 if sys.version_info < (2, 7):
     install_requires += ['Counter>=1.0.0']
@@ -171,5 +163,4 @@ setup(
         ],
     },
     zip_safe=True,
-    **extra
 )
