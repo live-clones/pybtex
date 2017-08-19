@@ -1,4 +1,3 @@
-from __future__ import print_function
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,10 +19,15 @@ from __future__ import print_function
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.utils import CaseInsensitiveDict
-from pybtex.bibtex.exceptions import BibTeXError
+from __future__ import print_function, unicode_literals
+
+import six
 from pybtex.bibtex.builtins import builtins, print_warning
+from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import wrap
+from pybtex.utils import CaseInsensitiveDict
+
+
 #from pybtex.database.input import bibtex
 
 
@@ -81,7 +85,7 @@ class EntryInteger(Integer, EntryVariable):
 
 
 class String(Variable):
-    value_type = basestring
+    value_type = six.string_types
     default = ''
 
 
@@ -127,7 +131,7 @@ class Crossref(Field):
 
 
 class Identifier(Variable):
-    value_type = basestring
+    value_type = six.string_types
     def execute(self, interpreter):
         try:
             f = interpreter.vars[self.value()]
@@ -137,7 +141,7 @@ class Identifier(Variable):
 
 
 class QuotedVar(Variable):
-    value_type = basestring
+    value_type = six.string_types
     def execute(self, interpreter):
         try:
             var = interpreter.vars[self.value()]
@@ -284,9 +288,9 @@ class Interpreter(object):
         self.bib_data = p.parse_files(self.bib_files)
         self.citations = self.bib_data.add_extra_citations(self.citations, self.min_crossrefs)
         self.citations = list(self.remove_missing_citations(self.citations))
-#        for k, v in self.bib_data.iteritems():
+#        for k, v in self.bib_data.items():
 #            print k
-#            for field, value in v.fields.iteritems():
+#            for field, value in v.fields.items():
 #                print '\t', field, value
 #        pass
 

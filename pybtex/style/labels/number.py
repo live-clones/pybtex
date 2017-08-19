@@ -1,3 +1,9 @@
+from __future__ import absolute_import, unicode_literals
+
+import six
+from pybtex.style.labels import BaseLabelStyle
+
+
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,11 +26,10 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from pybtex.style.labels import BaseLabelStyle
 
 
 class LabelStyle(BaseLabelStyle):
 
     def format_labels(self, sorted_entries):
         for number, entry in enumerate(sorted_entries):
-            yield unicode(number + 1)
+            yield six.text_type(number + 1)

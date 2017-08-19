@@ -5,6 +5,10 @@ Reading and writing bibliography data
 
 .. testsetup:: *
 
+    from __future__ import unicode_literals, print_function
+
+    import six
+
     from pybtex.database import BibliographyData, Entry, Person, parse_string
 
 
@@ -35,7 +39,7 @@ Here is a quick example:
 
     >>> from pybtex.database import parse_file
     >>> bib_data = parse_file('../examples/tugboat/tugboat.bib')
-    >>> print bib_data.entries['Knuth:TB8-1-14'].fields['title']
+    >>> print(bib_data.entries['Knuth:TB8-1-14'].fields['title'])
     Mixing right-to-left texts with left-to-right texts
     >>> for author in bib_data.entries['Knuth:TB8-1-14'].persons['author']:
     ...     print(unicode(author))
@@ -65,7 +69,7 @@ symmetrical to the functions described above:
     ...         ('year', '1986'),
     ...     ]),
     ... })
-    >>> print bib_data.to_string('bibtex')
+    >>> print(bib_data.to_string('bibtex'))
     @article{article-minimal,
         author = "L[eslie] B. Lamport",
         title = "The Gnats and Gnus Document Preparation System",

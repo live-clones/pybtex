@@ -19,12 +19,14 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import absolute_import, unicode_literals
+
 from collections import OrderedDict
 
+import six
 import yaml
-
-from pybtex.database.input import BaseParser
 from pybtex.database import Entry, Person
+from pybtex.database.input import BaseParser
 
 
 class OrderedDictSafeLoader(yaml.SafeLoader):
@@ -74,7 +76,7 @@ class Parser(BaseParser):
 
         entries = (
             (key, self.process_entry(entry))
-            for (key, entry) in t['entries'].iteritems()
+            for (key, entry) in t['entries'].items()
         )
 
         try:
@@ -87,7 +89,7 @@ class Parser(BaseParser):
 
     def process_entry(self, entry):
         bib_entry = Entry(entry['type'])
-        for (key, value) in entry.iteritems():
+        for (key, value) in entry.items():
             key_lower = key.lower()
             if key_lower in Person.valid_roles:
                 for names in value:
@@ -95,5 +97,5 @@ class Parser(BaseParser):
             elif key_lower == 'type':
                 pass
             else:
-                bib_entry.fields[key] = unicode(value)
+                bib_entry.fields[key] = six.text_type(value)
         return bib_entry

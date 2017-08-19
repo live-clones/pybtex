@@ -19,14 +19,16 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 import re
 
+from pybtex.richtext import Symbol, Text
 from pybtex.style.formatting import BaseStyle, toplevel
 from pybtex.style.template import (
-    join, words, together, field, optional, first_of,
-    names, sentence, tag, optional_field, href
+    field, first_of, href, join, names, optional, optional_field, sentence,
+    tag, together, words
 )
-from pybtex.richtext import Text, Symbol
 
 
 def dashify(text):

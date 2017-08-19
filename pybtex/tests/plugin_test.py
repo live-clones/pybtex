@@ -1,3 +1,12 @@
+from __future__ import unicode_literals
+
+import re
+
+import nose.tools
+import pybtex.database.input.bibtex
+import pybtex.plugin
+import pybtex.style.formatting.plain
+
 # Copyright (c) 2014  Matthias C. M. Troffaes
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -19,12 +28,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import re
-import nose.tools
 
-import pybtex.database.input.bibtex
-import pybtex.plugin
-import pybtex.style.formatting.plain
 
 
 # unittest.assertRaisesRegexp() is deprecated and renamed to

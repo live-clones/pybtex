@@ -28,14 +28,15 @@ Some tests were adopted from Babybib - another BibTeX parser by Matthew Brett.
 https://github.com/matthew-brett/babybib
 
 """
-
-
-from pybtex.database import BibliographyData
-from pybtex.database import Entry, Person
-from pybtex.database.input.bibtex import Parser
-from itertools import izip_longest
+from __future__ import absolute_import, unicode_literals
 
 from unittest import TestCase
+
+import six
+from six.moves import zip_longest
+
+from pybtex.database import BibliographyData, Entry, Person
+from pybtex.database.input.bibtex import Parser
 
 
 class _TestParser(Parser):
@@ -65,8 +66,8 @@ class ParserTest(object):
         result = parser.data
         correct_result = self.correct_result
         assert result == correct_result
-        for error, correct_error in izip_longest(parser.errors, self.errors):
-            actual_error = unicode(error)
+        for error, correct_error in zip_longest(parser.errors, self.errors):
+            actual_error = six.text_type(error)
             assert actual_error == correct_error
     
 
@@ -438,7 +439,7 @@ class CrossFileMacrosTest(ParserTest, TestCase):
 
 class AtCharacterTest(ParserTest, TestCase):
     input_strings = [
-        ur""",
+        r""",
             @proceedings{acc,
                 title = {Proc.\@ of the American Control Conference},
                 notes = "acc@example.org"
@@ -458,7 +459,7 @@ class AtCharacterTest(ParserTest, TestCase):
 class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
     parser_options = {'wanted_entries': []}
     input_strings = [
-        ur""",
+        r""",
             @proceedings{acc,
                 title = {Proc.\@ of the American Control Conference},
                 notes = "acc@example.org"
@@ -470,7 +471,7 @@ class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
 
 class CaseSensitivityTest(ParserTest, TestCase):
     input_strings = [
-        ur""",
+        r""",
             @Article{CamelCase,
                 Title = {To CamelCase or Under score},
                 year = 2009,

@@ -20,28 +20,27 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-r"""
+"""
 LaTeX output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> latex = Backend()
->>> print Tag('em', '').render(latex)
+>>> print(Tag('em', '').render(latex))
 <BLANKLINE>
->>> print Tag('em', 'Non-', 'empty').render(latex)
-\emph{Non-empty}
->>> print HRef('/', '').render(latex)
+>>> print(Tag('em', 'Non-', 'empty').render(latex))
+\\emph{Non-empty}
+>>> print(HRef('/', '').render(latex))
 <BLANKLINE>
->>> print HRef('/', 'Non-', 'empty').render(latex)
-\href{/}{Non-empty}
->>> print HRef('http://example.org/', 'http://example.org/').render(latex)
-\url{http://example.org/}
+>>> print(HRef('/', 'Non-', 'empty').render(latex))
+\\href{/}{Non-empty}
+>>> print(HRef('http://example.org/', 'http://example.org/').render(latex))
+\\url{http://example.org/}
 """
-
+from __future__ import unicode_literals
 
 import codecs
 
 import latexcodec  # noqa
-
 from pybtex.backends import BaseBackend
 
 
@@ -72,7 +71,7 @@ class Backend(BaseBackend):
         if tag is None:
             return u'{%s}' % text if text else u''
         else:
-            return ur'\%s{%s}' % (tag, text) if text else u''
+            return r'\%s{%s}' % (tag, text) if text else u''
 
     def format_href(self, url, text):
         if not text:
@@ -80,12 +79,12 @@ class Backend(BaseBackend):
         elif text == self.format_str(url):
             return u'\\url{%s}' % url
         else:
-            return ur'\href{%s}{%s}' % (url, text) if text else u''
+            return r'\href{%s}{%s}' % (url, text) if text else u''
 
     def format_protected(self, text):
         """
         >>> from pybtex.richtext import Protected
-        >>> print Protected('CTAN').render_as('latex')
+        >>> print(Protected('CTAN').render_as('latex'))
         {CTAN}
         """
 

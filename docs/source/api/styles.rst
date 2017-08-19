@@ -5,6 +5,10 @@ Designing styles
 
 .. testsetup:: *
 
+    from __future__ import unicode_literals, print_function
+
+    import six
+
     from pybtex.richtext import Text, String, Tag, HRef, Protected, Symbol, nbsp, textutils
 
 
@@ -38,9 +42,9 @@ The basic workflow is:
 
     >>> from pybtex.richtext import Text, Tag
     >>> text = Text('How to be ', Tag('em', 'a cat'), '.')
-    >>> print text.render_as('html')
+    >>> print(text.render_as('html'))
     How to be <em>a cat</em>.
-    >>> print text.render_as('latex')
+    >>> print(text.render_as('latex'))
     How to be \emph{a cat}.
 
 
@@ -82,7 +86,7 @@ is represented by this object tree:
     ...     Tag('em', 'comprehensive'),
     ...     '.',
     ... )
-    >>> print text.render_as('html')
+    >>> print(text.render_as('html'))
     <a href="http://ctan.org/"><em>Comprehensive</em> TeX Archive Network</a> is <em>comprehensive</em>.
 
 :py:class:`Protected` represents a "protected" piece of text, something like

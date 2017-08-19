@@ -23,26 +23,25 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-ur"""
+r"""
 Markdown output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> markdown = Backend()
->>> print Tag('em', '').render(markdown)
+>>> print(Tag('em', '').render(markdown))
 <BLANKLINE>
->>> print Tag('em', 'Non-', 'empty').render(markdown)
+>>> print(Tag('em', 'Non-', 'empty').render(markdown))
 *Non\-empty*
->>> print HRef('/', '').render(markdown)
+>>> print(HRef('/', '').render(markdown))
 <BLANKLINE>
->>> print HRef('/', 'Non-', 'empty').render(markdown)
+>>> print(HRef('/', 'Non-', 'empty').render(markdown))
 [Non\-empty](/)
 """
-
+from __future__ import unicode_literals
 
 from xml.sax.saxutils import escape
 
 from pybtex.backends import BaseBackend
-
 
 SPECIAL_CHARS = [
     u'\\',  # backslash
@@ -109,10 +108,10 @@ class Backend(BaseBackend):
         if tag is None:
             return text
         else:
-            return ur'{0}{1}{0}'.format(tag, text) if text else u''
+            return r'{0}{1}{0}'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'[%s](%s)' % (text, url) if text else u''
+        return r'[%s](%s)' % (text, url) if text else u''
 
     def write_entry(self, key, label, text):
         # Support http://www.michelf.com/projects/php-markdown/extra/#def-list

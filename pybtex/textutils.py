@@ -19,10 +19,12 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 import re
 
+from pybtex.py3compat import fix_unicode_literals_in_doctest
 from pybtex.utils import deprecated
-
 
 terminators = '.', '?', '!'
 delimiter_re = re.compile(r'([\s\-])')
@@ -64,23 +66,23 @@ def is_terminated(text):
 def add_period(text):
     """Add a period to the end of text, if needed.
 
-    >>> print add_period('')
+    >>> print(add_period(''))
     <BLANKLINE>
-    >>> print add_period('.')
+    >>> print(add_period('.'))
     .
-    >>> print add_period('Done')
+    >>> print(add_period('Done'))
     Done.
-    >>> print add_period('Done. ')
+    >>> print(add_period('Done. '))
     Done. .
-    >>> print add_period('Done.')
+    >>> print(add_period('Done.'))
     Done.
-    >>> print add_period('Done...')
+    >>> print(add_period('Done...'))
     Done...
-    >>> print add_period('Done!')
+    >>> print(add_period('Done!'))
     Done!
-    >>> print add_period('Done?')
+    >>> print(add_period('Done?'))
     Done?
-    >>> print add_period('Done?!')
+    >>> print(add_period('Done?!'))
     Done?!
     """
 
@@ -89,15 +91,16 @@ def add_period(text):
     return text
 
 
+@fix_unicode_literals_in_doctest
 def abbreviate(text, split=delimiter_re.split):
     """Abbreviate the given text.
 
     >> abbreviate('Name')
-    'N'
+    u'N'
     >> abbreviate('Some words')
-    'S. w.'
+    u'S. w.'
     >>> abbreviate('First-Second')
-    'F.-S.'
+    u'F.-S.'
     """
 
     def abbreviate(part):
@@ -113,19 +116,19 @@ def normalize_whitespace(string):
     r"""
     Replace every sequence of whitespace characters with a single space.
 
-    >>> print normalize_whitespace('abc')
+    >>> print(normalize_whitespace('abc'))
     abc
-    >>> print normalize_whitespace('Abc def.')
+    >>> print(normalize_whitespace('Abc def.'))
     Abc def.
-    >>> print normalize_whitespace(' Abc def.')
+    >>> print(normalize_whitespace(' Abc def.'))
     Abc def.
-    >>> print normalize_whitespace('Abc\ndef.')
+    >>> print(normalize_whitespace('Abc\ndef.'))
     Abc def.
-    >>> print normalize_whitespace('Abc\r\ndef.')
+    >>> print(normalize_whitespace('Abc\r\ndef.'))
     Abc def.
-    >>> print normalize_whitespace('Abc    \r\n\tdef.')
+    >>> print(normalize_whitespace('Abc    \r\n\tdef.'))
     Abc def.
-    >>> print normalize_whitespace('   \nAbc\r\ndef.')
+    >>> print(normalize_whitespace('   \nAbc\r\ndef.'))
     Abc def.
     """
 

@@ -22,14 +22,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-import sys
 import os
-from setuptools import setup, find_packages
+import sys
 from distutils.command.sdist import sdist
 from distutils.dep_util import newer
 
-progname = 'pybtex'
 from pybtex import __version__
+from setuptools import find_packages, setup
+
+progname = 'pybtex'
 
 
 class Sdist(sdist):
@@ -54,17 +55,7 @@ class Sdist(sdist):
 ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README')).read()
 
-if sys.version_info >= (3, 0):
-    extra = {
-        'use_2to3': True,
-        'use_2to3_fixers': ['custom_fixers'],
-    }
-else:
-    extra = {}
-
-install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4']
-if sys.version_info < (2, 7):
-    install_requires += ['Counter>=1.0.0']
+install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4', 'six']
 
 setup(
     name=progname,
@@ -170,5 +161,4 @@ setup(
         ],
     },
     zip_safe=True,
-    **extra
 )

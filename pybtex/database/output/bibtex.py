@@ -21,6 +21,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 import codecs
 
 from pybtex.bibtex.exceptions import BibTeXError
@@ -36,16 +38,16 @@ class Writer(BaseWriter):
     def quote(self, s):
         """
         >>> w = Writer()
-        >>> print w.quote('The World')
+        >>> print(w.quote('The World'))
         "The World"
-        >>> print w.quote(r'The \emph{World}')
+        >>> print(w.quote(r'The \emph{World}'))
         "The \emph{World}"
-        >>> print w.quote(r'The "World"')
+        >>> print(w.quote(r'The "World"'))
         {The "World"}
         >>> try:
-        ...     print w.quote(r'The {World')
-        ... except BibTeXError, error:
-        ...     print error
+        ...     print(w.quote(r'The {World'))
+        ... except BibTeXError as error:
+        ...     print(error)
         String has unmatched braces: The {World
         """
 
@@ -67,14 +69,14 @@ class Writer(BaseWriter):
         >>> w.check_braces('end}')
         >>> try:
         ...     w.check_braces('{')
-        ... except BibTeXError, error:
-        ...     print error
+        ... except BibTeXError as error:
+        ...     print(error)
         String has unmatched braces: {
         >>> w.check_braces('{test}}')
         >>> try:
         ...     w.check_braces('{{test}')
-        ... except BibTeXError, error:
-        ...     print error
+        ... except BibTeXError as error:
+        ...     print(error)
         String has unmatched braces: {{test}
 
         """
@@ -86,18 +88,18 @@ class Writer(BaseWriter):
                 raise BibTeXError('String has unmatched braces: %s' % s)
 
     def _encode(self, text):
-        ur"""Encode text as LaTeX.
+        r"""Encode text as LaTeX.
 
         >>> w = Writer(encoding='ASCII')
-        >>> print w._encode(u'1970–1971.')
+        >>> print(w._encode(u'1970–1971.'))
         1970--1971.
 
         >>> w = Writer(encoding='UTF-8')
-        >>> print w._encode(u'1970–1971.')
+        >>> print(w._encode(u'1970–1971.'))
         1970–1971.
 
         >>> w = Writer(encoding='UTF-8')
-        >>> print w._encode(u'100% noir')
+        >>> print(w._encode(u'100% noir'))
         100\% noir
         """
         import latexcodec  # NOQA
@@ -105,14 +107,14 @@ class Writer(BaseWriter):
         return codecs.encode(text, 'ulatex+{}'.format(self.encoding))
 
     def _encode_with_comments(self, text):
-        ur"""Encode text as LaTeX, preserve comments.
+        r"""Encode text as LaTeX, preserve comments.
 
         >>> w = Writer(encoding='ASCII')
-        >>> print w._encode_with_comments(u'1970–1971.  %% † RIP †')
+        >>> print(w._encode_with_comments(u'1970–1971.  %% † RIP †'))
         1970--1971.  %% \dag\ RIP \dag
 
         >>> w = Writer(encoding='UTF-8')
-        >>> print w._encode_with_comments(u'1970–1971.  %% † RIP †')
+        >>> print(w._encode_with_comments(u'1970–1971.  %% † RIP †'))
         1970–1971.  %% † RIP †
         """
         return u'%'.join(self._encode(part) for part in text.split(u'%'))
@@ -153,7 +155,7 @@ class Writer(BaseWriter):
         self._write_preamble(stream, bib_data.preamble)
 
         first = True
-        for key, entry in bib_data.entries.iteritems():
+        for key, entry in bib_data.entries.items():
             if not first:
                 stream.write(u'\n')
             first = False
@@ -161,8 +163,8 @@ class Writer(BaseWriter):
             stream.write(u'@%s' % entry.original_type)
             stream.write(u'{%s' % key)
 #            for role in ('author', 'editor'):
-            for role, persons in entry.persons.iteritems():
+            for role, persons in entry.persons.items():
                 self._write_persons(stream, persons, role)
-            for type, value in entry.fields.iteritems():
+            for type, value in entry.fields.items():
                 self._write_field(stream, type, value)
             stream.write(u'\n}\n')

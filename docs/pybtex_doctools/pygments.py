@@ -25,12 +25,16 @@ from __future__ import absolute_import
 import re
 from string import ascii_letters, digits
 
-from pygments.style import Style
-from pygments.lexer import RegexLexer, ExtendedRegexLexer, include, default, words
-from pygments.token import Keyword, Name, Comment, String, Error, \
-     Number, Operator, Generic, Literal, Punctuation, Text
-
 from pybtex.database.input.bibtex import NAME_CHARS
+
+from pygments.lexer import (
+    ExtendedRegexLexer, RegexLexer, default, include, words
+)
+from pygments.style import Style
+from pygments.token import (
+    Comment, Error, Generic, Keyword, Literal, Name, Number, Operator,
+    Punctuation, String, Text
+)
 
 from . import add_entry_point
 
@@ -93,7 +97,7 @@ class BibTeXLexer(ExtendedRegexLexer):
     filenames = ['*.bib']
     flags = re.IGNORECASE
 
-    IDENTIFIER = ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits))
+    IDENTIFIER = r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits))
 
     def open_brace_callback(self, match, ctx):
         opening_brace = match.group()
@@ -200,7 +204,7 @@ class BSTLexer(RegexLexer):
             (r'[^#\"\{\}\s]+\$', Name.Builtin),
             (r'[^#\"\{\}\s]+', Name.Variable),
             (r'"[^\"]*"', String),
-            (ur'#-?\d+', Number),
+            (r'#-?\d+', Number),
             ('{', Text.Punctuation, ('group-end', 'body')),
             default('#pop'),
         ],

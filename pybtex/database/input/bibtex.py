@@ -54,7 +54,7 @@ True
 >>> rief97b = bib_data.entries['rief97b']
 >>> authors = rief97b.persons['author']
 >>> for author in authors:
-...     print unicode(author)
+...     print(six.text_type(author))
 Rief, Matthias
 Gautel, Mathias
 Oesterhelt, Filipp
@@ -62,25 +62,27 @@ Fernandez, Julio M.
 Gaub, Hermann E.
 
 # field names are case-insensitive
->>> print rief97b.fields['URL']
+>>> print(rief97b.fields['URL'])
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
->>> print rief97b.fields['url']
+>>> print(rief97b.fields['url'])
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 
 """
-
-from string import ascii_letters, digits
+from __future__ import unicode_literals
 
 import re
-from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
+from string import ascii_letters, digits
+
+import six
+
+from pybtex import textutils
+from pybtex.bibtex.utils import split_name_list
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
-from pybtex.bibtex.utils import split_name_list
-from pybtex import textutils
 from pybtex.scanner import (
-    Scanner, Pattern, Literal,
-    PrematureEOF, PybtexSyntaxError,
+    Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
 )
+from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
 
 month_names = {
     'jan': 'January',
@@ -110,10 +112,10 @@ class UndefinedMacro(PybtexSyntaxError):
 
 
 class LowLevelParser(Scanner):
-    NAME = Pattern(ur'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
-    KEY_PAREN = Pattern(ur'[^\s\,]+', 'entry key')
-    KEY_BRACE = Pattern(ur'[^\s\,}]+', 'entry key')
-    NUMBER = Pattern(ur'[{0}]+'.format(digits), 'a number')
+    NAME = Pattern(r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
+    KEY_PAREN = Pattern(r'[^\s\,]+', 'entry key')
+    KEY_BRACE = Pattern(r'[^\s\,}]+', 'entry key')
+    NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
     LBRACE = Literal(u'{')
     RBRACE = Literal(u'}')
     LPAREN = Literal(u'(')

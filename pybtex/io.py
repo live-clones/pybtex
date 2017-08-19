@@ -22,11 +22,11 @@
 
 """Unicode-aware IO routines."""
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import io
 import sys
-from os import path, environ
+from os import environ, path
 
 from pybtex.exceptions import PybtexError
 from pybtex.kpathsea import kpsewhich
@@ -39,6 +39,13 @@ def get_default_encoding():
 def get_stream_encoding(stream):
     stream_encoding = getattr(stream, 'encoding', None)
     return stream_encoding or get_default_encoding()
+
+
+def _decode_filename(filename, errors='strict'):
+    """Decode byte-encoded filename."""
+
+    encoding = sys.getfilesystemencoding() or self.get_default_encoding()
+    return filename.decode(encoding, errors=errors)
 
 
 def _open_existing(opener, filename, mode, locate, **kwargs):

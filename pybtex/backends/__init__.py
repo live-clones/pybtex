@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -19,6 +20,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import six
+
 import pybtex.io
 from pybtex.plugin import Plugin
 
@@ -39,7 +42,7 @@ class BaseBackend(Plugin):
     tags[u'tt']          : typewrite text, not semantic
     """
 
-    RenderType = basestring  #: the result of render and render_sequence
+    RenderType = six.string_types  #: the result of render and render_sequence
     default_suffix = None  #: the default suffix for an output file
 
     def __init__(self, encoding=None):

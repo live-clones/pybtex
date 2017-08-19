@@ -1,3 +1,12 @@
+from __future__ import unicode_literals
+
+import errno
+import posixpath
+from unittest import TestCase
+
+from pybtex import io
+
+
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -20,11 +29,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-import errno
-import posixpath
-from unittest import TestCase
 
-from pybtex import io
 
 
 class MockFile(object):

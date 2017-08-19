@@ -20,10 +20,14 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+from __future__ import print_function
 import re
 
 from collections import Mapping
 from pybtex.plugin import find_plugin
+
+import six
 
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
@@ -33,6 +37,7 @@ from pybtex.utils import (
 from pybtex.richtext import Text
 from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
 from pybtex.errors import report_error
+from pybtex.py3compat import fix_unicode_literals_in_doctest, python_2_unicode_compatible
 
 
 class BibliographyDataError(PybtexError):
@@ -83,7 +88,7 @@ class BibliographyData(object):
             self.citations = CaseInsensitiveSet()
         if entries:
             if isinstance(entries, Mapping):
-                entries = entries.iteritems()
+                entries = entries.items()
             for (key, entry) in entries:
                 self.add_entry(key, entry)
         if preamble:
@@ -114,7 +119,7 @@ class BibliographyData(object):
         >>> bib_data = parse_string(r"""
         ...     @PREAMBLE{"\newcommand{\noopsort}[1]{}"}
         ... """, 'bibtex')
-        >>> print bib_data.preamble
+        >>> print(bib_data.preamble)
         \newcommand{\noopsort}[1]{}
 
         .. versionadded:: 0.19
@@ -164,6 +169,7 @@ class BibliographyData(object):
         for key, entry in entries:
             self.add_entry(key, entry)
 
+    @fix_unicode_literals_in_doctest
     def _get_crossreferenced_citations(self, citations, min_crossrefs):
         """
         Get cititations not cited explicitly but referenced by other citations.
@@ -176,9 +182,9 @@ class BibliographyData(object):
         >>> list(data._get_crossreferenced_citations([], min_crossrefs=1))
         []
         >>> list(data._get_crossreferenced_citations(['main_article'], min_crossrefs=1))
-        ['xrefd_arcicle']
+        [u'xrefd_arcicle']
         >>> list(data._get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
-        ['xrefd_arcicle']
+        [u'xrefd_arcicle']
         >>> list(data._get_crossreferenced_citations(['main_article'], min_crossrefs=2))
         []
         >>> list(data._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
@@ -188,9 +194,9 @@ class BibliographyData(object):
         >>> list(data2._get_crossreferenced_citations([], min_crossrefs=1))
         []
         >>> list(data2._get_crossreferenced_citations(['main_article'], min_crossrefs=1))
-        ['xrefd_arcicle']
+        [u'xrefd_arcicle']
         >>> list(data2._get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
-        ['xrefd_arcicle']
+        [u'xrefd_arcicle']
         >>> list(data2._get_crossreferenced_citations(['main_article'], min_crossrefs=2))
         []
         >>> list(data2._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
@@ -225,6 +231,7 @@ class BibliographyData(object):
                 citation_set.add(canonical_crossref)
                 yield canonical_crossref
 
+    @fix_unicode_literals_in_doctest
     def _expand_wildcard_citations(self, citations):
         """
         Expand wildcard citations (\citation{*} in .aux file).
@@ -239,15 +246,15 @@ class BibliographyData(object):
         >>> list(data._expand_wildcard_citations([]))
         []
         >>> list(data._expand_wildcard_citations(['*']))
-        ['uno', 'dos', 'tres', 'cuatro']
+        [u'uno', u'dos', u'tres', u'cuatro']
         >>> list(data._expand_wildcard_citations(['uno', '*']))
-        ['uno', 'dos', 'tres', 'cuatro']
+        [u'uno', u'dos', u'tres', u'cuatro']
         >>> list(data._expand_wildcard_citations(['dos', '*']))
-        ['dos', 'uno', 'tres', 'cuatro']
+        [u'dos', u'uno', u'tres', u'cuatro']
         >>> list(data._expand_wildcard_citations(['*', 'uno']))
-        ['uno', 'dos', 'tres', 'cuatro']
+        [u'uno', u'dos', u'tres', u'cuatro']
         >>> list(data._expand_wildcard_citations(['*', 'DOS']))
-        ['uno', 'dos', 'tres', 'cuatro']
+        [u'uno', u'dos', u'tres', u'cuatro']
 
         """
 
@@ -300,13 +307,14 @@ class BibliographyData(object):
 
         .. versionadded:: 0.19
         """
-        if isinstance(file, basestring):
+        if isinstance(file, six.string_types):
             filename = file
         else:
             filename = getattr(file, 'name', None)
         writer = find_plugin('pybtex.database.output', bib_format, filename=filename)(**kwargs)
         return writer.write_file(self, file)
 
+    @fix_unicode_literals_in_doctest
     def lower(self):
         u'''
         Return another :py:class:`.BibliographyData` with all identifiers converted to lowercase.
@@ -323,21 +331,21 @@ class BibliographyData(object):
         ... """, 'bibtex')
         >>> data_lower = data.lower()
         >>> data_lower.entries.keys()
-        ['obrazy', 'elegie']
+        [u'obrazy', u'elegie']
         >>> for entry in data_lower.entries.values():
         ...     entry.key
         ...     entry.persons.keys()
         ...     entry.fields.keys()
-        'obrazy'
-        ['author']
-        ['title']
-        'elegie'
-        ['author']
-        ['title']
+        u'obrazy'
+        [u'author']
+        [u'title']
+        u'elegie'
+        [u'author']
+        [u'title']
 
         '''
 
-        entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.iteritems())
+        entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.items())
         return type(self)(
             entries=entries_lower,
             preamble=self._preamble,
@@ -357,14 +365,14 @@ class FieldDict(OrderedCaseInsensitiveDict):
         except KeyError:
             if key in self.parent.persons:
                 persons = self.parent.persons[key]
-                return ' and '.join(unicode(person) for person in persons)
+                return ' and '.join(six.text_type(person) for person in persons)
             elif 'crossref' in self:
                 return self.parent.get_crossref().fields[key]
             else:
                 raise KeyError(key)
 
     def lower(self):
-        return type(self)(self.parent, self.iteritems_lower())
+        return type(self)(self.parent, self.items_lower())
 
 
 class RichFieldProxyDict(Mapping):
@@ -463,16 +471,18 @@ class Entry(object):
         )
 
 
+@python_2_unicode_compatible
+@fix_unicode_literals_in_doctest
 class Person(object):
     """A person or some other person-like entity.
 
     >>> knuth = Person('Donald E. Knuth')
     >>> knuth.first_names
-    ['Donald']
+    [u'Donald']
     >>> knuth.middle_names
-    ['E.']
+    [u'E.']
     >>> knuth.last_names
-    ['Knuth']
+    [u'Knuth']
 
     """
 
@@ -552,6 +562,7 @@ class Person(object):
         self.lineage_names.extend(split_tex_string(lineage))
 
     @property
+    @fix_unicode_literals_in_doctest
     def bibtex_first_names(self):
         """A list of first and middle names together.
         (BibTeX treats all middle names as first.)
@@ -562,50 +573,51 @@ class Person(object):
 
         >>> knuth = Person('Donald E. Knuth')
         >>> knuth.bibtex_first_names
-        ['Donald', 'E.']
+        [u'Donald', u'E.']
         """
         return self.first_names + self.middle_names
 
+    @fix_unicode_literals_in_doctest
     def _parse_string(self, name):
         """Extract various parts of the name from a string.
 
         >>> p = Person('Avinash K. Dixit')
-        >>> print p.first_names
-        ['Avinash']
-        >>> print p.middle_names
-        ['K.']
-        >>> print p.prelast_names
+        >>> print(p.first_names)
+        [u'Avinash']
+        >>> print(p.middle_names)
+        [u'K.']
+        >>> print(p.prelast_names)
         []
-        >>> print p.last_names
-        ['Dixit']
-        >>> print p.lineage_names
+        >>> print(p.last_names)
+        [u'Dixit']
+        >>> print(p.lineage_names)
         []
-        >>> print unicode(p)
+        >>> print(six.text_type(p))
         Dixit, Avinash K.
-        >>> p == Person(unicode(p))
+        >>> p == Person(six.text_type(p))
         True
         >>> p = Person('Dixit, Jr, Avinash K. ')
-        >>> print p.first_names
-        ['Avinash']
-        >>> print p.middle_names
-        ['K.']
-        >>> print p.prelast_names
+        >>> print(p.first_names)
+        [u'Avinash']
+        >>> print(p.middle_names)
+        [u'K.']
+        >>> print(p.prelast_names)
         []
-        >>> print p.last_names
-        ['Dixit']
-        >>> print p.lineage_names
-        ['Jr']
-        >>> print unicode(p)
+        >>> print(p.last_names)
+        [u'Dixit']
+        >>> print(p.lineage_names)
+        [u'Jr']
+        >>> print(six.text_type(p))
         Dixit, Jr, Avinash K.
-        >>> p == Person(unicode(p))
+        >>> p == Person(six.text_type(p))
         True
 
         >>> p = Person('abc')
-        >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
-        [] [] [] ['abc'] []
+        >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
+        [] [] [] [u'abc'] []
         >>> p = Person('Viktorov, Michail~Markovitch')
-        >>> print p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names
-        ['Michail'] ['Markovitch'] [] ['Viktorov'] []
+        >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
+        [u'Michail'] [u'Markovitch'] [] [u'Viktorov'] []
         """
         def process_first_middle(parts):
             try:
@@ -705,7 +717,7 @@ class Person(object):
             and self.lineage_names == other.lineage_names
         )
 
-    def __unicode__(self):
+    def __str__(self):
         # von Last, Jr, First
         von_last = ' '.join(self.prelast_names + self.last_names)
         jr = ' '.join(self.lineage_names)
@@ -713,20 +725,21 @@ class Person(object):
         return ', '.join(part for part in (von_last, jr, first) if part)
 
     def __repr__(self):
-        return 'Person({0})'.format(repr(unicode(self)))
+        return 'Person({0})'.format(repr(six.text_type(self)))
 
     def get_part_as_text(self, type):
         names = getattr(self, type + '_names')
         return ' '.join(names)
 
+    @fix_unicode_literals_in_doctest
     def get_part(self, type, abbr=False):
         """Get a list of name parts by `type`.
 
         >>> knuth = Person('Donald E. Knuth')
         >>> knuth.get_part('first')
-        ['Donald']
+        [u'Donald']
         >>> knuth.get_part('last')
-        ['Knuth']
+        [u'Knuth']
         """
 
         names = getattr(self, type + '_names')
@@ -843,7 +856,7 @@ def parse_file(file, bib_format=None, **kwargs):
     .. versionadded:: 0.19
     """
 
-    if isinstance(file, basestring):
+    if isinstance(file, six.string_types):
         filename = file
     else:
         filename = getattr(file, 'name', None)

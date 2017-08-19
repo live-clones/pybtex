@@ -19,10 +19,12 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 from xml.etree import cElementTree as ET
+
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
-
 
 bibtexns = '{http://bibtexml.sf.net/}'
 

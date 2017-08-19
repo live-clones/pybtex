@@ -25,7 +25,10 @@
 """
 Make a table of character widths to use with bibtex width$ function.
 """
-from __future__ import print_function
+
+from __future__ import print_function, unicode_literals
+
+import six
 
 
 def make_table(font_filename, output):
@@ -49,7 +52,7 @@ def make_table(font_filename, output):
     print('# Font style: {0}'.format(font_face.style_name), file=output)
     print('# Font version: {0}'.format(get_font_version(font_face)), file=output)
     print(file=output)
-    print('charwidths = {0}'.format(pformat(charwidths).encode('UTF-8')), file=output)
+    print('charwidths = {0}'.format(pformat(charwidths)), file=output)
 
 
 def get_font_version(font_face):
@@ -74,7 +77,7 @@ def iter_charwidths(font_face):
     charcode, gindex = font_face.get_first_char()
     while gindex:
         font_face.load_glyph(gindex, FT_LOAD_NO_SCALE)
-        yield unichr(charcode), font_face.glyph.metrics.horiAdvance
+        yield six.unichr(charcode), font_face.glyph.metrics.horiAdvance
         charcode, gindex = font_face.get_next_char(charcode, gindex)
         
 

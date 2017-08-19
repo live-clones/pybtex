@@ -24,54 +24,57 @@ r"""(simple but) rich text formatting tools
 Usage:
 
 >>> t = Text('this ', 'is a ', Tag('em', 'very'), Text(' rich', ' text'))
->>> print t.render_as('latex')
+>>> print(t.render_as('latex'))
 this is a \emph{very} rich text
->>> print unicode(t)
+>>> print(six.text_type(t))
 this is a very rich text
 >>> t = t.capitalize().add_period()
->>> print t.render_as('latex')
+>>> print(t.render_as('latex'))
 This is a \emph{very} rich text.
->>> print unicode(t)
+>>> print(six.text_type(t))
 This is a very rich text.
->>> print Symbol('ndash').render_as('latex')
+>>> print(Symbol('ndash').render_as('latex'))
 --
 >>> t = Text('Some ', Tag('em', Text('nested ', Tag('tt', 'Text', Text(' objects')))), '.')
->>> print t.render_as('latex')
+>>> print(t.render_as('latex'))
 Some \emph{nested \texttt{Text objects}}.
->>> print unicode(t)
+>>> print(six.text_type(t))
 Some nested Text objects.
 >>> t = t.upper()
->>> print t.render_as('latex')
+>>> print(t.render_as('latex'))
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
->>> print unicode(t)
+>>> print(six.text_type(t))
 SOME NESTED TEXT OBJECTS.
 
 >>> t = Text(', ').join(['one', 'two', Tag('em', 'three')])
->>> print t.render_as('latex')
+>>> print(t.render_as('latex'))
 one, two, \emph{three}
->>> print unicode(t)
+>>> print(six.text_type(t))
 one, two, three
 >>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('em', 'three')])
->>> print t.render_as('latex')
+>>> print(t.render_as('latex'))
 one~two~\emph{three}
->>> print unicode(t)
+>>> print(six.text_type(t))
 one<nbsp>two<nbsp>three
 """
+from __future__ import absolute_import, unicode_literals
 
-
-import warnings
 import itertools
+import warnings
 from abc import ABCMeta, abstractmethod
+
+import six
 from pybtex import textutils
-from pybtex.utils import deprecated, collect_iterable
+from pybtex.utils import collect_iterable, deprecated
+from pybtex import py3compat
 
 
 # workaround for doctests in Python 2/3
 def str_repr(string):
     """
-    >>> print str_repr('test')
+    >>> print(str_repr('test'))
     'test'
-    >>> print str_repr(u'test')
+    >>> print(str_repr(u'test'))
     'test'
     """
 
@@ -83,7 +86,7 @@ def str_repr(string):
 
 
 def ensure_text(value):
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         return String(value)
     elif isinstance(value, BaseText):
         return value
@@ -92,11 +95,12 @@ def ensure_text(value):
         raise ValueError('parts must be strings or BaseText instances, not ' + bad_type)
 
 
+@py3compat.python_2_unicode_compatible
 class BaseText(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __unicode__(self):
+    def __str__(self):
         raise NotImplementedError
 
     @abstractmethod
@@ -136,9 +140,9 @@ class BaseText(object):
         but for tags and similar objects the appended text is placed _inside_ the tag.
 
         >>> text = Tag('em', 'Look here')
-        >>> print (text +  '!').render_as('html')
+        >>> print((text +  '!').render_as('html'))
         <em>Look here</em>!
-        >>> print text.append('!').render_as('html')
+        >>> print(text.append('!').render_as('html'))
         <em>Look here!</em>
         """
 
@@ -148,9 +152,9 @@ class BaseText(object):
         """Join a list using this text (like string.join)
 
         >>> letters = ['a', 'b', 'c']
-        >>> print unicode(String('-').join(letters))
+        >>> print(six.text_type(String('-').join(letters)))
         a-b-c
-        >>> print unicode(String('-').join(iter(letters)))
+        >>> print(six.text_type(String('-').join(iter(letters))))
         a-b-c
         """
 
@@ -198,11 +202,11 @@ class BaseText(object):
         Add a period to the end of text, if the last character is not ".", "!" or "?".
 
         >>> text = Text("That's all, folks")
-        >>> print unicode(text.add_period())
+        >>> print(six.text_type(text.add_period()))
         That's all, folks.
 
         >>> text = Text("That's all, folks!")
-        >>> print unicode(text.add_period())
+        >>> print(six.text_type(text.add_period()))
         That's all, folks!
 
         """
@@ -261,11 +265,11 @@ class BaseText(object):
         and calls :py:meth:`Text.render`.
 
         >>> text = Text('Longcat is ', Tag('em', 'looooooong'), '!')
-        >>> print text.render_as('html')
+        >>> print(text.render_as('html'))
         Longcat is <em>looooooong</em>!
-        >>> print text.render_as('latex')
+        >>> print(text.render_as('latex'))
         Longcat is \emph{looooooong}!
-        >>> print text.render_as('text')
+        >>> print(text.render_as('text'))
         Longcat is looooooong!
 
         :param backend_name: The name of the output backend (like ``"latex"`` or
@@ -302,6 +306,7 @@ class BaseText(object):
         return None, ()
 
 
+@py3compat.python_2_unicode_compatible
 class BaseMultipartText(BaseText):
     info = ()
 
@@ -337,8 +342,8 @@ class BaseMultipartText(BaseText):
         self.parts = list(merged_parts)
         self.length = sum(len(part) for part in self.parts)
 
-    def __unicode__(self):
-        return ''.join(unicode(part) for part in self.parts)
+    def __str__(self):
+        return ''.join(six.text_type(part) for part in self.parts)
 
     def __eq__(self, other):
         """
@@ -385,7 +390,7 @@ class BaseMultipartText(BaseText):
         False
 
         """
-        if not isinstance(item, basestring):
+        if not isinstance(item, six.string_types):
             raise TypeError(item)
         return not item or any(part.__contains__(item) for part in self.parts)
 
@@ -400,7 +405,7 @@ class BaseMultipartText(BaseText):
         Text(Tag('em', '!'))
         """
 
-        if isinstance(key, (int, long)):
+        if isinstance(key, six.integer_types):
             start = key
             end = None
         elif isinstance(key, slice):
@@ -459,9 +464,9 @@ class BaseMultipartText(BaseText):
         For Tags, HRefs, etc. the appended text is placed *inside* the tag.
 
         >>> text = Tag('strong', 'Chuck Norris')
-        >>> print (text +  ' wins!').render_as('html')
+        >>> print((text +  ' wins!').render_as('html'))
         <strong>Chuck Norris</strong> wins!
-        >>> print text.append(' wins!').render_as('html')
+        >>> print(text.append(' wins!').render_as('html'))
         <strong>Chuck Norris wins!</strong>
         """
 
@@ -623,7 +628,7 @@ class BaseMultipartText(BaseText):
 
     @deprecated('0.19', 'use __unicode__() instead')
     def plaintext(self):
-        return unicode(self)
+        return six.text_type(self)
 
     @deprecated('0.19')
     def enumerate(self):
@@ -684,14 +689,15 @@ class BaseMultipartText(BaseText):
         return self._create_similar(iter_map_with_condition())
 
 
+@py3compat.python_2_unicode_compatible
 class String(BaseText):
     """
     A :py:class:`String` is a wrapper for a plain Python string.
 
     >>> from pybtex.richtext import String
-    >>> print String('Crime & Punishment').render_as('text')
+    >>> print(String('Crime & Punishment').render_as('text'))
     Crime & Punishment
-    >>> print String('Crime & Punishment').render_as('html')
+    >>> print(String('Crime & Punishment').render_as('html'))
     Crime &amp; Punishment
 
     :py:class:`String` supports the same methods as :py:class:`Text`.
@@ -703,7 +709,7 @@ class String(BaseText):
         All arguments must be plain unicode strings.
         Arguments are concatenated together.
 
-        >>> print unicode(String('November', ', ', 'December', '.'))
+        >>> print(six.text_type(String('November', ', ', 'December', '.')))
         November, December.
         """
 
@@ -712,8 +718,8 @@ class String(BaseText):
     def __repr__(self):
         return str_repr(self.value)
 
-    def __unicode__(self):
-        return unicode(self.value)
+    def __str__(self):
+        return six.text_type(self.value)
 
     def __eq__(self, other):
         """
@@ -742,7 +748,7 @@ class String(BaseText):
         if sep is None:
             from .textutils import whitespace_re
             parts = whitespace_re.split(self.value)
-        elif isinstance(sep, basestring):
+        elif isinstance(sep, six.string_types):
             parts = self.value.split(sep)
         else:
             try:
@@ -783,7 +789,7 @@ class String(BaseText):
 
     @property
     def parts(self):
-        return [unicode(self)]
+        return [six.text_type(self)]
 
     def _typeinfo(self):
         return String, ()
@@ -822,9 +828,9 @@ class Tag(BaseMultipartText):
 
     >>> from pybtex.richtext import Tag
     >>> tag = Tag('em', 'The TeXbook')
-    >>> print tag.render_as('html')
+    >>> print(tag.render_as('html'))
     <em>The TeXbook</em>
-    >>> print tag.render_as('latex')
+    >>> print(tag.render_as('latex'))
     \emph{The TeXbook}
 
     :py:class:`Tag` supports the same methods as :py:class:`Text`.
@@ -841,10 +847,10 @@ class Tag(BaseMultipartText):
         return name
 
     def __init__(self, name, *args):
-        if not isinstance(name, (basestring, Text)):
+        if not isinstance(name, (six.string_types, Text)):
             raise ValueError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
-        self.name = self.__check_name(unicode(name))
+        self.name = self.__check_name(six.text_type(name))
         self.info = self.name,
         super(Tag, self).__init__(*args)
 
@@ -861,29 +867,29 @@ class Tag(BaseMultipartText):
 
 
 class HRef(BaseMultipartText):
-    r"""
+    """
     A :py:class:`HRef` represends a hyperlink:
 
     >>> from pybtex.richtext import Tag
     >>> href = HRef('http://ctan.org/', 'CTAN')
-    >>> print href.render_as('html')
+    >>> print(href.render_as('html'))
     <a href="http://ctan.org/">CTAN</a>
-    >>> print href.render_as('latex')
-    \href{http://ctan.org/}{CTAN}
+    >>> print(href.render_as('latex'))
+    \\href{http://ctan.org/}{CTAN}
 
     >>> href = HRef(String('http://ctan.org/'), String('http://ctan.org/'))
-    >>> print href.render_as('latex')
-    \url{http://ctan.org/}
+    >>> print(href.render_as('latex'))
+    \\url{http://ctan.org/}
 
     :py:class:`HRef` supports the same methods as :py:class:`Text`.
 
     """
 
     def __init__(self, url, *args):
-        if not isinstance(url, (basestring, BaseText)):
+        if not isinstance(url, (six.string_types, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
-        self.url = unicode(url)
+        self.url = six.text_type(url)
         self.info = self.url,
         super(HRef, self).__init__(*args)
 
@@ -914,9 +920,9 @@ class Protected(BaseMultipartText):
     Protected('The CTAN archive')
     >>> text.split()
     [Protected('The CTAN archive')]
-    >>> print text.render_as('latex')
+    >>> print(text.render_as('latex'))
     {The CTAN archive}
-    >>> print text.render_as('html')
+    >>> print(text.render_as('html'))
     <span class="bibtex-protected">The CTAN archive</span>
 
     .. versionadded:: 0.20
@@ -950,6 +956,7 @@ class Protected(BaseMultipartText):
         return backend.format_protected(text)
 
 
+@py3compat.python_2_unicode_compatible
 class Symbol(BaseText):
     """A special symbol. This class is rarely used and may be removed in
     future versions.
@@ -969,7 +976,7 @@ class Symbol(BaseText):
     def __repr__(self):
         return "Symbol(%s)" % str_repr(self.name)
 
-    def __unicode__(self):
+    def __str__(self):
         # XXX
         return u'<%s>' % self.name
 

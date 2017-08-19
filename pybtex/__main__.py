@@ -21,6 +21,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 from os import path
 
 from pybtex.cmdline import CommandLine, make_option, standard_option
@@ -96,7 +98,7 @@ It is also possible to define bibliography formatting styles in Python.
             'abbreviate_names': 'abbreviated names',
         }
         if style_language != 'python':
-            for option, what_is_not_supported in not_supported_by_bibtex.iteritems():
+            for option, what_is_not_supported in not_supported_by_bibtex.items():
                 if options[option]:
                     self.opt_parser.error(
                         '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported

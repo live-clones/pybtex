@@ -1,5 +1,4 @@
-from __future__ import unicode_literals
-# Copyright (c) 2006-2017  Andrey Golovigin
+# Copyright (c) 2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,18 +19,30 @@ from __future__ import unicode_literals
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from pybtex.plugin import Plugin
+
+import sys
+
+PY3 = sys.version_info[0] >= 3
 
 
-class BaseSortingStyle(Plugin):
-    def sorting_key(self, entry):
-        raise NotImplementedError
+if PY3:
+    def fix_unicode_literals_in_doctest(obj):
+        obj.__doc__ = obj.__doc__.replace("u'", "'")
+        return obj
 
-    def sort(self, entries):
-        entry_dict = dict(
-            (self.sorting_key(entry), entry)
-            for entry in entries
-        )
-        sorted_keys = sorted(entry_dict)
-        sorted_entries = [entry_dict[key] for key in sorted_keys]
-        return sorted_entries
+    def python_2_unicode_compatible(obj):
+        return obj
+
+    def __str__(obj):
+        return obj.__str__()
+else:
+    def fix_unicode_literals_in_doctest(obj):
+        return obj
+
+    def python_2_unicode_compatible(obj):
+        obj.__unicode__ = obj.__str__
+        del obj.__str__
+        return obj
+
+    def __str__(obj):
+        return obj.__unicode__()

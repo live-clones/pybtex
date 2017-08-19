@@ -21,10 +21,12 @@
 
 """Base parser class
 """
+from __future__ import unicode_literals
 
 import re
 
 from pybtex.exceptions import PybtexError
+from pybtex import py3compat
 
 
 class Token(object):
@@ -56,8 +58,8 @@ class Scanner(object):
     text = None
     lineno = 1
     pos = 0
-    WHITESPACE = Pattern(ur'\s+', 'whitespace')
-    NEWLINE = Pattern(ur'\n|(\r\n)|\r', 'newline')
+    WHITESPACE = Pattern(r'\s+', 'whitespace')
+    NEWLINE = Pattern(r'\n|(\r\n)|\r', 'newline')
 
     def __init__(self, text, filename=None):
         self.text = text
@@ -139,6 +141,7 @@ class Scanner(object):
         return self.text[self.pos:]
 
 
+@py3compat.python_2_unicode_compatible
 class PybtexSyntaxError(PybtexError):
     error_type = 'syntax error'
 
@@ -148,8 +151,8 @@ class PybtexSyntaxError(PybtexError):
         self.parser = parser
         self.error_context_info = parser.get_error_context_info()
 
-    def __unicode__(self):
-        base_message = super(PybtexSyntaxError, self).__unicode__()
+    def __str__(self):
+        base_message = super(PybtexSyntaxError, self).__str__()
         pos = u' in line {0}'.format(self.lineno) if self.lineno is not None else ''
         return u'{error_type}{pos}: {message}'.format(
             error_type=self.error_type,

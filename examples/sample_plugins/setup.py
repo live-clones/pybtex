@@ -1,6 +1,5 @@
 from setuptools import setup
 
-
 setup(name='Sample Pybtex plugins',
     author='Andrey Golovizin',
     py_modules=['toyplugins'],

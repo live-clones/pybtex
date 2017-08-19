@@ -21,12 +21,16 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import sys
-import optparse
+from __future__ import unicode_literals
 
-from pybtex import errors, __version__
+import optparse
+import sys
+
+import six
+
+from pybtex import __version__, errors
+from pybtex.plugin import enumerate_plugin_names, find_plugin
 from pybtex.textutils import add_period
-from pybtex.plugin import find_plugin, enumerate_plugin_names
 
 
 def check_plugin(option, option_string, value):
@@ -192,7 +196,8 @@ class CommandLine(object):
             if option_group is None:
                 container = opt_parser
             else:
-                container = opt_parser.add_option_group(option_group)
+                container = optparse.OptionGroup(opt_parser, option_group)
+                opt_parser.add_option_group(container)
             for option in option_list:
                 container.add_option(option)
 
@@ -206,10 +211,21 @@ class CommandLine(object):
 
     def recognize_legacy_optons(self, args):
         """Grok some legacy long options starting with a single `-'."""
-        return [
-            '-' + arg if arg.split('=', 1)[0] in self.legacy_options else arg
-            for arg in args
-        ]
+        return [self._replace_legacy_option(arg) for arg in args]
+
+    def _replace_legacy_option(self, arg):
+        # sys.argv contains byte strings in Python 2 and unicode strings in Python 3
+
+        try:
+            # all legacy options are ASCII-only
+            unicode_arg = arg if isinstance(arg, six.text_type) else arg.decode('ASCII')
+        except UnicodeDecodeError:
+            return arg
+
+        if unicode_arg.split('=', 1)[0] in self.legacy_options:
+            return type(arg)('-') + arg
+        else:
+            return arg
 
     def _extract_kwargs(self, options):
         return dict(

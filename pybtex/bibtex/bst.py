@@ -19,10 +19,18 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from __future__ import unicode_literals
+
 import re
-from pybtex.bibtex.interpreter import (Integer, String, QuotedVar,
-        Identifier, FunctionLiteral)
+
 import pybtex.io
+from pybtex.bibtex.interpreter import (
+    FunctionLiteral, Identifier, Integer, QuotedVar, String
+)
+from pybtex.scanner import (
+    Literal, Pattern, PybtexSyntaxError, Scanner, TokenRequired
+)
+
 
 #ParserElement.enablePackrat()
 
@@ -44,23 +52,23 @@ def process_function(toks):
     return FunctionLiteral(toks[0])
 
 
-quote_or_comment = re.compile(ur'[%"]')
+quote_or_comment = re.compile(r'[%"]')
 def strip_comment(line):
     """Strip the commented part of the line."
 
-    >>> print strip_comment('a normal line')
+    >>> print(strip_comment('a normal line'))
     a normal line
-    >>> print strip_comment('%')
+    >>> print(strip_comment('%'))
     <BLANKLINE>
-    >>> print strip_comment('%comment')
+    >>> print(strip_comment('%comment'))
     <BLANKLINE>
-    >>> print strip_comment('trailing%')
+    >>> print(strip_comment('trailing%'))
     trailing
-    >>> print strip_comment('a normal line% and a comment')
+    >>> print(strip_comment('a normal line% and a comment'))
     a normal line
-    >>> print strip_comment('"100% compatibility" is a myth')
+    >>> print(strip_comment('"100% compatibility" is a myth'))
     "100% compatibility" is a myth
-    >>> print strip_comment('"100% compatibility" is a myth% or not?')
+    >>> print(strip_comment('"100% compatibility" is a myth% or not?'))
     "100% compatibility" is a myth
 
     """
@@ -79,18 +87,14 @@ def strip_comment(line):
     return line
 
 
-from pybtex.scanner import (
-    Scanner, Pattern, Literal,
-    TokenRequired, PybtexSyntaxError,
-)
 
 
 class BstParser(Scanner):
-    LBRACE = Literal(u'{')
-    RBRACE = Literal(u'}')
-    STRING = Pattern(ur'"[^\"]*"', 'string')
-    INTEGER = Pattern(ur'#-?\d+', 'integer')
-    NAME = Pattern(ur'[^#\"\{\}\s]+', 'name')
+    LBRACE = Literal('{')
+    RBRACE = Literal('}')
+    STRING = Pattern('"[^\"]*"', 'string')
+    INTEGER = Pattern(r'#-?\d+', 'integer')
+    NAME = Pattern(r'[^#\"\{\}\s]+', 'name')
 
     COMMANDS = {
         'ENTRY': 3,

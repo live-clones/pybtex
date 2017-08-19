@@ -19,37 +19,49 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import io
+from __future__ import unicode_literals
 
-from xml.etree import cElementTree as ET
+import io
+from xml.sax.saxutils import XMLGenerator
+from xml.sax.xmlreader import AttributesImpl
+
+import six
+
 from pybtex.database.output import BaseWriter
 
 
-doctype = """<!DOCTYPE bibtex:file PUBLIC
+doctype = b"""<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
 """
 
 
-class PrettyTreeBuilder(object):
-    def __init__(self):
-        self.tree_builder = ET.TreeBuilder()
-        self.close = self.tree_builder.close
-        self.data = self.tree_builder.data
+class _PrettyXMLWriter(object):
+    def __init__(self, output, encoding='UTF-8', namespace=('bibtex', 'http://bibtexml.sf.net/'), header=True):
+        self.prefix, self.uri = namespace
+        self.generator = XMLGenerator(output, encoding=encoding)
+        if header:
+            self.generator.startDocument()
+        self.generator.startPrefixMapping(self.prefix, self.uri)
         self.stack = []
 
+    def write(self, data):
+        self.generator.characters(data)
+
     def newline(self):
-        self.data('\n')
+        self.write('\n')
 
     def indent_line(self):
-        self.data(' ' * len(self.stack) * 4)
+        self.write(' ' * (len(self.stack) * 4))
 
     def start(self, tag, attrs=None, newline=True):
         if attrs is None:
             attrs = {}
+        else:
+            attrs = {(None, key): value for key, value in attrs.items()}
         self.indent_line()
         self.stack.append(tag)
-        self.tree_builder.start(tag, attrs)
+        self.generator.startElementNS((self.uri, tag), tag, AttributesImpl(attrs))
         if newline:
             self.newline()
 
@@ -57,22 +69,24 @@ class PrettyTreeBuilder(object):
         tag = self.stack.pop()
         if indent:
             self.indent_line()
-        self.tree_builder.end(tag)
+        self.generator.endElementNS((self.uri, tag), tag)
         self.newline()
 
     def element(self, tag, data):
         self.start(tag, newline=False)
-        self.data(data)
+        self.write(data)
         self.end(indent=False)
+
+    def close(self):
+        self.generator.endDocument()
 
 
 class Writer(BaseWriter):
     """Outputs BibTeXML markup"""
 
     def write_stream(self, bib_data, stream):
-        tree = self._build_tree(bib_data)
-        tree.write(stream, self.encoding)
-        stream.write(b'\n')
+        xml_writer = _PrettyXMLWriter(stream, self.encoding)
+        self._write(bib_data, xml_writer)
 
     def to_string(self, bib_data):
         """
@@ -81,53 +95,43 @@ class Writer(BaseWriter):
         >>> from pybtex.database import BibliographyData
         >>> data = BibliographyData()
         >>> unicode_xml = Writer().to_string(data)
-        >>> isinstance(unicode_xml, unicode)
+        >>> isinstance(unicode_xml, six.text_type)
         True
-        >>> print unicode_xml
+        >>> print(unicode_xml)
         <bibtex:file xmlns:bibtex="http://bibtexml.sf.net/">
         <BLANKLINE>
         </bibtex:file>
         """
 
-        import sys
-        tree = self._build_tree(bib_data)
-        if sys.version_info.major >= 3:
-            stream = io.StringIO()
-            tree.write(stream, encoding='unicode')
-            return stream.getvalue()
-        else:
-            stream = io.BytesIO()
-            tree.write(stream, encoding='UTF-8', xml_declaration=False)
-            return stream.getvalue().decode('UTF-8')
+        output = io.BytesIO()
+        writer = _PrettyXMLWriter(output, encoding='UTF-8', header=None)
+        self._write(bib_data, writer)
+        return output.getvalue().decode('UTF-8').strip()
 
-    def _build_tree(self, bib_data):
+    def _write(self, bib_data, writer):
         def write_persons(persons, role):
             if persons:
-                w.start('bibtex:' + role)
+                writer.start(role)
                 for person in persons:
-                    w.start('bibtex:person')
+                    writer.start('person')
                     for type in ('first', 'middle', 'prelast', 'last', 'lineage'):
                         name = person.get_part_as_text(type)
                         if name:
-                            w.element('bibtex:' + type, name)
-                    w.end()
-                w.end()
+                            writer.element(type, name)
+                    writer.end()
+                writer.end()
 
-        w = PrettyTreeBuilder()
-        w.start('bibtex:file', {'xmlns:bibtex': 'http://bibtexml.sf.net/'})
-        w.newline()
-
-        for key, entry in bib_data.entries.iteritems():
-            w.start('bibtex:entry', dict(id=key))
-            w.start('bibtex:' + entry.original_type)
-            for field_name, field_value in entry.fields.iteritems():
-                w.element('bibtex:' + field_name, field_value)
-            for role, persons in entry.persons.iteritems():
+        writer.start('file')
+        writer.newline()
+        for key, entry in bib_data.entries.items():
+            writer.start('entry', dict(id=key))
+            writer.start(entry.original_type)
+            for field_name, field_value in entry.fields.items():
+                writer.element(field_name, field_value)
+            for role, persons in entry.persons.items():
                 write_persons(persons, role)
-            w.end()
-            w.end()
-            w.newline()
-        w.end()
-
-        tree = ET.ElementTree(w.close())
-        return tree
+            writer.end()
+            writer.end()
+            writer.newline()
+        writer.end()
+        writer.close()

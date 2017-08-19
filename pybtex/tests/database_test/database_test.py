@@ -1,3 +1,18 @@
+from __future__ import absolute_import, unicode_literals
+
+import pickle
+from abc import ABCMeta, abstractmethod
+from copy import deepcopy
+from io import BytesIO, TextIOWrapper
+
+import six
+from nose.tools import assert_equal, assert_is_instance, assert_true
+from pybtex.database import parse_bytes, parse_string
+from pybtex.plugin import find_plugin
+
+from .data import reference_data
+
+
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -19,17 +34,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from abc import ABCMeta, abstractmethod
-from copy import deepcopy
-from io import BytesIO, TextIOWrapper
-import pickle
 
-from nose.tools import assert_true, assert_equal, assert_is_instance
 
-from pybtex.plugin import find_plugin
-from pybtex.database import parse_string, parse_bytes
 
-from .data import reference_data
 
 
 class DatabaseIO(object):
@@ -81,7 +88,7 @@ class PybtexStreamIO(PybtexDatabaseIO):
 class PybtexStringIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_string(self.bib_format)
-        assert_is_instance(result, unicode)
+        assert_is_instance(result, six.text_type)
         return result
 
     def deserialize(self, string):

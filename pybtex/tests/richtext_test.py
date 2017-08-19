@@ -1,13 +1,15 @@
 #! vim:fileencoding=utf-8
 
+from __future__ import absolute_import, unicode_literals
+
 import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase
 
+import six
 from nose.tools import assert_raises
-
 from pybtex import textutils
-from pybtex.richtext import Text, String, Tag, HRef, Protected, Symbol, nbsp
+from pybtex.richtext import HRef, Protected, String, Symbol, Tag, Text, nbsp
 
 
 class TextTestMixin(object):
@@ -18,7 +20,7 @@ class TextTestMixin(object):
         raise NotImplementedError
 
     @abstractmethod
-    def test__unicode__(self):
+    def test__str__(self):
         raise NotImplementedError
 
     @abstractmethod
@@ -92,13 +94,13 @@ class TextTestMixin(object):
 
 class TestText(TextTestMixin, TestCase):
     def test__init__(self):
-        assert unicode(Text('a', '', 'c')) == 'ac'
-        assert unicode(Text('a', Text(), 'c')) == 'ac'
+        assert six.text_type(Text('a', '', 'c')) == 'ac'
+        assert six.text_type(Text('a', Text(), 'c')) == 'ac'
 
         text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
-        assert unicode(text) == 'mary had a little lamb'
+        assert six.text_type(text) == 'mary had a little lamb'
 
-        text = unicode(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+        text = six.text_type(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
         assert_raises(ValueError, Text, {})
@@ -122,9 +124,9 @@ class TestText(TextTestMixin, TestCase):
         assert len(Text('Never', ' ', Tag('em', 'Knows', ' '), 'Best')) == len('Never Knows Best')
         assert len(Text('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
 
-    def test__unicode__(self):
-        assert unicode(Text()) == ''
-        assert unicode(Text(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
+    def test__str__(self):
+        assert six.text_type(Text()) == ''
+        assert six.text_type(Text(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
 
     def test__contains__(self):
         text = Text('mary ', 'had ', 'a little lamb')
@@ -137,17 +139,17 @@ class TestText(TextTestMixin, TestCase):
 
     def test_capfirst(self):
         text = Text('dear ', 'Alice')
-        assert unicode(text.capfirst()) == 'Dear Alice'
+        assert six.text_type(text.capfirst()) == 'Dear Alice'
 
     def test_capitalize(self):
         text = Text('mary ', 'had ', 'a Little Lamb')
-        assert unicode(text.capitalize()) == 'Mary had a little lamb'
+        assert six.text_type(text.capitalize()) == 'Mary had a little lamb'
 
     def test__add__(self):
         t = Text('a')
-        assert unicode(t + 'b') == 'ab'
-        assert unicode(t + t) == 'aa'
-        assert unicode(t) == 'a'
+        assert six.text_type(t + 'b') == 'ab'
+        assert six.text_type(t + t) == 'aa'
+        assert six.text_type(t) == 'a'
 
     def test__getitem__(self):
         t = Text('123', Text('456', Text('78'), '9'), '0')
@@ -210,11 +212,11 @@ class TestText(TextTestMixin, TestCase):
 
     def test_upper(self):
         text = Text('mary ', 'had ', 'a little lamb')
-        assert unicode(text.upper()) == 'MARY HAD A LITTLE LAMB'
+        assert six.text_type(text.upper()) == 'MARY HAD A LITTLE LAMB'
 
     def test_lower(self):
         text = Text('mary ', 'had ', 'a little lamb')
-        assert unicode(text.lower()) == 'mary had a little lamb'
+        assert six.text_type(text.lower()) == 'mary had a little lamb'
 
     def test_startswith(self):
         assert not Text().startswith('.')
@@ -253,10 +255,10 @@ class TestText(TextTestMixin, TestCase):
         assert not Text('ab', Tag('em', '12'), 'ef').isalpha()
 
     def test_join(self):
-        assert unicode(Text(' ').join(['a', Text('b c')])) == 'a b c'
-        assert unicode(Text(nbsp).join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
-        assert unicode(nbsp.join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
-        assert unicode(String('-').join(['a', 'b', 'c'])) == 'a-b-c'
+        assert six.text_type(Text(' ').join(['a', Text('b c')])) == 'a b c'
+        assert six.text_type(Text(nbsp).join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
+        assert six.text_type(nbsp.join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
+        assert six.text_type(String('-').join(['a', 'b', 'c'])) == 'a-b-c'
         result = Tag('em', ' and ').join(['a', 'b', 'c']).render_as('html')
         assert result == 'a<em> and </em>b<em> and </em>c'
         result = HRef('/', ' and ').join(['a', 'b', 'c']).render_as('html')
@@ -279,10 +281,10 @@ class TestText(TextTestMixin, TestCase):
         assert Text().endswith(('.', '!', '?')) == False
         assert textutils.is_terminated(Text()) == False
 
-        assert unicode(Text().add_period()) == ''
+        assert six.text_type(Text().add_period()) == ''
 
         text = Text("That's all, folks")
-        assert unicode(text.add_period()) == "That's all, folks."
+        assert six.text_type(text.add_period()) == "That's all, folks."
 
     def test_render_as(self):
         string = Text(u'Detektivbyrån & friends')
@@ -310,9 +312,9 @@ class TestString(TextTestMixin, TestCase):
         val = 'test string'
         assert len(String(val)) == len(val)
 
-    def test__unicode__(self):
+    def test__str__(self):
         val = u'Detektivbyrån'
-        assert unicode(String(val)) == val
+        assert six.text_type(String(val)) == val
 
     def test__contains__(self):
         assert '' in String()
@@ -329,10 +331,10 @@ class TestString(TextTestMixin, TestCase):
         assert String('Python') + String(' 3') != 'Python 3'
         assert String('Python') + String(' 3') == Text('Python 3')
         assert String('A').lower() == String('a')
-        assert unicode(String('Python') + String(' ') + String('3')) == 'Python 3'
-        assert unicode(String('Python') + Text(' ') + String('3')) == 'Python 3'
-        assert unicode(String('Python') + ' ' + '3') == 'Python 3'
-        assert unicode(String('Python').append(' 3')) == 'Python 3'
+        assert six.text_type(String('Python') + String(' ') + String('3')) == 'Python 3'
+        assert six.text_type(String('Python') + Text(' ') + String('3')) == 'Python 3'
+        assert six.text_type(String('Python') + ' ' + '3') == 'Python 3'
+        assert six.text_type(String('Python').append(' 3')) == 'Python 3'
 
     def test_startswith(self):
         assert not String().startswith('n')
@@ -389,27 +391,27 @@ class TestString(TextTestMixin, TestCase):
         assert String(', ').join(['tomatoes', 'cucumbers', 'lemons']) == Text('tomatoes, cucumbers, lemons')
 
     def test_capfirst(self):
-        assert unicode(String('').capitalize()) == ''
-        assert unicode(String('november december').capitalize()) == 'November december'
-        assert unicode(String('November December').capitalize()) == 'November december'
-        assert unicode(String('NOVEMBER DECEMBER').capitalize()) == 'November december'
+        assert six.text_type(String('').capitalize()) == ''
+        assert six.text_type(String('november december').capitalize()) == 'November december'
+        assert six.text_type(String('November December').capitalize()) == 'November december'
+        assert six.text_type(String('NOVEMBER DECEMBER').capitalize()) == 'November december'
 
     def test_capitalize(self):
-        assert unicode(String('').capfirst()) == ''
-        assert unicode(String('november').capfirst()) == 'November'
-        assert unicode(String('November').capfirst()) == 'November'
-        assert unicode(String('november december').capfirst()) == 'November december'
-        assert unicode(String('November December').capfirst()) == 'November December'
-        assert unicode(String('NOVEMBER DECEMBER').capfirst()) == 'NOVEMBER DECEMBER'
+        assert six.text_type(String('').capfirst()) == ''
+        assert six.text_type(String('november').capfirst()) == 'November'
+        assert six.text_type(String('November').capfirst()) == 'November'
+        assert six.text_type(String('november december').capfirst()) == 'November december'
+        assert six.text_type(String('November December').capfirst()) == 'November December'
+        assert six.text_type(String('NOVEMBER DECEMBER').capfirst()) == 'NOVEMBER DECEMBER'
 
     def test_add_period(self):
-        assert unicode(String('').add_period()) == ''
-        assert unicode(String('').add_period('!')) == ''
-        assert unicode(String('').add_period().add_period()) == ''
-        assert unicode(String('').add_period().add_period('!')) == ''
-        assert unicode(String('').add_period('!').add_period()) == ''
-        unicode(String('November').add_period()) == 'November.'
-        result = unicode(String('November').add_period().add_period())
+        assert six.text_type(String('').add_period()) == ''
+        assert six.text_type(String('').add_period('!')) == ''
+        assert six.text_type(String('').add_period().add_period()) == ''
+        assert six.text_type(String('').add_period().add_period('!')) == ''
+        assert six.text_type(String('').add_period('!').add_period()) == ''
+        six.text_type(String('November').add_period()) == 'November.'
+        result = six.text_type(String('November').add_period().add_period())
         assert result == 'November.'
 
     def test_render_as(self):
@@ -421,12 +423,12 @@ class TestString(TextTestMixin, TestCase):
 class TestTag(TextTestMixin, TestCase):
     def test__init__(self):
         empty = Tag('em')
-        assert unicode(empty) == ''
+        assert six.text_type(empty) == ''
 
         text = Text('This ', Tag('em', 'is'), ' good')
-        assert 'This is' in unicode(text)
-        assert unicode(text).startswith('This is')
-        assert unicode(text).endswith('is good')
+        assert 'This is' in six.text_type(text)
+        assert six.text_type(text).startswith('This is')
+        assert six.text_type(text).endswith('is good')
 
     def test__eq__(self):
         assert Tag('em', '') != ''
@@ -443,13 +445,13 @@ class TestTag(TextTestMixin, TestCase):
         val = 'Tomato apple!'
         assert len(Tag('em', val)) == len(val)
 
-    def test__unicode__(self):
+    def test__str__(self):
         empty = Tag('em')
-        assert unicode(empty.lower()) == ''
-        assert unicode(empty.capitalize()) == ''
-        assert unicode(empty.add_period()) == ''
+        assert six.text_type(empty.lower()) == ''
+        assert six.text_type(empty.capitalize()) == ''
+        assert six.text_type(empty.add_period()) == ''
 
-        assert unicode(Tag('strong', u'ねここねこ')) == u'ねここねこ'
+        assert six.text_type(Tag('strong', u'ねここねこ')) == u'ねここねこ'
 
     def test__contains__(self):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
@@ -673,12 +675,12 @@ class TestHRef(TextTestMixin, TestCase):
         assert empty.url == '/'
         assert empty.parts == []
 
-    def test__unicode__(self):
+    def test__str__(self):
         empty = HRef('/')
-        assert unicode(empty) == ''
+        assert six.text_type(empty) == ''
 
         text = Text('This ', HRef('/', 'is'), ' good')
-        unicode(text) == 'This is good'
+        six.text_type(text) == 'This is good'
 
     def test__eq__(self):
         assert HRef('/', '') != ''
@@ -955,14 +957,14 @@ class TestHRef(TextTestMixin, TestCase):
 
 class TestProtected(TextTestMixin, TestCase):
     def test__init__(self):
-        assert unicode(Protected('a', '', 'c')) == 'ac'
-        assert unicode(Protected('a', Text(), 'c')) == 'ac'
+        assert six.text_type(Protected('a', '', 'c')) == 'ac'
+        assert six.text_type(Protected('a', Text(), 'c')) == 'ac'
 
         text = Protected(Protected(), Protected('mary ', 'had ', 'a little lamb'))
         assert text == Protected(Protected('mary had a little lamb'))
-        assert unicode(text) == 'mary had a little lamb'
+        assert six.text_type(text) == 'mary had a little lamb'
 
-        text = unicode(Protected('a', Protected('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+        text = six.text_type(Protected('a', Protected('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
         assert_raises(ValueError, Protected, {})
@@ -986,9 +988,9 @@ class TestProtected(TextTestMixin, TestCase):
         assert len(Protected('Never', ' ', Tag('em', 'Knows', ' '), 'Best')) == len('Never Knows Best')
         assert len(Protected('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
 
-    def test__unicode__(self):
-        assert unicode(Protected()) == ''
-        assert unicode(Protected(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
+    def test__str__(self):
+        assert six.text_type(Protected()) == ''
+        assert six.text_type(Protected(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
 
     def test__contains__(self):
         text = Protected('mary ', 'had ', 'a little lamb')
@@ -1001,11 +1003,11 @@ class TestProtected(TextTestMixin, TestCase):
 
     def test_capfirst(self):
         text = Protected('mary ', 'had ', 'a Little Lamb')
-        assert unicode(text.capitalize()) == 'mary had a Little Lamb'
+        assert six.text_type(text.capitalize()) == 'mary had a Little Lamb'
 
     def test_capitalize(self):
         text = Protected('mary ', 'had ', 'a little lamb')
-        assert unicode(text.capitalize()) == 'mary had a little lamb'
+        assert six.text_type(text.capitalize()) == 'mary had a little lamb'
 
     def test__add__(self):
         t = Protected('a')
@@ -1070,15 +1072,15 @@ class TestProtected(TextTestMixin, TestCase):
 
     def test_upper(self):
         text = Protected('Mary ', 'had ', 'a little lamb')
-        assert unicode(text.upper()) == 'Mary had a little lamb'
+        assert six.text_type(text.upper()) == 'Mary had a little lamb'
         text = Protected('mary ', 'had ', 'a little lamb')
-        assert unicode(text.upper()) == 'mary had a little lamb'
+        assert six.text_type(text.upper()) == 'mary had a little lamb'
 
     def test_lower(self):
         text = Protected('Mary ', 'had ', 'a little lamb')
-        assert unicode(text.lower()) == 'Mary had a little lamb'
+        assert six.text_type(text.lower()) == 'Mary had a little lamb'
         text = Protected('MARY ', 'HAD ', 'A LITTLE LAMB')
-        assert unicode(text.lower()) == 'MARY HAD A LITTLE LAMB'
+        assert six.text_type(text.lower()) == 'MARY HAD A LITTLE LAMB'
 
     def test_startswith(self):
         assert not Protected().startswith('.')
@@ -1162,8 +1164,8 @@ class TestSymbol(TextTestMixin, TestCase):
 
         assert Text(nbsp, nbsp) == Text(Symbol('nbsp'), Symbol('nbsp'))
 
-    def test__unicode__(self):
-        assert unicode(nbsp) == '<nbsp>'
+    def test__str__(self):
+        assert six.text_type(nbsp) == '<nbsp>'
 
     def test__len__(self):
         assert len(nbsp) == 1

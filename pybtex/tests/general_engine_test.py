@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import os
 import pkgutil
 import posixpath
@@ -5,8 +7,7 @@ from contextlib import contextmanager
 from shutil import rmtree
 from tempfile import mkdtemp
 
-from pybtex import io
-from pybtex import errors
+from pybtex import errors, io
 from pybtex.tests import diff
 
 

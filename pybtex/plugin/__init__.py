@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # Copyright (c) 2006-2017  Andrey Golovigin
 # Copyright (c) 2014  Matthias C. M. Troffaes
 #

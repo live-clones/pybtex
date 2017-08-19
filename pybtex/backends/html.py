@@ -27,20 +27,21 @@ HTML output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> html = Backend()
->>> print Tag('em', '').render(html)
+>>> print(Tag('em', '').render(html))
 <BLANKLINE>
->>> print Tag('em', 'Hard &', ' heavy').render(html)
+>>> print(Tag('em', 'Hard &', ' heavy').render(html))
 <em>Hard &amp; heavy</em>
->>> print HRef('/', '').render(html)
+>>> print(HRef('/', '').render(html))
 <BLANKLINE>
->>> print HRef('/', 'Hard & heavy').render(html)
+>>> print(HRef('/', 'Hard & heavy').render(html))
 <a href="/">Hard &amp; heavy</a>
 """
-
+from __future__ import unicode_literals
 
 from xml.sax.saxutils import escape
-from pybtex.backends import BaseBackend
+
 import pybtex.io
+from pybtex.backends import BaseBackend
 
 
 PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -56,7 +57,7 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 class Backend(BaseBackend):
     u"""
     >>> from pybtex.richtext import Text, Tag, Symbol
-    >>> print Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend())
+    >>> print(Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend()))
     <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
 
     """
@@ -72,13 +73,13 @@ class Backend(BaseBackend):
         return escape(text)
 
     def format_protected(self, text):
-        return ur'<span class="bibtex-protected">{}</span>'.format(text)
+        return r'<span class="bibtex-protected">{}</span>'.format(text)
 
     def format_tag(self, tag, text):
-        return ur'<{0}>{1}</{0}>'.format(tag, text) if text else u''
+        return r'<{0}>{1}</{0}>'.format(tag, text) if text else u''
 
     def format_href(self, url, text):
-        return ur'<a href="{0}">{1}</a>'.format(url, text) if text else u''
+        return r'<a href="{0}">{1}</a>'.format(url, text) if text else u''
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()
