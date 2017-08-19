@@ -21,6 +21,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import sys
+
 import six
 
 
@@ -35,7 +37,11 @@ class PybtexError(Exception):
 
     def get_filename(self):
         """Return filename, if relevant."""
-        return self.filename
+        if isinstance(self.filename, six.text_type):
+            return self.filename
+        else:
+            from .io import _decode_filename
+            return _decode_filename(self.filename, errors='replace')
 
     def __eq__(self, other):
         return six.text_type(self) == six.text_type(other)

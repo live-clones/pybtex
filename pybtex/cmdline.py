@@ -214,8 +214,10 @@ class CommandLine(object):
         return [self._replace_legacy_option(arg) for arg in args]
 
     def _replace_legacy_option(self, arg):
+        # sys.argv contains byte strings in Python 2 and unicode strings in Python 3
+
         try:
-            # legacy options are ASCII
+            # all legacy options are ASCII-only
             unicode_arg = arg if isinstance(arg, six.text_type) else arg.decode('ASCII')
         except UnicodeDecodeError:
             return arg

@@ -41,6 +41,13 @@ def get_stream_encoding(stream):
     return stream_encoding or get_default_encoding()
 
 
+def _decode_filename(filename, errors='strict'):
+    """Decode byte-encoded filename."""
+
+    encoding = sys.getfilesystemencoding() or self.get_default_encoding()
+    return filename.decode(encoding, errors=errors)
+
+
 def _open_existing(opener, filename, mode, locate, **kwargs):
     if not path.isfile(filename):
         found = locate(filename)
