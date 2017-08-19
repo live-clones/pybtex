@@ -37,7 +37,7 @@ class PybtexError(Exception):
 
     def get_filename(self):
         """Return filename, if relevant."""
-        if isinstance(self.filename, six.text_type):
+        if self.filename is None or isinstance(self.filename, six.text_type):
             return self.filename
         else:
             from .io import _decode_filename
