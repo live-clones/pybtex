@@ -10,7 +10,7 @@
 /dist
 /pybtex.egg-info
 /MANIFEST
-/.ropeproject
+.ropeproject
 /.coverage
 /.tox
 /.cache
