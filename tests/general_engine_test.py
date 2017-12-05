@@ -1,14 +1,13 @@
 from __future__ import unicode_literals
 
 import os
-import pkgutil
 import posixpath
 from contextlib import contextmanager
 from shutil import rmtree
 from tempfile import mkdtemp
 
 from pybtex import errors, io
-from pybtex.tests import diff
+from . import diff, read_file
 
 
 @contextmanager
@@ -21,10 +20,6 @@ def cd_tempdir():
     finally:
         os.chdir(current_workdir)
         rmtree(tempdir)
-
-
-def read_file(filename, package='pybtex.tests.data'):
-    return pkgutil.get_data(package, filename).decode(io.get_default_encoding())
 
 
 def copy_file(filename):
@@ -74,7 +69,7 @@ def check_format_from_string(engine, filenames):
         with errors.capture():  # FIXME check error messages
             result = engine.format_from_string(bib_string, style=style, citations=citations)
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, style, engine_name)
-        correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name).decode(io.get_default_encoding())
+        correct_result = read_file(correct_result_name)
         assert result == correct_result, diff(correct_result, result)
 
 
@@ -102,7 +97,7 @@ def check_make_bibliography(engine, filenames):
         with io.open_unicode(result_name) as result_file:
             result = result_file.read()
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, bst_name, engine_name)
-        correct_result = pkgutil.get_data('pybtex.tests.data', correct_result_name).decode(io.get_default_encoding())
+        correct_result = read_file(correct_result_name)
         assert result == correct_result, diff(correct_result, result)
 
 
