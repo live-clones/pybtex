@@ -1,12 +1,3 @@
-from __future__ import unicode_literals
-
-import errno
-import posixpath
-from unittest import TestCase
-
-from pybtex import io
-
-
 # Copyright (c) 2006-2017  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -29,7 +20,13 @@ from pybtex import io
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+from __future__ import unicode_literals
 
+import errno
+import posixpath
+from unittest import TestCase
+
+from pybtex import io
 
 
 class MockFile(object):
@@ -39,7 +36,7 @@ class MockFile(object):
 
     def __repr__(self):
         return "<mock open file '%s', mode '%s'>" % (self.name, self.mode)
-    
+
 
 class MockFilesystem(object):
     def __init__(self, files=(), writable_dirs=(), readonly_dirs=()):
@@ -87,8 +84,8 @@ class IOTest(TestCase):
                 '/home/test/foo.bbl',
                 '/usr/share/texmf/bibtex/bst/unsrt.bst',
             ),
-            writable_dirs = ('/home/test',),
-            readonly_dirs = ('/'),
+            writable_dirs=('/home/test',),
+            readonly_dirs=('/'),
         )
         self.fs.chdir('/home/test')
 
@@ -96,7 +93,7 @@ class IOTest(TestCase):
         file = io._open_existing(self.fs.open, 'foo.bbl', 'rb', locate=self.fs.locate)
         self.assertEqual(file.name, '/home/test/foo.bbl')
         self.assertEqual(file.mode, 'rb')
-        
+
     def test_open_missing(self):
         self.assertRaises(
             EnvironmentError,

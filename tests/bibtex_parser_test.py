@@ -28,6 +28,7 @@ Some tests were adopted from Babybib - another BibTeX parser by Matthew Brett.
 https://github.com/matthew-brett/babybib
 
 """
+
 from __future__ import absolute_import, unicode_literals
 
 from unittest import TestCase

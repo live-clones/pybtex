@@ -30,4 +30,3 @@ def diff(src, dst):
 
 def get_data(filename, package='tests.data'):
     return pkgutil.get_data(package, filename).decode('UTF-8')
-
