@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from six.moves import zip_longest
 
 from pybtex.bibtex import bst
-from .. import read_file
+from ..utils import read_file
 
 test_data = (
     'plain',

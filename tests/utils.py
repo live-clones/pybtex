@@ -18,3 +18,16 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+import pkgutil
+from difflib import unified_diff
+
+
+def diff(src, dst):
+    return '\n'.join(unified_diff(src.splitlines(), dst.splitlines()))
+
+
+def read_file(filename, package='tests.data'):
+    return pkgutil.get_data(package, filename).decode('UTF-8')
+

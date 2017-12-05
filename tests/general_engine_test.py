@@ -7,7 +7,7 @@ from shutil import rmtree
 from tempfile import mkdtemp
 
 from pybtex import errors, io
-from . import diff, read_file
+from .utils import diff, read_file
 
 
 @contextmanager
