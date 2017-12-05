@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from six.moves import zip_longest
 
 from pybtex.bibtex import bst
-from ..utils import read_file
+from ..utils import get_data
 
 test_data = (
     'plain',
@@ -15,7 +15,7 @@ test_data = (
 def check_bst_parser(dataset_name):
     module = __import__('tests.bst_parser_test.{0}'.format(dataset_name), globals(), locals(), 'bst')
     correct_result = module.bst
-    bst_data = read_file(dataset_name + '.bst')
+    bst_data = get_data(dataset_name + '.bst')
     actual_result = bst.parse_string(bst_data)
 
     for correct_element, actual_element in zip_longest(actual_result, correct_result):

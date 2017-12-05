@@ -7,7 +7,7 @@ from shutil import rmtree
 from tempfile import mkdtemp
 
 from pybtex import errors, io
-from .utils import diff, read_file
+from .utils import diff, get_data
 
 
 @contextmanager
@@ -23,7 +23,7 @@ def cd_tempdir():
 
 
 def copy_file(filename):
-    data = read_file(filename)
+    data = get_data(filename)
     with io.open_unicode(filename, 'w') as data_file:
         data_file.write(data)
 
@@ -54,7 +54,7 @@ def check_format_from_string(engine, filenames):
     if '.aux' in filenames_by_suffix:
         from io import StringIO
         from pybtex import auxfile
-        aux_contents = StringIO(read_file(filenames_by_suffix['.aux']))
+        aux_contents = StringIO(get_data(filenames_by_suffix['.aux']))
         auxdata = auxfile.parse_file(aux_contents)
         citations = auxdata.citations
         style = auxdata.style
@@ -65,11 +65,11 @@ def check_format_from_string(engine, filenames):
     with cd_tempdir():
         copy_file(filenames_by_suffix['.bst'])
         bib_name = posixpath.splitext(filenames_by_suffix['.bib'])[0]
-        bib_string = read_file(filenames_by_suffix['.bib'])
+        bib_string = get_data(filenames_by_suffix['.bib'])
         with errors.capture():  # FIXME check error messages
             result = engine.format_from_string(bib_string, style=style, citations=citations)
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, style, engine_name)
-        correct_result = read_file(correct_result_name)
+        correct_result = get_data(correct_result_name)
         assert result == correct_result, diff(correct_result, result)
 
 
@@ -97,7 +97,7 @@ def check_make_bibliography(engine, filenames):
         with io.open_unicode(result_name) as result_file:
             result = result_file.read()
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, bst_name, engine_name)
-        correct_result = read_file(correct_result_name)
+        correct_result = get_data(correct_result_name)
         assert result == correct_result, diff(correct_result, result)
 
 

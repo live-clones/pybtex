@@ -28,6 +28,6 @@ def diff(src, dst):
     return '\n'.join(unified_diff(src.splitlines(), dst.splitlines()))
 
 
-def read_file(filename, package='tests.data'):
+def get_data(filename, package='tests.data'):
     return pkgutil.get_data(package, filename).decode('UTF-8')
 
