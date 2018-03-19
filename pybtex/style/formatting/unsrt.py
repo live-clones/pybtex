@@ -344,30 +344,30 @@ class Style(BaseStyle):
         return template
 
     def get_proceedings_template(self, e):
-        template = toplevel [
-            first_of [
-                # there are editors
-                optional [
-                    join(' ')[
-                        self.format_editor(e),
-                        sentence [
-                            self.format_btitle(e, 'title', as_sentence=False),
-                            self.format_volume_and_series(e, as_sentence=False),
-                            self.format_address_organization_publisher_date(e),
-                        ],
-                    ],
+        if 'editor' in e.persons:
+            main_part = [
+                self.format_editor(e),
+                sentence [
+                    self.format_btitle(e, 'title', as_sentence=False),
+                    self.format_volume_and_series(e, as_sentence=False),
+                    self.format_address_organization_publisher_date(e),
                 ],
-                # there is no editor
-                optional_field('organization'),
+            ]
+        else:
+            main_part = [
+                optional [ sentence [ field('organization') ] ],
                 sentence [
                     self.format_btitle(e, 'title', as_sentence=False),
                     self.format_volume_and_series(e, as_sentence=False),
                     self.format_address_organization_publisher_date(
                         e, include_organization=False),
                 ],
-            ],
-            sentence [ optional_field('note') ],
-            self.format_web_refs(e),
+            ]
+        template = toplevel [
+            main_part + [
+                sentence [ optional_field('note') ],
+                self.format_web_refs(e),
+            ]
         ]
         return template
 
