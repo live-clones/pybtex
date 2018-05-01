@@ -154,7 +154,6 @@ class BibliographyData(object):
         if key in self.entries:
             report_error(BibliographyDataError('repeated bibliograhpy entry: %s' % key))
             return
-        entry.collection = self
         entry.key = self.get_canonical_key(key)
         self.entries[entry.key] = entry
         try:
@@ -391,10 +390,9 @@ class Entry(object):
     The most often used roles are ``'author'`` and ``'editor'``.
     """
 
-    collection = None
     """A reference to the containing :py:class:`.BibliographyData` object. Used to resolve crossrefs."""
 
-    def __init__(self, type_, fields=None, persons=None, collection=None):
+    def __init__(self, type_, fields=None, persons=None):
         if fields is None:
             fields = {}
         if persons is None:
@@ -405,8 +403,6 @@ class Entry(object):
         self.fields = OrderedCaseInsensitiveDict(fields)
 
         self.persons = OrderedCaseInsensitiveDict(persons)
-
-        self.collection = collection
 
         # for BibTeX interpreter
         self.vars = {}
@@ -438,7 +434,6 @@ class Entry(object):
             self.type,
             fields=self.fields.lower(),
             persons=self.persons.lower(),
-            collection=self.collection,
         )
 
     def _find_person_field(self, role):
