@@ -112,7 +112,8 @@ class Field(object):
 
     def value(self):
         try:
-            return self.interpreter.current_entry.fields[self.name]
+            bib_data = self.interpreter.bib_data
+            return self.interpreter.current_entry._find_field(self.name, bib_data)
         except KeyError:
             return MissingField(self.name)
 

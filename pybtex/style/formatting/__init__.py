@@ -51,16 +51,17 @@ class BaseStyle(Plugin):
         self.abbreviate_names = abbreviate_names
         self.min_crossrefs = min_crossrefs
 
-    def format_entries(self, entries):
+    def format_entries(self, entries, bib_data=None):
         sorted_entries = self.sort(entries)
         labels = self.format_labels(sorted_entries)
         for label, entry in zip(labels, sorted_entries):
-            yield self.format_entry(label, entry)
+            yield self.format_entry(label, entry, bib_data=bib_data)
 
-    def format_entry(self, label, entry):
+    def format_entry(self, label, entry, bib_data=None):
             context = {
                 'entry': entry,
                 'style': self,
+                'bib_data': bib_data,
             }
             try:
                 get_template = getattr(self, 'get_{}_template'.format(entry.type))

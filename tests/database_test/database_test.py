@@ -129,13 +129,12 @@ class ReprEvalIO(DatabaseIO):
 
     def deserialize(self, repr_value):
         from pybtex.utils import OrderedCaseInsensitiveDict
-        from pybtex.database import BibliographyData, Entry, Person, FieldDict
+        from pybtex.database import BibliographyData, Entry, Person
         return eval(repr_value, {
             'OrderedCaseInsensitiveDict': OrderedCaseInsensitiveDict,
             'BibliographyData': BibliographyData,
             'Entry': Entry,
             'Person': Person,
-            'FieldDict': FieldDict,
         })
 
 

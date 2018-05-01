@@ -354,27 +354,6 @@ class BibliographyData(object):
         )
 
 
-class FieldDict(OrderedCaseInsensitiveDict):
-    def __init__(self, parent, *args, **kwargw):
-        self.parent = parent
-        super(FieldDict, self).__init__(*args, **kwargw)
-
-    def __getitem__(self, key):
-        try:
-            return super(FieldDict, self).__getitem__(key)
-        except KeyError:
-            if key in self.parent.persons:
-                persons = self.parent.persons[key]
-                return ' and '.join(six.text_type(person) for person in persons)
-            elif 'crossref' in self:
-                return self.parent.get_crossref().fields[key]
-            else:
-                raise KeyError(key)
-
-    def lower(self):
-        return type(self)(self.parent, self.items_lower())
-
-
 class RichFieldProxyDict(Mapping):
     def __init__(self, fields):
         self._fields = fields
@@ -426,7 +405,7 @@ class Entry(object):
         self.type = type_.lower()
         self.original_type = type_
 
-        self.fields = FieldDict(self, fields)
+        self.fields = OrderedCaseInsensitiveDict(fields)
         self.rich_fields = RichFieldProxyDict(self.fields)
 
         self.persons = OrderedCaseInsensitiveDict(persons)
@@ -446,8 +425,7 @@ class Entry(object):
         )
 
     def __repr__(self):
-        # representing fields as FieldDict causes problems with representing
-        # fields.parent, so represent it as a list of tuples
+        # represent the fields as a list of tuples for simplicity
         repr_fields = repr(self.fields.items())
 
         return 'Entry({type_}, fields={fields}, persons={persons})'.format(
@@ -455,9 +433,6 @@ class Entry(object):
             fields=repr_fields,
             persons=repr(self.persons),
         )
-
-    def get_crossref(self):
-        return self.collection.entries[self.fields['crossref']]
 
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
@@ -469,6 +444,39 @@ class Entry(object):
             persons=self.persons.lower(),
             collection=self.collection,
         )
+
+    def _find_person_field(self, role):
+        persons = self.persons[role]
+        return ' and '.join(six.text_type(person) for person in persons)
+
+    def _find_crossref_field(self, name, bib_data):
+        if bib_data is None or 'crossref' not in self.fields:
+            raise KeyError(name)
+        referenced_entry = bib_data.entries[self.fields['crossref']]
+        return referenced_entry._find_field(name, bib_data)
+
+    def _find_field(self, name, bib_data=None):
+        """
+        Find the field with the given ``name`` according to this rules:
+
+        - If the given field ``name`` in in ``self.fields``, just return
+          self.fields[name].
+
+        - Otherwise, if ``name`` is ``"authors"`` or ``"editors"`` (or any other
+          person role), return the list of names as a string, separated by
+          ``" and "``.
+
+        - Otherwise, if this entry has a ``crossreff`` field, look up for the
+          cross-referenced entry and try to find its field with the given
+          ``name``.
+        """
+        try:
+            return self.fields[name]
+        except KeyError:
+            try:
+                return self._find_person_field(name)
+            except KeyError:
+                return self._find_crossref_field(name, bib_data)
 
 
 @python_2_unicode_compatible

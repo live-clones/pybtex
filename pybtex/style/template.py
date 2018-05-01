@@ -258,7 +258,9 @@ def field(children, context, name, apply_func=None, raw=False):
     assert not children
     entry = context['entry']
     try:
-        field = entry.fields[name] if raw else entry.rich_fields[name]
+        field = entry._find_field(name, bib_data=context.get('bib_data'))
+        if not raw:
+            field = richtext.Text.from_latex(field)
     except KeyError:
         raise FieldIsMissing(name, entry)
     else:
