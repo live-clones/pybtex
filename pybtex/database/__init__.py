@@ -384,9 +384,6 @@ class Entry(object):
     """A dictionary of entry fields.
     The dictionary is ordered and case-insensitive."""
 
-    rich_fields = None
-    """A dictionary of entry fields, converted to :ref:`rich text <rich-text>`."""
-
     persons = None
     """
     A dictionary of entry persons, by their roles.
@@ -406,7 +403,6 @@ class Entry(object):
         self.original_type = type_
 
         self.fields = OrderedCaseInsensitiveDict(fields)
-        self.rich_fields = RichFieldProxyDict(self.fields)
 
         self.persons = OrderedCaseInsensitiveDict(persons)
 
