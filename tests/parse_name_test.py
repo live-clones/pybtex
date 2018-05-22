@@ -173,8 +173,9 @@ sample_names = [
     (['Johannes', 'Adam', 'Ferdinand', 'Alois', 'Josef', 'Maria', 'Marko'],
     ["d'Aviano", 'Pius', 'von', 'und', 'zu'], ['Liechtenstein'],[])),
 
-    # sort of wrong, but BibTeX parses it like this
-    (r'Brand\~{a}o, F', (['F'], [], ['Brand\\', '{a}o'], [])),
+    (r'Brand\~{a}o, F', (['F'], [], [r'Brand\~{a}o'], [])),
+    # but BibTeX parses it like this:
+    # (r'Brand\~{a}o, F', (['F'], [], ['Brand\\', '{a}o'], [])),
 
     # incorrectly formatted name strings below
 

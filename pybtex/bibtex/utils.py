@@ -448,22 +448,86 @@ def split_name_list(string):
 
 
 @fix_unicode_literals_in_doctest
+def _find_closing_brace(string):
+    """
+    >>> _find_closing_brace('')
+    (u'', u'')
+    >>> _find_closing_brace('no braces')
+    (u'no braces', u'')
+    >>> _find_closing_brace('brace at the end}')
+    (u'brace at the end}', u'')
+    >>> _find_closing_brace('two closing braces}}')
+    (u'two closing braces}', u'}')
+    >>> _find_closing_brace('two closing} braces} and some text')
+    (u'two closing}', u' braces} and some text')
+    >>> _find_closing_brace('more {nested{}}{braces}} and the rest}')
+    (u'more {nested{}}{braces}}', u' and the rest}')
+    """
+    up_to_brace = []
+    brace_level = 1
+    while brace_level >= 1:
+        next_brace = BRACE_RE.search(string)
+        if not next_brace:
+            break
+
+        up_to_brace.append(string[:next_brace.end()])
+        string = string[next_brace.end():]
+
+        if next_brace.group() == '{':
+            brace_level += 1
+        elif next_brace.group() == '}':
+            brace_level -= 1
+        else:
+            raise ValueError(next_brace.group())
+
+    if not up_to_brace:
+        up_to_brace, string = [string], ''
+    return ''.join(up_to_brace), string
+
+
+@fix_unicode_literals_in_doctest
+def _split(string, sep):
+    """
+    >>> sep = re.compile(',')
+    >>> list(_split('', sep))
+    [u'']
+    >>> list(_split('a,b,c', sep))
+    [u'a', u'b', u'c']
+    >>> list(_split('a,b,c,', sep))
+    [u'a', u'b', u'c', u'']
+    """
+    while True:
+        match = sep.search(string)
+        if not match:
+            yield string
+            break
+        else:
+            yield string[:match.start()]
+            string = string[match.end():]
+
+
+# "\ " is a "control space" in TeX, i. e. "a space that is not to be ignored"
+#     -- The TeXbook, Chapter 3: Controlling TeX, p 8
+# ~ is a space character, according to BibTeX
+# \~ is not a space character
+BIBTEX_SPACE_RE = re.compile(r'(\\ |\s|(?<!\\)~)+')
+BRACE_RE = re.compile(r'{|}')
+
+
+@fix_unicode_literals_in_doctest
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     r"""Split a string using the given separator (regexp).
 
     Everything at brace level > 0 is ignored.
-    Separators at the edges of the string are ignored.
 
     >>> split_tex_string('')
     []
     >>> split_tex_string('     ')
     []
-    >>> split_tex_string('   ', ' ', strip=False, filter_empty=False)
-    [u' ', u' ']
     >>> split_tex_string('.a.b.c.', r'\.')
-    [u'.a', u'b', u'c.']
+    [u'', u'a', u'b', u'c', u'']
     >>> split_tex_string('.a.b.c.{d.}.', r'\.')
-    [u'.a', u'b', u'c', u'{d.}.']
+    [u'', u'a', u'b', u'c', u'{d.}', u'']
     >>> split_tex_string('Matsui      Fuuka')
     [u'Matsui', u'Fuuka']
     >>> split_tex_string('{Matsui      Fuuka}')
@@ -476,35 +540,39 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     [u'a']
     >>> split_tex_string('on a')
     [u'on', u'a']
+    >>> split_tex_string(r'Qui\~{n}onero-Candela, J.')
+    [u'Qui\\~{n}onero-Candela,', u'J.']
     """
 
     if sep is None:
-        # "\ " is a "control space" in TeX,
-        # i. e. "a space that is not to be ignored"
-        # The TeXbook, Chapter 3: Controlling TeX, p 8
-        sep = r'(\\ |[\s~])+'
+        sep = BIBTEX_SPACE_RE
         filter_empty = True
 
-    sep_re = re.compile(sep)
-    brace_level = 0
-    name_start = 0
+    sep = re.compile(sep)
+
     result = []
-    string_len = len(string)
-    pos = 0
-    for pos, char in enumerate(string):
-        if char == '{':
-            brace_level += 1
-        elif char == '}':
-            brace_level -= 1
-        elif brace_level == 0 and pos > 0:
-            match = sep_re.match(string[pos:])
-            if match:
-                sep_len = len(match.group())
-                if pos + sep_len < string_len:
-                    result.append(string[name_start:pos])
-                    name_start = pos + sep_len
-    if name_start < string_len:
-        result.append(string[name_start:])
+    word_parts = []
+
+    while True:
+        head, brace, string = string.partition('{')
+
+        if head:
+            head_parts = list(_split(head, sep))
+            for word in head_parts[:-1]:
+                result.append(''.join(word_parts + [word]))
+                word_parts = []
+            word_parts.append(head_parts[-1])
+
+        if brace:
+            word_parts.append(brace)
+            up_to_closing_brace, string = _find_closing_brace(string)
+            word_parts.append(up_to_closing_brace)
+        else:
+            break
+
+    if word_parts:
+        result.append(''.join(word_parts))
+
     if strip:
         result = [part.strip() for part in result]
     if filter_empty:
