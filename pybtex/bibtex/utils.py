@@ -485,32 +485,11 @@ def _find_closing_brace(string):
     return ''.join(up_to_brace), string
 
 
-@fix_unicode_literals_in_doctest
-def _split(string, sep):
-    """
-    >>> sep = re.compile(',')
-    >>> list(_split('', sep))
-    [u'']
-    >>> list(_split('a,b,c', sep))
-    [u'a', u'b', u'c']
-    >>> list(_split('a,b,c,', sep))
-    [u'a', u'b', u'c', u'']
-    """
-    while True:
-        match = sep.search(string)
-        if not match:
-            yield string
-            break
-        else:
-            yield string[:match.start()]
-            string = string[match.end():]
-
-
 # "\ " is a "control space" in TeX, i. e. "a space that is not to be ignored"
 #     -- The TeXbook, Chapter 3: Controlling TeX, p 8
 # ~ is a space character, according to BibTeX
 # \~ is not a space character
-BIBTEX_SPACE_RE = re.compile(r'(\\ |\s|(?<!\\)~)+')
+BIBTEX_SPACE_RE = re.compile(r'(?:\\ |\s|(?<!\\)~)+')
 BRACE_RE = re.compile(r'{|}')
 
 
@@ -557,7 +536,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
         head, brace, string = string.partition('{')
 
         if head:
-            head_parts = list(_split(head, sep))
+            head_parts = sep.split(head)
             for word in head_parts[:-1]:
                 result.append(''.join(word_parts + [word]))
                 word_parts = []
