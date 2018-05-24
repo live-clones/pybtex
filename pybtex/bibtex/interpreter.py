@@ -21,6 +21,8 @@
 
 from __future__ import print_function, unicode_literals
 
+from collections import defaultdict
+
 import six
 from pybtex.bibtex.builtins import builtins, print_warning
 from pybtex.bibtex.exceptions import BibTeXError
@@ -70,9 +72,9 @@ class EntryVariable(Variable):
     def set(self, value):
         if value is not None:
             self.validate(value)
-            self.interpreter.current_entry.vars[self.name] = value
+            self.interpreter.current_entry_vars[self.name] = value
     def value(self):
-        return self.interpreter.current_entry.vars.get(self.name, self.default)
+        return self.interpreter.current_entry_vars.get(self.name, self.default)
 
 
 class Integer(Variable):
@@ -186,6 +188,7 @@ class Interpreter(object):
         self.macros = {}
         self.output_buffer = []
         self.output_lines = []
+        self.entry_vars = defaultdict(dict)
 
     def push(self, value):
 #        print 'push <%s>' % value
@@ -270,6 +273,7 @@ class Interpreter(object):
         for key in citations:
             self.current_entry_key = key
             self.current_entry = self.bib_data.entries[key]
+            self.current_entry_vars = self.entry_vars[key]
             f.execute(self)
         self.currentEntry = None
 
@@ -308,7 +312,7 @@ class Interpreter(object):
 
     def command_sort(self):
         def key(citation):
-            return self.bib_data.entries[citation].vars['sort.key$']
+            return self.entry_vars[citation]['sort.key$']
         self.citations.sort(key=key)
 
     def command_strings(self, identifiers):

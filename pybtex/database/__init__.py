@@ -399,13 +399,8 @@ class Entry(object):
             persons = {}
         self.type = type_.lower()
         self.original_type = type_
-
         self.fields = OrderedCaseInsensitiveDict(fields)
-
         self.persons = OrderedCaseInsensitiveDict(persons)
-
-        # for BibTeX interpreter
-        self.vars = {}
 
     def __eq__(self, other):
         if not isinstance(other, Entry):
