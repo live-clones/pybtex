@@ -29,7 +29,7 @@ See the `BibTeX tutorial`_ by Andrew Roberts for a basic explanation of how to u
 BibTeX.
 
 
-.. _BibTeX tutorial: http://www.andy-roberts.net/writing/latex/bibliographies
+.. _BibTeX tutorial: https://www.andy-roberts.net/writing/latex/bibliographies
 
 
 Bibliography formats other then BibTeX
