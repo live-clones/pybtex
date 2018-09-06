@@ -276,7 +276,7 @@ stexinfo_no_detailmenu = False
 
 rst_epilog = """
 .. |download_url| replace:: pybtex-{release}.tar.gz
-.. _download_url: https://pypi.python.org/packages/82/59/d46b4a84faacd7c419cfc9a442b7940d6d625d127b83d83666e2a8b203d8/pybtex-0.21.tar.gz
+.. _download_url: https://files.pythonhosted.org/packages/source/p/pybtex/pybtex-{release}.tar.gz
 .. |br| raw:: html
 
    <br />

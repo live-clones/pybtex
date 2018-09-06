@@ -46,7 +46,7 @@ Download and install
 ====================
 
 Release tarballs are available from our `PyPI page
-<https://pypi.python.org/pypi/pybtex>`_.
+<https://pypi.org/project/pybtex>`_.
 
 Pybtex can be also installed with pip:
 
