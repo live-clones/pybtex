@@ -1,11 +1,10 @@
 @media only screen {
-    .content {
+    .document, .prev-next {
         margin-left: auto;
         margin-right: auto;
         padding: 0px 0px;
         width: 100%;
         max-width: 45em;
-        padding: 0.5em;
     }
 }
 
@@ -16,6 +15,10 @@
 body {
     font-family: sans-serif;
     background-color: white;
+}
+
+.document {
+    padding-top: 0.5em;
 }
 
 a {
@@ -233,6 +236,7 @@ th {
 
 .footer {
     margin-top: 7em;
+    margin-bottom: 1.5em;
     font-size: 80%;
     opacity: 0.5;
     clear: both;
