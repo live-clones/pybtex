@@ -1,3 +1,26 @@
+Version 0.22
+------------
+(not yet released)
+
+- Fixed handling of duplicate fields in ``.bib`` biles. Thanks, Jannik Schürg!
+- BibTeX parser is now up to 10% faster on some files. Thanks, Fabrice
+  Benhamouda!
+- Fixed parsing of names with ``\~`` characters.
+- Fixed formatting proceedings without an ``editor`` field in ``unsrt.py``.
+- In case of too many braces in a BibTeX string, ``PybtexSyntaxError`` is now raised instead
+  of `RecursionError``.
+- Dropped ``2to3``, made the code compatible with both Python 2 and 3 with Six_.
+- Moved tests outside of the ``pybtex`` package.
+- Fixed searching in docs with recent versions of Sphinx_.
+- Renamed ``bibtex.BibTeXEntryIterator`` to ``bibtex.LowLevelParser`` for clarity.
+- Removed confusing usage of ``Person.text`` in ``tempate.names``.
+- ``Entry.fields`` does not automagically look for cross-referenced entries
+  anymore.
+
+.. _Six: https://pypi.org/project/six/
+.. _Sphinx: http://sphinx-doc.org/
+
+
 Version 0.21
 ------------
 (released on January 20, 2017)
