@@ -3,17 +3,27 @@ Version 0.22
 (not yet released)
 
 - Fixed handling of duplicate fields in ``.bib`` biles. Thanks, Jannik Schürg!
+
 - BibTeX parser is now up to 10% faster on some files. Thanks, Fabrice
   Benhamouda!
+
 - Fixed parsing of names with ``\~`` characters.
+
 - Fixed formatting proceedings without an ``editor`` field in ``unsrt.py``.
+
 - In case of too many braces in a BibTeX string, ``PybtexSyntaxError`` is now raised instead
-  of `RecursionError``.
+  of ``RecursionError``.
+
 - Dropped ``2to3``, made the code compatible with both Python 2 and 3 with Six_.
+
 - Moved tests outside of the ``pybtex`` package.
+
 - Fixed searching in docs with recent versions of Sphinx_.
+
 - Renamed ``bibtex.BibTeXEntryIterator`` to ``bibtex.LowLevelParser`` for clarity.
+
 - Removed confusing usage of ``Person.text`` in ``tempate.names``.
+
 - ``Entry.fields`` does not automagically look for cross-referenced entries
   anymore.
 
@@ -31,20 +41,20 @@ Version 0.21
 - HTML backend: {braced stings} are now wrapped with ``<span class="bibtex-protected">``
   to enable custom CSS styling.
 
-- unsrt.py: DOI, PubMed and Arxiv links now use HTTPS instead of HTTP.
+- ``unsrt.py``: DOI, PubMed and Arxiv links now use HTTPS instead of HTTP.
 
-- unsrt.py: URLs with percent characters are now formatted correctly.
+- ``unsrt.py``: URLs with percent characters are now formatted correctly.
 
-- unsrt.py: short page / volume / chapter numbers are now joined with a
+- ``unsrt.py``: short page / volume / chapter numbers are now joined with a
   non-breaking space, like in BibTeX.
 
-- unsrt.py: ``inbook`` now uses the ``editor`` field if the ``author`` field is
+- ``unsrt.py``: ``inbook`` now uses the ``editor`` field if the ``author`` field is
   missing, like in BibTeX.
 
-- unsrt.py: the words "volume" and "pages" in the beginning of the sentence are
+- ``unsrt.py``: the words "volume" and "pages" in the beginning of the sentence are
   now capitalized, like in BibTeX.
 
-- unsrt.py: removed unnecessary period between the book title and the comma in
+- ``unsrt.py``: removed unnecessary period between the book title and the comma in
   ``inbook``.
 
 
@@ -162,7 +172,7 @@ Version 0.17
 
 - Added ``--strict`` command line option to ``pybtex`` (all warnings become errors).
 
-- Added ``alpha`` label style, and alpha and unsrtalpha formatting styles.
+- Added ``alpha`` label style, and ``alpha`` and ``unsrtalpha`` formatting styles.
 
 - Added support for ``url``, ``eprint``, ``doi``, and ``pubmed`` fields in ``unsrt`` style.
 
@@ -178,7 +188,7 @@ Version 0.17
 
 - When using multiple ``.bib`` files, macros defined in earlier files are available in subsequent ones (like in BibTeX).
 
-- Fixed parsing ``.bst`` files with lines consisting of a single % character.
+- Fixed parsing ``.bst`` files with lines consisting of a single ``%`` character.
 
 - Fixed sorting entries without author in ``author_year_title`` sorting style.
 
