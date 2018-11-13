@@ -20,11 +20,11 @@ Version 0.22
 
 - Fixed searching in docs with recent versions of Sphinx_.
 
-- Renamed ``bibtex.BibTeXEntryIterator`` to ``bibtex.LowLevelParser`` for clarity.
+- API: renamed ``bibtex.BibTeXEntryIterator`` to ``bibtex.LowLevelParser`` for clarity.
 
-- Removed confusing usage of ``Person.text`` in ``tempate.names``.
+- API: removed confusing usage of ``Person.text`` in ``tempate.names``.
 
-- ``Entry.fields`` does not automagically look for cross-referenced entries
+- API: ``Entry.fields`` does not automagically look for cross-referenced entries
   anymore.
 
 .. _Six: https://pypi.org/project/six/
