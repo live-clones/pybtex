@@ -497,3 +497,31 @@ class WindowsNewlineTest(ParserTest, TestCase):
     ]
     correct_result = BibliographyData()
     errors = ["syntax error in line 4: '(' or '{' expected"]
+
+
+class DuplicateFieldTest(ParserTest, TestCase):
+    input_strings = [
+        r"""
+            @MASTERSTHESIS{
+                Mastering,
+                year = 1364,
+                title = "Mastering Thesis Writing",
+                school = "Charles University in Prague",
+                TITLE = "No One Reads Master's Theses Anyway LOL",
+                TiTlE = "Well seriously, lol.",
+            }
+        """
+    ]
+    correct_result = BibliographyData({
+        'Mastering': Entry('mastersthesis',
+            fields=[
+                ('year', '1364'),
+                ('title', 'Mastering Thesis Writing'),
+                ('school', 'Charles University in Prague'),
+            ],
+        ),
+    })
+    errors = [
+        'entry with key Mastering has a duplicate TITLE field',
+        'entry with key Mastering has a duplicate TiTlE field',
+    ]
