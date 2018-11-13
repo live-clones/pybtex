@@ -112,7 +112,11 @@ class UndefinedMacro(PybtexSyntaxError):
 
 
 class DuplicatePersonField(BibliographyDataError):
-    pass
+    def __init__(self, entry_key, field_name):
+        message = 'entry with key {} has a duplicate {} field'.format(
+            entry_key, field_name
+        )
+        super(DuplicatePersonField, self).__init__(message)
 
 
 class LowLevelParser(Scanner):
@@ -356,10 +360,7 @@ class Parser(BaseParser):
 
         for field_name, field_value_list in fields:
             if field_name in entry.fields:
-                error_message = 'entry with key {} has a duplicate {} field'.format(
-                    key, field_name
-                )
-                self.handle_error(DuplicatePersonField(error_message))
+                self.handle_error(DuplicatePersonField(key, field_name))
                 continue
 
             field_value = textutils.normalize_whitespace(self.flatten_value_list(field_value_list))
