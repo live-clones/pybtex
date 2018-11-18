@@ -4,7 +4,7 @@ import six
 from pybtex.style.labels import BaseLabelStyle
 
 
-# Copyright (c) 2006-2017  Andrey Golovigin
+# Copyright (c) 2006-2018  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
