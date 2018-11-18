@@ -197,11 +197,8 @@ RSYNC_SERVER = www-pybtex@sologoc.com
 
 upload-docs: html
 	$(RSYNC) $(builddir)/html/ $(RSYNC_SERVER):docs/html/
-	surge $(builddir)/html/ docs.pybtex.org
-	(cd .. && ./setup.py upload_docs --upload-dir docs/$(builddir)/html)
 
 upload-site: site
 	$(RSYNC) $(builddir)/site/ $(RSYNC_SERVER):www/html/
-	surge $(builddir)/site/ pybtex.org
 
 upload: upload-site upload-docs
