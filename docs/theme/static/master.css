@@ -173,6 +173,7 @@ a .docutils.literal {
     border-radius: 0.15em;
     padding: 1em;
     margin: 0;
+    overflow: auto;
 }
 
 th {
