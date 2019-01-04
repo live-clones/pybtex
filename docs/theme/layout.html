@@ -58,6 +58,12 @@
 <title>{{ title|striptags|e }}{{ titlesuffix }} {% if not site %}({{ release }}){% endif %}</title>
 {%- endblock %}
 
+{%- block css %}
+{# is is the right place for meta tags? #}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ super() }}
+{%- endblock %}
+
 {%- block scripts %}
 {%- if not site %}{{ super() }}{% endif %}
 {%- endblock %}
