@@ -74,20 +74,20 @@ makes nested formatting possible.  For example, this stupidly formatted text:
     |CTAN hyperlink|_ is *comprehensive*.
 
     .. |CTAN hyperlink| replace:: *Comprehensive* TeX Archive Network
-    .. _CTAN hyperlink: http://ctan.org/
+    .. _CTAN hyperlink: https://ctan.org/
 
 is represented by this object tree:
 
 .. doctest::
 
     >>> text = Text(
-    ...     HRef('http://ctan.org/', Tag('em', 'Comprehensive'), ' TeX Archive Network'),
+    ...     HRef('https://ctan.org/', Tag('em', 'Comprehensive'), ' TeX Archive Network'),
     ...     ' is ',
     ...     Tag('em', 'comprehensive'),
     ...     '.',
     ... )
     >>> print(text.render_as('html'))
-    <a href="http://ctan.org/"><em>Comprehensive</em> TeX Archive Network</a> is <em>comprehensive</em>.
+    <a href="https://ctan.org/"><em>Comprehensive</em> TeX Archive Network</a> is <em>comprehensive</em>.
 
 :py:class:`Protected` represents a "protected" piece of text, something like
 {braced text} in BibTeX. It is not affected by case-changing operations, like
