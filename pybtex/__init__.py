@@ -55,6 +55,7 @@ class Engine(object):
             output_encoding=output_encoding,
             output_filename=base_filename,
             add_output_suffix=True,
+            **kwargs,
         )
 
     def format_from_string(self, bib_string, *args, **kwargs):
