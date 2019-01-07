@@ -4,7 +4,9 @@ Pybtex!
 
 .. container:: download-links
 
-    `Bitbucket page`_ | |download_url|_ (:doc:`what's new <docs:history>`) | :doc:`docs <docs:index>`
+    - `Bitbucket page`_
+    - |download_url|_ (:doc:`what's new <docs:history>`)
+    - :doc:`docs <docs:index>`
 
 
 .. meta::

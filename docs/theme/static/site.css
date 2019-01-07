@@ -1,7 +1,7 @@
 @import url(master.css);
 
 h1 {
-    font-size: 800%;
+    font-size: 400%;
     margin-top: 0.3ex;
     margin-bottom: 0.2ex;
     border-bottom-style: solid;
@@ -18,8 +18,34 @@ body {
     margin-bottom: 3em;
 }
 
-.download-links {
-    margin-bottom: 3ex;
-    width: 100%;
-    text-align: right;
+@media only screen and (min-width: 600px) {
+    h1 {
+        font-size: 800%;
+    }
+
+    .download-links {
+        margin-bottom: 3ex;
+        width: 100%;
+        text-align: right;
+    }
+
+    .download-links ul {
+        font-size: 0;
+    }
+
+    .download-links ul li {
+        font-size: 1rem;
+        font-family: sans-serif;
+        list-style: none;
+        display: inline;
+    }
+
+    .download-links ul li:not(:last-child) {
+        margin-right: 0.3em;
+    }
+
+    .download-links ul li:not(:first-child):before {
+        margin-right: 0.3em;
+        content: "|";
+    }
 }
