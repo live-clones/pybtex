@@ -193,7 +193,7 @@ pseudoxml:
 
 # https://pybtex.org/ stuff
 RSYNC = rsync -rv --delete
-RSYNC_SERVER = www-pybtex@sologoc.com
+RSYNC_SERVER = www-pybtex@pybtex.org
 
 upload-docs: html
 	$(RSYNC) $(builddir)/html/ $(RSYNC_SERVER):docs/html/
