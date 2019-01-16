@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 from os import path
 
 
-__version__ = '0.22.0'
+__version__ = '0.22.1'
 
 
 class Engine(object):
