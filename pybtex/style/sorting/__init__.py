@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-# Copyright (c) 2006-2018  Andrey Golovigin
+# Copyright (c) 2006-2019  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
