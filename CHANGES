@@ -1,3 +1,10 @@
+Version 0.22.2
+--------------
+(released on January 17, 2019)
+
+- Fixed compatibility with Python 2 and older versions of Python 3.
+
+
 Version 0.22.1
 --------------
 (released on January 16, 2019)
