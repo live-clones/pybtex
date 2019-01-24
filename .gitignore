@@ -6,6 +6,7 @@
 /examples/xampl.bibtexml
 /examples/xampl.yaml
 /build
+/bundle
 /docs/build
 /dist
 /pybtex.egg-info
