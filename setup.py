@@ -56,6 +56,9 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README')).read()
 
 install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4', 'six']
+extras_require = {
+    'test': ['nose'],
+}
 
 setup(
     name=progname,
@@ -81,6 +84,7 @@ setup(
         'Topic :: Utilities',
     ],
     install_requires=install_requires,
+    extras_require=extras_require,
     python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*',
     packages=find_packages(exclude=['docs']),
     include_package_data=True,
