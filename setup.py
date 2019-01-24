@@ -24,6 +24,7 @@
 
 import os
 import sys
+from collections import OrderedDict
 from distutils.command.sdist import sdist
 from distutils.dep_util import newer
 
@@ -68,6 +69,11 @@ setup(
     author='Andrey Golovizin',
     author_email='ag@sologoc.com',
     url='https://pybtex.org/',
+    project_urls=OrderedDict((
+        ('Documentation', 'https://docs.pybtex.org/'),
+        ('Code', 'https://bitbucket.org/pybtex-devs/pybtex'),
+        ('Issue tracker', 'https://bitbucket.org/pybtex-devs/pybtex/issues'),
+    )),
     license='MIT',
     platforms=['platform-independent'],
     classifiers=[
