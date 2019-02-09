@@ -222,30 +222,24 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     ...     ('Tres', 3),
     ... ])
     >>> d
-    OrderedCaseInsensitiveDict([(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)])
+    OrderedCaseInsensitiveDict({u'Uno': 1, u'Dos': 2, u'Tres': 3})
     >>> d.lower()
-    OrderedCaseInsensitiveDict([(u'uno', 1), (u'dos', 2), (u'tres', 3)])
-    >>> d.keys()
+    OrderedCaseInsensitiveDict({u'uno': 1, u'dos': 2, u'tres': 3})
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres']
-    >>> d.items()
+    >>> list(d.items())
     [(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)]
-    >>> d.values()
+    >>> list(d.values())
     [1, 2, 3]
     >>> d['Cuatro'] = 4
-    >>> d.keys()
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
-    >>> d.items()
+    >>> list(d.items())
     [(u'Uno', 1), (u'Dos', 2), (u'Tres', 3), (u'Cuatro', 4)]
-    >>> d.values()
+    >>> list(d.values())
     [1, 2, 3, 4]
     >>> list(d)
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
-    >>> list(d.iterkeys()) == d.keys()
-    True
-    >>> list(d.itervalues()) == d.values()
-    True
-    >>> list(d.items()) == d.items()
-    True
     >>> 'Uno' in d
     True
     >>> 'uno' in d
@@ -269,16 +263,22 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     u'one'
     >>> d['Uno']
     u'one'
-    >>> d.keys()
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
     >>> d['cuatro'] = 'four'
     >>> d['Cuatro']
     u'four'
     >>> d['cuatro']
     u'four'
-    >>> d.keys()
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
-
+    >>> list(d.values())
+    [u'one', 2, 3, u'four']
+    >>> del d['dos']
+    >>> list(d.keys())
+    [u'UNO', u'Tres', u'cuatro']
+    >>> list(d.values())
+    [u'one', 3, u'four']
     """
 
     def __init__(self, *args, **kwargs):

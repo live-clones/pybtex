@@ -329,12 +329,12 @@ class BibliographyData(object):
         ...     }
         ... """, 'bibtex')
         >>> data_lower = data.lower()
-        >>> data_lower.entries.keys()
+        >>> list(data_lower.entries.keys())
         [u'obrazy', u'elegie']
         >>> for entry in data_lower.entries.values():
         ...     entry.key
-        ...     entry.persons.keys()
-        ...     entry.fields.keys()
+        ...     list(entry.persons.keys())
+        ...     list(entry.fields.keys())
         u'obrazy'
         [u'author']
         [u'title']
@@ -413,7 +413,7 @@ class Entry(object):
 
     def __repr__(self):
         # represent the fields as a list of tuples for simplicity
-        repr_fields = repr(self.fields.items())
+        repr_fields = repr(list(self.fields.items()))
 
         return 'Entry({type_}, fields={fields}, persons={persons})'.format(
             type_=repr(self.type),

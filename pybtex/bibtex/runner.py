@@ -58,7 +58,7 @@ def write_bst(filename, style):
 
 def run_bibtex(style, database, citations=None):
     if citations is None:
-        citations = database.entries.keys()
+        citations = list(database.entries.keys())
     tmpdir = mkdtemp(prefix='pybtex_test_')
     try:
         write_bib(path.join(tmpdir, 'test.bib'), database)
