@@ -281,67 +281,10 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
 
     """
 
-    def __init__(self, data=()):
-        if isinstance(data, GeneratorType):
-            data = list(data)
-        if isinstance(data, Sequence):
-            self.order = [key for key, value in data]
-        else:
-            self.order = list(data.keys())
-        super(OrderedCaseInsensitiveDict, self).__init__(data)
-
-    def __setitem__(self, key, value):
-        if key not in self:
-            self.order.append(key)
-        super(OrderedCaseInsensitiveDict, self).__setitem__(key, value)
-
-    def __delitem__(self, key):
-        raise NotImplementedError
-
-    def __iter__(self):
-        return iter(self.order)
-
-    def __eq__(self, other):
-        """
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == OrderedCaseInsensitiveDict([('a', 1), ('b', 2)])
-        True
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == OrderedCaseInsensitiveDict([('b', 2), ('a', 1)])
-        False
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == dict([('b', 2), ('a', 1)])
-        True
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('B', 2)]) == OrderedCaseInsensitiveDict([('A', 1), ('b', 2)])
-        False
-        """
-        if isinstance(other, (OrderedCaseInsensitiveDict, OrderedDict)):
-            return list(self.items()) == list(other.items())
-        else:
-            return super(OrderedCaseInsensitiveDict, self).__eq__(other)
-
-    def iterkeys(self):
-        return iter(self.order)
-
-    def keys(self):
-        return self.order
-
-    def itervalues(self):
-        for key in self.order:
-            yield self[key]
-
-    def values(self):
-        return [self[key] for key in self.order]
-
-    def items(self):
-        for key in self.order:
-            yield key, self[key]
-
-    def items(self):
-        return [(key, self[key]) for key in self.order]
-
-    def __repr__(self):
-        return '{0}({1})'.format(
-            type(self).__name__, repr(self.items())
-        )
-
+    def __init__(self, *args, **kwargs):
+        initial = OrderedDict(*args, **kwargs)
+        self._dict = dict((key.lower(), value) for key, value in initial.items())
+        self._keys = OrderedDict((key.lower(), key) for key in initial)
 
 @fix_unicode_literals_in_doctest
 class CaseInsensitiveSet(MutableSet):
