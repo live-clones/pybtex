@@ -286,6 +286,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
         self._dict = dict((key.lower(), value) for key, value in initial.items())
         self._keys = OrderedDict((key.lower(), key) for key in initial)
 
+
 @fix_unicode_literals_in_doctest
 class CaseInsensitiveSet(MutableSet):
     """A very basic case-insensitive set.
