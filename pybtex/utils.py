@@ -222,30 +222,24 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     ...     ('Tres', 3),
     ... ])
     >>> d
-    OrderedCaseInsensitiveDict([(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)])
+    OrderedCaseInsensitiveDict({u'Uno': 1, u'Dos': 2, u'Tres': 3})
     >>> d.lower()
-    OrderedCaseInsensitiveDict([(u'uno', 1), (u'dos', 2), (u'tres', 3)])
-    >>> d.keys()
+    OrderedCaseInsensitiveDict({u'uno': 1, u'dos': 2, u'tres': 3})
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres']
-    >>> d.items()
+    >>> list(d.items())
     [(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)]
-    >>> d.values()
+    >>> list(d.values())
     [1, 2, 3]
     >>> d['Cuatro'] = 4
-    >>> d.keys()
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
-    >>> d.items()
+    >>> list(d.items())
     [(u'Uno', 1), (u'Dos', 2), (u'Tres', 3), (u'Cuatro', 4)]
-    >>> d.values()
+    >>> list(d.values())
     [1, 2, 3, 4]
     >>> list(d)
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
-    >>> list(d.iterkeys()) == d.keys()
-    True
-    >>> list(d.itervalues()) == d.values()
-    True
-    >>> list(d.items()) == d.items()
-    True
     >>> 'Uno' in d
     True
     >>> 'uno' in d
@@ -269,79 +263,28 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     u'one'
     >>> d['Uno']
     u'one'
-    >>> d.keys()
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
     >>> d['cuatro'] = 'four'
     >>> d['Cuatro']
     u'four'
     >>> d['cuatro']
     u'four'
-    >>> d.keys()
+    >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres', u'Cuatro']
-
+    >>> list(d.values())
+    [u'one', 2, 3, u'four']
+    >>> del d['dos']
+    >>> list(d.keys())
+    [u'UNO', u'Tres', u'cuatro']
+    >>> list(d.values())
+    [u'one', 3, u'four']
     """
 
-    def __init__(self, data=()):
-        if isinstance(data, GeneratorType):
-            data = list(data)
-        if isinstance(data, Sequence):
-            self.order = [key for key, value in data]
-        else:
-            self.order = list(data.keys())
-        super(OrderedCaseInsensitiveDict, self).__init__(data)
-
-    def __setitem__(self, key, value):
-        if key not in self:
-            self.order.append(key)
-        super(OrderedCaseInsensitiveDict, self).__setitem__(key, value)
-
-    def __delitem__(self, key):
-        raise NotImplementedError
-
-    def __iter__(self):
-        return iter(self.order)
-
-    def __eq__(self, other):
-        """
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == OrderedCaseInsensitiveDict([('a', 1), ('b', 2)])
-        True
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == OrderedCaseInsensitiveDict([('b', 2), ('a', 1)])
-        False
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('b', 2)]) == dict([('b', 2), ('a', 1)])
-        True
-        >>> OrderedCaseInsensitiveDict([('a', 1), ('B', 2)]) == OrderedCaseInsensitiveDict([('A', 1), ('b', 2)])
-        False
-        """
-        if isinstance(other, (OrderedCaseInsensitiveDict, OrderedDict)):
-            return list(self.items()) == list(other.items())
-        else:
-            return super(OrderedCaseInsensitiveDict, self).__eq__(other)
-
-    def iterkeys(self):
-        return iter(self.order)
-
-    def keys(self):
-        return self.order
-
-    def itervalues(self):
-        for key in self.order:
-            yield self[key]
-
-    def values(self):
-        return [self[key] for key in self.order]
-
-    def items(self):
-        for key in self.order:
-            yield key, self[key]
-
-    def items(self):
-        return [(key, self[key]) for key in self.order]
-
-    def __repr__(self):
-        return '{0}({1})'.format(
-            type(self).__name__, repr(self.items())
-        )
-
+    def __init__(self, *args, **kwargs):
+        initial = OrderedDict(*args, **kwargs)
+        self._dict = dict((key.lower(), value) for key, value in initial.items())
+        self._keys = OrderedDict((key.lower(), key) for key in initial)
 
 @fix_unicode_literals_in_doctest
 class CaseInsensitiveSet(MutableSet):

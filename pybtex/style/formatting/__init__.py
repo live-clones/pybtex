@@ -82,7 +82,7 @@ class BaseStyle(Plugin):
         """
 
         if citations is None:
-            citations = bib_data.entries.keys()
+            citations = list(bib_data.entries.keys())
         citations = bib_data.add_extra_citations(citations, self.min_crossrefs)
         entries = [bib_data.entries[key] for key in citations]
         formatted_entries = self.format_entries(entries)
