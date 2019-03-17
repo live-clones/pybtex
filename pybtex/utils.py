@@ -264,14 +264,14 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     >>> d['Uno']
     u'one'
     >>> list(d.keys())
-    [u'Uno', u'Dos', u'Tres', u'Cuatro']
+    [u'UNO', u'Dos', u'Tres', u'Cuatro']
     >>> d['cuatro'] = 'four'
     >>> d['Cuatro']
     u'four'
     >>> d['cuatro']
     u'four'
     >>> list(d.keys())
-    [u'Uno', u'Dos', u'Tres', u'Cuatro']
+    [u'UNO', u'Dos', u'Tres', u'cuatro']
     >>> list(d.values())
     [u'one', 2, 3, u'four']
     >>> del d['dos']
