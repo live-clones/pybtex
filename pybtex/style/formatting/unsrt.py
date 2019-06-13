@@ -333,7 +333,10 @@ class Style(BaseStyle):
             sentence [self.format_names('author')],
             self.format_btitle(e, 'title'),
             sentence[
-                'PhD thesis',
+                first_of [
+                    optional_field('type'),
+                    'PhD thesis',
+                ],
                 field('school'),
                 optional_field('address'),
                 date,
