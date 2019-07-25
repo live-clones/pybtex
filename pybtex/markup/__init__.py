@@ -31,8 +31,6 @@ class LaTeXParser(Scanner):
 
     def parse(self, level=0):
         """
-        >>> from nose.tools import assert_raises
-
         >>> LaTeXParser('abc').parse()
         Text('abc')
 
@@ -41,9 +39,6 @@ class LaTeXParser(Scanner):
 
         >>> LaTeXParser('abc{def {xyz}} !').parse()
         Text('abc', Protected('def ', Protected('xyz')), ' !')
-
-        >>> assert_raises(PybtexSyntaxError, LaTeXParser('abc{def}}').parse)
-        >>> assert_raises(PybtexSyntaxError, LaTeXParser('abc{def}{').parse)
         """
 
         return Text(*self.iter_string_parts(level=level))

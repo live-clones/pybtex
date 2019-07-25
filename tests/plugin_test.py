@@ -24,16 +24,10 @@ from __future__ import unicode_literals
 
 import re
 
-import nose.tools
+import pytest
 import pybtex.database.input.bibtex
 import pybtex.plugin
 import pybtex.style.formatting.plain
-
-
-# unittest.assertRaisesRegexp() is deprecated and renamed to
-# unittest.assertRaisesRegex() in Python 3
-if not hasattr(nose.tools, 'assert_raises_regex'):
-    nose.tools.assert_raises_regex = nose.tools.assert_raises_regexp
 
 
 def test_plugin_loader():
@@ -60,94 +54,83 @@ class TestPlugin4(pybtex.plugin.Plugin):
 
 
 def test_register_plugin_1():
-    nose.tools.assert_true(
-        pybtex.plugin.register_plugin(
-            'pybtex.style.formatting', 'yippikayee', TestPlugin1))
-    nose.tools.assert_is(
-        TestPlugin1, pybtex.plugin.find_plugin(
-            'pybtex.style.formatting', 'yippikayee'))
-    nose.tools.assert_false(
-        pybtex.plugin.register_plugin(
-            'pybtex.style.formatting', 'yippikayee', TestPlugin2))
-    nose.tools.assert_is(
-        TestPlugin1, pybtex.plugin.find_plugin(
-            'pybtex.style.formatting', 'yippikayee'))
-    nose.tools.assert_true(
-        pybtex.plugin.register_plugin(
-            'pybtex.style.formatting', 'yippikayee', TestPlugin2, force=True))
-    nose.tools.assert_is(
-        TestPlugin2, pybtex.plugin.find_plugin(
-            'pybtex.style.formatting', 'yippikayee'))
+    assert pybtex.plugin.register_plugin(
+        'pybtex.style.formatting', 'yippikayee', TestPlugin1
+    )
+    assert pybtex.plugin.find_plugin(
+        'pybtex.style.formatting', 'yippikayee'
+    ) is TestPlugin1
+    assert not pybtex.plugin.register_plugin(
+        'pybtex.style.formatting', 'yippikayee', TestPlugin2
+    )
+    assert pybtex.plugin.find_plugin(
+        'pybtex.style.formatting', 'yippikayee'
+    ) is TestPlugin1
+    assert pybtex.plugin.register_plugin(
+        'pybtex.style.formatting', 'yippikayee', TestPlugin2, force=True
+    )
+    assert pybtex.plugin.find_plugin(
+        'pybtex.style.formatting', 'yippikayee'
+    ), TestPlugin2
 
 
 def test_register_plugin_2():
-    nose.tools.assert_false(
-        pybtex.plugin.register_plugin(
-            'pybtex.style.formatting', 'plain', TestPlugin2))
+    assert not pybtex.plugin.register_plugin(
+        'pybtex.style.formatting', 'plain', TestPlugin2
+    )
     plugin = pybtex.plugin.find_plugin('pybtex.style.formatting', 'plain')
-    nose.tools.assert_is_not(plugin, TestPlugin2)
-    nose.tools.assert_is(plugin, pybtex.style.formatting.plain.Style)
+    assert plugin is not TestPlugin2
+    assert plugin is pybtex.style.formatting.plain.Style
 
 
 def test_register_plugin_3():
-    nose.tools.assert_true(
-        pybtex.plugin.register_plugin(
-            'pybtex.style.formatting.suffixes', '.woo', TestPlugin3))
+    assert pybtex.plugin.register_plugin(
+        'pybtex.style.formatting.suffixes', '.woo', TestPlugin3
+    )
     plugin = pybtex.plugin.find_plugin(
         'pybtex.style.formatting', filename='test.woo')
-    nose.tools.assert_is(plugin, TestPlugin3)
+    assert plugin is TestPlugin3
 
 
 def test_bad_find_plugin():
-    nose.tools.assert_raises(
-        pybtex.plugin.PluginGroupNotFound,
-        lambda: pybtex.plugin.find_plugin("pybtex.invalid.group", "__oops"))
-    nose.tools.assert_raises_regex(
-        pybtex.plugin.PluginNotFound,
-        re.escape('plugin pybtex.style.formatting.__oops not found'),
-        lambda: pybtex.plugin.find_plugin("pybtex.style.formatting", "__oops"))
-    nose.tools.assert_raises(
-        pybtex.plugin.PluginNotFound,
-        lambda: pybtex.plugin.find_plugin("pybtex.style.formatting",
-                                          filename="oh.__oops"))
+    with pytest.raises(pybtex.plugin.PluginGroupNotFound):
+        pybtex.plugin.find_plugin("pybtex.invalid.group", "__oops")
+
+    with pytest.raises(pybtex.plugin.PluginNotFound) as excinfo:
+        pybtex.plugin.find_plugin("pybtex.style.formatting", "__oops")
+    assert 'plugin pybtex.style.formatting.__oops not found' in str(excinfo.value)
+
+    with pytest.raises(pybtex.plugin.PluginNotFound):
+        pybtex.plugin.find_plugin("pybtex.style.formatting", filename="oh.__oops")
 
 
 def test_bad_register_plugin():
-    nose.tools.assert_raises(
-        pybtex.plugin.PluginGroupNotFound,
-        lambda: pybtex.plugin.register_plugin(
-            "pybtex.invalid.group", "__oops", TestPlugin1))
-    nose.tools.assert_raises(
-        pybtex.plugin.PluginGroupNotFound,
-        lambda: pybtex.plugin.register_plugin(
-            "pybtex.invalid.group.suffixes", ".__oops", TestPlugin1))
+    with pytest.raises(pybtex.plugin.PluginGroupNotFound):
+        pybtex.plugin.register_plugin( "pybtex.invalid.group", "__oops", TestPlugin1)
+
+    with pytest.raises(pybtex.plugin.PluginGroupNotFound):
+        pybtex.plugin.register_plugin( "pybtex.invalid.group.suffixes", ".__oops", TestPlugin1)
+
     # suffixes must start with a dot
-    nose.tools.assert_raises(
-        ValueError,
-        lambda: pybtex.plugin.register_plugin(
-            "pybtex.style.formatting.suffixes", "notasuffix", TestPlugin1))
+    with pytest.raises(ValueError):
+        pybtex.plugin.register_plugin( "pybtex.style.formatting.suffixes", "notasuffix", TestPlugin1)
 
 
 def test_plugin_suffix():
     plugin = pybtex.plugin.find_plugin(
         "pybtex.database.input", filename="test.bib")
-    nose.tools.assert_is(plugin, pybtex.database.input.bibtex.Parser)
+    assert plugin is pybtex.database.input.bibtex.Parser
 
 
 def test_plugin_alias():
     pybtex.plugin._DEFAULT_PLUGINS['pybtex.legacy.input'] = 'punchcard'
-    nose.tools.assert_true(
-        pybtex.plugin.register_plugin(
-            'pybtex.legacy.input', 'punchcard', TestPlugin4))
-    nose.tools.assert_true(
-        pybtex.plugin.register_plugin(
-            'pybtex.legacy.input.aliases', 'punchedcard', TestPlugin4))
-    nose.tools.assert_equal(
-        list(pybtex.plugin.enumerate_plugin_names('pybtex.legacy.input')),
-        ['punchcard']
+    assert pybtex.plugin.register_plugin('pybtex.legacy.input', 'punchcard', TestPlugin4)
+    assert pybtex.plugin.register_plugin(
+        'pybtex.legacy.input.aliases', 'punchedcard', TestPlugin4
     )
+    assert list(pybtex.plugin.enumerate_plugin_names('pybtex.legacy.input')) == ['punchcard']
     plugin = pybtex.plugin.find_plugin("pybtex.legacy.input", 'punchedcard')
-    nose.tools.assert_equal(plugin, TestPlugin4)
+    assert plugin is TestPlugin4
     del pybtex.plugin._DEFAULT_PLUGINS['pybtex.legacy.input']
 
 
@@ -155,4 +138,4 @@ def test_plugin_class():
     """If a plugin class is passed to find_plugin(), it shoud be returned back."""
     plugin = pybtex.plugin.find_plugin("pybtex.database.input", 'bibtex')
     plugin2 = pybtex.plugin.find_plugin("pybtex.database.input", plugin)
-    nose.tools.assert_equal(plugin, plugin2)
+    assert plugin == plugin2

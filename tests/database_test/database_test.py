@@ -29,7 +29,6 @@ from io import BytesIO, TextIOWrapper
 
 import six
 import pytest
-from nose.tools import assert_equal, assert_is_instance, assert_true
 from pybtex.database import parse_bytes, parse_string
 from pybtex.plugin import find_plugin
 
@@ -41,8 +40,8 @@ class DatabaseIO(object):
 
     def __init__(self):
         self.reference_data = deepcopy(reference_data)
-        assert_true(reference_data.entries)
-        assert_true(reference_data.preamble)
+        assert reference_data.entries
+        assert reference_data.preamble
 
     @abstractmethod
     def serialize(self, bib_data):
@@ -85,7 +84,7 @@ class PybtexStreamIO(PybtexDatabaseIO):
 class PybtexStringIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_string(self.bib_format)
-        assert_is_instance(result, six.text_type)
+        assert isinstance(result, six.text_type)
         return result
 
     def deserialize(self, string):
@@ -95,7 +94,7 @@ class PybtexStringIO(PybtexDatabaseIO):
 class PybtexBytesIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_bytes(self.bib_format)
-        assert_is_instance(result, bytes)
+        assert isinstance(result, bytes)
         return result
 
     def deserialize(self, string):
@@ -138,7 +137,7 @@ class ReprEvalIO(DatabaseIO):
 def check_database_io(io_obj):
     serialized_data = io_obj.serialize(io_obj.reference_data)
     deserialized_data = io_obj.deserialize(serialized_data)
-    assert_equal(deserialized_data, io_obj.reference_data)
+    assert deserialized_data == io_obj.reference_data
 
 
 @pytest.mark.parametrize(["io_cls"], [(PybtexBytesIO,), (PybtexStringIO,), (PybtexBytesIO,)])
