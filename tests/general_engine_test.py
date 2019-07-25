@@ -30,6 +30,8 @@ from contextlib import contextmanager
 from shutil import rmtree
 from tempfile import mkdtemp
 
+import pytest
+
 from pybtex import errors, io
 from .utils import diff, get_data
 
@@ -125,29 +127,39 @@ def check_make_bibliography(engine, filenames):
         assert result == correct_result, diff(correct_result, result)
 
 
-def test_bibtex_engine():
+@pytest.mark.parametrize(
+    ["filenames"],
+    [
+        (['xampl.bib', 'unsrt.bst'],),
+        (['xampl.bib', 'plain.bst'],),
+        (['xampl.bib', 'alpha.bst'],),
+        (['xampl.bib', 'jurabib.bst'],),
+        (['cyrillic.bib', 'unsrt.bst'],),
+        (['cyrillic.bib', 'alpha.bst'],),
+        (['xampl_mixed.bib', 'unsrt_mixed.bst', 'xampl_mixed_unsrt_mixed.aux'],),
+        (['IEEEtran.bib', 'IEEEtran.bst', 'IEEEtran.aux'],),
+    ]
+)
+@pytest.mark.parametrize(
+    ["check"], [(check_make_bibliography,), (check_format_from_string,)]
+)
+def test_bibtex_engine(check, filenames):
     from pybtex import bibtex
-    for filenames in [
-        ('xampl.bib', 'unsrt.bst'),
-        ('xampl.bib', 'plain.bst'),
-        ('xampl.bib', 'alpha.bst'),
-        ('xampl.bib', 'jurabib.bst'),
-        ('cyrillic.bib', 'unsrt.bst'),
-        ('cyrillic.bib', 'alpha.bst'),
-        ('xampl_mixed.bib', 'unsrt_mixed.bst', 'xampl_mixed_unsrt_mixed.aux'),
-        ('IEEEtran.bib', 'IEEEtran.bst', 'IEEEtran.aux'),
-    ]:
-        yield check_make_bibliography, bibtex, filenames
-        yield check_format_from_string, bibtex, filenames
+    check(bibtex, filenames)
 
 
-def test_pybtex_engine():
+@pytest.mark.parametrize(
+    ["filenames"],
+    [
+        (['cyrillic.bib', 'unsrt.bst'],),
+        (['cyrillic.bib', 'plain.bst'],),
+        (['cyrillic.bib', 'alpha.bst'],),
+        (['extrafields.bib', 'unsrt.bst'],),
+    ]
+)
+@pytest.mark.parametrize(
+    ["check"], [(check_make_bibliography,), (check_format_from_string,)]
+)
+def test_pybtex_engine(check, filenames):
     import pybtex
-    for filenames in [
-        ('cyrillic.bib', 'unsrt.bst'),
-        ('cyrillic.bib', 'plain.bst'),
-        ('cyrillic.bib', 'alpha.bst'),
-        ('extrafields.bib', 'unsrt.bst'),
-    ]:
-        yield check_make_bibliography, pybtex, filenames
-        yield check_format_from_string, pybtex, filenames
+    check(pybtex, filenames)

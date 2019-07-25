@@ -58,7 +58,7 @@ README = open(os.path.join(ROOT, 'README')).read()
 
 install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4', 'six']
 extras_require = {
-    'test': ['nose'],
+    'test': ['pytest'],
 }
 
 setup(

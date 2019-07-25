@@ -1,18 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
-import pickle
-from abc import ABCMeta, abstractmethod
-from copy import deepcopy
-from io import BytesIO, TextIOWrapper
-
-import six
-from nose.tools import assert_equal, assert_is_instance, assert_true
-from pybtex.database import parse_bytes, parse_string
-from pybtex.plugin import find_plugin
-
-from .data import reference_data
-
-
 # Copyright (c) 2006-2019  Andrey Golovigin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -35,8 +20,19 @@ from .data import reference_data
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+from __future__ import absolute_import, unicode_literals
 
+import pickle
+from abc import ABCMeta, abstractmethod
+from copy import deepcopy
+from io import BytesIO, TextIOWrapper
 
+import six
+import pytest
+from pybtex.database import parse_bytes, parse_string
+from pybtex.plugin import find_plugin
+
+from .data import reference_data
 
 
 class DatabaseIO(object):
@@ -44,8 +40,8 @@ class DatabaseIO(object):
 
     def __init__(self):
         self.reference_data = deepcopy(reference_data)
-        assert_true(reference_data.entries)
-        assert_true(reference_data.preamble)
+        assert reference_data.entries
+        assert reference_data.preamble
 
     @abstractmethod
     def serialize(self, bib_data):
@@ -88,7 +84,7 @@ class PybtexStreamIO(PybtexDatabaseIO):
 class PybtexStringIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_string(self.bib_format)
-        assert_is_instance(result, six.text_type)
+        assert isinstance(result, six.text_type)
         return result
 
     def deserialize(self, string):
@@ -98,7 +94,7 @@ class PybtexStringIO(PybtexDatabaseIO):
 class PybtexBytesIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_bytes(self.bib_format)
-        assert_is_instance(result, bytes)
+        assert isinstance(result, bytes)
         return result
 
     def deserialize(self, string):
@@ -141,19 +137,22 @@ class ReprEvalIO(DatabaseIO):
 def check_database_io(io_obj):
     serialized_data = io_obj.serialize(io_obj.reference_data)
     deserialized_data = io_obj.deserialize(serialized_data)
-    assert_equal(deserialized_data, io_obj.reference_data)
+    assert deserialized_data == io_obj.reference_data
 
 
-def test_database_parsing_and_writing():
-    for io_cls in PybtexStreamIO, PybtexStringIO, PybtexBytesIO:
-        for bib_format in 'bibtex', 'bibtexml', 'yaml':
-            yield check_database_io, io_cls(bib_format)
+@pytest.mark.parametrize(["io_cls"], [(PybtexBytesIO,), (PybtexStringIO,), (PybtexBytesIO,)])
+@pytest.mark.parametrize(["bib_format"], [("bibtex",), ("bibtexml",), ("yaml",)])
+def test_database_io(io_cls, bib_format):
+    check_database_io(io_cls(bib_format))
 
 
-def test_database_pickling():
-    for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1):
-        yield check_database_io, PickleIO(protocol)
+@pytest.mark.parametrize(
+    ["protocol"],
+    [(protocol,) for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1)]
+)
+def test_database_pickling(protocol):
+    check_database_io(PickleIO(protocol))
 
 
 def test_database_repr():
-    yield check_database_io, ReprEvalIO()
+    check_database_io(ReprEvalIO())

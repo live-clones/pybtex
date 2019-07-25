@@ -28,8 +28,9 @@ import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase
 
+import pytest
 import six
-from nose.tools import assert_raises
+
 from pybtex import textutils
 from pybtex.richtext import HRef, Protected, String, Symbol, Tag, Text, nbsp
 
@@ -125,8 +126,11 @@ class TestText(TextTestMixin, TestCase):
         text = six.text_type(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
-        assert_raises(ValueError, Text, {})
-        assert_raises(ValueError, Text, 0, 0)
+        with pytest.raises(ValueError):
+            Text({})
+
+        with pytest.raises(ValueError):
+            Text(0, 0)
 
     def test__eq__(self):
         assert Text() == Text()
@@ -176,7 +180,8 @@ class TestText(TextTestMixin, TestCase):
     def test__getitem__(self):
         t = Text('123', Text('456', Text('78'), '9'), '0')
 
-        assert_raises(TypeError, lambda: 1 in t)
+        with pytest.raises(TypeError):
+            1 in t
 
         assert t == Text('1234567890')
         assert t[:0] == Text('')
@@ -487,7 +492,8 @@ class TestTag(TextTestMixin, TestCase):
     def test__getitem__(self):
         t = Tag('em', '1234567890')
 
-        assert_raises(TypeError, lambda: 1 in t)
+        with pytest.raises(TypeError):
+            1 in t
 
         assert t == Tag('em', '1234567890')
         assert t[:] == t
@@ -733,7 +739,8 @@ class TestHRef(TextTestMixin, TestCase):
     def test__getitem__(self):
         t = HRef('/', '1234567890')
 
-        assert_raises(TypeError, lambda: 1 in t)
+        with pytest.raises(TypeError):
+            1 in t
 
         assert t == HRef('/', '1234567890')
         assert t[:] == t
@@ -989,8 +996,11 @@ class TestProtected(TextTestMixin, TestCase):
         text = six.text_type(Protected('a', Protected('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
-        assert_raises(ValueError, Protected, {})
-        assert_raises(ValueError, Protected, 0, 0)
+        with pytest.raises(ValueError):
+            Protected({})
+
+        with pytest.raises(ValueError):
+            Protected(0, 0)
 
     def test__eq__(self):
         assert Protected() == Protected()
@@ -1039,7 +1049,8 @@ class TestProtected(TextTestMixin, TestCase):
     def test__getitem__(self):
         t = Protected('1234567890')
 
-        assert_raises(TypeError, lambda: 1 in t)
+        with pytest.raises(TypeError):
+            1 in t
 
         assert t == Protected('1234567890')
         assert t[:0] == Protected('')
@@ -1203,7 +1214,9 @@ class TestSymbol(TextTestMixin, TestCase):
         assert symbol[0:5] == Symbol('nbsp')
         assert symbol[1:] == String()
         assert symbol[1:5] == String()
-        assert_raises(IndexError, lambda: symbol[1])
+
+        with pytest.raises(IndexError):
+            symbol[1]
 
     def test__add__(self):
         assert (nbsp + '.').render_as('html') == '&nbsp;.'
