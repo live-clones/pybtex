@@ -28,6 +28,7 @@ from copy import deepcopy
 from io import BytesIO, TextIOWrapper
 
 import six
+import pytest
 from nose.tools import assert_equal, assert_is_instance, assert_true
 from pybtex.database import parse_bytes, parse_string
 from pybtex.plugin import find_plugin
@@ -140,16 +141,19 @@ def check_database_io(io_obj):
     assert_equal(deserialized_data, io_obj.reference_data)
 
 
-def test_database_parsing_and_writing():
-    for io_cls in PybtexStreamIO, PybtexStringIO, PybtexBytesIO:
-        for bib_format in 'bibtex', 'bibtexml', 'yaml':
-            yield check_database_io, io_cls(bib_format)
+@pytest.mark.parametrize(["io_cls"], [(PybtexBytesIO,), (PybtexStringIO,), (PybtexBytesIO,)])
+@pytest.mark.parametrize(["bib_format"], [("bibtex",), ("bibtexml",), ("yaml",)])
+def test_database_io(io_cls, bib_format):
+    check_database_io(io_cls(bib_format))
 
 
-def test_database_pickling():
-    for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1):
-        yield check_database_io, PickleIO(protocol)
+@pytest.mark.parametrize(
+    ["protocol"],
+    [(protocol,) for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1)]
+)
+def test_database_pickling(protocol):
+    check_database_io(PickleIO(protocol))
 
 
 def test_database_repr():
-    yield check_database_io, ReprEvalIO()
+    check_database_io(ReprEvalIO())
