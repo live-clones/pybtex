@@ -8,6 +8,7 @@
 /build
 /docs/build
 /dist
+/venv/
 /pybtex.egg-info
 /MANIFEST
 .ropeproject
