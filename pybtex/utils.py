@@ -222,9 +222,9 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     ...     ('Tres', 3),
     ... ])
     >>> d
-    OrderedCaseInsensitiveDict({u'Uno': 1, u'Dos': 2, u'Tres': 3})
+    OrderedCaseInsensitiveDict([(u'Uno', 1), (u'Dos', 2), (u'Tres', 3)])
     >>> d.lower()
-    OrderedCaseInsensitiveDict({u'uno': 1, u'dos': 2, u'tres': 3})
+    OrderedCaseInsensitiveDict([(u'uno', 1), (u'dos', 2), (u'tres', 3)])
     >>> list(d.keys())
     [u'Uno', u'Dos', u'Tres']
     >>> list(d.items())
@@ -285,6 +285,11 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
         initial = OrderedDict(*args, **kwargs)
         self._dict = dict((key.lower(), value) for key, value in initial.items())
         self._keys = OrderedDict((key.lower(), key) for key in initial)
+
+    def __repr__(self):
+        return '{0}({1})'.format(
+            type(self).__name__, list(self.items()),
+        )
 
 
 @fix_unicode_literals_in_doctest
