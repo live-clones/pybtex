@@ -24,11 +24,13 @@
 from __future__ import print_function, unicode_literals
 
 import itertools
-from collections import (
-    MutableMapping, MutableSet, OrderedDict, Sequence, deque
-)
+from collections import OrderedDict, deque
 from functools import wraps
 from types import GeneratorType
+try:
+    from collections.abc import MutableMapping, MutableSet, Sequence
+except ImportError:
+    from collections import MutableMapping, MutableSet, Sequence
 
 from six.moves import zip_longest
 
