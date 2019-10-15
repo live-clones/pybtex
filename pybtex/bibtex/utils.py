@@ -34,7 +34,7 @@ purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
 
 
 def wrap(string, width=79, subsequent_indent='  '):
-    """
+    r"""
     Wrap long string into multiple lines by inserting line breaks.
 
     The string is broken at whitespace characters so that each line is as long
@@ -217,7 +217,7 @@ def change_case(string, mode):
 
 
 def bibtex_substring(string, start, length):
-    """
+    r"""
     Return a substring of the given length, starting from the given position.
 
     start and length are 1-based. If start is < 0, it is counted from the end
@@ -325,7 +325,7 @@ def bibtex_width(string):
 
 
 def bibtex_prefix(string, num_chars):
-    """Return the firxt num_char characters of the string.
+    r"""Return the firxt num_char characters of the string.
 
     Braces and "special characters" are ignored, as in bibtex_len.  If the
     resulting prefix ends at brace level > 0, missing closing braces are
@@ -424,7 +424,7 @@ def scan_bibtex_string(string):
 
 @fix_unicode_literals_in_doctest
 def split_name_list(string):
-    """
+    r"""
     Split a list of names, separated by ' and '.
 
     >>> split_name_list('Johnson and Peterson')
@@ -449,7 +449,7 @@ def split_name_list(string):
 
 @fix_unicode_literals_in_doctest
 def _find_closing_brace(string):
-    """
+    r"""
     >>> _find_closing_brace('')
     (u'', u'')
     >>> _find_closing_brace('no braces')
@@ -513,7 +513,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     [u'{Matsui      Fuuka}']
     >>> split_tex_string(r'Matsui\ Fuuka')
     [u'Matsui', u'Fuuka']
-    >>> split_tex_string('{Matsui\ Fuuka}')
+    >>> split_tex_string(r'{Matsui\ Fuuka}')
     [u'{Matsui\\ Fuuka}']
     >>> split_tex_string('a')
     [u'a']
@@ -560,7 +560,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
 
 
 def bibtex_first_letter(string):
-    """ Return the first letter or special character of the string.
+    r""" Return the first letter or special character of the string.
 
     >>> print(bibtex_first_letter('Andrew Blake'))
     A
@@ -568,13 +568,13 @@ def bibtex_first_letter(string):
     A
     >>> print(bibtex_first_letter('1Andrew'))
     A
-    >>> print(bibtex_first_letter('{\TeX} markup'))
+    >>> print(bibtex_first_letter(r'{\TeX} markup'))
     {\TeX}
     >>> print(bibtex_first_letter(''))
     <BLANKLINE>
     >>> print(bibtex_first_letter('123 123 123 {}'))
     <BLANKLINE>
-    >>> print(bibtex_first_letter('\LaTeX Project Team'))
+    >>> print(bibtex_first_letter(r'\LaTeX Project Team'))
     L
 
     """
@@ -588,7 +588,7 @@ def bibtex_first_letter(string):
 
 
 def bibtex_abbreviate(string, delimiter=None, separator='-'):
-    """
+    r"""
     Abbreviate string.
 
     >>> print(bibtex_abbreviate('Andrew Blake'))
