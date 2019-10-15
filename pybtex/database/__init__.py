@@ -525,8 +525,8 @@ class Person(object):
     """
 
     valid_roles = ['author', 'editor']
-    style1_re = re.compile('^(.+),\s*(.+)$')
-    style2_re = re.compile('^(.+),\s*(.+),\s*(.+)$')
+    style1_re = re.compile(r'^(.+),\s*(.+)$')
+    style2_re = re.compile(r'^(.+),\s*(.+),\s*(.+)$')
 
     def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):
         """
