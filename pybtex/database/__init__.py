@@ -174,7 +174,7 @@ class BibliographyData(object):
 
     @fix_unicode_literals_in_doctest
     def _get_crossreferenced_citations(self, citations, min_crossrefs):
-        """
+        r"""
         Get cititations not cited explicitly but referenced by other citations.
 
         >>> from pybtex.database import Entry
@@ -236,7 +236,7 @@ class BibliographyData(object):
 
     @fix_unicode_literals_in_doctest
     def _expand_wildcard_citations(self, citations):
-        """
+        r"""
         Expand wildcard citations (\citation{*} in .aux file).
 
         >>> from pybtex.database import Entry
