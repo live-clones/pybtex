@@ -111,12 +111,12 @@ class UndefinedMacro(PybtexSyntaxError):
     error_type = 'undefined string'
 
 
-class DuplicatePersonField(BibliographyDataError):
+class DuplicateField(BibliographyDataError):
     def __init__(self, entry_key, field_name):
         message = 'entry with key {} has a duplicate {} field'.format(
             entry_key, field_name
         )
-        super(DuplicatePersonField, self).__init__(message)
+        super(DuplicateField, self).__init__(message)
 
 
 class LowLevelParser(Scanner):
@@ -358,9 +358,10 @@ class Parser(BaseParser):
             key = 'unnamed-%i' % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
+        seen_fields = set()
         for field_name, field_value_list in fields:
-            if field_name in entry.fields:
-                self.handle_error(DuplicatePersonField(key, field_name))
+            if field_name.lower() in seen_fields:
+                self.handle_error(DuplicateField(key, field_name))
                 continue
 
             field_value = textutils.normalize_whitespace(self.flatten_value_list(field_value_list))
@@ -369,6 +370,7 @@ class Parser(BaseParser):
                     entry.add_person(Person(name), field_name)
             else:
                 entry.fields[field_name] = field_value
+            seen_fields.add(field_name.lower())
         self.data.add_entry(key, entry)
 
     def process_preamble(self, value_list):
