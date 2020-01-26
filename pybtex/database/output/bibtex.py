@@ -36,7 +36,7 @@ class Writer(BaseWriter):
     unicode_io = True
 
     def quote(self, s):
-        """
+        r"""
         >>> w = Writer()
         >>> print(w.quote('The World'))
         "The World"

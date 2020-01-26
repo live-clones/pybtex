@@ -97,7 +97,7 @@ def format_name(name, format):
 
 
 def parse_name(name):
-    space = re.compile('[\s~]+')
+    space = re.compile(r'[\s~]+')
     formatted_name = format_name(name, '{ff}|{vv}|{ll}|{jj}')
     parts = [space.sub(' ', part.strip()) for part in formatted_name.split('|')]
     first, von, last, junior = parts
