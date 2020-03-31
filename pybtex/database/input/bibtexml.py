@@ -21,7 +21,7 @@
 
 from __future__ import unicode_literals
 
-from xml.etree import cElementTree as ET
+from xml.etree import ElementTree as ET
 
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
