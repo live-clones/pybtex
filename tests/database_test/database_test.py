@@ -91,6 +91,27 @@ class PybtexStringIO(PybtexDatabaseIO):
         return parse_string(string, self.bib_format)
 
 
+class PybtexEntryStringIO(PybtexDatabaseIO):
+    # the first entry in reference_data
+    def __init__(self, bib_format):
+        super().__init__(bib_format)
+        self.key = list(reference_data.entries.keys())[0]
+        self.reference_data = reference_data.__class__(
+            {self.key: reference_data.entries[self.key]}
+        )
+        assert reference_data.entries
+        assert reference_data.preamble
+
+    def serialize(self, bib_data):
+        entry = bib_data.entries[self.key]
+        result = entry.to_string(self.bib_format)
+        assert isinstance(result, six.text_type)
+        return result
+
+    def deserialize(self, string):
+        return parse_string(string, self.bib_format)
+
+
 class PybtexBytesIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_bytes(self.bib_format)
@@ -140,7 +161,7 @@ def check_database_io(io_obj):
     assert deserialized_data == io_obj.reference_data
 
 
-@pytest.mark.parametrize(["io_cls"], [(PybtexBytesIO,), (PybtexStringIO,), (PybtexBytesIO,)])
+@pytest.mark.parametrize(["io_cls"], [(PybtexBytesIO,), (PybtexStringIO,), (PybtexEntryStringIO,),(PybtexBytesIO,)])
 @pytest.mark.parametrize(["bib_format"], [("bibtex",), ("bibtexml",), ("yaml",)])
 def test_database_io(io_cls, bib_format):
     check_database_io(io_cls(bib_format))

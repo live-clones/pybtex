@@ -468,6 +468,16 @@ class Entry(object):
             except KeyError:
                 return self._find_crossref_field(name, bib_data)
 
+    def to_string(self, bib_format, **kwargs):
+        """
+        Return the data as a unicode string in the given format.
+
+        :param bib_format: Data format ("bibtex", "yaml", etc.).
+
+        """
+        writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
+        return writer.to_string(BibliographyData(entries={self.key: self}))
+
 
 @python_2_unicode_compatible
 @fix_unicode_literals_in_doctest
