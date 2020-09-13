@@ -29,7 +29,7 @@ from io import BytesIO, TextIOWrapper
 
 import six
 import pytest
-from pybtex.database import parse_bytes, parse_string
+from pybtex.database import parse_bytes, parse_string, BibliographyData, Entry
 from pybtex.plugin import find_plugin
 
 from .data import reference_data
@@ -88,28 +88,28 @@ class PybtexStringIO(PybtexDatabaseIO):
         return result
 
     def deserialize(self, string):
-        return parse_string(string, self.bib_format)
+        # wrapper for parse_string
+        return BibliographyData.from_string(string, self.bib_format)
 
 
 class PybtexEntryStringIO(PybtexDatabaseIO):
     # the first entry in reference_data
     def __init__(self, bib_format):
         super().__init__(bib_format)
+        # get 1st key
         self.key = list(reference_data.entries.keys())[0]
-        self.reference_data = reference_data.__class__(
-            {self.key: reference_data.entries[self.key]}
-        )
+        # make Entry as single-item BibliographyData
+        self.reference_data = reference_data.entries[self.key]
         assert reference_data.entries
         assert reference_data.preamble
 
-    def serialize(self, bib_data):
-        entry = bib_data.entries[self.key]
-        result = entry.to_string(self.bib_format)
+    def serialize(self, bib_data):  # Entry.to_string
+        result = bib_data.to_string(self.bib_format)
         assert isinstance(result, six.text_type)
         return result
 
-    def deserialize(self, string):
-        return parse_string(string, self.bib_format)
+    def deserialize(self, string):  # Entry.from_string
+        return Entry.from_string(string, self.bib_format)
 
 
 class PybtexBytesIO(PybtexDatabaseIO):

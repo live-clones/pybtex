@@ -289,6 +289,17 @@ class BibliographyData(object):
         writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_string(self)
 
+    @classmethod
+    def from_string(cls, value, bib_format, **kwargs):
+        """
+        Return the data from a unicode string in the given format.
+
+        :param bib_format: Data format ("bibtex", "yaml", etc.).
+
+        .. versionadded:: 0.22.2
+        """
+        return parse_string(value, bib_format, **kwargs)
+
     def to_bytes(self, bib_format, **kwargs):
         """
         Return the data as a byte string in the given format.
@@ -477,6 +488,22 @@ class Entry(object):
         """
         writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
         return writer.to_string(BibliographyData(entries={self.key: self}))
+
+    @classmethod
+    def from_string(cls, value, bib_format, entry_number=0, **kwargs):
+        """
+        Return the data from a unicode string in the given format.
+
+        :param bib_format: Data format ("bibtex", "yaml", etc.).
+        :param entry_number: entry number if the string has more than one.
+
+        .. versionadded:: 0.22.2
+        """
+        # get bibliography
+        bibdata = BibliographyData.from_string(value, bib_format, **kwargs)
+        # grab specific instance
+        key = tuple(bibdata.entries.keys())[entry_number]
+        return bibdata.entries[key]
 
 
 @python_2_unicode_compatible
