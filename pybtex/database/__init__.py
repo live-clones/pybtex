@@ -30,6 +30,7 @@ except ImportError:
     from collections import Mapping
 
 import six
+import textwrap
 
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
@@ -107,9 +108,21 @@ class BibliographyData(object):
         )
 
     def __repr__(self):
-        return 'BibliographyData(entries={entries}, preamble={preamble})'.format(
-            entries=repr(self.entries),
-            preamble=repr(self._preamble),
+
+        repr_entry = repr(self.entries)
+        keys = self.entries.keys()
+
+        for key in keys:
+            ind = repr_entry.index(key) - 2  # find first instance
+            repr_entry = repr_entry[:ind] + "\n" + repr_entry[ind:]
+
+        repr_entry = textwrap.indent(repr_entry, prefix="    ")
+        repr_entry = repr_entry[4:]  # drop 1st indent
+
+        return (
+            "BibliographyData(\n"
+            f"  entries={repr_entry}\n\n"
+            f"  preamble={repr(self._preamble)})"
         )
 
     def add_to_preamble(self, *values):
@@ -418,11 +431,19 @@ class Entry(object):
     def __repr__(self):
         # represent the fields as a list of tuples for simplicity
         repr_fields = repr(list(self.fields.items()))
+        keys = self.fields.keys()
 
-        return 'Entry({type_}, fields={fields}, persons={persons})'.format(
-            type_=repr(self.type),
-            fields=repr_fields,
-            persons=repr(self.persons),
+        for key in keys:
+            ind = repr_fields.index(key) - 2  # find first instance
+            repr_fields = repr_fields[:ind] + "\n" + repr_fields[ind:]
+
+        repr_fields = textwrap.indent(repr_fields, prefix="    ")
+        repr_fields = repr_fields[4:]  # drop 1st indent
+
+        return (
+            f"Entry({repr(self.type)}\n"
+            f"  fields={repr_fields}\n"
+            f"  persons={repr(self.persons)})"
         )
 
     def add_person(self, person, role):
