@@ -121,7 +121,7 @@ class BibliographyData(object):
 
         return (
             "BibliographyData(\n"
-            f"  entries={repr_entry}\n\n"
+            f"  entries={repr_entry},\n\n"
             f"  preamble={repr(self._preamble)})"
         )
 
@@ -452,8 +452,8 @@ class Entry(object):
         repr_fields = repr_fields[4:]  # drop 1st indent
 
         return (
-            f"Entry({repr(self.type)}\n"
-            f"  fields={repr_fields}\n"
+            f"Entry({repr(self.type)},\n"
+            f"  fields={repr_fields},\n"
             f"  persons={repr(self.persons)})"
         )
 
