@@ -161,7 +161,7 @@ code.descname {
 }
 
 .sourcecode pre, .highlight pre {
-    @apply mt-4 mb-4 ml-4 text-sm overflow-auto;
+    @apply mt-4 mb-4 ml-4 text-sm;
 }
 
 .field-list ul {
