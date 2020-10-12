@@ -1,3 +1,43 @@
+Version 0.23.0
+--------------
+(released on October 12, 2020)
+
+- Reimplemented :py:class:`~pybtex.utils.OrderedCaseInsensitiveDict` using
+  :py:class:`python:collections.OrderedDict` (so it has a __delitem__).
+
+- ``unsrt.py`` now supports type when formatting phdthesis.
+
+- Added :py:meth:`~pybtex.database.BibliographyData.from_string` to
+  :py:class:`pybtex.database.BibliographyData`.
+
+- Added :py:meth:`~pybtex.database.Entry.from_string` and
+  :py:meth:`~pybtex.database.Entry.to_string` to
+  :py:class:`pybtex.database.Entry`.
+
+- Added indentation to ``__repr__`` in
+  :py:class:`pybtex.database.BibliographyData` and
+  :py:class:`pybtex.database.Entry`.
+
+- Preserve order in
+  :py:meth:`pybtex.utils.OrderedCaseInsensitiveDict.__repr__`.
+
+- Fixed entries with duplicate keys being removed during sorting.
+
+- Fixed handling of duplicate person fields
+
+- Use :py:mod:`~xml.etree.ElementTree` instead of the deprecated
+  ``cElementTree``.
+
+- Import base classes from :py:mod:`python:collections.abc` instead of
+  :py:mod:`python:collections`.
+
+- Use ``__iter__`` instead of deprecated ``Element.getchildren()``.
+
+
+Thanks to David Chiang, Jerry James, Jannik Schürg, Nathaniel Starkman, and
+Matthias Troffaes for their fixes and improvements!
+
+
 Version 0.22.2
 --------------
 (released on January 17, 2019)
