@@ -9,7 +9,9 @@ recursive-include tests/data *.bst *.bib *.bbl *.aux
 include docs/source/conf.py docs/site/conf.py
 recursive-include docs/source *.rst
 recursive-include docs/site *.rst
-recursive-include docs/theme *.html *.css *.conf
+include docs/theme/theme.conf docs/theme/layout.html docs/theme/*.json docs/theme/*.js
+recursive-include docs/theme/css-src *.css
+recursive-include docs/theme/static *.css
 recursive-include docs/pybtex_doctools *.py
 recursive-include docs/man1 *.1
 recursive-include examples/sample_plugins *.py README
