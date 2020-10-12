@@ -1,0 +1,15 @@
+{
+  "name": "pybtex-css",
+  "version": "1.0.0",
+  "description": "Pybtex CSS",
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "postcss-cli": "^8.1.0",
+    "tailwindcss": "^1.8.13"
+  },
+  "scripts": {
+    "build": "env NODE_ENV=production postcss -o static/master.css css-src/master.css"
+  },
+  "author": "Andrey Golovizin",
+  "license": "MIT"
+}

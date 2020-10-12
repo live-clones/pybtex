@@ -2,12 +2,12 @@
 
 h1 {
     font-size: 400%;
-    margin-top: 0.3ex;
-    margin-bottom: 0.2ex;
+    font-weight: 700;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
     border-bottom-style: solid;
-    border-bottom-color: #884400;
-    border-bottom-width: 0.08em;
-    padding-bottom: 0.2ex;
+    border-bottom-color: #884000;
+    border-bottom-width: 0.1em;
 }
 
 p {
@@ -37,6 +37,10 @@ body {
         font-size: 1rem;
         font-family: sans-serif;
         list-style: none;
+        display: inline;
+    }
+
+    .download-links ul li p {
         display: inline;
     }
 
