@@ -11,5 +11,10 @@ module.exports = {
       decimal: 'decimal',
       circle: 'circle'
     },
-  }
+  },
+  purge: ['../build/**/*.html'],
+  future: {
+    purgeLayersByDefault: true,
+    removeDeprecatedGapUtilities: true,
+  },
 }
