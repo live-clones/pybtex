@@ -91,7 +91,7 @@ Registering plugins
 See `Setuptools' documentation`_.
 
 
-.. _Setuptools' documentation: https://setuptools.readthedocs.io/en/latest/setuptools.html#extensible-applications-and-frameworks
+.. _Setuptools' documentation: https://setuptools.readthedocs.io/en/latest/userguide/quickstart.html#entry-points-and-automatic-script-creation
 
 
 Example plugins

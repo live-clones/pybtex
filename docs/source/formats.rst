@@ -29,7 +29,7 @@ BibTeX is the default bibliography format used by Pybtex:
 
 Some links:
 
-- `A basic description of the BibTeX format. <https://www.miwie.org/tex-refs/html/bibtex-bib-files.html>`_
+- `A basic description of the BibTeX format. <https://www.bibtex.com/g/bibtex-format/>`_
 
 - `An in-depth description of the quirky BibTeX syntax. <http://artis.imag.fr/~Xavier.Decoret/resources/xdkbibtex/bibtex_summary.html>`_
 
