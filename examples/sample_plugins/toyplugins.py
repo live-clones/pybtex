@@ -25,7 +25,7 @@
 
 import imp
 
-from pybtex.database import BibliographyData, Entry, FieldDict, Person
+from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.database.output import BaseWriter
 from pybtex.utils import OrderedCaseInsensitiveDict
@@ -47,7 +47,6 @@ class PythonParser(BaseParser):
             'OrderedCaseInsensitiveDict': OrderedCaseInsensitiveDict,
             'Entry': Entry,
             'Person': Person,
-            'FieldDict': FieldDict,
         }
         code = stream.read()
         self.data = eval(code, context)
