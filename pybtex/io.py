@@ -45,7 +45,7 @@ def get_stream_encoding(stream):
 def _decode_filename(filename, errors='strict'):
     """Decode byte-encoded filename."""
 
-    encoding = sys.getfilesystemencoding() or self.get_default_encoding()
+    encoding = sys.getfilesystemencoding() or get_default_encoding()
     return filename.decode(encoding, errors=errors)
 
 
