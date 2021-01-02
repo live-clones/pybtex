@@ -25,8 +25,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import io
+import posixpath
 import sys
-from os import environ, path
+from os import environ
 
 from pybtex.exceptions import PybtexError
 from pybtex.kpathsea import kpsewhich
@@ -49,7 +50,7 @@ def _decode_filename(filename, errors='strict'):
 
 
 def _open_existing(opener, filename, mode, locate, **kwargs):
-    if not path.isfile(filename):
+    if not posixpath.isfile(filename):
         found = locate(filename)
         if found:
             filename = found
@@ -61,7 +62,7 @@ def _open_or_create(opener, filename, mode, environ, **kwargs):
         return opener(filename, mode, **kwargs)
     except EnvironmentError as error:
         if 'TEXMFOUTPUT' in environ:
-            new_filename = path.join(environ['TEXMFOUTPUT'], filename)
+            new_filename = posixpath.join(environ['TEXMFOUTPUT'], filename)
             try:
                 return opener(new_filename, mode, **kwargs)
             except EnvironmentError:

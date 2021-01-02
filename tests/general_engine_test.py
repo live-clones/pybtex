@@ -95,7 +95,7 @@ def check_format_from_string(engine, filenames):
         with errors.capture():  # FIXME check error messages
             result = engine.format_from_string(bib_string, style=style, citations=citations)
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, style, engine_name)
-        correct_result = get_data(correct_result_name)
+        correct_result = get_data(correct_result_name).replace('\r\n', '\n')
         assert result == correct_result, diff(correct_result, result)
 
 
@@ -123,7 +123,7 @@ def check_make_bibliography(engine, filenames):
         with io.open_unicode(result_name) as result_file:
             result = result_file.read()
         correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, bst_name, engine_name)
-        correct_result = get_data(correct_result_name)
+        correct_result = get_data(correct_result_name).replace('\r\n', '\n')
         assert result == correct_result, diff(correct_result, result)
 
 
