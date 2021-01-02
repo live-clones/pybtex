@@ -44,6 +44,13 @@ from pybtex.py3compat import fix_unicode_literals_in_doctest, python_2_unicode_c
 from pybtex.plugin import find_plugin
 
 
+# for python2 compatibility
+def indent(text, prefix):
+    if hasattr(textwrap, "indent"):
+        return textwrap.indent(prefix)
+    else:
+        return ''.join(prefix + line for line in text.splitlines(True))
+
 
 class BibliographyDataError(PybtexError):
     pass
@@ -116,13 +123,13 @@ class BibliographyData(object):
             ind = repr_entry.index(key) - 2  # find first instance
             repr_entry = repr_entry[:ind] + "\n" + repr_entry[ind:]
 
-        repr_entry = textwrap.indent(repr_entry, prefix="    ")
+        repr_entry = indent(repr_entry, prefix="    ")
         repr_entry = repr_entry[4:]  # drop 1st indent
 
         return (
             "BibliographyData(\n"
-            f"  entries={repr_entry},\n\n"
-            f"  preamble={repr(self._preamble)})"
+            "  entries={0},\n\n"
+            "  preamble={1})".format(repr_entry, repr(self._preamble))
         )
 
     def add_to_preamble(self, *values):
@@ -448,13 +455,13 @@ class Entry(object):
             ind = repr_fields.index(key) - 2  # find first instance
             repr_fields = repr_fields[:ind] + "\n" + repr_fields[ind:]
 
-        repr_fields = textwrap.indent(repr_fields, prefix="    ")
+        repr_fields = indent(repr_fields, prefix="    ")
         repr_fields = repr_fields[4:]  # drop 1st indent
 
         return (
-            f"Entry({repr(self.type)},\n"
-            f"  fields={repr_fields},\n"
-            f"  persons={repr(self.persons)})"
+            "Entry({0},\n"
+            "  fields={1},\n"
+            "  persons={2})".format(repr(self.type), repr_fields, repr(self.persons))
         )
 
     def add_person(self, person, role):
