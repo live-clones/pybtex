@@ -121,8 +121,8 @@ class BibliographyData(object):
 
         return (
             "BibliographyData(\n"
-            f"  entries={repr_entry},\n\n"
-            f"  preamble={repr(self._preamble)})"
+            "  entries={0},\n\n"
+            "  preamble={1})".format(repr_entry, repr(self._preamble))
         )
 
     def add_to_preamble(self, *values):
@@ -452,9 +452,9 @@ class Entry(object):
         repr_fields = repr_fields[4:]  # drop 1st indent
 
         return (
-            f"Entry({repr(self.type)},\n"
-            f"  fields={repr_fields},\n"
-            f"  persons={repr(self.persons)})"
+            "Entry({0},\n"
+            "  fields={1},\n"
+            "  persons={2})".format(repr(self.type), repr_fields, repr(self.persons))
         )
 
     def add_person(self, person, role):
