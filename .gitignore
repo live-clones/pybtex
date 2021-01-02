@@ -19,3 +19,4 @@
 /Session.vim
 __pycache__
 /docs/theme/node_modules
+/.idea
