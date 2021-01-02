@@ -44,6 +44,13 @@ from pybtex.py3compat import fix_unicode_literals_in_doctest, python_2_unicode_c
 from pybtex.plugin import find_plugin
 
 
+# for python2 compatibility
+def indent(text, prefix):
+    if hasattr(textwrap, "indent"):
+        return textwrap.indent(prefix)
+    else:
+        return ''.join(prefix + line for line in text.splitlines(True))
+
 
 class BibliographyDataError(PybtexError):
     pass
@@ -116,7 +123,7 @@ class BibliographyData(object):
             ind = repr_entry.index(key) - 2  # find first instance
             repr_entry = repr_entry[:ind] + "\n" + repr_entry[ind:]
 
-        repr_entry = textwrap.indent(repr_entry, prefix="    ")
+        repr_entry = indent(repr_entry, prefix="    ")
         repr_entry = repr_entry[4:]  # drop 1st indent
 
         return (
@@ -448,7 +455,7 @@ class Entry(object):
             ind = repr_fields.index(key) - 2  # find first instance
             repr_fields = repr_fields[:ind] + "\n" + repr_fields[ind:]
 
-        repr_fields = textwrap.indent(repr_fields, prefix="    ")
+        repr_fields = indent(repr_fields, prefix="    ")
         repr_fields = repr_fields[4:]  # drop 1st indent
 
         return (
