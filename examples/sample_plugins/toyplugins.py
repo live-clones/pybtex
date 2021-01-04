@@ -23,8 +23,6 @@
 """Sample Pybtex plugins."""
 
 
-import imp
-
 from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.database.output import BaseWriter
@@ -35,7 +33,7 @@ class PythonWriter(BaseWriter):
     """Bibliography output plugin which formats the data as Python code."""
 
     def write_stream(self, bib_data, stream):
-        print >>stream, repr(bib_data)
+        print(repr(bib_data), file=stream)
 
 
 class PythonParser(BaseParser):
