@@ -974,7 +974,7 @@ class Symbol(BaseText):
         return u'<%s>' % self.name
 
     def __eq__(self, other):
-        return self.name == other.name
+        return isinstance(other, Symbol) and self.name == other.name
 
     def __contains__(self, item):
         return False
