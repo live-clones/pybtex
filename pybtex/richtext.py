@@ -158,8 +158,6 @@ class BaseText(object):
         a-b-c
         """
 
-        if not parts:
-            return Text()
         joined = []
         for part in parts:
             if joined:
@@ -356,7 +354,7 @@ class BaseMultipartText(BaseText):
 
         """
         return (
-            isinstance(other, BaseText) and
+            isinstance(other, BaseMultipartText) and
             self._typeinfo() == other._typeinfo() and
             self.parts == other.parts
         )
@@ -425,7 +423,7 @@ class BaseMultipartText(BaseText):
 
     def _slice_beginning(self, slice_length):
         """
-        Return a text consistng of the first slice_length characters
+        Return a text consisting of the first slice_length characters
         of this text (with formatting preserved).
         """
 
@@ -724,10 +722,8 @@ class String(BaseText):
     def __eq__(self, other):
         """
         Compare two :py:class:`.String` objects.
-
-
         """
-        return type(other) == type(self) and self.value == other.value
+        return isinstance(other, String) and self.value == other.value
 
     def __len__(self):
         return self.value.__len__()
@@ -928,9 +924,6 @@ class Protected(BaseMultipartText):
     .. versionadded:: 0.20
 
     """
-
-    def __init__(self, *args):
-        super(Protected, self).__init__(*args)
 
     def __repr__(self):
         reprparts = ', '.join(repr(part) for part in self.parts)

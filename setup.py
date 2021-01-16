@@ -171,5 +171,5 @@ setup(
             'unsrtalpha = pybtex.style.formatting.unsrtalpha:Style',
         ],
     },
-    zip_safe=True,
+    zip_safe=False,
 )
