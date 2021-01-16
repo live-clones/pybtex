@@ -47,7 +47,7 @@ from pybtex.plugin import find_plugin
 # for python2 compatibility
 def indent(text, prefix):
     if hasattr(textwrap, "indent"):
-        return textwrap.indent(prefix)
+        return textwrap.indent(text, prefix)
     else:
         return ''.join(prefix + line for line in text.splitlines(True))
 
