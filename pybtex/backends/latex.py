@@ -35,6 +35,8 @@ LaTeX output backend.
 \\href{/}{Non-empty}
 >>> print(HRef('http://example.org/', 'http://example.org/').render(latex))
 \\url{http://example.org/}
+>>> print(Tag('sup', 'hello').render(latex))
+\\textsuperscript{hello}
 """
 from __future__ import unicode_literals
 
@@ -56,7 +58,9 @@ class Backend(BaseBackend):
         u'strong': None,
         u'i': u'textit',
         u'b': u'textbf',
-        u'tt': u'texttt'
+        u'tt': u'texttt',
+        u'sup': u'textsuperscript',
+        u'sub': u'textsubscript',
     }
 
     def __init__(self, encoding=None):
