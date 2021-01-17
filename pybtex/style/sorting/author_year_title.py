@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from pybtex.style.sorting import BaseSortingStyle
 
 
-# Copyright (c) 2006-2019  Andrey Golovigin
+# Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
