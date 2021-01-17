@@ -1,3 +1,26 @@
+Version 0.24.0
+--------------
+(released on January 17, 2021)
+
+**This is the last version that supports Python 2. The next version will
+require Python 3.6 or above.**
+
+- Added support for ``sup`` and ``sub`` tags to LaTeX and Markdown backends.
+
+- Added support for ``@online`` entries and the ``urldate`` field.
+
+- Restored compatibility with Python 2.
+
+- Fixed tests on Windows.
+
+- Fixed bugs in the example plugin.
+
+- Fixed bad ``get_default_encoding()`` call.
+
+
+Thanks to Matthias Troffaes for his contributions!
+
+
 Version 0.23.0
 --------------
 (released on October 12, 2020)
