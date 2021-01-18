@@ -78,8 +78,10 @@ class Backend(BaseBackend):
     def format_tag(self, tag, text):
         return r'<{0}>{1}</{0}>'.format(tag, text) if text else u''
 
-    def format_href(self, url, text):
-        return r'<a href="{0}">{1}</a>'.format(url, text) if text else u''
+    @staticmethod
+    def format_href(url, text, external=False):
+        target = ' target="_blank"' if external else ''
+        return r'<a href="{0}"{1}>{2}</a>'.format(url, target, text) if text else u''
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()

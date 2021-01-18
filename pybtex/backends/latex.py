@@ -77,13 +77,14 @@ class Backend(BaseBackend):
         else:
             return r'\%s{%s}' % (tag, text) if text else u''
 
-    def format_href(self, url, text):
+    def format_href(self, url, text, external=False):
         if not text:
             return ''
-        elif text == self.format_str(url):
+        opts = '[pdfnewwindow]' if external else ''
+        if text == self.format_str(url):
             return u'\\url{%s}' % url
         else:
-            return r'\href{%s}{%s}' % (url, text) if text else u''
+            return r'\href%s{%s}{%s}' % (opts, url, text)
 
     def format_protected(self, text):
         """

@@ -326,13 +326,17 @@ def tag(children, data, name):
 
 
 @node
-def href(children, data, url=None):
+def href(children, data, url=None, external=False):
     """Wrap text into a href.
 
     >>> print(href('www.test.org') ['important'].format().render_as('html'))
     <a href="www.test.org">important</a>
     >>> print(sentence ['ready', 'set', href('www.test.org') ['go']].format().render_as('html'))
     ready, set, <a href="www.test.org">go</a>.
+    >>> print(href('www.test.org', external=True) ['important'].format().render_as('html'))
+    <a href="www.test.org" target="_blank">important</a>
+    >>> print(href('www.test.org', external=True) ['important'].format().render_as('latex'))
+    \\href[pdfnewwindow]{www.test.org}{important}
     """
     parts = _format_list(children, data)
     if url is None:
@@ -342,7 +346,7 @@ def href(children, data, url=None):
             stacklevel=2
         )
         url, *parts = parts
-    return richtext.HRef(_format_data(url, data), *parts)
+    return richtext.HRef(_format_data(url, data), external, *parts)
 
 
 @node

@@ -43,7 +43,7 @@ from __future__ import unicode_literals
 
 from xml.sax.saxutils import escape
 
-from pybtex.backends import BaseBackend
+from pybtex.backends import BaseBackend, html
 
 SPECIAL_CHARS = [
     u'\\',  # backslash
@@ -112,8 +112,13 @@ class Backend(BaseBackend):
         else:
             return r'{0}{1}{0}'.format(tag, text) if text else u''
 
-    def format_href(self, url, text):
-        return r'[%s](%s)' % (text, url) if text else u''
+    def format_href(self, url, text, external=False):
+        if not text:
+            return u''
+        if external:
+            return html.Backend.format_href(url, text, external)
+        else:
+            return r'[%s](%s)' % (text, url)
 
     def write_entry(self, key, label, text):
         # Support http://www.michelf.com/projects/php-markdown/extra/#def-list
