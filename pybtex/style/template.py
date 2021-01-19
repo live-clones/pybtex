@@ -44,6 +44,8 @@ one two three four
 
 from __future__ import unicode_literals
 
+import warnings
+
 import  six
 
 from pybtex import richtext
@@ -326,16 +328,23 @@ def tag(children, data, name):
 
 
 @node
-def href(children, data):
+def href(children, data, url=None):
     """Wrap text into a href.
 
-    >>> print(href ['www.test.org', 'important'].format().render_as('html'))
+    >>> print(href('www.test.org') ['important'].format().render_as('html'))
     <a href="www.test.org">important</a>
-    >>> print(sentence ['ready', 'set', href ['www.test.org', 'go']].format().render_as('html'))
+    >>> print(sentence ['ready', 'set', href('www.test.org') ['go']].format().render_as('html'))
     ready, set, <a href="www.test.org">go</a>.
     """
     parts = _format_list(children, data)
-    return richtext.HRef(*parts)
+    if url is None:
+        warnings.warn(
+            'href [url, text] is deprecated since 0.24: use uref(url) [text] instead',
+            DeprecationWarning,
+            stacklevel=2
+        )
+        url, *parts = parts
+    return richtext.HRef(_format_data(url, data), *parts)
 
 
 @node
