@@ -24,7 +24,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 from contextlib import contextmanager
 
 import pybtex.io
-import six
 
 strict = True
 error_code = 0
@@ -53,7 +52,7 @@ def format_error(exception, prefix='ERROR: '):
     context = exception.get_context()
     if context:
         lines += (context.splitlines())
-    lines.append(u'{0}{1}'.format(prefix, six.text_type(exception)))
+    lines.append(u'{0}{1}'.format(prefix, str(exception)))
     filename = exception.get_filename()
     if filename:
         lines = (

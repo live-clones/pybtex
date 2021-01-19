@@ -28,7 +28,6 @@ import re
 import sys
 import unicodedata
 
-import six
 from pybtex.style.labels import BaseLabelStyle
 from pybtex.textutils import abbreviate
 
@@ -160,7 +159,7 @@ class LabelStyle(BaseLabelStyle):
             while namesleft:
                 person = persons[nameptr - 1]
                 if nameptr == numnames:
-                    if six.text_type(person) == "others":
+                    if str(person) == "others":
                         result += "+"
                     else:
                         result += _strip_nonalnum(_abbr(

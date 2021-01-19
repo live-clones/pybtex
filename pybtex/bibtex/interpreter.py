@@ -23,7 +23,6 @@ from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 
-import six
 from pybtex.bibtex.builtins import builtins, print_warning
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import wrap
@@ -87,7 +86,7 @@ class EntryInteger(Integer, EntryVariable):
 
 
 class String(Variable):
-    value_type = six.string_types
+    value_type = str
     default = ''
 
 
@@ -134,7 +133,7 @@ class Crossref(Field):
 
 
 class Identifier(Variable):
-    value_type = six.string_types
+    value_type = str
     def execute(self, interpreter):
         try:
             f = interpreter.vars[self.value()]
@@ -144,7 +143,7 @@ class Identifier(Variable):
 
 
 class QuotedVar(Variable):
-    value_type = six.string_types
+    value_type = str
     def execute(self, interpreter):
         try:
             var = interpreter.vars[self.value()]

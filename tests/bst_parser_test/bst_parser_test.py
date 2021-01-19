@@ -23,7 +23,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from six.moves import zip_longest
+from itertools import zip_longest
 
 from pybtex.bibtex import bst
 from ..utils import get_data

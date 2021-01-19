@@ -27,7 +27,6 @@ from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from io import BytesIO, TextIOWrapper
 
-import six
 import pytest
 from pybtex.database import parse_bytes, parse_string, BibliographyData, Entry
 from pybtex.plugin import find_plugin
@@ -84,7 +83,7 @@ class PybtexStreamIO(PybtexDatabaseIO):
 class PybtexStringIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         result = bib_data.to_string(self.bib_format)
-        assert isinstance(result, six.text_type)
+        assert isinstance(result, str)
         return result
 
     def deserialize(self, string):
@@ -105,7 +104,7 @@ class PybtexEntryStringIO(PybtexDatabaseIO):
 
     def serialize(self, bib_data):  # Entry.to_string
         result = bib_data.to_string(self.bib_format)
-        assert isinstance(result, six.text_type)
+        assert isinstance(result, str)
         return result
 
     def deserialize(self, string):  # Entry.from_string

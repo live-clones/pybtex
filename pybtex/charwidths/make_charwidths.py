@@ -28,8 +28,6 @@ Make a table of character widths to use with bibtex width$ function.
 
 from __future__ import print_function, unicode_literals
 
-import six
-
 
 def make_table(font_filename, output):
     import sys
@@ -77,9 +75,9 @@ def iter_charwidths(font_face):
     charcode, gindex = font_face.get_first_char()
     while gindex:
         font_face.load_glyph(gindex, FT_LOAD_NO_SCALE)
-        yield six.unichr(charcode), font_face.glyph.metrics.horiAdvance
+        yield unichr(charcode), font_face.glyph.metrics.horiAdvance
         charcode, gindex = font_face.get_next_char(charcode, gindex)
-        
+
 
 bibtex_widths = {
     ' ': 278,

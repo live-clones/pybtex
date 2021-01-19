@@ -33,8 +33,7 @@ from __future__ import absolute_import, unicode_literals
 
 from unittest import TestCase
 
-import six
-from six.moves import zip_longest
+from itertools import zip_longest
 
 from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.input.bibtex import Parser
@@ -68,9 +67,9 @@ class ParserTest(object):
         correct_result = self.correct_result
         assert result == correct_result
         for error, correct_error in zip_longest(parser.errors, self.errors):
-            actual_error = six.text_type(error)
+            actual_error = str(error)
             assert actual_error == correct_error
-    
+
 
 class EmptyDataTest(ParserTest, TestCase):
     input_string = u''

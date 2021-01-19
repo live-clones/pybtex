@@ -29,7 +29,6 @@ try:
 except ImportError:
     from collections import Mapping
 
-import six
 import textwrap
 
 from pybtex.exceptions import PybtexError
@@ -341,7 +340,7 @@ class BibliographyData(object):
 
         .. versionadded:: 0.19
         """
-        if isinstance(file, six.string_types):
+        if isinstance(file, str):
             filename = file
         else:
             filename = getattr(file, 'name', None)
@@ -476,7 +475,7 @@ class Entry(object):
 
     def _find_person_field(self, role):
         persons = self.persons[role]
-        return ' and '.join(six.text_type(person) for person in persons)
+        return ' and '.join(str(person) for person in persons)
 
     def _find_crossref_field(self, name, bib_data):
         if bib_data is None or 'crossref' not in self.fields:
@@ -655,9 +654,9 @@ class Person(object):
         [u'Dixit']
         >>> print(p.lineage_names)
         []
-        >>> print(six.text_type(p))
+        >>> print(str(p))
         Dixit, Avinash K.
-        >>> p == Person(six.text_type(p))
+        >>> p == Person(str(p))
         True
         >>> p = Person('Dixit, Jr, Avinash K. ')
         >>> print(p.first_names)
@@ -670,9 +669,9 @@ class Person(object):
         [u'Dixit']
         >>> print(p.lineage_names)
         [u'Jr']
-        >>> print(six.text_type(p))
+        >>> print(str(p))
         Dixit, Jr, Avinash K.
-        >>> p == Person(six.text_type(p))
+        >>> p == Person(str(p))
         True
 
         >>> p = Person('abc')
@@ -788,7 +787,7 @@ class Person(object):
         return ', '.join(part for part in (von_last, jr, first) if part)
 
     def __repr__(self):
-        return 'Person({0})'.format(repr(six.text_type(self)))
+        return 'Person({0})'.format(repr(str(self)))
 
     def get_part_as_text(self, type):
         names = getattr(self, type + '_names')
@@ -919,7 +918,7 @@ def parse_file(file, bib_format=None, **kwargs):
     .. versionadded:: 0.19
     """
 
-    if isinstance(file, six.string_types):
+    if isinstance(file, str):
         filename = file
     else:
         filename = getattr(file, 'name', None)

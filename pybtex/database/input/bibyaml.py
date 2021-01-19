@@ -23,7 +23,6 @@ from __future__ import absolute_import, unicode_literals
 
 from collections import OrderedDict
 
-import six
 import yaml
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
@@ -97,5 +96,5 @@ class Parser(BaseParser):
             elif key_lower == 'type':
                 pass
             else:
-                bib_entry.fields[key] = six.text_type(value)
+                bib_entry.fields[key] = str(value)
         return bib_entry

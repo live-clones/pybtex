@@ -26,35 +26,35 @@ Usage:
 >>> t = Text('this ', 'is a ', Tag('em', 'very'), Text(' rich', ' text'))
 >>> print(t.render_as('latex'))
 this is a \emph{very} rich text
->>> print(six.text_type(t))
+>>> print(str(t))
 this is a very rich text
 >>> t = t.capitalize().add_period()
 >>> print(t.render_as('latex'))
 This is a \emph{very} rich text.
->>> print(six.text_type(t))
+>>> print(str(t))
 This is a very rich text.
 >>> print(Symbol('ndash').render_as('latex'))
 --
 >>> t = Text('Some ', Tag('em', Text('nested ', Tag('tt', 'Text', Text(' objects')))), '.')
 >>> print(t.render_as('latex'))
 Some \emph{nested \texttt{Text objects}}.
->>> print(six.text_type(t))
+>>> print(str(t))
 Some nested Text objects.
 >>> t = t.upper()
 >>> print(t.render_as('latex'))
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
->>> print(six.text_type(t))
+>>> print(str(t))
 SOME NESTED TEXT OBJECTS.
 
 >>> t = Text(', ').join(['one', 'two', Tag('em', 'three')])
 >>> print(t.render_as('latex'))
 one, two, \emph{three}
->>> print(six.text_type(t))
+>>> print(str(t))
 one, two, three
 >>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('em', 'three')])
 >>> print(t.render_as('latex'))
 one~two~\emph{three}
->>> print(six.text_type(t))
+>>> print(str(t))
 one<nbsp>two<nbsp>three
 """
 from __future__ import absolute_import, unicode_literals
@@ -63,7 +63,6 @@ import itertools
 import warnings
 from abc import ABCMeta, abstractmethod
 
-import six
 from pybtex import textutils
 from pybtex.utils import collect_iterable, deprecated
 from pybtex import py3compat
@@ -86,7 +85,7 @@ def str_repr(string):
 
 
 def ensure_text(value):
-    if isinstance(value, six.string_types):
+    if isinstance(value, str):
         return String(value)
     elif isinstance(value, BaseText):
         return value
@@ -152,9 +151,9 @@ class BaseText(object):
         """Join a list using this text (like string.join)
 
         >>> letters = ['a', 'b', 'c']
-        >>> print(six.text_type(String('-').join(letters)))
+        >>> print(str(String('-').join(letters)))
         a-b-c
-        >>> print(six.text_type(String('-').join(iter(letters))))
+        >>> print(str(String('-').join(iter(letters))))
         a-b-c
         """
 
@@ -202,11 +201,11 @@ class BaseText(object):
         Add a period to the end of text, if the last character is not ".", "!" or "?".
 
         >>> text = Text("That's all, folks")
-        >>> print(six.text_type(text.add_period()))
+        >>> print(str(text.add_period()))
         That's all, folks.
 
         >>> text = Text("That's all, folks!")
-        >>> print(six.text_type(text.add_period()))
+        >>> print(str(text.add_period()))
         That's all, folks!
 
         """
@@ -343,7 +342,7 @@ class BaseMultipartText(BaseText):
         self.length = sum(len(part) for part in self.parts)
 
     def __str__(self):
-        return ''.join(six.text_type(part) for part in self.parts)
+        return ''.join(str(part) for part in self.parts)
 
     def __eq__(self, other):
         """
@@ -390,7 +389,7 @@ class BaseMultipartText(BaseText):
         False
 
         """
-        if not isinstance(item, six.string_types):
+        if not isinstance(item, str):
             raise TypeError(item)
         return not item or any(part.__contains__(item) for part in self.parts)
 
@@ -405,7 +404,7 @@ class BaseMultipartText(BaseText):
         Text(Tag('em', '!'))
         """
 
-        if isinstance(key, six.integer_types):
+        if isinstance(key, int):
             start = key
             end = None
         elif isinstance(key, slice):
@@ -628,7 +627,7 @@ class BaseMultipartText(BaseText):
 
     @deprecated('0.19', 'use __unicode__() instead')
     def plaintext(self):
-        return six.text_type(self)
+        return str(self)
 
     @deprecated('0.19')
     def enumerate(self):
@@ -709,7 +708,7 @@ class String(BaseText):
         All arguments must be plain unicode strings.
         Arguments are concatenated together.
 
-        >>> print(six.text_type(String('November', ', ', 'December', '.')))
+        >>> print(str(String('November', ', ', 'December', '.')))
         November, December.
         """
 
@@ -719,7 +718,7 @@ class String(BaseText):
         return str_repr(self.value)
 
     def __str__(self):
-        return six.text_type(self.value)
+        return str(self.value)
 
     def __eq__(self, other):
         """
@@ -748,7 +747,7 @@ class String(BaseText):
         if sep is None:
             from .textutils import whitespace_re
             parts = whitespace_re.split(self.value)
-        elif isinstance(sep, six.string_types):
+        elif isinstance(sep, str):
             parts = self.value.split(sep)
         else:
             try:
@@ -789,7 +788,7 @@ class String(BaseText):
 
     @property
     def parts(self):
-        return [six.text_type(self)]
+        return [str(self)]
 
     def _typeinfo(self):
         return String, ()
@@ -847,10 +846,10 @@ class Tag(BaseMultipartText):
         return name
 
     def __init__(self, name, *args):
-        if not isinstance(name, (six.string_types, Text)):
+        if not isinstance(name, (str, Text)):
             raise ValueError(
                 "name must be str or Text (got %s)" % name.__class__.__name__)
-        self.name = self.__check_name(six.text_type(name))
+        self.name = self.__check_name(str(name))
         self.info = self.name,
         super(Tag, self).__init__(*args)
 
@@ -886,10 +885,10 @@ class HRef(BaseMultipartText):
     """
 
     def __init__(self, url, *args):
-        if not isinstance(url, (six.string_types, BaseText)):
+        if not isinstance(url, (str, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
-        self.url = six.text_type(url)
+        self.url = str(url)
         self.info = self.url,
         super(HRef, self).__init__(*args)
 

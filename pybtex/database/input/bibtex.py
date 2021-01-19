@@ -54,7 +54,7 @@ True
 >>> rief97b = bib_data.entries['rief97b']
 >>> authors = rief97b.persons['author']
 >>> for author in authors:
-...     print(six.text_type(author))
+...     print(str(author))
 Rief, Matthias
 Gautel, Mathias
 Oesterhelt, Filipp
@@ -72,8 +72,6 @@ from __future__ import unicode_literals
 
 import re
 from string import ascii_letters, digits
-
-import six
 
 from pybtex import textutils
 from pybtex.bibtex.utils import split_name_list

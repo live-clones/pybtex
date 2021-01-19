@@ -23,7 +23,6 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-import six
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.py3compat import fix_unicode_literals_in_doctest
 from pybtex.utils import pairwise
@@ -147,7 +146,7 @@ class BibTeXString(object):
         return ''.join(self.traverse(open=lambda string: '{', close=lambda string: '}'))
 
     def inner_string(self):
-        return ''.join(six.text_type(child) for child in self.contents)
+        return ''.join(str(child) for child in self.contents)
 
 
 def change_case(string, mode):

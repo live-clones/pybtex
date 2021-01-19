@@ -32,7 +32,7 @@ try:
 except ImportError:
     from collections import MutableMapping, MutableSet, Sequence
 
-from six.moves import zip_longest
+from itertools import zip_longest
 
 from .py3compat import fix_unicode_literals_in_doctest
 

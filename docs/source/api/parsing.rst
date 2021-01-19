@@ -7,8 +7,6 @@ Reading and writing bibliography data
 
     from __future__ import unicode_literals, print_function
 
-    import six
-
     from pybtex.database import BibliographyData, Entry, Person, parse_string
 
 

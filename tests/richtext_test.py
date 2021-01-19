@@ -29,7 +29,6 @@ from abc import ABCMeta, abstractmethod
 from unittest import TestCase
 
 import pytest
-import six
 
 from pybtex import textutils
 from pybtex.richtext import HRef, Protected, String, Symbol, Tag, Text, nbsp
@@ -117,13 +116,13 @@ class TextTestMixin(object):
 
 class TestText(TextTestMixin, TestCase):
     def test__init__(self):
-        assert six.text_type(Text('a', '', 'c')) == 'ac'
-        assert six.text_type(Text('a', Text(), 'c')) == 'ac'
+        assert str(Text('a', '', 'c')) == 'ac'
+        assert str(Text('a', Text(), 'c')) == 'ac'
 
         text = Text(Text(), Text('mary ', 'had ', 'a little lamb'))
-        assert six.text_type(text) == 'mary had a little lamb'
+        assert str(text) == 'mary had a little lamb'
 
-        text = six.text_type(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+        text = str(Text('a', Text('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
         with pytest.raises(ValueError):
@@ -151,8 +150,8 @@ class TestText(TextTestMixin, TestCase):
         assert len(Text('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
 
     def test__str__(self):
-        assert six.text_type(Text()) == ''
-        assert six.text_type(Text(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
+        assert str(Text()) == ''
+        assert str(Text(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
 
     def test__contains__(self):
         text = Text('mary ', 'had ', 'a little lamb')
@@ -165,17 +164,17 @@ class TestText(TextTestMixin, TestCase):
 
     def test_capfirst(self):
         text = Text('dear ', 'Alice')
-        assert six.text_type(text.capfirst()) == 'Dear Alice'
+        assert str(text.capfirst()) == 'Dear Alice'
 
     def test_capitalize(self):
         text = Text('mary ', 'had ', 'a Little Lamb')
-        assert six.text_type(text.capitalize()) == 'Mary had a little lamb'
+        assert str(text.capitalize()) == 'Mary had a little lamb'
 
     def test__add__(self):
         t = Text('a')
-        assert six.text_type(t + 'b') == 'ab'
-        assert six.text_type(t + t) == 'aa'
-        assert six.text_type(t) == 'a'
+        assert str(t + 'b') == 'ab'
+        assert str(t + t) == 'aa'
+        assert str(t) == 'a'
 
     def test__getitem__(self):
         t = Text('123', Text('456', Text('78'), '9'), '0')
@@ -239,11 +238,11 @@ class TestText(TextTestMixin, TestCase):
 
     def test_upper(self):
         text = Text('mary ', 'had ', 'a little lamb')
-        assert six.text_type(text.upper()) == 'MARY HAD A LITTLE LAMB'
+        assert str(text.upper()) == 'MARY HAD A LITTLE LAMB'
 
     def test_lower(self):
         text = Text('mary ', 'had ', 'a little lamb')
-        assert six.text_type(text.lower()) == 'mary had a little lamb'
+        assert str(text.lower()) == 'mary had a little lamb'
 
     def test_startswith(self):
         assert not Text().startswith('.')
@@ -282,10 +281,10 @@ class TestText(TextTestMixin, TestCase):
         assert not Text('ab', Tag('em', '12'), 'ef').isalpha()
 
     def test_join(self):
-        assert six.text_type(Text(' ').join(['a', Text('b c')])) == 'a b c'
-        assert six.text_type(Text(nbsp).join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
-        assert six.text_type(nbsp.join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
-        assert six.text_type(String('-').join(['a', 'b', 'c'])) == 'a-b-c'
+        assert str(Text(' ').join(['a', Text('b c')])) == 'a b c'
+        assert str(Text(nbsp).join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
+        assert str(nbsp.join(['a', 'b', 'c'])) == 'a<nbsp>b<nbsp>c'
+        assert str(String('-').join(['a', 'b', 'c'])) == 'a-b-c'
         result = Tag('em', ' and ').join(['a', 'b', 'c']).render_as('html')
         assert result == 'a<em> and </em>b<em> and </em>c'
         result = HRef('/', ' and ').join(['a', 'b', 'c']).render_as('html')
@@ -308,10 +307,10 @@ class TestText(TextTestMixin, TestCase):
         assert Text().endswith(('.', '!', '?')) == False
         assert textutils.is_terminated(Text()) == False
 
-        assert six.text_type(Text().add_period()) == ''
+        assert str(Text().add_period()) == ''
 
         text = Text("That's all, folks")
-        assert six.text_type(text.add_period()) == "That's all, folks."
+        assert str(text.add_period()) == "That's all, folks."
 
     def test_render_as(self):
         string = Text(u'Detektivbyrån & friends')
@@ -341,7 +340,7 @@ class TestString(TextTestMixin, TestCase):
 
     def test__str__(self):
         val = u'Detektivbyrån'
-        assert six.text_type(String(val)) == val
+        assert str(String(val)) == val
 
     def test__contains__(self):
         assert '' in String()
@@ -358,10 +357,10 @@ class TestString(TextTestMixin, TestCase):
         assert String('Python') + String(' 3') != 'Python 3'
         assert String('Python') + String(' 3') == Text('Python 3')
         assert String('A').lower() == String('a')
-        assert six.text_type(String('Python') + String(' ') + String('3')) == 'Python 3'
-        assert six.text_type(String('Python') + Text(' ') + String('3')) == 'Python 3'
-        assert six.text_type(String('Python') + ' ' + '3') == 'Python 3'
-        assert six.text_type(String('Python').append(' 3')) == 'Python 3'
+        assert str(String('Python') + String(' ') + String('3')) == 'Python 3'
+        assert str(String('Python') + Text(' ') + String('3')) == 'Python 3'
+        assert str(String('Python') + ' ' + '3') == 'Python 3'
+        assert str(String('Python').append(' 3')) == 'Python 3'
 
     def test_startswith(self):
         assert not String().startswith('n')
@@ -418,27 +417,27 @@ class TestString(TextTestMixin, TestCase):
         assert String(', ').join(['tomatoes', 'cucumbers', 'lemons']) == Text('tomatoes, cucumbers, lemons')
 
     def test_capfirst(self):
-        assert six.text_type(String('').capitalize()) == ''
-        assert six.text_type(String('november december').capitalize()) == 'November december'
-        assert six.text_type(String('November December').capitalize()) == 'November december'
-        assert six.text_type(String('NOVEMBER DECEMBER').capitalize()) == 'November december'
+        assert str(String('').capitalize()) == ''
+        assert str(String('november december').capitalize()) == 'November december'
+        assert str(String('November December').capitalize()) == 'November december'
+        assert str(String('NOVEMBER DECEMBER').capitalize()) == 'November december'
 
     def test_capitalize(self):
-        assert six.text_type(String('').capfirst()) == ''
-        assert six.text_type(String('november').capfirst()) == 'November'
-        assert six.text_type(String('November').capfirst()) == 'November'
-        assert six.text_type(String('november december').capfirst()) == 'November december'
-        assert six.text_type(String('November December').capfirst()) == 'November December'
-        assert six.text_type(String('NOVEMBER DECEMBER').capfirst()) == 'NOVEMBER DECEMBER'
+        assert str(String('').capfirst()) == ''
+        assert str(String('november').capfirst()) == 'November'
+        assert str(String('November').capfirst()) == 'November'
+        assert str(String('november december').capfirst()) == 'November december'
+        assert str(String('November December').capfirst()) == 'November December'
+        assert str(String('NOVEMBER DECEMBER').capfirst()) == 'NOVEMBER DECEMBER'
 
     def test_add_period(self):
-        assert six.text_type(String('').add_period()) == ''
-        assert six.text_type(String('').add_period('!')) == ''
-        assert six.text_type(String('').add_period().add_period()) == ''
-        assert six.text_type(String('').add_period().add_period('!')) == ''
-        assert six.text_type(String('').add_period('!').add_period()) == ''
-        six.text_type(String('November').add_period()) == 'November.'
-        result = six.text_type(String('November').add_period().add_period())
+        assert str(String('').add_period()) == ''
+        assert str(String('').add_period('!')) == ''
+        assert str(String('').add_period().add_period()) == ''
+        assert str(String('').add_period().add_period('!')) == ''
+        assert str(String('').add_period('!').add_period()) == ''
+        str(String('November').add_period()) == 'November.'
+        result = str(String('November').add_period().add_period())
         assert result == 'November.'
 
     def test_render_as(self):
@@ -450,12 +449,12 @@ class TestString(TextTestMixin, TestCase):
 class TestTag(TextTestMixin, TestCase):
     def test__init__(self):
         empty = Tag('em')
-        assert six.text_type(empty) == ''
+        assert str(empty) == ''
 
         text = Text('This ', Tag('em', 'is'), ' good')
-        assert 'This is' in six.text_type(text)
-        assert six.text_type(text).startswith('This is')
-        assert six.text_type(text).endswith('is good')
+        assert 'This is' in str(text)
+        assert str(text).startswith('This is')
+        assert str(text).endswith('is good')
 
     def test__eq__(self):
         assert Tag('em', '') != ''
@@ -474,11 +473,11 @@ class TestTag(TextTestMixin, TestCase):
 
     def test__str__(self):
         empty = Tag('em')
-        assert six.text_type(empty.lower()) == ''
-        assert six.text_type(empty.capitalize()) == ''
-        assert six.text_type(empty.add_period()) == ''
+        assert str(empty.lower()) == ''
+        assert str(empty.capitalize()) == ''
+        assert str(empty.add_period()) == ''
 
-        assert six.text_type(Tag('strong', u'ねここねこ')) == u'ねここねこ'
+        assert str(Tag('strong', u'ねここねこ')) == u'ねここねこ'
 
     def test__contains__(self):
         tag = Tag('em', Text(), Text('mary ', 'had ', 'a little lamb'))
@@ -705,10 +704,10 @@ class TestHRef(TextTestMixin, TestCase):
 
     def test__str__(self):
         empty = HRef('/')
-        assert six.text_type(empty) == ''
+        assert str(empty) == ''
 
         text = Text('This ', HRef('/', 'is'), ' good')
-        six.text_type(text) == 'This is good'
+        str(text) == 'This is good'
 
     def test__eq__(self):
         assert HRef('/', '') != ''
@@ -986,14 +985,14 @@ class TestHRef(TextTestMixin, TestCase):
 
 class TestProtected(TextTestMixin, TestCase):
     def test__init__(self):
-        assert six.text_type(Protected('a', '', 'c')) == 'ac'
-        assert six.text_type(Protected('a', Text(), 'c')) == 'ac'
+        assert str(Protected('a', '', 'c')) == 'ac'
+        assert str(Protected('a', Text(), 'c')) == 'ac'
 
         text = Protected(Protected(), Protected('mary ', 'had ', 'a little lamb'))
         assert text == Protected(Protected('mary had a little lamb'))
-        assert six.text_type(text) == 'mary had a little lamb'
+        assert str(text) == 'mary had a little lamb'
 
-        text = six.text_type(Protected('a', Protected('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
+        text = str(Protected('a', Protected('b', 'c'), Tag('em', 'x'), Symbol('nbsp'), 'd'))
         assert text == 'abcx<nbsp>d'
 
         with pytest.raises(ValueError):
@@ -1021,8 +1020,8 @@ class TestProtected(TextTestMixin, TestCase):
         assert len(Protected('Never', ' ', Tag('em', HRef('/', 'Knows'), ' '), 'Best')) == len('Never Knows Best')
 
     def test__str__(self):
-        assert six.text_type(Protected()) == ''
-        assert six.text_type(Protected(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
+        assert str(Protected()) == ''
+        assert str(Protected(u'Чудаки украшают мир')) == u'Чудаки украшают мир'
 
     def test__contains__(self):
         text = Protected('mary ', 'had ', 'a little lamb')
@@ -1035,11 +1034,11 @@ class TestProtected(TextTestMixin, TestCase):
 
     def test_capfirst(self):
         text = Protected('mary ', 'had ', 'a Little Lamb')
-        assert six.text_type(text.capitalize()) == 'mary had a Little Lamb'
+        assert str(text.capitalize()) == 'mary had a Little Lamb'
 
     def test_capitalize(self):
         text = Protected('mary ', 'had ', 'a little lamb')
-        assert six.text_type(text.capitalize()) == 'mary had a little lamb'
+        assert str(text.capitalize()) == 'mary had a little lamb'
 
     def test__add__(self):
         t = Protected('a')
@@ -1105,15 +1104,15 @@ class TestProtected(TextTestMixin, TestCase):
 
     def test_upper(self):
         text = Protected('Mary ', 'had ', 'a little lamb')
-        assert six.text_type(text.upper()) == 'Mary had a little lamb'
+        assert str(text.upper()) == 'Mary had a little lamb'
         text = Protected('mary ', 'had ', 'a little lamb')
-        assert six.text_type(text.upper()) == 'mary had a little lamb'
+        assert str(text.upper()) == 'mary had a little lamb'
 
     def test_lower(self):
         text = Protected('Mary ', 'had ', 'a little lamb')
-        assert six.text_type(text.lower()) == 'Mary had a little lamb'
+        assert str(text.lower()) == 'Mary had a little lamb'
         text = Protected('MARY ', 'HAD ', 'A LITTLE LAMB')
-        assert six.text_type(text.lower()) == 'MARY HAD A LITTLE LAMB'
+        assert str(text.lower()) == 'MARY HAD A LITTLE LAMB'
 
     def test_startswith(self):
         assert not Protected().startswith('.')
@@ -1198,7 +1197,7 @@ class TestSymbol(TextTestMixin, TestCase):
         assert Text(nbsp, nbsp) == Text(Symbol('nbsp'), Symbol('nbsp'))
 
     def test__str__(self):
-        assert six.text_type(nbsp) == '<nbsp>'
+        assert str(nbsp) == '<nbsp>'
 
     def test__len__(self):
         assert len(nbsp) == 1

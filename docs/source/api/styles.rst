@@ -7,8 +7,6 @@ Designing styles
 
     from __future__ import unicode_literals, print_function
 
-    import six
-
     from pybtex.richtext import Text, String, Tag, HRef, Protected, Symbol, nbsp, textutils
 
 
