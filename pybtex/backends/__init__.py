@@ -67,7 +67,7 @@ class BaseBackend(Plugin):
 
         raise NotImplementedError
 
-    def format_href(self, url, text):
+    def format_href(self, url, text, external=False):
         """Format a hyperlink with some text inside.
 
         *url* is a str, and *text* is a rendered Text object.

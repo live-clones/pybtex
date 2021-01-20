@@ -884,12 +884,13 @@ class HRef(BaseMultipartText):
 
     """
 
-    def __init__(self, url, *args):
+    def __init__(self, url, external, *args):
         if not isinstance(url, (str, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
         self.url = str(url)
         self.info = self.url,
+        self.external = external
         super(HRef, self).__init__(*args)
 
     def __repr__(self):
@@ -898,7 +899,7 @@ class HRef(BaseMultipartText):
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
-        return backend.format_href(self.url, text)
+        return backend.format_href(self.url, text, self.external)
 
 
 class Protected(BaseMultipartText):
