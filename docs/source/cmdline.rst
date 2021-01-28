@@ -9,7 +9,7 @@ Command line interface
 Making bibliographies with :command:`pybtex`
 ============================================
 
-The :command:`pybtex` executable is used in the same was as the original :command:`bibtex`
+The :command:`pybtex` executable is used in the same way as the original :command:`bibtex`
 command and accepts the same command line options.
 The only difference is that you type :command:`pybtex` instead of
 :command:`bibtex`.
@@ -41,13 +41,13 @@ Bibliography formats other then BibTeX
 
 Pybtex is fully compatible with BibTeX' :file:`.bib` files.
 Besides that, Pybtex supports other bibliography formats.
-The list of supported formats can bee seen in the output of :command:`pybtex --help`.
+The list of supported formats can be seen in the output of :command:`pybtex --help`.
 
 By default, the BibTeX format is used. If a LaTeX file :file:`book.tex` contains:
 
 .. code-block:: latex
 
-    \bibliogrpahy{mybook}
+    \bibliography{mybook}
 
 
 Then this command:
@@ -65,7 +65,7 @@ For example this command:
 
     $ pybtex --format yaml book
 
-will tell Pybtex to look for a YAML-formatted file :file:`mybook.yaml` instead of :file:`mybook.bib`).
+will tell Pybtex to look for a YAML-formatted file :file:`mybook.yaml` instead of :file:`mybook.bib`.
 
 Support for additional bibliography formats can be added by :doc:`plugins <api/plugins>`.
 
@@ -75,12 +75,12 @@ Pythonic bibliography styles
 
 BibTeX has a built-in stack oriented programming language for defining
 bibliography formatting styles. This language is used in :file:`.bst`
-style files. Pybtex is fully compatible with BIbTeX' :file:`.bst` style files.
+style files. Pybtex is fully compatible with BibTeX' :file:`.bst` style files.
 
 Additionally, Pybtex allows
 :doc:`to write bibliography styles in Python <api/styles>`.
 Some base BibTeX styles, including ``plain``, ``alpha``, ``unsrt``, have been
-already ported to Python.  They can be found in
+ported to Python already.  They can be found in
 :source:`pybtex/style/formatting` subdirectory. Additional
 styles can be added as :doc:`plugins <api/plugins>`.
 
@@ -102,7 +102,7 @@ use the :option:`--output-backend` option:
     $ pybtex --style-language python --output-backend plaintext book
 
 (In this case Pybtex will write the bibliography to :file:`book.html` or
-:file:`book.txt` instead of :file:`book.bbl`).
+:file:`book.txt` instead of :file:`book.bbl`.)
 
 Support for other markup formats can be added by :doc:`plugins <api/plugins>`.
 
@@ -131,13 +131,13 @@ Be aware that the conversion is not always lossless. For example:
 
 - In the standard BibTeX format, names are stored as single strings. BibTexML
   and Pybtex' YAML format store first name, last name, and other name parts
-  seprately.
+  separately.
 
 
 Pretty-printing bibliography databases with :command:`bibtex-format`
 ====================================================================
 
-Sometimes you would want to convert a bibliography database to a
+Sometimes you may want to convert a bibliography database to a
 human-readable format. Pybtex has another utility called :command:`pybtex-format` for
 that:
 
