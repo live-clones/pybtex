@@ -33,6 +33,7 @@ It reads the bibliography data from a string or a file and returns a
 :py:class:`.BibliographyData` object containing all the bibliography data.
 
 Here is a quick example:
+
 .. doctest::
 
     >>> from pybtex.database import parse_file
