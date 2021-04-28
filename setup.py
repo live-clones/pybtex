@@ -56,7 +56,7 @@ class Sdist(sdist):
 ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README')).read()
 
-install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4']
+install_requires = ['PyYAML>=3.01', 'latexcodec>=1.0.4', 'setuptools']
 extras_require = {
     'test': ['pytest'],
 }
