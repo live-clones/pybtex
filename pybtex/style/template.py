@@ -346,7 +346,7 @@ def href(children, data, url=None, external=False):
             stacklevel=2
         )
         url, *parts = parts
-    return richtext.HRef(_format_data(url, data), external, *parts)
+    return richtext.HRef(_format_data(url, data), *parts, external=external)
 
 
 @node

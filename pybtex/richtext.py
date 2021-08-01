@@ -884,7 +884,7 @@ class HRef(BaseMultipartText):
 
     """
 
-    def __init__(self, url, external, *args):
+    def __init__(self, url, *args, external=False):
         if not isinstance(url, (str, BaseText)):
             raise ValueError(
                 "url must be str or Text (got %s)" % url.__class__.__name__)
