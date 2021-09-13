@@ -135,6 +135,24 @@ class BibliographyData(object):
         self._preamble.extend(values)
 
     @property
+    def preamble_list(self):
+        r'''
+        LaTeX preamble as list of strings
+
+        >>> bib_data = parse_string(r"""
+        ...     @PREAMBLE{"\newcommand{\noopsort}[1]{}"}
+        ...     @PREAMBLE{"\newcommand{\nooptilde}[1]{}"}
+        ... """, 'bibtex')
+        >>> print(bib_data.preamble_list)
+        ['\newcommand{\noopsort}[1]{}',
+         '\newcommand{\nooptilde}[1]{}']
+
+        .. versionadded:: 0.19
+            Earlier versions used :py:meth:`.get_preamble()`, which is now deprecated.
+        '''
+        return self._preamble
+
+    @property
     def preamble(self):
         r'''
         LaTeX preamble.
