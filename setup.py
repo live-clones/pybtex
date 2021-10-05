@@ -91,7 +91,7 @@ setup(
     install_requires=install_requires,
     extras_require=extras_require,
     python_requires='>=3.6',
-    packages=find_packages(exclude=['docs']),
+    packages=find_packages(exclude=('tests', 'tests.*')),
     include_package_data=True,
     cmdclass={'sdist': Sdist},
     entry_points={
