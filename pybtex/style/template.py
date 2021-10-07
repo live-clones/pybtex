@@ -341,7 +341,7 @@ def href(children, data, url=None, external=False):
     parts = _format_list(children, data)
     if url is None:
         warnings.warn(
-            'href [url, text] is deprecated since 0.24: use uref(url) [text] instead',
+            'href [url, text] is deprecated since 0.24: use href(url) [text] instead',
             DeprecationWarning,
             stacklevel=2
         )
