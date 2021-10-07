@@ -65,7 +65,6 @@ from abc import ABCMeta, abstractmethod
 
 from pybtex import textutils
 from pybtex.utils import collect_iterable, deprecated
-from pybtex import py3compat
 
 
 # workaround for doctests in Python 2/3
@@ -94,7 +93,6 @@ def ensure_text(value):
         raise ValueError('parts must be strings or BaseText instances, not ' + bad_type)
 
 
-@py3compat.python_2_unicode_compatible
 class BaseText(object):
     __metaclass__ = ABCMeta
 
@@ -305,7 +303,6 @@ class BaseText(object):
         return None, ()
 
 
-@py3compat.python_2_unicode_compatible
 class BaseMultipartText(BaseText):
     info = ()
 
@@ -688,7 +685,6 @@ class BaseMultipartText(BaseText):
         return self._create_similar(iter_map_with_condition())
 
 
-@py3compat.python_2_unicode_compatible
 class String(BaseText):
     """
     A :py:class:`String` is a wrapper for a plain Python string.
@@ -956,7 +952,6 @@ class Protected(BaseMultipartText):
         return backend.format_protected(text)
 
 
-@py3compat.python_2_unicode_compatible
 class Symbol(BaseText):
     """A special symbol. This class is rarely used and may be removed in
     future versions.

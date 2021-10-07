@@ -24,9 +24,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 from pybtex.bibtex.exceptions import BibTeXError
-from pybtex.py3compat import fix_unicode_literals_in_doctest
 from pybtex.utils import pairwise
-from pybtex import py3compat
 
 whitespace_re = re.compile(r'(\s)')
 purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
@@ -95,7 +93,6 @@ def wrap(string, width=79, subsequent_indent='  '):
     return '\n'.join(line.rstrip() for line in iter_lines(string))
 
 
-@py3compat.python_2_unicode_compatible
 class BibTeXString(object):
     def __init__(self, chars, level=0, max_level=100):
         if level > max_level:
@@ -421,46 +418,44 @@ def scan_bibtex_string(string):
     )
 
 
-@fix_unicode_literals_in_doctest
 def split_name_list(string):
     r"""
     Split a list of names, separated by ' and '.
 
     >>> split_name_list('Johnson and Peterson')
-    [u'Johnson', u'Peterson']
+    ['Johnson', 'Peterson']
     >>> split_name_list('Johnson AND Peterson')
-    [u'Johnson', u'Peterson']
+    ['Johnson', 'Peterson']
     >>> split_name_list('Johnson AnD Peterson')
-    [u'Johnson', u'Peterson']
+    ['Johnson', 'Peterson']
     >>> split_name_list('Armand and Peterson')
-    [u'Armand', u'Peterson']
+    ['Armand', 'Peterson']
     >>> split_name_list('Armand and anderssen')
-    [u'Armand', u'anderssen']
+    ['Armand', 'anderssen']
     >>> split_name_list('{Armand and Anderssen}')
-    [u'{Armand and Anderssen}']
+    ['{Armand and Anderssen}']
     >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
-    [u'What a Strange{ }and Bizzare Name!', u'Peterson']
+    ['What a Strange{ }and Bizzare Name!', 'Peterson']
     >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
-    [u'What a Strange and{ }Bizzare Name!', u'Peterson']
+    ['What a Strange and{ }Bizzare Name!', 'Peterson']
     """
     return split_tex_string(string, ' [Aa][Nn][Dd] ')
 
 
-@fix_unicode_literals_in_doctest
 def _find_closing_brace(string):
     r"""
     >>> _find_closing_brace('')
-    (u'', u'')
+    ('', '')
     >>> _find_closing_brace('no braces')
-    (u'no braces', u'')
+    ('no braces', '')
     >>> _find_closing_brace('brace at the end}')
-    (u'brace at the end}', u'')
+    ('brace at the end}', '')
     >>> _find_closing_brace('two closing braces}}')
-    (u'two closing braces}', u'}')
+    ('two closing braces}', '}')
     >>> _find_closing_brace('two closing} braces} and some text')
-    (u'two closing}', u' braces} and some text')
+    ('two closing}', ' braces} and some text')
     >>> _find_closing_brace('more {nested{}}{braces}} and the rest}')
-    (u'more {nested{}}{braces}}', u' and the rest}')
+    ('more {nested{}}{braces}}', ' and the rest}')
     """
     up_to_brace = []
     brace_level = 1
@@ -492,7 +487,6 @@ BIBTEX_SPACE_RE = re.compile(r'(?:\\ |\s|(?<!\\)~)+')
 BRACE_RE = re.compile(r'{|}')
 
 
-@fix_unicode_literals_in_doctest
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     r"""Split a string using the given separator (regexp).
 
@@ -503,23 +497,23 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     >>> split_tex_string('     ')
     []
     >>> split_tex_string('.a.b.c.', r'\.')
-    [u'', u'a', u'b', u'c', u'']
+    ['', 'a', 'b', 'c', '']
     >>> split_tex_string('.a.b.c.{d.}.', r'\.')
-    [u'', u'a', u'b', u'c', u'{d.}', u'']
+    ['', 'a', 'b', 'c', '{d.}', '']
     >>> split_tex_string('Matsui      Fuuka')
-    [u'Matsui', u'Fuuka']
+    ['Matsui', 'Fuuka']
     >>> split_tex_string('{Matsui      Fuuka}')
-    [u'{Matsui      Fuuka}']
+    ['{Matsui      Fuuka}']
     >>> split_tex_string(r'Matsui\ Fuuka')
-    [u'Matsui', u'Fuuka']
+    ['Matsui', 'Fuuka']
     >>> split_tex_string(r'{Matsui\ Fuuka}')
-    [u'{Matsui\\ Fuuka}']
+    ['{Matsui\\ Fuuka}']
     >>> split_tex_string('a')
-    [u'a']
+    ['a']
     >>> split_tex_string('on a')
-    [u'on', u'a']
+    ['on', 'a']
     >>> split_tex_string(r'Qui\~{n}onero-Candela, J.')
-    [u'Qui\\~{n}onero-Candela,', u'J.']
+    ['Qui\\~{n}onero-Candela,', 'J.']
     """
 
     if sep is None:
@@ -580,7 +574,7 @@ def bibtex_first_letter(string):
 
     for char in BibTeXString(string):
         if char.startswith('\\') and char != '\\':
-            return u'{{{0}}}'.format(char)
+            return '{{{0}}}'.format(char)
         elif char.isalpha():
             return char
     return ''

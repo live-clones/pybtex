@@ -48,7 +48,6 @@ import warnings
 
 from pybtex import richtext
 from pybtex.exceptions import PybtexError
-from pybtex.py3compat import fix_unicode_literals_in_doctest
 
 __test__ = {}  # for doctest
 
@@ -82,23 +81,22 @@ class Node(object):
             result.children.append(children)
         return result
 
-    @fix_unicode_literals_in_doctest
     def __repr__(self):
         """
         >>> join(', ')
-        join(u', ')
+        join(', ')
         >>> join
         join
         >>> join ['a']
-        join [u'a']
+        join ['a']
         >>> join ['a', 'b', 'c']
-        join [u'a', u'b', u'c']
-        >>> join(' ') [u'a', u'b', u'c']
-        join(u' ') [u'a', u'b', u'c']
-        >>> join(sep=' ') [u'a', u'b', u'c']
-        join(sep=u' ') [u'a', u'b', u'c']
-        >>> join(sep=u' ') [tag('em') [u'a', u'b', u'c']]
-        join(sep=u' ') [tag(u'em') [u'a', u'b', u'c']]
+        join ['a', 'b', 'c']
+        >>> join(' ') ['a', 'b', 'c']
+        join(' ') ['a', 'b', 'c']
+        >>> join(sep=' ') ['a', 'b', 'c']
+        join(sep=' ') ['a', 'b', 'c']
+        >>> join(sep=' ') [tag('em') ['a', 'b', 'c']]
+        join(sep=' ') [tag('em') ['a', 'b', 'c']]
 
         """
         params = []
@@ -248,7 +246,7 @@ class FieldIsMissing(PybtexError):
     def __init__(self, field_name, entry):
         self.field_name = field_name
         super(FieldIsMissing, self).__init__(
-            u'missing {0} in {1}'.format(field_name, getattr(entry, 'key', '<unnamed>'))
+            'missing {0} in {1}'.format(field_name, getattr(entry, 'key', '<unnamed>'))
         )
 
 @node

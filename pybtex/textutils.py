@@ -23,7 +23,6 @@ from __future__ import unicode_literals
 
 import re
 
-from pybtex.py3compat import fix_unicode_literals_in_doctest
 from pybtex.utils import deprecated
 
 terminators = '.', '?', '!'
@@ -91,16 +90,15 @@ def add_period(text):
     return text
 
 
-@fix_unicode_literals_in_doctest
 def abbreviate(text, split=delimiter_re.split):
     """Abbreviate the given text.
 
     >> abbreviate('Name')
-    u'N'
+    'N'
     >> abbreviate('Some words')
-    u'S. w.'
+    'S. w.'
     >>> abbreviate('First-Second')
-    u'F.-S.'
+    'F.-S.'
     """
 
     def abbreviate(part):
