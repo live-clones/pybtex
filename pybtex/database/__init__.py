@@ -144,8 +144,7 @@ class BibliographyData(object):
         ...     @PREAMBLE{"\newcommand{\nooptilde}[1]{}"}
         ... """, 'bibtex')
         >>> print(bib_data.preamble_list)
-        ['\newcommand{\noopsort}[1]{}',
-         '\newcommand{\nooptilde}[1]{}']
+        ['\\newcommand{\\noopsort}[1]{}', '\\newcommand{\\nooptilde}[1]{}']
 
         .. versionadded:: 0.19
             Earlier versions used :py:meth:`.get_preamble()`, which is now deprecated.
