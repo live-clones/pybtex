@@ -23,6 +23,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 import re
+from typing import Iterable, Tuple
 
 try:
     from collections.abc import Mapping
@@ -205,7 +206,7 @@ class BibliographyData(object):
             if self.wanted_entries is not None:
                 self.wanted_entries.add(crossref)
 
-    def add_entries(self, entries):
+    def add_entries(self, entries: Iterable[Tuple[str, "Entry"]]) -> None:
         for key, entry in entries:
             self.add_entry(key, entry)
 
