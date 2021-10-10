@@ -29,10 +29,8 @@ import re
 import pybtex.io
 from pybtex.errors import report_error
 from pybtex.exceptions import PybtexError
-from pybtex import py3compat
 
 
-@py3compat.python_2_unicode_compatible
 class AuxDataError(PybtexError):
     def __init__(self, message, context=None):
         super(AuxDataError, self).__init__(message, context.filename)
