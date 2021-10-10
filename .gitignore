@@ -8,7 +8,7 @@
 /build
 /docs/build
 /dist
-/venv/
+/venv*/
 /pybtex.egg-info
 /MANIFEST
 .ropeproject
@@ -20,3 +20,5 @@
 __pycache__
 /docs/theme/node_modules
 /.idea
+/.pytest_cache
+/.mypy_cache
