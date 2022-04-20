@@ -192,7 +192,7 @@ class BibliographyData(object):
         if not self.want_entry(key):
             return
         if key in self.entries:
-            report_error(BibliographyDataError('repeated bibliograhpy entry: %s' % key))
+            report_error(BibliographyDataError('repeated bibliography entry: %s' % key))
             return
         entry.key = self.get_canonical_key(key)
         self.entries[entry.key] = entry
