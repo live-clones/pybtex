@@ -460,6 +460,17 @@ class Entry(object):
         )
 
     def __repr__(self):
+        r"""
+
+        >>> from pybtex.database import Entry
+        >>> Entry("article", fields={"title": "An article about journals", "journal": "Royal Society of Journals"})
+        Entry('article',
+          fields=[
+            ('title': 'An article about journals'),
+            ('journal', 'Royal Society of Journals')],
+          persons={})
+
+        """
         # represent the fields as a list of tuples for simplicity
         repr_fields = repr(list(self.fields.items()))
         keys = self.fields.keys()
