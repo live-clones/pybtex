@@ -476,23 +476,16 @@ class Entry(object):
           persons={'editor': Person('Knuth, Donald E.')})
 
         """
-        template = "Entry({type!r}"
-        if self.fields:
-            template += (
-                ",\n"
-                "  fields=[\n"
-                "    {fields}]")
-        if self.persons:
-            template += (
-                ",\n"
-                "  persons={persons!r}")
-        template += ")"
+        parameters = [repr(self.type)]
 
-        return template.format(
-            type=self.type,
-            fields=",\n    ".join(
-                ["({!r}, {!r})".format(key, value) for (key, value) in self.fields.items()]),
-            persons=dict(self.persons))
+        if self.fields:
+            parameters.append("fields=[\n    {}]".format(",\n    ".join(
+                ["({!r}, {!r})".format(key, value) for (key, value) in self.fields.items()])))
+
+        if self.persons:
+            parameters.append("persons={!r}".format(dict(self.persons)))
+
+        return "Entry({})".format(",\n  ".join(parameters))
 
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
