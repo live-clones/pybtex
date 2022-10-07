@@ -1,5 +1,6 @@
 # vim: fileencoding=utf-8
 # Copyright (c) 2006-2021  Andrey Golovizin
+# Copyright (c)      2022  Julian Rüth
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -461,32 +462,37 @@ class Entry(object):
 
     def __repr__(self):
         r"""
+        Return a string representation of this entry.
 
         >>> from pybtex.database import Entry
-        >>> Entry("article", fields={"title": "An article about journals", "journal": "Royal Society of Journals"})
+        >>> Entry("article")
+        Entry('article')
+
+        >>> Entry("article", fields={"title": "An article about journals", "journal": "Royal Society of Journals"}, persons={"editor": Person("Donald E. Knuth")})
         Entry('article',
           fields=[
-            ('title': 'An article about journals'),
+            ('title', 'An article about journals'),
             ('journal', 'Royal Society of Journals')],
-          persons={})
+          persons={'editor': Person('Knuth, Donald E.')})
 
         """
-        # represent the fields as a list of tuples for simplicity
-        repr_fields = repr(list(self.fields.items()))
-        keys = self.fields.keys()
+        template = "Entry({type!r}"
+        if self.fields:
+            template += (
+                ",\n"
+                "  fields=[\n"
+                "    {fields}]")
+        if self.persons:
+            template += (
+                ",\n"
+                "  persons={persons!r}")
+        template += ")"
 
-        for key in keys:
-            ind = repr_fields.index(key) - 2  # find first instance
-            repr_fields = repr_fields[:ind] + "\n" + repr_fields[ind:]
-
-        repr_fields = indent(repr_fields, prefix="    ")
-        repr_fields = repr_fields[4:]  # drop 1st indent
-
-        return (
-            "Entry({0},\n"
-            "  fields={1},\n"
-            "  persons={2})".format(repr(self.type), repr_fields, repr(self.persons))
-        )
+        return template.format(
+            type=self.type,
+            fields=",\n    ".join(
+                ["({!r}, {!r})".format(key, value) for (key, value) in self.fields.items()]),
+            persons=dict(self.persons))
 
     def add_person(self, person, role):
         self.persons.setdefault(role, []).append(person)
