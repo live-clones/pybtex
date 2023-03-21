@@ -46,7 +46,7 @@ intersphinx_mapping = {
 }
 
 extlinks = {
-    'source': ('https://bitbucket.org/pybtex-devs/pybtex/src/HEAD/%s', ''),
+    'source': ('https://bitbucket.org/pybtex-devs/pybtex/src/HEAD/%s', '%s'),
 }
 
 # Add any paths that contain templates here, relative to this directory.
