@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pybtex_doctools"
+authors = [
+    {name = "Andrey Golovizin", email= "ag@sologoc.com"},
+]
+description = "Documentation utils for pybtex"
+requires-python = ">=3.8"
+version = "0.1.0"
+
+dependencies = [
+    "pygments"
+]
+
+[project.entry-points."pygments.styles"]
+pybtex = "pybtex_doctools.pygments:PybtexStyle"
+
+[project.entry-points."pygments.lexers"]
+bibtex-pybtex = "pybtex_doctools.pygments:BibTeXLexer"
+bibtex-bst = "pybtex_doctools.pygments:BSTLexer"

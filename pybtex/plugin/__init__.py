@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from itertools import chain
 # Copyright (c) 2006-2021  Andrey Golovizin
 # Copyright (c) 2014  Matthias C. M. Troffaes
 #
@@ -23,9 +24,14 @@ from __future__ import unicode_literals
 
 
 import os.path  # splitext
-import pkg_resources
+import sys
 
 from pybtex.exceptions import PybtexError
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 
 class Plugin(object):
@@ -42,6 +48,8 @@ _DEFAULT_PLUGINS = {
     "pybtex.style.sorting": "none",
     "pybtex.style.formatting": "unsrt",
 }
+
+_RUNTIME_PLUGINS = {}
 
 
 class PluginGroupNotFound(PybtexError):
@@ -76,7 +84,13 @@ class PluginNotFound(PybtexError):
 def _load_entry_point(group, name, use_aliases=False):
     groups = [group, group + '.aliases'] if use_aliases else [group]
     for search_group in groups:
-        for entry_point in pkg_resources.iter_entry_points(search_group, name):
+        # first check in runtime plugins registered via register_plugin
+        klass = _RUNTIME_PLUGINS.get(group, {}).get(name)
+        if klass is not None:
+            return klass
+
+        # then check installed entry-points
+        for entry_point in entry_points(group=search_group, name=name):
             return entry_point.load()
     raise PluginNotFound(group, name)
 
@@ -113,29 +127,9 @@ def find_plugin(plugin_group, name=None, filename=None):
 
 def enumerate_plugin_names(plugin_group):
     """Enumerate all plugin names for the given *plugin_group*."""
-    return (entry_point.name
-            for entry_point in pkg_resources.iter_entry_points(plugin_group))
-
-
-class _FakeEntryPoint(pkg_resources.EntryPoint):
-
-    def __init__(self, name, klass):
-        self.name = name
-        self.klass = klass
-
-    def __str__(self):
-        return "%s = :%s" % (self.name, self.klass.__name__)
-
-    def __repr__(self):
-        return (
-            "_FakeEntryPoint(name=%r, klass=%s)"
-            % (self.name, self.klass.__name__))
-
-    def load(self, require=True, env=None, installer=None):
-        return self.klass
-
-    def require(self, env=None, installer=None):
-        pass
+    runtime_plugins = (name for name in _RUNTIME_PLUGINS.get(plugin_group, {}))
+    ep_plugins = (ep.name for ep in entry_points(group=plugin_group))
+    return chain(runtime_plugins, ep_plugins)
 
 
 def register_plugin(plugin_group, name, klass, force=False):
@@ -173,12 +167,11 @@ def register_plugin(plugin_group, name, klass, force=False):
     if base_group not in _DEFAULT_PLUGINS:
         raise PluginGroupNotFound(base_group)
 
-    dist = pkg_resources.get_distribution('pybtex')
-    ep_map = pkg_resources.get_entry_map(dist)
-    if plugin_group not in ep_map:
-        ep_map[plugin_group] = {}
-    if name in ep_map[plugin_group] and not force:
+    if len(entry_points(group=plugin_group, name=name)) > 0 and not force:
         return False
-    else:
-        ep_map[plugin_group][name] = _FakeEntryPoint(name, klass)
-        return True
+
+    if plugin_group not in _RUNTIME_PLUGINS:
+        _RUNTIME_PLUGINS[plugin_group] = {}
+
+    _RUNTIME_PLUGINS[plugin_group][name] = klass
+    return True

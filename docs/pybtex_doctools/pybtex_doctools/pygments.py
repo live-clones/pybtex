@@ -36,9 +36,6 @@ from pygments.token import (
     Punctuation, String, Text
 )
 
-from . import add_entry_point
-
-
 class PybtexStyle(Style):
     """
     Port of the default trac highlighter design.
@@ -216,6 +213,4 @@ class BSTLexer(RegexLexer):
 
 
 def setup(app):
-    add_entry_point('pygments.styles', 'pybtex', 'pybtex_doctools.pygments', 'PybtexStyle')
-    add_entry_point('pygments.lexers', 'bibtex-pybtex', 'pybtex_doctools.pygments', 'BibTeXLexer')
-    add_entry_point('pygments.lexers', 'bst-pybtex', 'pybtex_doctools.pygments', 'BSTLexer')
+    pass
