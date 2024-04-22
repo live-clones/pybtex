@@ -17,11 +17,14 @@ import sys
 from datetime import datetime
 
 from pybtex import __version__
+from importlib.util import find_spec
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
+if find_spec("pybtex_doctools") is None:
+    raise ModuleNotFoundError("pybtex_doctools not found, please run `pip install docs/pybtex_doctools`")
 
 # -- General configuration ------------------------------------------------
 

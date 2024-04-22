@@ -18,13 +18,3 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-from pkg_resources import get_distribution, EntryPoint
-
-
-def add_entry_point(group, name, module, attr):
-    pybtex_dist = get_distribution('pybtex')
-    entry_point = EntryPoint(name, module, (attr,), dist=pybtex_dist)
-    entry_point_map = pybtex_dist.get_entry_map()
-    entry_point_map.setdefault(group, {})[name] = entry_point
