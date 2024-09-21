@@ -401,6 +401,9 @@ class Style(BaseStyle):
     def get_software_template(self, e):
         return self.get_misc_template(e)
 
+    def get_patent_template(self, e):
+        return self.get_misc_template(e)
+
     def get_unpublished_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
