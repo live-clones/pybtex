@@ -220,6 +220,9 @@ class Style(BaseStyle):
         ]
         return template
 
+    def get_dataset_template(self, e):
+        return self.get_misc_template(e)
+
     def get_inbook_template(self, e):
         template = toplevel [
             self.format_author_or_editor(e),
@@ -331,6 +334,9 @@ class Style(BaseStyle):
     def get_online_template(self, e):
         return self.get_misc_template(e)
 
+    def get_patent_template(self, e):
+        return self.get_misc_template(e)
+
     def get_phdthesis_template(self, e):
         template = toplevel [
             sentence [self.format_names('author')],
@@ -376,6 +382,9 @@ class Style(BaseStyle):
             ]
         ]
         return template
+
+    def get_software_template(self, e):
+        return self.get_misc_template(e)
 
     def get_techreport_template(self, e):
         template = toplevel [
