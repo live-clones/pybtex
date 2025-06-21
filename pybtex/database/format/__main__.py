@@ -60,6 +60,7 @@ pybtex-format formats bibliography database as human-readable text.
     )
     option_defaults = {
         'keyless_entries': False,
+        'min_crossrefs': 2,
     }
 
     def run(
