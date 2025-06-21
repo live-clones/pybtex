@@ -10,6 +10,7 @@
 /docs/build
 /dist
 /venv*/
+/.venv/
 /pybtex.egg-info
 /MANIFEST
 .ropeproject
