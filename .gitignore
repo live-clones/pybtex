@@ -4,8 +4,6 @@
 *.orig
 *.egg-info
 /docs/man1/*.1
-/examples/xampl.bibtexml
-/examples/xampl.yaml
 /build
 /docs/build
 /dist

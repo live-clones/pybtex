@@ -1,20 +1,19 @@
 matrix:
   PYVERSION:
-    - 3.6
-    - 3.7
     - 3.8
     - 3.9
     - 3.10
     - 3.11
     - 3.12
     # not supported due to `six` import
-    # - 3.13 
+    # - 3.13
 
 steps:
-  test:
-    image: python:${PYVERSION}-slim
+  pytest:
+    image: ghcr.io/astral-sh/uv:python${PYVERSION}-bookworm-slim
     commands:
-      - pip install .[test]
-      - pytest
+      - uv sync
+      - uv run pytest -vvv
     when:
       - event: push
+      - event: pull_request
