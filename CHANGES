@@ -1,3 +1,35 @@
+Version 0.25.0
+--------------
+(released on June 21, 2025)
+
+- Added external_href for links to be opened in an external window.
+
+- Added support for ``@software``, ``@patent``, and ``@dataset``.
+
+- Added :py:attr:`pybtex.database.BibliographyData.preamble_list` to get the
+  preamble as a list.
+
+- Fixed formatting in ``__repr__`` for :py:meth:`pybtex.database.Entry`.
+
+- Fixed formatting bibliographies with crossrefs with ``pybtex-format``.
+
+- Fixed registering plugins at runtime.
+
+- Fixed numerous typos in the documentation.
+
+- Updated Sphinx config for compatilibility with Sphinx 6+.
+
+- Removed the dependency on the deprecated ``distutils`` module.
+
+- Removed the dependency on ``setuptools``.
+
+- Finally dropped support for Python 2. :)
+
+Thanks to Tomáš Hrnčiar, Jerry James, Maximilian Linhoff, Christopher
+Markiewicz, Kunal Marwaha, Clément Pit-Claudel, Julian Rüth, Tristan Stenner,
+Nick Touran, and Matthias Troffaes for their contributions!
+
+
 Version 0.24.0
 --------------
 (released on January 17, 2021)
