@@ -85,7 +85,7 @@ def _load_entry_point(group, name, use_aliases=False):
     groups = [group, group + '.aliases'] if use_aliases else [group]
     for search_group in groups:
         # first check in runtime plugins registered via register_plugin
-        klass = _RUNTIME_PLUGINS.get(group, {}).get(name)
+        klass = _RUNTIME_PLUGINS.get(search_group, {}).get(name)
         if klass is not None:
             return klass
 
@@ -170,8 +170,10 @@ def register_plugin(plugin_group, name, klass, force=False):
     if len(entry_points(group=plugin_group, name=name)) > 0 and not force:
         return False
 
-    if plugin_group not in _RUNTIME_PLUGINS:
-        _RUNTIME_PLUGINS[plugin_group] = {}
+    plugins = _RUNTIME_PLUGINS.setdefault(plugin_group, {})
 
-    _RUNTIME_PLUGINS[plugin_group][name] = klass
-    return True
+    if force or name not in plugins:
+        plugins[name] = klass
+        return True
+
+    return plugins[name] is klass
