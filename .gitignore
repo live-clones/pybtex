@@ -24,3 +24,4 @@ __pycache__
 /.idea
 /.pytest_cache
 /.mypy_cache
+/.direnv/
