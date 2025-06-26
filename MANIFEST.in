@@ -5,6 +5,7 @@ include examples/make.sh
 include COPYING CHANGES
 include tox.ini test_requirements.txt
 include docs/generate_manpages.py docs/Makefile docs/make.bat
+recursive-include tests/ *.py
 recursive-include tests/data *.bst *.bib *.bbl *.aux
 include docs/source/conf.py docs/site/conf.py
 recursive-include docs/source *.rst
