@@ -1,3 +1,12 @@
+Version 0.25.1
+--------------
+(released on June 26, 2025)
+
+- Fix copyright year in the documentation.
+
+- Include tests into the tarball.
+
+
 Version 0.25.0
 --------------
 (released on June 21, 2025)
