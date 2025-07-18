@@ -1,0 +1,20 @@
+matrix:
+  PYVERSION:
+    - 3.6
+    - 3.7
+    - 3.8
+    - 3.9
+    - 3.10
+    - 3.11
+    - 3.12
+    # not supported due to `six` import
+    # - 3.13 
+
+steps:
+  test:
+    image: python:${PYVERSION}-slim
+    commands:
+      - pip install .[test]
+      - pytest
+    when:
+      - event: push
