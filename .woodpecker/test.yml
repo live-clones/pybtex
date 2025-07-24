@@ -12,7 +12,7 @@ steps:
   pytest:
     image: ghcr.io/astral-sh/uv:python${PYVERSION}-bookworm-slim
     commands:
-      - uv sync
+      - uv sync --frozen
       - uv run pytest -vvv
     when:
       - event: push
