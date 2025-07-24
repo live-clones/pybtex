@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bibtex:file xmlns:bibtex="http://bibtexml.sf.net/">
+
+    <bibtex:entry id="article-minimal">
+        <bibtex:ARTICLE>
+            <bibtex:title>The Gnats and Gnus Document Preparation System</bibtex:title>
+            <bibtex:journal>\mbox{G-Animal's} Journal</bibtex:journal>
+            <bibtex:year>1986</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>L[eslie]</bibtex:first>
+                    <bibtex:middle>A.</bibtex:middle>
+                    <bibtex:last>Aamport</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:ARTICLE>
+    </bibtex:entry>
+
+    <bibtex:entry id="article-full">
+        <bibtex:ARTICLE>
+            <bibtex:title>The Gnats and Gnus Document Preparation System</bibtex:title>
+            <bibtex:journal>\mbox{G-Animal's} Journal</bibtex:journal>
+            <bibtex:year>1986</bibtex:year>
+            <bibtex:volume>41</bibtex:volume>
+            <bibtex:number>7</bibtex:number>
+            <bibtex:pages>73+</bibtex:pages>
+            <bibtex:month>July</bibtex:month>
+            <bibtex:note>This is a full ARTICLE entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>L[eslie]</bibtex:first>
+                    <bibtex:middle>A.</bibtex:middle>
+                    <bibtex:last>Aamport</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:ARTICLE>
+    </bibtex:entry>
+
+    <bibtex:entry id="article-crossref">
+        <bibtex:ARTICLE>
+            <bibtex:crossref>WHOLE-JOURNAL</bibtex:crossref>
+            <bibtex:key></bibtex:key>
+            <bibtex:title>The Gnats and Gnus Document Preparation System</bibtex:title>
+            <bibtex:pages>73+</bibtex:pages>
+            <bibtex:note>This is a cross-referencing ARTICLE entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>L[eslie]</bibtex:first>
+                    <bibtex:middle>A.</bibtex:middle>
+                    <bibtex:last>Aamport</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:ARTICLE>
+    </bibtex:entry>
+
+    <bibtex:entry id="whole-journal">
+        <bibtex:ARTICLE>
+            <bibtex:key>GAJ</bibtex:key>
+            <bibtex:journal>\mbox{G-Animal's} Journal</bibtex:journal>
+            <bibtex:year>1986</bibtex:year>
+            <bibtex:volume>41</bibtex:volume>
+            <bibtex:number>7</bibtex:number>
+            <bibtex:month>July</bibtex:month>
+            <bibtex:note>The entire issue is devoted to gnats and gnus (this entry is a cross-referenced ARTICLE (journal))</bibtex:note>
+        </bibtex:ARTICLE>
+    </bibtex:entry>
+
+    <bibtex:entry id="inbook-minimal">
+        <bibtex:INBOOK>
+            <bibtex:title>Fundamental Algorithms</bibtex:title>
+            <bibtex:publisher>Addison-Wesley</bibtex:publisher>
+            <bibtex:year>{\noopsort{1973b}}1973</bibtex:year>
+            <bibtex:chapter>1.2</bibtex:chapter>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Donald</bibtex:first>
+                    <bibtex:middle>E.</bibtex:middle>
+                    <bibtex:last>Knuth</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:INBOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="inbook-full">
+        <bibtex:INBOOK>
+            <bibtex:title>Fundamental Algorithms</bibtex:title>
+            <bibtex:volume>1</bibtex:volume>
+            <bibtex:series>The Art of Computer Programming</bibtex:series>
+            <bibtex:publisher>Addison-Wesley</bibtex:publisher>
+            <bibtex:address>Reading, Massachusetts</bibtex:address>
+            <bibtex:edition>Second</bibtex:edition>
+            <bibtex:month>10~January</bibtex:month>
+            <bibtex:year>{\noopsort{1973b}}1973</bibtex:year>
+            <bibtex:type>Section</bibtex:type>
+            <bibtex:chapter>1.2</bibtex:chapter>
+            <bibtex:pages>10--119</bibtex:pages>
+            <bibtex:note>This is a full INBOOK entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Donald</bibtex:first>
+                    <bibtex:middle>E.</bibtex:middle>
+                    <bibtex:last>Knuth</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:INBOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="inbook-crossref">
+        <bibtex:INBOOK>
+            <bibtex:crossref>whole-set</bibtex:crossref>
+            <bibtex:title>Fundamental Algorithms</bibtex:title>
+            <bibtex:volume>1</bibtex:volume>
+            <bibtex:series>The Art of Computer Programming</bibtex:series>
+            <bibtex:edition>Second</bibtex:edition>
+            <bibtex:year>{\noopsort{1973b}}1973</bibtex:year>
+            <bibtex:type>Section</bibtex:type>
+            <bibtex:chapter>1.2</bibtex:chapter>
+            <bibtex:note>This is a cross-referencing INBOOK entry</bibtex:note>
+        </bibtex:INBOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="book-minimal">
+        <bibtex:BOOK>
+            <bibtex:title>Seminumerical Algorithms</bibtex:title>
+            <bibtex:publisher>Addison-Wesley</bibtex:publisher>
+            <bibtex:year>{\noopsort{1973c}}1981</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Donald</bibtex:first>
+                    <bibtex:middle>E.</bibtex:middle>
+                    <bibtex:last>Knuth</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:BOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="book-full">
+        <bibtex:BOOK>
+            <bibtex:title>Seminumerical Algorithms</bibtex:title>
+            <bibtex:volume>2</bibtex:volume>
+            <bibtex:series>The Art of Computer Programming</bibtex:series>
+            <bibtex:publisher>Addison-Wesley</bibtex:publisher>
+            <bibtex:address>Reading, Massachusetts</bibtex:address>
+            <bibtex:edition>Second</bibtex:edition>
+            <bibtex:month>10~January</bibtex:month>
+            <bibtex:year>{\noopsort{1973c}}1981</bibtex:year>
+            <bibtex:note>This is a full BOOK entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Donald</bibtex:first>
+                    <bibtex:middle>E.</bibtex:middle>
+                    <bibtex:last>Knuth</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:BOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="book-crossref">
+        <bibtex:BOOK>
+            <bibtex:crossref>whole-set</bibtex:crossref>
+            <bibtex:title>Seminumerical Algorithms</bibtex:title>
+            <bibtex:volume>2</bibtex:volume>
+            <bibtex:series>The Art of Computer Programming</bibtex:series>
+            <bibtex:edition>Second</bibtex:edition>
+            <bibtex:year>{\noopsort{1973c}}1981</bibtex:year>
+            <bibtex:note>This is a cross-referencing BOOK entry</bibtex:note>
+        </bibtex:BOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="whole-set">
+        <bibtex:BOOK>
+            <bibtex:publisher>Addison-Wesley</bibtex:publisher>
+            <bibtex:title>The Art of Computer Programming</bibtex:title>
+            <bibtex:series>Four volumes</bibtex:series>
+            <bibtex:year>{\noopsort{1973a}}{\switchargs{--90}{1968}}</bibtex:year>
+            <bibtex:note>Seven volumes planned (this is a cross-referenced set of BOOKs)</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Donald</bibtex:first>
+                    <bibtex:middle>E.</bibtex:middle>
+                    <bibtex:last>Knuth</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:BOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="booklet-minimal">
+        <bibtex:BOOKLET>
+            <bibtex:key>Kn{\printfirst{v}{1987}}</bibtex:key>
+            <bibtex:title>The Programming of Computer Art</bibtex:title>
+        </bibtex:BOOKLET>
+    </bibtex:entry>
+
+    <bibtex:entry id="booklet-full">
+        <bibtex:BOOKLET>
+            <bibtex:title>The Programming of Computer Art</bibtex:title>
+            <bibtex:howpublished>Vernier Art Center</bibtex:howpublished>
+            <bibtex:address>Stanford, California</bibtex:address>
+            <bibtex:month>February</bibtex:month>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:note>This is a full BOOKLET entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Jill</bibtex:first>
+                    <bibtex:middle>C.</bibtex:middle>
+                    <bibtex:last>Knvth</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:BOOKLET>
+    </bibtex:entry>
+
+    <bibtex:entry id="incollection-minimal">
+        <bibtex:INCOLLECTION>
+            <bibtex:title>Semigroups of Recurrences</bibtex:title>
+            <bibtex:booktitle>High Speed Computer and Algorithm Organization</bibtex:booktitle>
+            <bibtex:publisher>Academic Press</bibtex:publisher>
+            <bibtex:year>1977</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Daniel</bibtex:first>
+                    <bibtex:middle>D.</bibtex:middle>
+                    <bibtex:last>Lincoll</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:INCOLLECTION>
+    </bibtex:entry>
+
+    <bibtex:entry id="incollection-full">
+        <bibtex:INCOLLECTION>
+            <bibtex:title>Semigroups of Recurrences</bibtex:title>
+            <bibtex:booktitle>High Speed Computer and Algorithm Organization</bibtex:booktitle>
+            <bibtex:number>23</bibtex:number>
+            <bibtex:series>Fast Computers</bibtex:series>
+            <bibtex:chapter>3</bibtex:chapter>
+            <bibtex:type>Part</bibtex:type>
+            <bibtex:pages>179--183</bibtex:pages>
+            <bibtex:publisher>Academic Press</bibtex:publisher>
+            <bibtex:address>New York</bibtex:address>
+            <bibtex:edition>Third</bibtex:edition>
+            <bibtex:month>September</bibtex:month>
+            <bibtex:year>1977</bibtex:year>
+            <bibtex:note>This is a full INCOLLECTION entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Daniel</bibtex:first>
+                    <bibtex:middle>D.</bibtex:middle>
+                    <bibtex:last>Lincoll</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+            <bibtex:editor>
+                <bibtex:person>
+                    <bibtex:first>David</bibtex:first>
+                    <bibtex:middle>J.</bibtex:middle>
+                    <bibtex:last>Lipcoll</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>D.</bibtex:first>
+                    <bibtex:middle>H.</bibtex:middle>
+                    <bibtex:last>Lawrie</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>A.</bibtex:first>
+                    <bibtex:middle>H.</bibtex:middle>
+                    <bibtex:last>Sameh</bibtex:last>
+                </bibtex:person>
+            </bibtex:editor>
+        </bibtex:INCOLLECTION>
+    </bibtex:entry>
+
+    <bibtex:entry id="incollection-crossref">
+        <bibtex:INCOLLECTION>
+            <bibtex:crossref>whole-collection</bibtex:crossref>
+            <bibtex:title>Semigroups of Recurrences</bibtex:title>
+            <bibtex:pages>179--183</bibtex:pages>
+            <bibtex:note>This is a cross-referencing INCOLLECTION entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Daniel</bibtex:first>
+                    <bibtex:middle>D.</bibtex:middle>
+                    <bibtex:last>Lincoll</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:INCOLLECTION>
+    </bibtex:entry>
+
+    <bibtex:entry id="whole-collection">
+        <bibtex:BOOK>
+            <bibtex:title>High Speed Computer and Algorithm Organization</bibtex:title>
+            <bibtex:booktitle>High Speed Computer and Algorithm Organization</bibtex:booktitle>
+            <bibtex:number>23</bibtex:number>
+            <bibtex:series>Fast Computers</bibtex:series>
+            <bibtex:publisher>Academic Press</bibtex:publisher>
+            <bibtex:address>New York</bibtex:address>
+            <bibtex:edition>Third</bibtex:edition>
+            <bibtex:month>September</bibtex:month>
+            <bibtex:year>1977</bibtex:year>
+            <bibtex:note>This is a cross-referenced BOOK (collection) entry</bibtex:note>
+            <bibtex:editor>
+                <bibtex:person>
+                    <bibtex:first>David</bibtex:first>
+                    <bibtex:middle>J.</bibtex:middle>
+                    <bibtex:last>Lipcoll</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>D.</bibtex:first>
+                    <bibtex:middle>H.</bibtex:middle>
+                    <bibtex:last>Lawrie</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>A.</bibtex:first>
+                    <bibtex:middle>H.</bibtex:middle>
+                    <bibtex:last>Sameh</bibtex:last>
+                </bibtex:person>
+            </bibtex:editor>
+        </bibtex:BOOK>
+    </bibtex:entry>
+
+    <bibtex:entry id="manual-minimal">
+        <bibtex:MANUAL>
+            <bibtex:key>Manmaker</bibtex:key>
+            <bibtex:title>The Definitive Computer Manual</bibtex:title>
+        </bibtex:MANUAL>
+    </bibtex:entry>
+
+    <bibtex:entry id="manual-full">
+        <bibtex:MANUAL>
+            <bibtex:title>The Definitive Computer Manual</bibtex:title>
+            <bibtex:organization>Chips-R-Us</bibtex:organization>
+            <bibtex:address>Silicon Valley</bibtex:address>
+            <bibtex:edition>Silver</bibtex:edition>
+            <bibtex:month>April-May</bibtex:month>
+            <bibtex:year>1986</bibtex:year>
+            <bibtex:note>This is a full MANUAL entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Larry</bibtex:first>
+                    <bibtex:last>Manmaker</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:MANUAL>
+    </bibtex:entry>
+
+    <bibtex:entry id="mastersthesis-minimal">
+        <bibtex:MASTERSTHESIS>
+            <bibtex:title>Mastering Thesis Writing</bibtex:title>
+            <bibtex:school>Stanford University</bibtex:school>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>{\'{E}}douard</bibtex:first>
+                    <bibtex:last>Masterly</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:MASTERSTHESIS>
+    </bibtex:entry>
+
+    <bibtex:entry id="mastersthesis-full">
+        <bibtex:MASTERSTHESIS>
+            <bibtex:title>Mastering Thesis Writing</bibtex:title>
+            <bibtex:school>Stanford University</bibtex:school>
+            <bibtex:type>Master's project</bibtex:type>
+            <bibtex:address>English Department</bibtex:address>
+            <bibtex:month>June-August</bibtex:month>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:note>This is a full MASTERSTHESIS entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>{\'{E}}douard</bibtex:first>
+                    <bibtex:last>Masterly</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:MASTERSTHESIS>
+    </bibtex:entry>
+
+    <bibtex:entry id="misc-minimal">
+        <bibtex:MISC>
+            <bibtex:key>Missilany</bibtex:key>
+            <bibtex:note>This is a minimal MISC entry</bibtex:note>
+        </bibtex:MISC>
+    </bibtex:entry>
+
+    <bibtex:entry id="misc-full">
+        <bibtex:MISC>
+            <bibtex:title>Handing out random pamphlets in airports</bibtex:title>
+            <bibtex:howpublished>Handed out at O'Hare</bibtex:howpublished>
+            <bibtex:month>October</bibtex:month>
+            <bibtex:year>1984</bibtex:year>
+            <bibtex:note>This is a full MISC entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Joe-Bob</bibtex:first>
+                    <bibtex:last>Missilany</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:MISC>
+    </bibtex:entry>
+
+    <bibtex:entry id="inproceedings-minimal">
+        <bibtex:INPROCEEDINGS>
+            <bibtex:title>On Notions of Information Transfer in {VLSI} Circuits</bibtex:title>
+            <bibtex:booktitle>Proc. Fifteenth Annual ACM Symposium on the Theory of Computing</bibtex:booktitle>
+            <bibtex:year>1983</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Alfred</bibtex:first>
+                    <bibtex:middle>V.</bibtex:middle>
+                    <bibtex:last>Oaho</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Jeffrey</bibtex:first>
+                    <bibtex:middle>D.</bibtex:middle>
+                    <bibtex:last>Ullman</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Mihalis</bibtex:first>
+                    <bibtex:last>Yannakakis</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:INPROCEEDINGS>
+    </bibtex:entry>
+
+    <bibtex:entry id="inproceedings-full">
+        <bibtex:INPROCEEDINGS>
+            <bibtex:title>On Notions of Information Transfer in {VLSI} Circuits</bibtex:title>
+            <bibtex:booktitle>Proc. Fifteenth Annual ACM Symposium on the Theory of Computing</bibtex:booktitle>
+            <bibtex:number>17</bibtex:number>
+            <bibtex:series>All ACM Conferences</bibtex:series>
+            <bibtex:pages>133--139</bibtex:pages>
+            <bibtex:month>March</bibtex:month>
+            <bibtex:year>1983</bibtex:year>
+            <bibtex:address>Boston</bibtex:address>
+            <bibtex:organization>The OX Association for Computing Machinery</bibtex:organization>
+            <bibtex:publisher>Academic Press</bibtex:publisher>
+            <bibtex:note>This is a full INPROCEDINGS entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Alfred</bibtex:first>
+                    <bibtex:middle>V.</bibtex:middle>
+                    <bibtex:last>Oaho</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Jeffrey</bibtex:first>
+                    <bibtex:middle>D.</bibtex:middle>
+                    <bibtex:last>Ullman</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Mihalis</bibtex:first>
+                    <bibtex:last>Yannakakis</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+            <bibtex:editor>
+                <bibtex:person>
+                    <bibtex:first>Wizard</bibtex:first>
+                    <bibtex:middle>V.</bibtex:middle>
+                    <bibtex:last>Oz</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Mihalis</bibtex:first>
+                    <bibtex:last>Yannakakis</bibtex:last>
+                </bibtex:person>
+            </bibtex:editor>
+        </bibtex:INPROCEEDINGS>
+    </bibtex:entry>
+
+    <bibtex:entry id="inproceedings-crossref">
+        <bibtex:INPROCEEDINGS>
+            <bibtex:crossref>whole-proceedings</bibtex:crossref>
+            <bibtex:title>On Notions of Information Transfer in {VLSI} Circuits</bibtex:title>
+            <bibtex:organization></bibtex:organization>
+            <bibtex:pages>133--139</bibtex:pages>
+            <bibtex:note>This is a cross-referencing INPROCEEDINGS entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Alfred</bibtex:first>
+                    <bibtex:middle>V.</bibtex:middle>
+                    <bibtex:last>Oaho</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Jeffrey</bibtex:first>
+                    <bibtex:middle>D.</bibtex:middle>
+                    <bibtex:last>Ullman</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Mihalis</bibtex:first>
+                    <bibtex:last>Yannakakis</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:INPROCEEDINGS>
+    </bibtex:entry>
+
+    <bibtex:entry id="proceedings-minimal">
+        <bibtex:PROCEEDINGS>
+            <bibtex:key>OX{\singleletter{stoc}}</bibtex:key>
+            <bibtex:title>Proc. Fifteenth Annual Symposium on the Theory of Computing</bibtex:title>
+            <bibtex:year>1983</bibtex:year>
+        </bibtex:PROCEEDINGS>
+    </bibtex:entry>
+
+    <bibtex:entry id="proceedings-full">
+        <bibtex:PROCEEDINGS>
+            <bibtex:title>Proc. Fifteenth Annual Symposium on the Theory of Computing</bibtex:title>
+            <bibtex:number>17</bibtex:number>
+            <bibtex:series>All ACM Conferences</bibtex:series>
+            <bibtex:month>March</bibtex:month>
+            <bibtex:year>1983</bibtex:year>
+            <bibtex:address>Boston</bibtex:address>
+            <bibtex:organization>The OX Association for Computing Machinery</bibtex:organization>
+            <bibtex:publisher>Academic Press</bibtex:publisher>
+            <bibtex:note>This is a full PROCEEDINGS entry</bibtex:note>
+            <bibtex:editor>
+                <bibtex:person>
+                    <bibtex:first>Wizard</bibtex:first>
+                    <bibtex:middle>V.</bibtex:middle>
+                    <bibtex:last>Oz</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Mihalis</bibtex:first>
+                    <bibtex:last>Yannakakis</bibtex:last>
+                </bibtex:person>
+            </bibtex:editor>
+        </bibtex:PROCEEDINGS>
+    </bibtex:entry>
+
+    <bibtex:entry id="whole-proceedings">
+        <bibtex:PROCEEDINGS>
+            <bibtex:key>OX{\singleletter{stoc}}</bibtex:key>
+            <bibtex:organization>The OX Association for Computing Machinery</bibtex:organization>
+            <bibtex:title>Proc. Fifteenth Annual Symposium on the Theory of Computing</bibtex:title>
+            <bibtex:address>Boston</bibtex:address>
+            <bibtex:year>1983</bibtex:year>
+            <bibtex:booktitle>Proc. Fifteenth Annual ACM Symposium on the Theory of Computing</bibtex:booktitle>
+            <bibtex:note>This is a cross-referenced PROCEEDINGS</bibtex:note>
+        </bibtex:PROCEEDINGS>
+    </bibtex:entry>
+
+    <bibtex:entry id="phdthesis-minimal">
+        <bibtex:PHDTHESIS>
+            <bibtex:title>Fighting Fire with Fire: Festooning {F}rench Phrases</bibtex:title>
+            <bibtex:school>Fanstord University</bibtex:school>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>F.</bibtex:first>
+                    <bibtex:middle>Phidias</bibtex:middle>
+                    <bibtex:last>Phony-Baloney</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:PHDTHESIS>
+    </bibtex:entry>
+
+    <bibtex:entry id="phdthesis-full">
+        <bibtex:PHDTHESIS>
+            <bibtex:title>Fighting Fire with Fire: Festooning {F}rench Phrases</bibtex:title>
+            <bibtex:school>Fanstord University</bibtex:school>
+            <bibtex:type>{PhD} Dissertation</bibtex:type>
+            <bibtex:address>Department of French</bibtex:address>
+            <bibtex:month>June-August</bibtex:month>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:note>This is a full PHDTHESIS entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>F.</bibtex:first>
+                    <bibtex:middle>Phidias</bibtex:middle>
+                    <bibtex:last>Phony-Baloney</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:PHDTHESIS>
+    </bibtex:entry>
+
+    <bibtex:entry id="techreport-minimal">
+        <bibtex:TECHREPORT>
+            <bibtex:title>An {$O(n \log n / \! \log\log n)$} Sorting Algorithm</bibtex:title>
+            <bibtex:institution>Fanstord University</bibtex:institution>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Tom</bibtex:first>
+                    <bibtex:last>Terrific</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:TECHREPORT>
+    </bibtex:entry>
+
+    <bibtex:entry id="techreport-full">
+        <bibtex:TECHREPORT>
+            <bibtex:title>An {$O(n \log n / \! \log\log n)$} Sorting Algorithm</bibtex:title>
+            <bibtex:institution>Fanstord University</bibtex:institution>
+            <bibtex:type>Wishful Research Result</bibtex:type>
+            <bibtex:number>7</bibtex:number>
+            <bibtex:address>Computer Science Department, Fanstord, California</bibtex:address>
+            <bibtex:month>October</bibtex:month>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:note>This is a full TECHREPORT entry</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Tom</bibtex:first>
+                    <bibtex:last>T{\'{e}}rrific</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:TECHREPORT>
+    </bibtex:entry>
+
+    <bibtex:entry id="unpublished-minimal">
+        <bibtex:UNPUBLISHED>
+            <bibtex:title>Lower Bounds for Wishful Research Results</bibtex:title>
+            <bibtex:note>Talk at Fanstord University (this is a minimal UNPUBLISHED entry)</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Ulrich</bibtex:first>
+                    <bibtex:last>{\"{U}}nderwood</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Ned</bibtex:first>
+                    <bibtex:last>{\~N}et</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Paul</bibtex:first>
+                    <bibtex:last>{\={P}}ot</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:UNPUBLISHED>
+    </bibtex:entry>
+
+    <bibtex:entry id="unpublished-full">
+        <bibtex:UNPUBLISHED>
+            <bibtex:title>Lower Bounds for Wishful Research Results</bibtex:title>
+            <bibtex:month>November, December</bibtex:month>
+            <bibtex:year>1988</bibtex:year>
+            <bibtex:note>Talk at Fanstord University (this is a full UNPUBLISHED entry)</bibtex:note>
+            <bibtex:author>
+                <bibtex:person>
+                    <bibtex:first>Ulrich</bibtex:first>
+                    <bibtex:last>{\"{U}}nderwood</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Ned</bibtex:first>
+                    <bibtex:last>{\~N}et</bibtex:last>
+                </bibtex:person>
+                <bibtex:person>
+                    <bibtex:first>Paul</bibtex:first>
+                    <bibtex:last>{\={P}}ot</bibtex:last>
+                </bibtex:person>
+            </bibtex:author>
+        </bibtex:UNPUBLISHED>
+    </bibtex:entry>
+
+    <bibtex:entry id="random-note-crossref">
+        <bibtex:MISC>
+            <bibtex:key>Volume-2</bibtex:key>
+            <bibtex:note>Volume~2 is listed under Knuth \cite{book-full}</bibtex:note>
+        </bibtex:MISC>
+    </bibtex:entry>
+
+</bibtex:file>

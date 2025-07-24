@@ -4,8 +4,6 @@
 *.orig
 *.egg-info
 /docs/man1/*.1
-/examples/xampl.bibtexml
-/examples/xampl.yaml
 /build
 /docs/build
 /dist
@@ -24,3 +22,4 @@ __pycache__
 /.idea
 /.pytest_cache
 /.mypy_cache
+/.direnv/
