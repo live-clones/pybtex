@@ -112,5 +112,5 @@ unsrtalpha = "pybtex.style.formatting.unsrtalpha:Style"
 dev = ["pytest>=7.0.1", "sphinx>=5.3.0"]
 
 [tool.pytest.ini_options]
-testpaths = ["pybtex", "tests"]
+testpaths = ["src", "tests"]
 addopts = ["--doctest-modules"]
