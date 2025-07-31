@@ -41,8 +41,8 @@ def print_warning(msg):
 
 
 class Builtin(object):
-    def __init__(self, f):
-        self.f = f
+    def __init__(self, function):
+        self.f = function
 
     def execute(self, interpreter):
         self.f(interpreter)
@@ -55,143 +55,143 @@ builtins = {}
 
 
 def builtin(name):
-    def _builtin(f):
-        b = Builtin(f)
-        update_wrapper(b, f)
-        builtins[name] = b
-        return b
+    def _builtin(function):
+        builtin_obj = Builtin(function)
+        update_wrapper(builtin_obj, function)
+        builtins[name] = builtin_obj
+        return builtin_obj
 
     return _builtin
 
 
 @builtin(">")
-def operator_more(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
+def operator_more(interpreter):
+    arg1 = interpreter.pop()
+    arg2 = interpreter.pop()
     if arg2 > arg1:
-        i.push(1)
+        interpreter.push(1)
     else:
-        i.push(0)
+        interpreter.push(0)
 
 
 @builtin("<")
-def operator_less(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
+def operator_less(interpreter):
+    arg1 = interpreter.pop()
+    arg2 = interpreter.pop()
     if arg2 < arg1:
-        i.push(1)
+        interpreter.push(1)
     else:
-        i.push(0)
+        interpreter.push(0)
 
 
 @builtin("=")
-def operator_equals(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
+def operator_equals(interpreter):
+    arg1 = interpreter.pop()
+    arg2 = interpreter.pop()
     if arg2 == arg1:
-        i.push(1)
+        interpreter.push(1)
     else:
-        i.push(0)
+        interpreter.push(0)
 
 
 @builtin("*")
-def operator_asterisk(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    i.push(arg2 + arg1)
+def operator_asterisk(interpreter):
+    arg1 = interpreter.pop()
+    arg2 = interpreter.pop()
+    interpreter.push(arg2 + arg1)
 
 
 @builtin(":=")
-def operator_assign(i):
-    var = i.pop()
-    value = i.pop()
+def operator_assign(interpreter):
+    var = interpreter.pop()
+    value = interpreter.pop()
     var.set(value)
 
 
 @builtin("+")
-def operator_plus(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    i.push(arg2 + arg1)
+def operator_plus(interpreter):
+    arg1 = interpreter.pop()
+    arg2 = interpreter.pop()
+    interpreter.push(arg2 + arg1)
 
 
 @builtin("-")
-def operator_minus(i):
-    arg1 = i.pop()
-    arg2 = i.pop()
-    i.push(arg2 - arg1)
+def operator_minus(interpreter):
+    arg1 = interpreter.pop()
+    arg2 = interpreter.pop()
+    interpreter.push(arg2 - arg1)
 
 
 @builtin("add.period$")
-def add_period(i):
-    s = i.pop()
-    if s and not s.rstrip("}")[-1] in ".?!":
-        s += "."
-    i.push(s)
+def add_period(interpreter):
+    string = interpreter.pop()
+    if string and string.rstrip("}")[-1] not in ".?!":
+        string += "."
+    interpreter.push(string)
 
 
 @builtin("call.type$")
-def call_type(i):
-    entry_type = i.current_entry.type
+def call_type(interpreter):
+    entry_type = interpreter.current_entry.type
     try:
-        func = i.vars[entry_type]
+        func = interpreter.vars[entry_type]
     except KeyError:
         print_warning(
             'entry type for "{0}" isn\'t style-file defined'.format(
-                i.current_entry_key,
+                interpreter.current_entry_key,
             )
         )
         try:
-            func = i.vars["default.type"]
+            func = interpreter.vars["default.type"]
         except KeyError:
             return
-    func.execute(i)
+    func.execute(interpreter)
 
 
 @builtin("change.case$")
-def change_case(i):
-    mode = i.pop()
-    string = i.pop()
+def change_case(interpreter):
+    mode = interpreter.pop()
+    string = interpreter.pop()
 
     if not mode:
         raise BibTeXError("empty mode string passed to change.case$")
     mode_letter = mode[0].lower()
-    if not mode_letter in ("l", "u", "t"):
+    if mode_letter not in ("l", "u", "t"):
         raise BibTeXError("incorrect change.case$ mode: %s" % mode)
 
-    i.push(utils.change_case(string, mode_letter))
+    interpreter.push(utils.change_case(string, mode_letter))
 
 
 @builtin("chr.to.int$")
-def chr_to_int(i):
-    s = i.pop()
+def chr_to_int(interpreter):
+    string = interpreter.pop()
     try:
-        value = ord(s)
+        value = ord(string)
     except TypeError:
-        raise BibTeXError("%s passed to chr.to.int$", s)
-    i.push(value)
+        raise BibTeXError("%s passed to chr.to.int$", string)
+    interpreter.push(value)
 
 
 @builtin("cite$")
-def cite(i):
-    i.push(i.current_entry_key)
+def cite(interpreter):
+    interpreter.push(interpreter.current_entry_key)
 
 
 @builtin("duplicate$")
-def duplicate(i):
-    tmp = i.pop()
-    i.push(tmp)
-    i.push(tmp)
+def duplicate(interpreter):
+    value = interpreter.pop()
+    interpreter.push(value)
+    interpreter.push(value)
 
 
 @builtin("empty$")
-def empty(i):
+def empty(interpreter):
     # FIXME error checking
-    s = i.pop()
-    if s and not s.isspace():
-        i.push(0)
+    string = interpreter.pop()
+    if string and not string.isspace():
+        interpreter.push(0)
     else:
-        i.push(1)
+        interpreter.push(1)
 
 
 @memoize
@@ -200,160 +200,160 @@ def _split_names(names):
 
 
 @memoize
-def _format_name(names, n, format):
-    name = _split_names(names)[n - 1]
+def _format_name(names, name_index, format):
+    name = _split_names(names)[name_index - 1]
     return format_bibtex_name(name, format)
 
 
 @builtin("format.name$")
-def format_name(i):
-    format = i.pop()
-    n = i.pop()
-    names = i.pop()
-    i.push(_format_name(names, n, format))
+def format_name(interpreter):
+    format = interpreter.pop()
+    name_index = interpreter.pop()
+    names = interpreter.pop()
+    interpreter.push(_format_name(names, name_index, format))
 
 
 @builtin("if$")
-def if_(i):
-    f1 = i.pop()
-    f2 = i.pop()
-    p = i.pop()
-    if p > 0:
-        f2.execute(i)
+def if_(interpreter):
+    else_function = interpreter.pop()
+    then_function = interpreter.pop()
+    condition = interpreter.pop()
+    if condition > 0:
+        then_function.execute(interpreter)
     else:
-        f1.execute(i)
+        else_function.execute(interpreter)
 
 
 @builtin("int.to.chr$")
-def int_to_chr(i):
-    n = i.pop()
+def int_to_chr(interpreter):
+    number = interpreter.pop()
     try:
-        char = chr(n)
+        char = chr(number)
     except ValueError:
-        raise BibTeXError("%i passed to int.to.chr$", n)
-    i.push(char)
+        raise BibTeXError("%i passed to int.to.chr$", number)
+    interpreter.push(char)
 
 
 @builtin("int.to.str$")
-def int_to_str(i):
-    i.push(str(i.pop()))
+def int_to_str(interpreter):
+    interpreter.push(str(interpreter.pop()))
 
 
 @builtin("missing$")
-def missing(i):
-    f = i.pop()
-    if i.is_missing_field(f):
-        i.push(1)
+def missing(interpreter):
+    field = interpreter.pop()
+    if interpreter.is_missing_field(field):
+        interpreter.push(1)
     else:
-        i.push(0)
+        interpreter.push(0)
 
 
 @builtin("newline$")
-def newline(i):
-    i.newline()
+def newline(interpreter):
+    interpreter.newline()
 
 
 @builtin("num.names$")
-def num_names(i):
-    names = i.pop()
-    i.push(len(utils.split_name_list(names)))
+def num_names(interpreter):
+    names = interpreter.pop()
+    interpreter.push(len(utils.split_name_list(names)))
 
 
 @builtin("pop$")
-def pop(i):
-    i.pop()
+def pop(interpreter):
+    interpreter.pop()
 
 
 @builtin("preamble$")
-def preamble(i):
-    i.push(i.bib_data.preamble)
+def preamble(interpreter):
+    interpreter.push(interpreter.bib_data.preamble)
 
 
 @builtin("purify$")
-def purify(i):
-    s = i.pop()
-    i.push(utils.bibtex_purify(s))
+def purify(interpreter):
+    string = interpreter.pop()
+    interpreter.push(utils.bibtex_purify(string))
 
 
 @builtin("quote$")
-def quote(i):
-    i.push('"')
+def quote(interpreter):
+    interpreter.push('"')
 
 
 @builtin("skip$")
-def skip(i):
+def skip(interpreter):
     pass
 
 
 @builtin("substring$")
-def substring(i):
-    length = i.pop()
-    start = i.pop()
-    string = i.pop()
-    i.push(utils.bibtex_substring(string, start, length))
+def substring(interpreter):
+    length = interpreter.pop()
+    start = interpreter.pop()
+    string = interpreter.pop()
+    interpreter.push(utils.bibtex_substring(string, start, length))
 
 
 @builtin("stack$")
-def stack(i):
-    while i.stack:
-        print(i.pop(), file=pybtex.io.stdout)
+def stack(interpreter):
+    while interpreter.stack:
+        print(interpreter.pop(), file=pybtex.io.stdout)
 
 
 @builtin("swap$")
-def swap(i):
-    tmp1 = i.pop()
-    tmp2 = i.pop()
-    i.push(tmp1)
-    i.push(tmp2)
+def swap(interpreter):
+    tmp1 = interpreter.pop()
+    tmp2 = interpreter.pop()
+    interpreter.push(tmp1)
+    interpreter.push(tmp2)
 
 
 @builtin("text.length$")
-def text_length(i):
-    s = i.pop()
-    i.push(utils.bibtex_len(s))
+def text_length(interpreter):
+    string = interpreter.pop()
+    interpreter.push(utils.bibtex_len(string))
 
 
 @builtin("text.prefix$")
-def text_prefix(i):
-    l = i.pop()
-    s = i.pop()
-    i.push(utils.bibtex_prefix(s, l))
+def text_prefix(interpreter):
+    length = interpreter.pop()
+    string = interpreter.pop()
+    interpreter.push(utils.bibtex_prefix(string, length))
 
 
 @builtin("top$")
-def top(i):
-    print(i.pop(), file=pybtex.io.stdout)
+def top(interpreter):
+    print(interpreter.pop(), file=pybtex.io.stdout)
 
 
 @builtin("type$")
-def type_(i):
-    i.push(i.current_entry.type)
+def type_(interpreter):
+    interpreter.push(interpreter.current_entry.type)
 
 
 @builtin("warning$")
-def warning(i):
-    msg = i.pop()
+def warning(interpreter):
+    msg = interpreter.pop()
     print_warning(msg)
 
 
 @builtin("while$")
-def while_(i):
-    f = i.pop()
-    p = i.pop()
+def while_(interpreter):
+    body_function = interpreter.pop()
+    condition_function = interpreter.pop()
     while True:
-        p.execute(i)
-        if i.pop() <= 0:
+        condition_function.execute(interpreter)
+        if interpreter.pop() <= 0:
             break
-        f.execute(i)
+        body_function.execute(interpreter)
 
 
 @builtin("width$")
-def width(i):
-    s = i.pop()
-    i.push(utils.bibtex_width(s))
+def width(interpreter):
+    string = interpreter.pop()
+    interpreter.push(utils.bibtex_width(string))
 
 
 @builtin("write$")
-def write(i):
-    s = i.pop()
-    i.output(s)
+def write(interpreter):
+    string = interpreter.pop()
+    interpreter.output(string)

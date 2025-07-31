@@ -160,7 +160,7 @@ class TestText(TextTestMixin, TestCase):
     def test__contains__(self):
         text = Text("mary ", "had ", "a little lamb")
         assert "mary" in text
-        assert not "Mary" in text
+        assert "Mary" not in text
         assert "had a little" in text
 
         text = Text("a", "b", "c")
@@ -322,8 +322,8 @@ class TestText(TextTestMixin, TestCase):
         assert Text("---").split("-") == [Text(), Text(), Text(), Text()]
 
     def test_add_period(self):
-        assert Text().endswith((".", "!", "?")) == False
-        assert textutils.is_terminated(Text()) == False
+        assert not Text().endswith((".", "!", "?"))
+        assert not textutils.is_terminated(Text())
 
         assert str(Text().add_period()) == ""
 
@@ -512,7 +512,7 @@ class TestTag(TextTestMixin, TestCase):
         assert "had a little" in tag
 
         text = Text("This ", Tag("em", "is"), " good")
-        assert not "This is" in text
+        assert "This is" not in text
 
     def test__getitem__(self):
         t = Tag("em", "1234567890")
@@ -790,12 +790,12 @@ class TestHRef(TextTestMixin, TestCase):
 
     def test__contains__(self):
         tag = HRef("info.html", Text(), Text("Mary ", "had ", "a little lamb"))
-        assert not "mary" in tag
+        assert "mary" not in tag
         assert "Mary" in tag
         assert "had a little" in tag
 
         text = Text("This ", HRef("/", "is"), " good")
-        assert not "This is" in text
+        assert "This is" not in text
 
     def test__getitem__(self):
         t = HRef("/", "1234567890")
@@ -1345,8 +1345,8 @@ class TestSymbol(TextTestMixin, TestCase):
         assert len(nbsp) == 1
 
     def test__contains__(self):
-        assert not "" in nbsp
-        assert not "abc" in nbsp
+        assert "" not in nbsp
+        assert "abc" not in nbsp
 
     def test__getitem__(self):
         symbol = Symbol("nbsp")

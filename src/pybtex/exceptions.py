@@ -21,8 +21,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import sys
-
 
 class PybtexError(Exception):
     def __init__(self, message, filename=None):

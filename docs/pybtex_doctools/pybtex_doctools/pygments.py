@@ -23,7 +23,7 @@
 from __future__ import absolute_import
 
 import re
-from string import ascii_letters, digits
+from string import digits
 
 from pybtex.database.input.bibtex import NAME_CHARS
 

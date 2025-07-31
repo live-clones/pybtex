@@ -648,20 +648,20 @@ class BaseMultipartText(BaseText):
     @deprecated("0.19", "use slicing instead")
     def get_beginning(self):
         try:
-            l, i = next(self.enumerate())
+            text, index = next(self.enumerate())
         except StopIteration:
             pass
         else:
-            return l.parts[i]
+            return text.parts[index]
 
     @deprecated("0.19", "use slicing instead")
     def get_end(self):
         try:
-            l, i = next(self.reversed())
+            text, index = next(self.reversed())
         except StopIteration:
             pass
         else:
-            return l.parts[i]
+            return text.parts[index]
 
     @deprecated("0.19", "use slicing instead")
     def apply_to_start(self, f):
@@ -674,7 +674,9 @@ class BaseMultipartText(BaseText):
     @deprecated("0.19")
     def map(self, f, condition=None):
         if condition is None:
-            condition = lambda index, length: True
+
+            def condition(index, length):
+                return True
 
         def iter_map_with_condition():
             length = len(self)
@@ -724,7 +726,7 @@ class String(BaseText):
 
 
         """
-        return type(other) == type(self) and self.value == other.value
+        return type(other) is type(self) and self.value == other.value
 
     def __len__(self):
         return self.value.__len__()

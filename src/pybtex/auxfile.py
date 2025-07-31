@@ -41,7 +41,7 @@ class AuxDataError(PybtexError):
             return self.context.line + "\n" + marker
 
     def __str__(self):
-        base_message = py3compat.__str__(super(AuxDataError, self))
+        base_message = super().__str__()
         lineno = self.context.lineno
         location = "in line {0}: ".format(lineno) if lineno else ""
         return location + base_message
