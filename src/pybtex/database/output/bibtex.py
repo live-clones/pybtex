@@ -55,7 +55,7 @@ class Writer(BaseWriter):
         if '"' not in s:
             return '"%s"' % s
         else:
-            return '{%s}' % s
+            return "{%s}" % s
 
     def check_braces(self, s):
         """
@@ -85,7 +85,7 @@ class Writer(BaseWriter):
         if tokens:
             end_brace_level = tokens[-1][1]
             if end_brace_level != 0:
-                raise BibTeXError('String has unmatched braces: %s' % s)
+                raise BibTeXError("String has unmatched braces: %s" % s)
 
     def _encode(self, text):
         r"""Encode text as LaTeX.
@@ -104,7 +104,7 @@ class Writer(BaseWriter):
         """
         import latexcodec  # NOQA
 
-        return codecs.encode(text, 'ulatex+{}'.format(self.encoding))
+        return codecs.encode(text, "ulatex+{}".format(self.encoding))
 
     def _encode_with_comments(self, text):
         r"""Encode text as LaTeX, preserve comments.
@@ -117,54 +117,58 @@ class Writer(BaseWriter):
         >>> print(w._encode_with_comments(u'1970–1971.  %% † RIP †'))
         1970–1971.  %% † RIP †
         """
-        return u'%'.join(self._encode(part) for part in text.split(u'%'))
+        return "%".join(self._encode(part) for part in text.split("%"))
 
     def _write_field(self, stream, type, value):
-        stream.write(u',\n    %s = %s' % (type, self.quote(self._encode(value))))
+        stream.write(",\n    %s = %s" % (type, self.quote(self._encode(value))))
 
     def _format_name(self, stream, person):
         def join(l):
-            return ' '.join([name for name in l if name])
-        first = person.get_part_as_text('first')
-        middle = person.get_part_as_text('middle')
-        prelast = person.get_part_as_text('prelast')
-        last = person.get_part_as_text('last')
-        lineage = person.get_part_as_text('lineage')
-        s = ''
+            return " ".join([name for name in l if name])
+
+        first = person.get_part_as_text("first")
+        middle = person.get_part_as_text("middle")
+        prelast = person.get_part_as_text("prelast")
+        last = person.get_part_as_text("last")
+        lineage = person.get_part_as_text("lineage")
+        s = ""
         if last:
             s += join([prelast, last])
         if lineage:
-            s += ', %s' % lineage
+            s += ", %s" % lineage
         if first or middle:
-            s += ', '
+            s += ", "
             s += join([first, middle])
         return s
 
     def _write_persons(self, stream, persons, role):
         # persons = getattr(entry, role + 's')
         if persons:
-            names = u' and '.join(self._format_name(stream, person) for person in persons)
+            names = " and ".join(
+                self._format_name(stream, person) for person in persons
+            )
             self._write_field(stream, role, names)
 
     def _write_preamble(self, stream, preamble):
         if preamble:
-            stream.write(u'@preamble{%s}\n\n' % self.quote(self._encode_with_comments(preamble)))
+            stream.write(
+                "@preamble{%s}\n\n" % self.quote(self._encode_with_comments(preamble))
+            )
 
     def write_stream(self, bib_data, stream):
-
         self._write_preamble(stream, bib_data.preamble)
 
         first = True
         for key, entry in bib_data.entries.items():
             if not first:
-                stream.write(u'\n')
+                stream.write("\n")
             first = False
 
-            stream.write(u'@%s' % entry.original_type)
-            stream.write(u'{%s' % key)
-#            for role in ('author', 'editor'):
+            stream.write("@%s" % entry.original_type)
+            stream.write("{%s" % key)
+            #            for role in ('author', 'editor'):
             for role, persons in entry.persons.items():
                 self._write_persons(stream, persons, role)
             for type, value in entry.fields.items():
                 self._write_field(stream, type, value)
-            stream.write(u'\n}\n')
+            stream.write("\n}\n")

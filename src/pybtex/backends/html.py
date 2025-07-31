@@ -36,6 +36,7 @@ HTML output backend.
 >>> print(HRef('/', 'Hard & heavy').render(html))
 <a href="/">Hard &amp; heavy</a>
 """
+
 from __future__ import unicode_literals
 
 from xml.sax.saxutils import escape
@@ -44,7 +45,7 @@ import pybtex.io
 from pybtex.backends import BaseBackend
 
 
-PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+PROLOGUE = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head><meta name="generator" content="Pybtex">
 <meta http-equiv="Content-Type" content="text/html; charset=%s">
@@ -54,20 +55,17 @@ PROLOGUE = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <dl>
 """
 
+
 class Backend(BaseBackend):
-    u"""
+    """
     >>> from pybtex.richtext import Text, Tag, Symbol
     >>> print(Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend()))
     <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
 
     """
 
-    default_suffix = '.html'
-    symbols = {
-        'ndash': u'&ndash;',
-        'newblock': u'\n',
-        'nbsp': u'&nbsp;'
-    }
+    default_suffix = ".html"
+    symbols = {"ndash": "&ndash;", "newblock": "\n", "nbsp": "&nbsp;"}
 
     def format_str(self, text):
         return escape(text)
@@ -76,20 +74,20 @@ class Backend(BaseBackend):
         return r'<span class="bibtex-protected">{}</span>'.format(text)
 
     def format_tag(self, tag, text):
-        return r'<{0}>{1}</{0}>'.format(tag, text) if text else u''
+        return r"<{0}>{1}</{0}>".format(tag, text) if text else ""
 
     @staticmethod
     def format_href(url, text, external=False):
-        target = ' target="_blank"' if external else ''
-        return r'<a href="{0}"{1}>{2}</a>'.format(url, target, text) if text else u''
+        target = ' target="_blank"' if external else ""
+        return r'<a href="{0}"{1}>{2}</a>'.format(url, target, text) if text else ""
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()
         self.output(PROLOGUE % encoding)
 
     def write_epilogue(self):
-        self.output(u'</dl></body></html>\n')
+        self.output("</dl></body></html>\n")
 
     def write_entry(self, key, label, text):
-        self.output(u'<dt>%s</dt>\n' % label)
-        self.output(u'<dd>%s</dd>\n' % text)
+        self.output("<dt>%s</dt>\n" % label)
+        self.output("<dd>%s</dd>\n" % text)

@@ -26,11 +26,11 @@ import re
 from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.utils import pairwise
 
-whitespace_re = re.compile(r'(\s)')
-purify_special_char_re = re.compile(r'^\\[A-Za-z]+')
+whitespace_re = re.compile(r"(\s)")
+purify_special_char_re = re.compile(r"^\\[A-Za-z]+")
 
 
-def wrap(string, width=79, subsequent_indent='  '):
+def wrap(string, width=79, subsequent_indent="  "):
     r"""
     Wrap long string into multiple lines by inserting line breaks.
 
@@ -76,7 +76,9 @@ def wrap(string, width=79, subsequent_indent='  '):
 
     def find_break(string):
         for prev_match, match in pairwise(whitespace_re.finditer(string)):
-            if (match is None or match.start() > width) and prev_match.start() > min_width:
+            if (
+                match is None or match.start() > width
+            ) and prev_match.start() > min_width:
                 return prev_match.start()
 
     def iter_lines(string):
@@ -86,17 +88,17 @@ def wrap(string, width=79, subsequent_indent='  '):
                 yield string
                 return
             yield string[:break_pos]
-            string = subsequent_indent + string[break_pos + 1:]
+            string = subsequent_indent + string[break_pos + 1 :]
         if string:
             yield string
 
-    return '\n'.join(line.rstrip() for line in iter_lines(string))
+    return "\n".join(line.rstrip() for line in iter_lines(string))
 
 
 class BibTeXString(object):
     def __init__(self, chars, level=0, max_level=100):
         if level > max_level:
-            raise BibTeXError('too many nested braces')
+            raise BibTeXError("too many nested braces")
 
         self.level = level
         self.is_closed = False
@@ -107,23 +109,23 @@ class BibTeXString(object):
 
     def find_closing_brace(self, chars):
         for char in chars:
-            if char == '{':
+            if char == "{":
                 yield BibTeXString(chars, self.level + 1)
-            elif char == '}' and self.level > 0:
+            elif char == "}" and self.level > 0:
                 self.is_closed = True
                 return
             else:
                 yield char
 
     def is_special_char(self):
-        return self.level == 1 and self.contents and self.contents[0] == '\\'
+        return self.level == 1 and self.contents and self.contents[0] == "\\"
 
     def traverse(self, open=None, f=lambda char, string: char, close=None):
         if open is not None and self.level > 0:
             yield open(self)
 
         for child in self.contents:
-            if hasattr(child, 'traverse'):
+            if hasattr(child, "traverse"):
                 if child.is_special_char():
                     if open is not None:
                         yield open(child)
@@ -140,10 +142,10 @@ class BibTeXString(object):
             yield close(self)
 
     def __str__(self):
-        return ''.join(self.traverse(open=lambda string: '{', close=lambda string: '}'))
+        return "".join(self.traverse(open=lambda string: "{", close=lambda string: "}"))
 
     def inner_string(self):
-        return ''.join(str(child) for child in self.contents)
+        return "".join(str(child) for child in self.contents)
 
 
 def change_case(string, mode):
@@ -171,7 +173,7 @@ def change_case(string, mode):
     """
 
     def title(char, state):
-        if state == 'start':
+        if state == "start":
             return char
         else:
             return char.lower()
@@ -179,37 +181,37 @@ def change_case(string, mode):
     lower = lambda char, state: char.lower()
     upper = lambda char, state: char.upper()
 
-    convert = {'l': lower, 'u': upper, 't': title}[mode]
+    convert = {"l": lower, "u": upper, "t": title}[mode]
 
     def convert_special_char(special_char, state):
         # FIXME BibTeX treats some accented and foreign characterss specially
         def convert_words(words):
             for word in words:
-                if word.startswith('\\'):
+                if word.startswith("\\"):
                     yield word
                 else:
                     yield convert(word, state)
 
-        return ' '.join(convert_words(special_char.split(' ')))
+        return " ".join(convert_words(special_char.split(" ")))
 
     def change_case_iter(string, mode):
-        state = 'start'
+        state = "start"
         for char, brace_level in scan_bibtex_string(string):
             if brace_level == 0:
                 yield convert(char, state)
-                if char == ':':
-                    state = 'after colon'
-                elif char.isspace() and state == 'after colon':
-                    state = 'start'
+                if char == ":":
+                    state = "after colon"
+                elif char.isspace() and state == "after colon":
+                    state = "start"
                 else:
-                    state = 'normal'
+                    state = "normal"
             else:
-                if brace_level == 1 and char.startswith('\\'):
+                if brace_level == 1 and char.startswith("\\"):
                     yield convert_special_char(char, state)
                 else:
                     yield char
 
-    return ''.join(change_case_iter(string, mode))
+    return "".join(change_case_iter(string, mode))
 
 
 def bibtex_substring(string, start, length):
@@ -243,8 +245,8 @@ def bibtex_substring(string, start, length):
     elif start < 0:
         end0 = len(string) + start + 1
         start0 = end0 - length
-    else: # start == 0:
-        return u''
+    else:  # start == 0:
+        return ""
     return string[start0:end0]
 
 
@@ -282,7 +284,7 @@ def bibtex_len(string):
     """
     length = 0
     for char, brace_level in scan_bibtex_string(string):
-        if char not in '{}':
+        if char not in "{}":
             length += 1
     return length
 
@@ -308,11 +310,12 @@ def bibtex_width(string):
     """
 
     from pybtex.charwidths import charwidths
+
     width = 0
     for token, brace_level in scan_bibtex_string(string):
-        if brace_level == 1 and token.startswith('\\'):
+        if brace_level == 1 and token.startswith("\\"):
             for char in token[2:]:
-                if char not in '{}':
+                if char not in "{}":
                     width += charwidths.get(char, 0)
             width -= 1000  # two braces
         else:
@@ -343,17 +346,19 @@ def bibtex_prefix(string, num_chars):
     ab{\cd}
 
     """
+
     def prefix():
         length = 0
         for char, brace_level in scan_bibtex_string(string):
             yield char
-            if char not in '{}':
+            if char not in "{}":
                 length += 1
             if length >= num_chars:
                 break
         for i in range(brace_level):
-            yield '}'
-    return ''.join(prefix())
+            yield "}"
+
+    return "".join(prefix())
 
 
 def bibtex_purify(string):
@@ -392,29 +397,29 @@ def bibtex_purify(string):
     # FIXME BibTeX treats some accented and foreign characterss specially
     def purify_iter(string):
         for token, brace_level in scan_bibtex_string(string):
-            if brace_level == 1 and token.startswith('\\'):
-                for char in purify_special_char_re.sub('', token):
+            if brace_level == 1 and token.startswith("\\"):
+                for char in purify_special_char_re.sub("", token):
                     if char.isalnum():
                         yield char
             else:
                 if token.isalnum():
                     yield token
-                elif token.isspace() or token in '-~':
-                    yield ' '
+                elif token.isspace() or token in "-~":
+                    yield " "
 
-    return ''.join(purify_iter(string))
+    return "".join(purify_iter(string))
 
 
 def scan_bibtex_string(string):
-    """ Yield (char, brace_level) tuples.
+    """Yield (char, brace_level) tuples.
 
     "Special characters", as in bibtex_len, are treated as a single character
 
     """
     return BibTeXString(string).traverse(
-        open=lambda string: ('{', string.level),
+        open=lambda string: ("{", string.level),
         f=lambda char, string: (char, string.level),
-        close=lambda string: ('}', string.level - 1),
+        close=lambda string: ("}", string.level - 1),
     )
 
 
@@ -439,7 +444,7 @@ def split_name_list(string):
     >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
     ['What a Strange and{ }Bizzare Name!', 'Peterson']
     """
-    return split_tex_string(string, ' [Aa][Nn][Dd] ')
+    return split_tex_string(string, " [Aa][Nn][Dd] ")
 
 
 def _find_closing_brace(string):
@@ -464,27 +469,27 @@ def _find_closing_brace(string):
         if not next_brace:
             break
 
-        up_to_brace.append(string[:next_brace.end()])
-        string = string[next_brace.end():]
+        up_to_brace.append(string[: next_brace.end()])
+        string = string[next_brace.end() :]
 
-        if next_brace.group() == '{':
+        if next_brace.group() == "{":
             brace_level += 1
-        elif next_brace.group() == '}':
+        elif next_brace.group() == "}":
             brace_level -= 1
         else:
             raise ValueError(next_brace.group())
 
     if not up_to_brace:
-        up_to_brace, string = [string], ''
-    return ''.join(up_to_brace), string
+        up_to_brace, string = [string], ""
+    return "".join(up_to_brace), string
 
 
 # "\ " is a "control space" in TeX, i. e. "a space that is not to be ignored"
 #     -- The TeXbook, Chapter 3: Controlling TeX, p 8
 # ~ is a space character, according to BibTeX
 # \~ is not a space character
-BIBTEX_SPACE_RE = re.compile(r'(?:\\ |\s|(?<!\\)~)+')
-BRACE_RE = re.compile(r'{|}')
+BIBTEX_SPACE_RE = re.compile(r"(?:\\ |\s|(?<!\\)~)+")
+BRACE_RE = re.compile(r"{|}")
 
 
 def split_tex_string(string, sep=None, strip=True, filter_empty=False):
@@ -526,12 +531,12 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
     word_parts = []
 
     while True:
-        head, brace, string = string.partition('{')
+        head, brace, string = string.partition("{")
 
         if head:
             head_parts = sep.split(head)
             for word in head_parts[:-1]:
-                result.append(''.join(word_parts + [word]))
+                result.append("".join(word_parts + [word]))
                 word_parts = []
             word_parts.append(head_parts[-1])
 
@@ -543,7 +548,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
             break
 
     if word_parts:
-        result.append(''.join(word_parts))
+        result.append("".join(word_parts))
 
     if strip:
         result = [part.strip() for part in result]
@@ -553,7 +558,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
 
 
 def bibtex_first_letter(string):
-    r""" Return the first letter or special character of the string.
+    r"""Return the first letter or special character of the string.
 
     >>> print(bibtex_first_letter('Andrew Blake'))
     A
@@ -573,14 +578,14 @@ def bibtex_first_letter(string):
     """
 
     for char in BibTeXString(string):
-        if char.startswith('\\') and char != '\\':
-            return '{{{0}}}'.format(char)
+        if char.startswith("\\") and char != "\\":
+            return "{{{0}}}".format(char)
         elif char.isalpha():
             return char
-    return ''
+    return ""
 
 
-def bibtex_abbreviate(string, delimiter=None, separator='-'):
+def bibtex_abbreviate(string, delimiter=None, separator="-"):
     r"""
     Abbreviate string.
 
@@ -590,7 +595,7 @@ def bibtex_abbreviate(string, delimiter=None, separator='-'):
     J.-P
     >>> print(bibtex_abbreviate('Jean--Pierre'))
     J.-P
-    
+
     """
 
     def _bibtex_abbreviate():
@@ -600,5 +605,5 @@ def bibtex_abbreviate(string, delimiter=None, separator='-'):
                 yield letter
 
     if delimiter is None:
-        delimiter = '.-'
+        delimiter = ".-"
     return delimiter.join(_bibtex_abbreviate())

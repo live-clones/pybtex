@@ -25,8 +25,8 @@ from difflib import unified_diff
 
 
 def diff(src, dst):
-    return '\n'.join(unified_diff(src.splitlines(), dst.splitlines()))
+    return "\n".join(unified_diff(src.splitlines(), dst.splitlines()))
 
 
-def get_data(filename, package='tests.data'):
-    return pkgutil.get_data(package, filename).decode('UTF-8')
+def get_data(filename, package="tests.data"):
+    return pkgutil.get_data(package, filename).decode("UTF-8")

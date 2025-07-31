@@ -39,7 +39,7 @@ from .utils import diff, get_data
 @contextmanager
 def cd_tempdir():
     current_workdir = os.getcwd()
-    tempdir = mkdtemp(prefix='pybtex_test_')
+    tempdir = mkdtemp(prefix="pybtex_test_")
     os.chdir(tempdir)
     try:
         yield tempdir
@@ -50,7 +50,7 @@ def cd_tempdir():
 
 def copy_file(filename):
     data = get_data(filename)
-    with io.open_unicode(filename, 'w') as data_file:
+    with io.open_unicode(filename, "w") as data_file:
         data_file.write(data)
 
 
@@ -60,10 +60,10 @@ def copy_files(filenames):
 
 
 def write_aux(aux_name, bib_name, bst_name):
-    with io.open_unicode(aux_name, 'w') as aux_file:
-        aux_file.write(u'\\citation{*}\n')
-        aux_file.write(u'\\bibstyle{{{0}}}\n'.format(bst_name))
-        aux_file.write(u'\\bibdata{{{0}}}\n'.format(bib_name))
+    with io.open_unicode(aux_name, "w") as aux_file:
+        aux_file.write("\\citation{*}\n")
+        aux_file.write("\\bibstyle{{{0}}}\n".format(bst_name))
+        aux_file.write("\\bibdata{{{0}}}\n".format(bib_name))
 
 
 def group_by_suffix(filenames):
@@ -75,36 +75,39 @@ def group_by_suffix(filenames):
 
 def check_format_from_string(engine, filenames):
     filenames_by_suffix = group_by_suffix(filenames)
-    engine_name = engine.__name__.rsplit('.', 1)[-1]
+    engine_name = engine.__name__.rsplit(".", 1)[-1]
 
-    if '.aux' in filenames_by_suffix:
+    if ".aux" in filenames_by_suffix:
         from io import StringIO
         from pybtex import auxfile
-        aux_contents = StringIO(get_data(filenames_by_suffix['.aux']))
+
+        aux_contents = StringIO(get_data(filenames_by_suffix[".aux"]))
         auxdata = auxfile.parse_file(aux_contents)
         citations = auxdata.citations
         style = auxdata.style
     else:
-        citations = '*'
-        style = posixpath.splitext(filenames_by_suffix['.bst'])[0]
+        citations = "*"
+        style = posixpath.splitext(filenames_by_suffix[".bst"])[0]
 
     with cd_tempdir():
-        copy_file(filenames_by_suffix['.bst'])
-        bib_name = posixpath.splitext(filenames_by_suffix['.bib'])[0]
-        bib_string = get_data(filenames_by_suffix['.bib'])
+        copy_file(filenames_by_suffix[".bst"])
+        bib_name = posixpath.splitext(filenames_by_suffix[".bib"])[0]
+        bib_string = get_data(filenames_by_suffix[".bib"])
         with errors.capture():  # FIXME check error messages
-            result = engine.format_from_string(bib_string, style=style, citations=citations)
-        correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, style, engine_name)
-        correct_result = get_data(correct_result_name).replace('\r\n', '\n')
+            result = engine.format_from_string(
+                bib_string, style=style, citations=citations
+            )
+        correct_result_name = "{0}_{1}.{2}.bbl".format(bib_name, style, engine_name)
+        correct_result = get_data(correct_result_name).replace("\r\n", "\n")
         assert result == correct_result, diff(correct_result, result)
 
 
 def check_make_bibliography(engine, filenames):
-    allowed_exts = {'.bst', '.bib', '.aux'}
+    allowed_exts = {".bst", ".bib", ".aux"}
     filenames_by_ext = dict(
         (posixpath.splitext(filename)[1], filename) for filename in filenames
     )
-    engine_name = engine.__name__.rsplit('.', 1)[-1]
+    engine_name = engine.__name__.rsplit(".", 1)[-1]
 
     for ext in filenames_by_ext:
         if ext not in allowed_exts:
@@ -112,54 +115,56 @@ def check_make_bibliography(engine, filenames):
 
     with cd_tempdir():
         copy_files(filenames)
-        bib_name = posixpath.splitext(filenames_by_ext['.bib'])[0]
-        bst_name = posixpath.splitext(filenames_by_ext['.bst'])[0]
-        if '.aux' not in filenames_by_ext:
-            write_aux('test.aux', bib_name, bst_name)
-            filenames_by_ext['.aux'] = 'test.aux'
+        bib_name = posixpath.splitext(filenames_by_ext[".bib"])[0]
+        bst_name = posixpath.splitext(filenames_by_ext[".bst"])[0]
+        if ".aux" not in filenames_by_ext:
+            write_aux("test.aux", bib_name, bst_name)
+            filenames_by_ext[".aux"] = "test.aux"
         with errors.capture():  # FIXME check error messages
-            engine.make_bibliography(filenames_by_ext['.aux'])
-        result_name = posixpath.splitext(filenames_by_ext['.aux'])[0] + '.bbl'
+            engine.make_bibliography(filenames_by_ext[".aux"])
+        result_name = posixpath.splitext(filenames_by_ext[".aux"])[0] + ".bbl"
         with io.open_unicode(result_name) as result_file:
             result = result_file.read()
-        correct_result_name = '{0}_{1}.{2}.bbl'.format(bib_name, bst_name, engine_name)
-        correct_result = get_data(correct_result_name).replace('\r\n', '\n')
+        correct_result_name = "{0}_{1}.{2}.bbl".format(bib_name, bst_name, engine_name)
+        correct_result = get_data(correct_result_name).replace("\r\n", "\n")
         assert result == correct_result, diff(correct_result, result)
 
 
 @pytest.mark.parametrize(
     ["filenames"],
     [
-        (['xampl.bib', 'unsrt.bst'],),
-        (['xampl.bib', 'plain.bst'],),
-        (['xampl.bib', 'alpha.bst'],),
-        (['xampl.bib', 'jurabib.bst'],),
-        (['cyrillic.bib', 'unsrt.bst'],),
-        (['cyrillic.bib', 'alpha.bst'],),
-        (['xampl_mixed.bib', 'unsrt_mixed.bst', 'xampl_mixed_unsrt_mixed.aux'],),
-        (['IEEEtran.bib', 'IEEEtran.bst', 'IEEEtran.aux'],),
-    ]
+        (["xampl.bib", "unsrt.bst"],),
+        (["xampl.bib", "plain.bst"],),
+        (["xampl.bib", "alpha.bst"],),
+        (["xampl.bib", "jurabib.bst"],),
+        (["cyrillic.bib", "unsrt.bst"],),
+        (["cyrillic.bib", "alpha.bst"],),
+        (["xampl_mixed.bib", "unsrt_mixed.bst", "xampl_mixed_unsrt_mixed.aux"],),
+        (["IEEEtran.bib", "IEEEtran.bst", "IEEEtran.aux"],),
+    ],
 )
 @pytest.mark.parametrize(
     ["check"], [(check_make_bibliography,), (check_format_from_string,)]
 )
 def test_bibtex_engine(check, filenames):
     from pybtex import bibtex
+
     check(bibtex, filenames)
 
 
 @pytest.mark.parametrize(
     ["filenames"],
     [
-        (['cyrillic.bib', 'unsrt.bst'],),
-        (['cyrillic.bib', 'plain.bst'],),
-        (['cyrillic.bib', 'alpha.bst'],),
-        (['extrafields.bib', 'unsrt.bst'],),
-    ]
+        (["cyrillic.bib", "unsrt.bst"],),
+        (["cyrillic.bib", "plain.bst"],),
+        (["cyrillic.bib", "alpha.bst"],),
+        (["extrafields.bib", "unsrt.bst"],),
+    ],
 )
 @pytest.mark.parametrize(
     ["check"], [(check_make_bibliography,), (check_format_from_string,)]
 )
 def test_pybtex_engine(check, filenames):
     import pybtex
+
     check(pybtex, filenames)

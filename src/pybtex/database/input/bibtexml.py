@@ -26,16 +26,16 @@ from xml.etree import ElementTree as ET
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 
-bibtexns = '{http://bibtexml.sf.net/}'
+bibtexns = "{http://bibtexml.sf.net/}"
 
 
 def remove_ns(s):
     if s.startswith(bibtexns):
-        return s[len(bibtexns):]
+        return s[len(bibtexns) :]
 
 
 class Parser(BaseParser):
-    default_suffix = '.xml'
+    default_suffix = ".xml"
 
     def parse_bytes(self, value):
         tree = ET.fromstring(value)
@@ -49,13 +49,13 @@ class Parser(BaseParser):
         return self.parse_tree(tree)
 
     def parse_tree(self, tree):
-        entries = tree.findall(bibtexns + 'entry')
+        entries = tree.findall(bibtexns + "entry")
         self.data.add_entries(self.process_entry(entry) for entry in entries)
         return self.data
 
     def process_entry(self, entry):
         def process_person(person_entry, role):
-            persons = person_entry.findall(bibtexns + 'person')
+            persons = person_entry.findall(bibtexns + "person")
             if persons:
                 for person in persons:
                     process_person(person, role)
@@ -69,7 +69,7 @@ class Parser(BaseParser):
                         names[remove_ns(name.tag)] = name.text
                     e.add_person(Person(**names), role)
 
-        id_ = entry.get('id')
+        id_ = entry.get("id")
         item = list(entry)[0]
         type = remove_ns(item.tag)
         e = Entry(type)
@@ -78,6 +78,6 @@ class Parser(BaseParser):
             if field_name in Person.valid_roles:
                 process_person(field, field_name)
             else:
-                field_text = field.text if field.text is not None else ''
+                field_text = field.text if field.text is not None else ""
                 e.fields[field_name] = field_text
         return id_, e

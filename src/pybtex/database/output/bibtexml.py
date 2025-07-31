@@ -35,7 +35,13 @@ doctype = b"""<!DOCTYPE bibtex:file PUBLIC
 
 
 class _PrettyXMLWriter(object):
-    def __init__(self, output, encoding='UTF-8', namespace=('bibtex', 'http://bibtexml.sf.net/'), header=True):
+    def __init__(
+        self,
+        output,
+        encoding="UTF-8",
+        namespace=("bibtex", "http://bibtexml.sf.net/"),
+        header=True,
+    ):
         self.prefix, self.uri = namespace
         self.generator = XMLGenerator(output, encoding=encoding)
         if header:
@@ -47,10 +53,10 @@ class _PrettyXMLWriter(object):
         self.generator.characters(data)
 
     def newline(self):
-        self.write('\n')
+        self.write("\n")
 
     def indent_line(self):
-        self.write(' ' * (len(self.stack) * 4))
+        self.write(" " * (len(self.stack) * 4))
 
     def start(self, tag, attrs=None, newline=True):
         if attrs is None:
@@ -102,27 +108,27 @@ class Writer(BaseWriter):
         """
 
         output = io.BytesIO()
-        writer = _PrettyXMLWriter(output, encoding='UTF-8', header=None)
+        writer = _PrettyXMLWriter(output, encoding="UTF-8", header=None)
         self._write(bib_data, writer)
-        return output.getvalue().decode('UTF-8').strip()
+        return output.getvalue().decode("UTF-8").strip()
 
     def _write(self, bib_data, writer):
         def write_persons(persons, role):
             if persons:
                 writer.start(role)
                 for person in persons:
-                    writer.start('person')
-                    for type in ('first', 'middle', 'prelast', 'last', 'lineage'):
+                    writer.start("person")
+                    for type in ("first", "middle", "prelast", "last", "lineage"):
                         name = person.get_part_as_text(type)
                         if name:
                             writer.element(type, name)
                     writer.end()
                 writer.end()
 
-        writer.start('file')
+        writer.start("file")
         writer.newline()
         for key, entry in bib_data.entries.items():
-            writer.start('entry', dict(id=key))
+            writer.start("entry", dict(id=key))
             writer.start(entry.original_type)
             for field_name, field_value in entry.fields.items():
                 writer.element(field_name, field_value)

@@ -19,8 +19,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""convert bibliography database from one format to another
-"""
+"""convert bibliography database from one format to another"""
+
 from __future__ import unicode_literals
 from pybtex.exceptions import PybtexError
 from pybtex import database
@@ -31,23 +31,24 @@ class ConvertError(PybtexError):
 
 
 def convert(
-    from_filename, to_filename,
-    from_format=None, to_format=None,
-    input_encoding=None, output_encoding=None,
+    from_filename,
+    to_filename,
+    from_format=None,
+    to_format=None,
+    input_encoding=None,
+    output_encoding=None,
     parser_options=None,
     preserve_case=True,
-    **kwargs
+    **kwargs,
 ):
     if parser_options is None:
         parser_options = {}
 
     if from_filename == to_filename:
-        raise ConvertError('input and output file can not be the same')
+        raise ConvertError("input and output file can not be the same")
 
     bib_data = database.parse_file(
-        from_filename,
-        bib_format=from_format, encoding=input_encoding,
-        **parser_options
+        from_filename, bib_format=from_format, encoding=input_encoding, **parser_options
     )
     if not preserve_case:
         bib_data = bib_data.lower()

@@ -60,7 +60,7 @@ class ParserTest(object):
             self.input_strings = [self.input_string]
 
     def test_parser(self):
-        parser = _TestParser(encoding='UTF-8', **self.parser_options)
+        parser = _TestParser(encoding="UTF-8", **self.parser_options)
         for input_string in self.input_strings:
             parser.parse_string(input_string)
         result = parser.data
@@ -72,30 +72,34 @@ class ParserTest(object):
 
 
 class EmptyDataTest(ParserTest, TestCase):
-    input_string = u''
+    input_string = ""
     correct_result = BibliographyData()
 
 
 class BracesTest(ParserTest, TestCase):
-    input_string = u"""@ARTICLE{
+    input_string = """@ARTICLE{
                 test,
                 title={Polluted
                     with {DDT}.
             },
     }"""
-    correct_result = BibliographyData([(u'test', Entry('article', [(u'title', 'Polluted with {DDT}.')]))])
+    correct_result = BibliographyData(
+        [("test", Entry("article", [("title", "Polluted with {DDT}.")]))]
+    )
 
 
 class BracesAndQuotesTest(ParserTest, TestCase):
-    input_string = u'''@ARTICLE{
+    input_string = """@ARTICLE{
                 test,
                 title="Nested braces  and {"quotes"}",
-        }'''
-    correct_result = BibliographyData([(u'test', Entry('article', [(u'title', 'Nested braces and {"quotes"}')]))])
+        }"""
+    correct_result = BibliographyData(
+        [("test", Entry("article", [("title", 'Nested braces and {"quotes"}')]))]
+    )
 
 
 class EntryInStringTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         @article{Me2010, author="Brett, Matthew", title="An article
         @article{something, author={Name, Another}, title={not really an article}}
         "}
@@ -103,22 +107,33 @@ class EntryInStringTest(ParserTest, TestCase):
     """
     correct_result = BibliographyData(
         entries=[
-            (u'Me2010', Entry(u'article',
-                fields=[
-                    (u'title', u'An article @article{something, author={Name, Another}, title={not really an article}}'),
-                ],
-                persons=[(u'author', [Person(u'Brett, Matthew')])]
-            )),
-            (u'Me2009', Entry(u'article',
-                fields=[(u'title', u'A short story')],
-                persons={u'author': [Person(u'Nom de Plume, My')]}
-            )),
+            (
+                "Me2010",
+                Entry(
+                    "article",
+                    fields=[
+                        (
+                            "title",
+                            "An article @article{something, author={Name, Another}, title={not really an article}}",
+                        ),
+                    ],
+                    persons=[("author", [Person("Brett, Matthew")])],
+                ),
+            ),
+            (
+                "Me2009",
+                Entry(
+                    "article",
+                    fields=[("title", "A short story")],
+                    persons={"author": [Person("Nom de Plume, My")]},
+                ),
+            ),
         ]
     )
 
 
 class EntryInCommentTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         Both the articles register despite the comment block
         @Comment{
         @article{Me2010, title="An article"}
@@ -130,31 +145,36 @@ class EntryInCommentTest(ParserTest, TestCase):
         Last article to show we can get here
         @article{Me2011, }
     """
-    correct_result = BibliographyData([
-        ('Me2010', Entry('article', fields=[('title', 'An article')])),
-        ('Me2009', Entry('article', fields=[('title', 'A short story')])),
-        ('Me2011', Entry('article')),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("Me2010", Entry("article", fields=[("title", "An article")])),
+            ("Me2009", Entry("article", fields=[("title", "A short story")])),
+            ("Me2011", Entry("article")),
+        ]
+    )
 
 
 class AtTest(ParserTest, TestCase):
     # FIXME: check warnings
-    input_string = u"""
+    input_string = """
         The @ here parses fine in both cases
         @article{Me2010,
             title={An @tey article}}
         @article{Me2009, title="A @tey short story"}
     """
-    correct_result = BibliographyData([
-        ('Me2010', Entry('article', [('title', 'An @tey article')])),
-        ('Me2009', Entry('article', [('title', 'A @tey short story')])),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("Me2010", Entry("article", [("title", "An @tey article")])),
+            ("Me2009", Entry("article", [("title", "A @tey short story")])),
+        ]
+    )
     errors = [
         "syntax error in line 2: '(' or '{' expected",
     ]
 
+
 class EntryTypesTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         Testing what are allowed for entry types
 
         These are OK
@@ -170,13 +190,15 @@ class EntryTypesTest(ParserTest, TestCase):
         @some#{id4,}
         @some%{id4,}
     """
-    correct_result = BibliographyData([
-        ('an_id', Entry('somename')),
-        ('another_id', Entry('t2')),
-        ('again_id', Entry('t@')),
-        ('aa1_id', Entry('t+')),
-        ('aa2_id', Entry('_t')),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("an_id", Entry("somename")),
+            ("another_id", Entry("t2")),
+            ("again_id", Entry("t@")),
+            ("aa1_id", Entry("t+")),
+            ("aa2_id", Entry("_t")),
+        ]
+    )
     errors = [
         "syntax error in line 12: a valid name expected",
         "syntax error in line 13: '(' or '{' expected",
@@ -186,7 +208,7 @@ class EntryTypesTest(ParserTest, TestCase):
 
 
 class FieldNamesTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         Check for characters allowed in field names
         Here the cite key is fine, but the field name is not allowed:
         ``You are missing a field name``
@@ -207,25 +229,27 @@ class FieldNamesTest(ParserTest, TestCase):
         @article{2016, -name = "Myself"}
         @article{2017, @name = "Myself"}
     """
-    correct_result = BibliographyData([
-        ('2010', Entry('article')),
-        ('2011', Entry('article', [('_author', 'Me')])),
-        ('2012', Entry('article')),
-        ('2013', Entry('article')),
-        ('2014', Entry('article', [('.name', 'Myself')])),
-        ('2015', Entry('article', [('+name', 'Myself')])),
-        ('2016', Entry('article', [('-name', 'Myself')])),
-        ('2017', Entry('article', [('@name', 'Myself')])),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("2010", Entry("article")),
+            ("2011", Entry("article", [("_author", "Me")])),
+            ("2012", Entry("article")),
+            ("2013", Entry("article")),
+            ("2014", Entry("article", [(".name", "Myself")])),
+            ("2015", Entry("article", [("+name", "Myself")])),
+            ("2016", Entry("article", [("-name", "Myself")])),
+            ("2017", Entry("article", [("@name", "Myself")])),
+        ]
+    )
     errors = [
         "syntax error in line 5: '}' expected",
         "syntax error in line 11: '=' expected",
-        'syntax error in line 14: \'}\' expected',
+        "syntax error in line 14: '}' expected",
     ]
 
 
 class InlineCommentTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         "some text" causes an error like this
         ``You're missing a field name---line 6 of file bibs/inline_comment.bib``
         for all 3 of the % some text occurences below; in each case the parser keeps
@@ -241,14 +265,24 @@ class InlineCommentTest(ParserTest, TestCase):
         This one correctly read
         @article{Me2013,}
     """
-    correct_result = BibliographyData([
-        ('Me2010', Entry('article')),
-        ('Me2011', Entry('article', persons={'author': [
-            Person(first='Matthew', last='Brett-like'),
-        ]})),
-        ('Me2012', Entry('article')),
-        ('Me2013', Entry('article')),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("Me2010", Entry("article")),
+            (
+                "Me2011",
+                Entry(
+                    "article",
+                    persons={
+                        "author": [
+                            Person(first="Matthew", last="Brett-like"),
+                        ]
+                    },
+                ),
+            ),
+            ("Me2012", Entry("article")),
+            ("Me2013", Entry("article")),
+        ]
+    )
     errors = [
         "syntax error in line 10: '}' expected",
         "syntax error in line 12: '}' expected",
@@ -256,7 +290,7 @@ class InlineCommentTest(ParserTest, TestCase):
 
 
 class SimpleEntryTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         % maybe the simplest possible
         % just a comment and one reference
 
@@ -272,31 +306,34 @@ class SimpleEntryTest(ParserTest, TestCase):
         number = {2}
         }
     """
-    correct_result = BibliographyData({
-        'Brett2002marsbar': Entry('article',
-            fields=[
-                ('title', '{Region of interest analysis using an SPM toolbox}'),
-                ('journal', 'Neuroimage'),
-                ('institution', ''),
-                ('year', '2002'),
-                ('volume', '16'),
-                ('pages', '1140--1141'),
-                ('number', '2'),
-            ],
-            persons={
-                'author': [
-                    Person(first='Matthew', last='Brett'),
-                    Person(first='Jean-Luc', last='Anton'),
-                    Person(first='Romain', last='Valabregue'),
-                    Person(first='Jean-Baptise', last='Poline'),
+    correct_result = BibliographyData(
+        {
+            "Brett2002marsbar": Entry(
+                "article",
+                fields=[
+                    ("title", "{Region of interest analysis using an SPM toolbox}"),
+                    ("journal", "Neuroimage"),
+                    ("institution", ""),
+                    ("year", "2002"),
+                    ("volume", "16"),
+                    ("pages", "1140--1141"),
+                    ("number", "2"),
                 ],
-            },
-        )
-    })
+                persons={
+                    "author": [
+                        Person(first="Matthew", last="Brett"),
+                        Person(first="Jean-Luc", last="Anton"),
+                        Person(first="Romain", last="Valabregue"),
+                        Person(first="Jean-Baptise", last="Poline"),
+                    ],
+                },
+            )
+        }
+    )
 
 
 class KeyParsingTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         # will not work as expected
         @article(test(parens1))
 
@@ -309,20 +346,22 @@ class KeyParsingTest(ParserTest, TestCase):
         # also works
         @article{test(braces2),}
     """
-    correct_result = BibliographyData([
-        ('test(parens1))', Entry('article')),
-        ('test(parens2)', Entry('article')),
-        ('test(braces1)', Entry('article')),
-        ('test(braces2)', Entry('article')),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("test(parens1))", Entry("article")),
+            ("test(parens2)", Entry("article")),
+            ("test(braces1)", Entry("article")),
+            ("test(braces2)", Entry("article")),
+        ]
+    )
     errors = [
         "syntax error in line 5: ')' expected",
     ]
 
 
 class KeylessEntriesTest(ParserTest, TestCase):
-    parser_options = {'keyless_entries': True}
-    input_string = u"""
+    parser_options = {"keyless_entries": True}
+    input_string = """
         @BOOK(
             title="I Am Jackie Chan: My Life in Action",
             year=1999
@@ -335,16 +374,30 @@ class KeylessEntriesTest(ParserTest, TestCase):
         }
 
     """
-    correct_result = BibliographyData([
-        ('unnamed-1', Entry('book', [('title', 'I Am Jackie Chan: My Life in Action'), ('year', '1999')])),
-        ('unnamed-2', Entry('book')),
-        ('unnamed-3', Entry('book')),
-        ('unnamed-4', Entry('book', [('title', u'Der deutsche Jackie Chan Filmführer')])),
-    ])
+    correct_result = BibliographyData(
+        [
+            (
+                "unnamed-1",
+                Entry(
+                    "book",
+                    [
+                        ("title", "I Am Jackie Chan: My Life in Action"),
+                        ("year", "1999"),
+                    ],
+                ),
+            ),
+            ("unnamed-2", Entry("book")),
+            ("unnamed-3", Entry("book")),
+            (
+                "unnamed-4",
+                Entry("book", [("title", "Der deutsche Jackie Chan Filmführer")]),
+            ),
+        ]
+    )
 
 
 class MacrosTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         @String{and = { and }}
         @String{etal = and # { {et al.}}}
         @Article(
@@ -356,60 +409,74 @@ class MacrosTest(ParserTest, TestCase):
             author = "Gough, Brian"#etal,
         )
     """
-    correct_result = BibliographyData([
-        ('unknown', Entry('article')),
-        ('gsl', Entry('article', persons={u'author': [Person(u'Gough, Brian'), Person(u'{et al.}')]})),
-    ])
+    correct_result = BibliographyData(
+        [
+            ("unknown", Entry("article")),
+            (
+                "gsl",
+                Entry(
+                    "article",
+                    persons={"author": [Person("Gough, Brian"), Person("{et al.}")]},
+                ),
+            ),
+        ]
+    )
     errors = [
-        'undefined string in line 6: nobody',
+        "undefined string in line 6: nobody",
     ]
 
 
 class WantedEntriesTest(ParserTest, TestCase):
-    parser_options = {'wanted_entries': ['GSL']}
-    input_string = u"""
+    parser_options = {"wanted_entries": ["GSL"]}
+    input_string = """
         @Article(
             gsl,
         )
     """
-    correct_result = BibliographyData(entries={
-        'GSL': Entry('article'),
-    })
+    correct_result = BibliographyData(
+        entries={
+            "GSL": Entry("article"),
+        }
+    )
 
 
 class CrossrefTest(ParserTest, TestCase):
-    parser_options = {'wanted_entries': ['GSL', 'GSL2']}
-    input_string = u"""
+    parser_options = {"wanted_entries": ["GSL", "GSL2"]}
+    input_string = """
         @Article(gsl, crossref="the_journal")
         @Article(gsl2, crossref="The_Journal")
         @Journal{the_journal,}
     """
-    correct_result = BibliographyData(entries=[
-        ('GSL', Entry('article', [('crossref', 'the_journal')])),
-        ('GSL2', Entry('article', [('crossref', 'The_Journal')])),
-        ('the_journal', Entry('journal')),
-    ])
+    correct_result = BibliographyData(
+        entries=[
+            ("GSL", Entry("article", [("crossref", "the_journal")])),
+            ("GSL2", Entry("article", [("crossref", "The_Journal")])),
+            ("the_journal", Entry("journal")),
+        ]
+    )
 
 
 class CrossrefWantedTest(ParserTest, TestCase):
     """When cross-referencing an explicitly cited, the key from .aux file should be used."""
 
-    parser_options = {'wanted_entries': ['GSL', 'GSL2', 'The_Journal']}
-    input_string = u"""
+    parser_options = {"wanted_entries": ["GSL", "GSL2", "The_Journal"]}
+    input_string = """
         @Article(gsl, crossref="the_journal")
         @Article(gsl2, crossref="The_Journal")
         @Journal{the_journal,}
     """
-    correct_result = BibliographyData(entries=[
-        ('GSL', Entry('article', [('crossref', 'the_journal')])),
-        ('GSL2', Entry('article', [('crossref', 'The_Journal')])),
-        ('The_Journal', Entry('journal')),
-    ])
+    correct_result = BibliographyData(
+        entries=[
+            ("GSL", Entry("article", [("crossref", "the_journal")])),
+            ("GSL2", Entry("article", [("crossref", "The_Journal")])),
+            ("The_Journal", Entry("journal")),
+        ]
+    )
 
 
 class UnusedEntryTest(ParserTest, TestCase):
-    parser_options = {'wanted_entries': []}
-    input_string = u"""
+    parser_options = {"wanted_entries": []}
+    input_string = """
         @Article(
             gsl,
             author = nobody,
@@ -420,8 +487,8 @@ class UnusedEntryTest(ParserTest, TestCase):
 
 class CrossFileMacrosTest(ParserTest, TestCase):
     input_strings = [
-        u'@string{jackie = "Jackie Chan"}',
-        u""",
+        '@string{jackie = "Jackie Chan"}',
+        """,
             @Book{
                 i_am_jackie,
                 author = jackie,
@@ -429,12 +496,15 @@ class CrossFileMacrosTest(ParserTest, TestCase):
             }
         """,
     ]
-    correct_result = BibliographyData({
-        'i_am_jackie': Entry('book', 
-            fields=[('title', 'I Am Jackie Chan: My Life in Action')],
-            persons={'author': [Person(u'Chan, Jackie')]}
-        ),
-    })
+    correct_result = BibliographyData(
+        {
+            "i_am_jackie": Entry(
+                "book",
+                fields=[("title", "I Am Jackie Chan: My Life in Action")],
+                persons={"author": [Person("Chan, Jackie")]},
+            ),
+        }
+    )
 
 
 class AtCharacterTest(ParserTest, TestCase):
@@ -446,18 +516,21 @@ class AtCharacterTest(ParserTest, TestCase):
             }
         """,
     ]
-    correct_result = BibliographyData({
-        'acc': Entry('proceedings', 
-            fields=[
-                ('title', r'Proc.\@ of the American Control Conference'),
-                ('notes', 'acc@example.org'),
-            ],
-        ),
-    })
+    correct_result = BibliographyData(
+        {
+            "acc": Entry(
+                "proceedings",
+                fields=[
+                    ("title", r"Proc.\@ of the American Control Conference"),
+                    ("notes", "acc@example.org"),
+                ],
+            ),
+        }
+    )
 
 
 class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
-    parser_options = {'wanted_entries': []}
+    parser_options = {"wanted_entries": []}
     input_strings = [
         r""",
             @proceedings{acc,
@@ -479,20 +552,23 @@ class CaseSensitivityTest(ParserTest, TestCase):
             }
         """,
     ]
-    correct_result = BibliographyData({
-        'CamelCase': Entry('article', 
-            fields=[
-                ('Title', 'To CamelCase or Under score'),
-                ('year', '2009'),
-                ('NOTES', 'none'),
-            ],
-        ),
-    })
+    correct_result = BibliographyData(
+        {
+            "CamelCase": Entry(
+                "article",
+                fields=[
+                    ("Title", "To CamelCase or Under score"),
+                    ("year", "2009"),
+                    ("NOTES", "none"),
+                ],
+            ),
+        }
+    )
 
 
 class WindowsNewlineTest(ParserTest, TestCase):
     input_strings = [
-        u"""'@Article\r\n\r\n\r\n}\r\n'""",
+        """'@Article\r\n\r\n\r\n}\r\n'""",
     ]
     correct_result = BibliographyData()
     errors = ["syntax error in line 4: '(' or '{' expected"]
@@ -511,33 +587,40 @@ class DuplicateFieldTest(ParserTest, TestCase):
             }
         """
     ]
-    correct_result = BibliographyData({
-        'Mastering': Entry('mastersthesis',
-            fields=[
-                ('year', '1364'),
-                ('title', 'Mastering Thesis Writing'),
-                ('school', 'Charles University in Prague'),
-            ],
-        ),
-    })
+    correct_result = BibliographyData(
+        {
+            "Mastering": Entry(
+                "mastersthesis",
+                fields=[
+                    ("year", "1364"),
+                    ("title", "Mastering Thesis Writing"),
+                    ("school", "Charles University in Prague"),
+                ],
+            ),
+        }
+    )
     errors = [
-        'entry with key Mastering has a duplicate TITLE field',
-        'entry with key Mastering has a duplicate TiTlE field',
+        "entry with key Mastering has a duplicate TITLE field",
+        "entry with key Mastering has a duplicate TiTlE field",
     ]
 
 
 class DuplicatePersonFieldTest(ParserTest, TestCase):
-    input_string = u"""
+    input_string = """
         @article{Me2009,author={Nom de Plume, My}, title="A short story", AUTHoR = {Foo}}
     """
     correct_result = BibliographyData(
         entries=[
-            (u'Me2009', Entry(u'article',
-                fields=[(u'title', u'A short story')],
-                persons={u'author': [Person(u'Nom de Plume, My')]}
-            )),
+            (
+                "Me2009",
+                Entry(
+                    "article",
+                    fields=[("title", "A short story")],
+                    persons={"author": [Person("Nom de Plume, My")]},
+                ),
+            ),
         ]
     )
     errors = [
-        'entry with key Me2009 has a duplicate AUTHoR field',
+        "entry with key Me2009 has a duplicate AUTHoR field",
     ]

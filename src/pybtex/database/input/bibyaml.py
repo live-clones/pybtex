@@ -43,8 +43,12 @@ class OrderedDictSafeLoader(yaml.SafeLoader):
         if isinstance(node, yaml.MappingNode):
             self.flatten_mapping(node)
         else:
-            raise yaml.constructor.ConstructorError(None, None,
-                'expected a mapping node, but found %s' % node.id, node.start_mark)
+            raise yaml.constructor.ConstructorError(
+                None,
+                None,
+                "expected a mapping node, but found %s" % node.id,
+                node.start_mark,
+            )
 
         mapping = OrderedDict()
         for key_node, value_node in node.value:
@@ -52,34 +56,38 @@ class OrderedDictSafeLoader(yaml.SafeLoader):
             try:
                 hash(key)
             except TypeError as exc:
-                raise yaml.constructor.ConstructorError('while constructing a mapping',
-                    node.start_mark, 'found unacceptable key (%s)' % exc, key_node.start_mark)
+                raise yaml.constructor.ConstructorError(
+                    "while constructing a mapping",
+                    node.start_mark,
+                    "found unacceptable key (%s)" % exc,
+                    key_node.start_mark,
+                )
             value = self.construct_object(value_node, deep=deep)
             mapping[key] = value
         return mapping
 
+
 OrderedDictSafeLoader.add_constructor(
-    u'tag:yaml.org,2002:map', OrderedDictSafeLoader.construct_yaml_map
+    "tag:yaml.org,2002:map", OrderedDictSafeLoader.construct_yaml_map
 )
 OrderedDictSafeLoader.add_constructor(
-    u'tag:yaml.org,2002:omap', OrderedDictSafeLoader.construct_yaml_map
+    "tag:yaml.org,2002:omap", OrderedDictSafeLoader.construct_yaml_map
 )
 
 
 class Parser(BaseParser):
-    default_suffix = '.yaml'
+    default_suffix = ".yaml"
     unicode_io = False
 
     def parse_stream(self, stream):
         t = yaml.load(stream, Loader=OrderedDictSafeLoader)
 
         entries = (
-            (key, self.process_entry(entry))
-            for (key, entry) in t['entries'].items()
+            (key, self.process_entry(entry)) for (key, entry) in t["entries"].items()
         )
 
         try:
-            self.data.add_to_preamble(t['preamble'])
+            self.data.add_to_preamble(t["preamble"])
         except KeyError:
             pass
 
@@ -87,13 +95,13 @@ class Parser(BaseParser):
         return self.data
 
     def process_entry(self, entry):
-        bib_entry = Entry(entry['type'])
-        for (key, value) in entry.items():
+        bib_entry = Entry(entry["type"])
+        for key, value in entry.items():
             key_lower = key.lower()
             if key_lower in Person.valid_roles:
                 for names in value:
                     bib_entry.add_person(Person(**names), key)
-            elif key_lower == 'type':
+            elif key_lower == "type":
                 pass
             else:
                 bib_entry.fields[key] = str(value)

@@ -31,8 +31,10 @@ class OrderedDictSafeDumper(yaml.SafeDumper):
     """
     SafeDumper that dumps OrderedDicts preserving the order.
     """
+
     def represent_odict(self, data):
-        return self.represent_mapping(u'tag:yaml.org,2002:map', data.items())
+        return self.represent_mapping("tag:yaml.org,2002:map", data.items())
+
 
 OrderedDictSafeDumper.add_representer(
     OrderedDict, OrderedDictSafeDumper.represent_odict
@@ -48,7 +50,7 @@ class Writer(BaseWriter):
                 yield role, list(process_persons(persons))
 
         def process_person(person):
-            for type in ('first', 'middle', 'prelast', 'last', 'lineage'):
+            for type in ("first", "middle", "prelast", "last", "lineage"):
                 name = person.get_part_as_text(type)
                 if name:
                     yield type, name
@@ -59,14 +61,14 @@ class Writer(BaseWriter):
 
         def process_entries(bib_data):
             for key, entry in bib_data.items():
-                fields = OrderedDict([('type', entry.original_type)])
+                fields = OrderedDict([("type", entry.original_type)])
                 fields.update(entry.fields)
                 fields.update(process_person_roles(entry))
                 yield key, fields
 
-        data = {'entries': OrderedDict(process_entries(bib_data.entries))}
+        data = {"entries": OrderedDict(process_entries(bib_data.entries))}
         if bib_data.preamble:
-            data['preamble'] = bib_data.preamble
+            data["preamble"] = bib_data.preamble
         return data
 
     def _dump(self, bib_data, encoding=None, stream=None):
@@ -81,10 +83,10 @@ class Writer(BaseWriter):
         )
 
     def write_stream(self, bib_data, stream):
-        return self._dump(self._to_dict(bib_data), encoding='UTF-8', stream=stream)
+        return self._dump(self._to_dict(bib_data), encoding="UTF-8", stream=stream)
 
     def to_string(self, bib_data):
         return self._dump(self._to_dict(bib_data), encoding=None)
 
     def to_bytes(self, bib_data):
-        return self._dump(self._to_dict(bib_data), encoding='UTF-8')
+        return self._dump(self._to_dict(bib_data), encoding="UTF-8")

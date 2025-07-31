@@ -41,15 +41,14 @@ P.-B.
 >>> print(format_name(name, '{v{}}{l{}}'))
 PB
 """
+
 from __future__ import unicode_literals
 
 import re
 
 from pybtex.bibtex.utils import bibtex_abbreviate, bibtex_len
 from pybtex.database import Person
-from pybtex.scanner import (
-    Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
-)
+from pybtex.scanner import Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
 
 
 class BibTeXNameFormatError(Exception):
@@ -61,7 +60,7 @@ class Text(object):
         self.text = text
 
     def __repr__(self):
-        return u'{0}({1})'.format(type(self).__name__, repr(self.text))
+        return "{0}({1})".format(type(self).__name__, repr(self.text))
 
     def __eq__(self, other):
         return type(self) == type(other) and self.text == other.text
@@ -79,20 +78,20 @@ class NamePart(object):
 
         if not format_chars and pre_text and not post_text:
             post_text = pre_text
-            pre_text = ''
-            
-        if post_text.endswith('~~'):
-            self.tie = '~~'
-        elif post_text.endswith('~'):
-            self.tie = '~'
+            pre_text = ""
+
+        if post_text.endswith("~~"):
+            self.tie = "~~"
+        elif post_text.endswith("~"):
+            self.tie = "~"
         else:
             self.tie = None
 
         self.pre_text = pre_text
-        self.post_text = post_text.rstrip('~')
+        self.post_text = post_text.rstrip("~")
 
         if not format_chars:
-            self.format_char = ''
+            self.format_char = ""
             self.abbreviate = False
         else:
             l = len(format_chars)
@@ -101,13 +100,13 @@ class NamePart(object):
             elif l == 2 and format_chars[0] == format_chars[1]:
                 self.abbreviate = False
             else:
-                raise BibTeXNameFormatError('invalid format string')
+                raise BibTeXNameFormatError("invalid format string")
             self.format_char = format_chars[0]
 
     def __repr__(self):
         format_chars = self.format_char * (1 if self.abbreviate else 2)
         format_list = [self.pre_text, format_chars, self.delimiter, self.post_text]
-        return u'{0}({1})'.format(type(self).__name__, repr(format_list))
+        return "{0}({1})".format(type(self).__name__, repr(format_list))
 
     def __eq__(self, other):
         return (
@@ -119,64 +118,63 @@ class NamePart(object):
             and self.post_text == other.post_text
         )
 
-    types = {
-            'f': 'bibtex_first',
-            'l': 'last',
-            'v': 'prelast',
-            'j': 'lineage'
-    }
+    types = {"f": "bibtex_first", "l": "last", "v": "prelast", "j": "lineage"}
 
     def format(self, person):
-        names = person.get_part(self.types[self.format_char]) if self.format_char else []
+        names = (
+            person.get_part(self.types[self.format_char]) if self.format_char else []
+        )
 
         if self.format_char and not names:
-            return ''
+            return ""
 
         if self.abbreviate:
             names = [bibtex_abbreviate(name, self.delimiter) for name in names]
         if self.delimiter is None:
             if self.abbreviate:
-                names = join(names, '.~', '. ')
+                names = join(names, ".~", ". ")
             else:
                 names = join(names)
         else:
             names = self.delimiter.join(names)
         formatted_part = self.pre_text + names + self.post_text
 
-        if self.tie == '~':
+        if self.tie == "~":
             discretionary = tie_or_space(formatted_part)
-        elif self.tie == '~~':
-            discretionary = '~'
+        elif self.tie == "~~":
+            discretionary = "~"
         else:
-            discretionary = ''
+            discretionary = ""
 
         return formatted_part + discretionary
 
     def to_python(self):
         from pybtex.style.names import name_part
+
         class NamePart(object):
             def __init__(self, part, abbr=False):
                 self.part = part
                 self.abbr = abbr
+
             def __repr__(self):
-                abbr = 'abbr' if self.abbr else ''
-                return 'person.%s(%s)' % (self.part, abbr)
+                abbr = "abbr" if self.abbr else ""
+                return "person.%s(%s)" % (self.part, abbr)
 
         kwargs = {}
         if self.pre_text:
-            kwargs['before'] = self.pre_text
+            kwargs["before"] = self.pre_text
         if self.tie:
-            kwargs['tie'] = True
+            kwargs["tie"] = True
 
-        return repr(name_part(**kwargs) [
-            NamePart(self.types[self.format_char], self.abbreviate)
-        ])
-        
+        return repr(
+            name_part(**kwargs)[NamePart(self.types[self.format_char], self.abbreviate)]
+        )
+
 
 class NameFormat(object):
     """
     BibTeX name format string.
-    
+
     >>> f = NameFormat('{ff~}{vv~}{ll}{, jj}')
     >>> f.parts == [
     ...     NamePart(['', 'ff', None, '']),
@@ -226,32 +224,35 @@ class NameFormat(object):
 
     def format(self, name):
         person = Person(name)
-        return ''.join(part.format(person) for part in self.parts)
+        return "".join(part.format(person) for part in self.parts)
 
     def to_python(self):
         """Convert BibTeX name format to Python (inexactly)."""
-        parts = ',\n'.join(' ' * 8 + part.to_python() for part in self.parts)
-        comment = ' ' * 4 + (
+        parts = ",\n".join(" " * 8 + part.to_python() for part in self.parts)
+        comment = " " * 4 + (
             '"""Format names similarly to %s in BibTeX."""' % self.format_string
         )
-        body = ' ' * 4 + 'return join [\n%s,\n]' % parts
-        return '\n'.join([
-            'def format_names(person, abbr=False):',
-            comment,
-            body,
-        ])
+        body = " " * 4 + "return join [\n%s,\n]" % parts
+        return "\n".join(
+            [
+                "def format_names(person, abbr=False):",
+                comment,
+                body,
+            ]
+        )
 
 
 enough_chars = 3
 
-def tie_or_space(word, tie='~', space = ' '):
+
+def tie_or_space(word, tie="~", space=" "):
     if bibtex_len(word) < enough_chars:
         return tie
     else:
         return space
-    
 
-def join(words, tie='~', space=' '):
+
+def join(words, tie="~", space=" "):
     """Join some words, inserting ties (~) when nessessary.
     Ties are inserted:
     - after the first word, if it is short
@@ -268,9 +269,13 @@ def join(words, tie='~', space=' '):
     if len(words) <= 2:
         return tie.join(words)
     else:
-        return (words[0] + tie_or_space(words[0], tie, space) +
-                space.join(words[1:-1]) +
-                tie + words[-1])
+        return (
+            words[0]
+            + tie_or_space(words[0], tie, space)
+            + space.join(words[1:-1])
+            + tie
+            + words[-1]
+        )
 
 
 def format_name(name, format):
@@ -279,16 +284,20 @@ def format_name(name, format):
 
 class UnbalancedBraceError(PybtexSyntaxError):
     def __init__(self, parser):
-        message = u'name format string "{0}" has unbalanced braces'.format(parser.text)
+        message = 'name format string "{0}" has unbalanced braces'.format(parser.text)
         super(UnbalancedBraceError, self).__init__(message, parser)
 
 
 class NameFormatParser(Scanner):
-    LBRACE = Literal(u'{')
-    RBRACE = Literal(u'}')
-    TEXT = Pattern(r'[^{}]+', 'text')
-    NON_LETTERS = Pattern(r'[^{}\w]|\d+', 'non-letter characters', flags=re.IGNORECASE | re.UNICODE)
-    FORMAT_CHARS = Pattern(r'[^\W\d_]+', 'format chars', flags=re.IGNORECASE | re.UNICODE)
+    LBRACE = Literal("{")
+    RBRACE = Literal("}")
+    TEXT = Pattern(r"[^{}]+", "text")
+    NON_LETTERS = Pattern(
+        r"[^{}\w]|\d+", "non-letter characters", flags=re.IGNORECASE | re.UNICODE
+    )
+    FORMAT_CHARS = Pattern(
+        r"[^\W\d_]+", "format chars", flags=re.IGNORECASE | re.UNICODE
+    )
 
     lineno = None
 
@@ -299,7 +308,7 @@ class NameFormatParser(Scanner):
                 yield result
             except EOFError:
                 break
-            
+
     def parse_toplevel(self):
         token = self.required([self.TEXT, self.LBRACE, self.RBRACE], allow_eof=True)
         if token.pattern is self.TEXT:
@@ -312,7 +321,7 @@ class NameFormatParser(Scanner):
     def parse_braced_string(self):
         while True:
             try:
-                token = self.required([self.TEXT, self.RBRACE, self.LBRACE]) 
+                token = self.required([self.TEXT, self.RBRACE, self.LBRACE])
             except PrematureEOF:
                 raise UnbalancedBraceError(self)
             if token.pattern is self.TEXT:
@@ -320,7 +329,7 @@ class NameFormatParser(Scanner):
             elif token.pattern is self.RBRACE:
                 break
             elif token.pattern is self.LBRACE:
-                yield u'{{{0}}}'.format(''.join(self.parse_braced_string()))
+                yield "{{{0}}}".format("".join(self.parse_braced_string()))
             else:
                 raise ValueError(token)
 
@@ -337,28 +346,40 @@ class NameFormatParser(Scanner):
                 format_chars is not None
                 or len(value) not in [1, 2]
                 or value[0] != value[-1]
-                or value[0] not in 'flvj'
+                or value[0] not in "flvj"
             ):
-                raise PybtexSyntaxError(u'name format string "{0}" has illegal brace-level-1 letters: {1}'.format(self.text, token.value), self)
+                raise PybtexSyntaxError(
+                    'name format string "{0}" has illegal brace-level-1 letters: {1}'.format(
+                        self.text, token.value
+                    ),
+                    self,
+                )
 
         while True:
             try:
-                token = self.required([self.LBRACE, self.NON_LETTERS, self.FORMAT_CHARS, self.RBRACE])
+                token = self.required(
+                    [self.LBRACE, self.NON_LETTERS, self.FORMAT_CHARS, self.RBRACE]
+                )
             except PrematureEOF:
                 raise UnbalancedBraceError(self)
 
             if token.pattern is self.LBRACE:
-                verbatim.append(u'{{{0}}}'.format(''.join(self.parse_braced_string())))
+                verbatim.append("{{{0}}}".format("".join(self.parse_braced_string())))
             elif token.pattern is self.FORMAT_CHARS:
                 check_format_chars(token.value)
                 format_chars = token.value
                 verbatim = verbatim_postfix
                 if self.optional([self.LBRACE]):
-                    delimiter = ''.join(self.parse_braced_string())
+                    delimiter = "".join(self.parse_braced_string())
             elif token.pattern is self.NON_LETTERS:
                 verbatim.append(token.value)
             elif token.pattern is self.RBRACE:
-                return ''.join(verbatim_prefix), format_chars, delimiter, ''.join(verbatim_postfix)
+                return (
+                    "".join(verbatim_prefix),
+                    format_chars,
+                    delimiter,
+                    "".join(verbatim_postfix),
+                )
             else:
                 raise ValueError(token)
 

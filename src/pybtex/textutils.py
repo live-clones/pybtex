@@ -25,12 +25,12 @@ import re
 
 from pybtex.utils import deprecated
 
-terminators = '.', '?', '!'
-delimiter_re = re.compile(r'([\s\-])')
-whitespace_re = re.compile(r'\s+')
+terminators = ".", "?", "!"
+delimiter_re = re.compile(r"([\s\-])")
+whitespace_re = re.compile(r"\s+")
 
 
-@deprecated('0.19', 'use str.capitalize() instead')
+@deprecated("0.19", "use str.capitalize() instead")
 def capfirst(s):
     return s[0].upper() + s[1:] if s else s
 
@@ -86,7 +86,7 @@ def add_period(text):
     """
 
     if text and not is_terminated(text):
-        return text + '.'
+        return text + "."
     return text
 
 
@@ -103,11 +103,11 @@ def abbreviate(text, split=delimiter_re.split):
 
     def abbreviate(part):
         if part.isalpha():
-            return part[0] + '.'
+            return part[0] + "."
         else:
             return part
 
-    return ''.join(abbreviate(part) for part in split(text))
+    return "".join(abbreviate(part) for part in split(text))
 
 
 def normalize_whitespace(string):
@@ -130,7 +130,7 @@ def normalize_whitespace(string):
     Abc def.
     """
 
-    return whitespace_re.sub(' ', string.strip())
+    return whitespace_re.sub(" ", string.strip())
 
 
 def width(string):
@@ -155,10 +155,11 @@ def width(string):
     """
 
     from pybtex.charwidths import charwidths
+
     return sum(charwidths.get(char, 0) for char in string)
 
 
-def tie_or_space(word, tie='~', space=' ', enough_chars=3, other_word=None):
+def tie_or_space(word, tie="~", space=" ", enough_chars=3, other_word=None):
     n_chars = len(word)
     if other_word is not None:
         n_chars = min(n_chars, len(other_word))

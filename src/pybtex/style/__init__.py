@@ -28,6 +28,7 @@ class FormattedEntry(object):
     - label (which appears in the resulting bibliography)
     - text (usually RichText)
     """
+
     def __init__(self, key, text, label=None):
         self.key = key
         self.text = text
@@ -35,7 +36,7 @@ class FormattedEntry(object):
 
 
 class FormattedBibliography(object):
-    def __init__(self, entries, style, preamble=''):
+    def __init__(self, entries, style, preamble=""):
         self.entries = list(entries)
         self.style = style
         self.preamble = preamble

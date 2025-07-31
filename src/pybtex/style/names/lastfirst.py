@@ -29,7 +29,6 @@ from pybtex.style.template import join
 
 
 class NameStyle(BaseNameStyle):
-
     def format(self, person, abbr=False):
         r"""
         Format names similarly to {vv~}{ll}{, jj}{, f.} in BibTeX.
@@ -55,9 +54,11 @@ class NameStyle(BaseNameStyle):
         Last, F.~M.
 
         """
-        return join [
-            name_part(tie=True) [person.rich_prelast_names],
-            name_part [person.rich_last_names],
-            name_part(before=', ') [person.rich_lineage_names],
-            name_part(before=', ', abbr=abbr) [person.rich_first_names + person.rich_middle_names],
+        return join[
+            name_part(tie=True)[person.rich_prelast_names],
+            name_part[person.rich_last_names],
+            name_part(before=", ")[person.rich_lineage_names],
+            name_part(before=", ", abbr=abbr)[
+                person.rich_first_names + person.rich_middle_names
+            ],
         ]

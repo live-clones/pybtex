@@ -36,7 +36,9 @@ import textwrap
 from pybtex.exceptions import PybtexError
 from pybtex.utils import (
     deprecated,
-    OrderedCaseInsensitiveDict, CaseInsensitiveDefaultDict, CaseInsensitiveSet
+    OrderedCaseInsensitiveDict,
+    CaseInsensitiveDefaultDict,
+    CaseInsensitiveSet,
 )
 from pybtex.richtext import Text
 from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
@@ -49,7 +51,7 @@ def indent(text, prefix):
     if hasattr(textwrap, "indent"):
         return textwrap.indent(text, prefix)
     else:
-        return ''.join(prefix + line for line in text.splitlines(True))
+        return "".join(prefix + line for line in text.splitlines(True))
 
 
 class BibliographyDataError(PybtexError):
@@ -58,12 +60,14 @@ class BibliographyDataError(PybtexError):
 
 class InvalidNameString(PybtexError):
     def __init__(self, name_string):
-        message = 'Too many commas in {}'.format(repr(name_string))
+        message = "Too many commas in {}".format(repr(name_string))
         super(InvalidNameString, self).__init__(message)
 
 
 class BibliographyData(object):
-    def __init__(self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2):
+    def __init__(
+        self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2
+    ):
         """
         A :py:class:`.BibliographyData` object contains a dictionary of bibliography
         entries referenced by their keys.
@@ -101,7 +105,7 @@ class BibliographyData(object):
         if entries:
             if isinstance(entries, Mapping):
                 entries = entries.items()
-            for (key, entry) in entries:
+            for key, entry in entries:
                 self.add_entry(key, entry)
         if preamble:
             self._preamble.extend(preamble)
@@ -109,13 +113,9 @@ class BibliographyData(object):
     def __eq__(self, other):
         if not isinstance(other, BibliographyData):
             return super(BibliographyData, self) == other
-        return (
-            self.entries == other.entries
-            and self._preamble == other._preamble
-        )
+        return self.entries == other.entries and self._preamble == other._preamble
 
     def __repr__(self):
-
         repr_entry = repr(self.entries)
         keys = self.entries.keys()
 
@@ -126,10 +126,8 @@ class BibliographyData(object):
         repr_entry = indent(repr_entry, prefix="    ")
         repr_entry = repr_entry[4:]  # drop 1st indent
 
-        return (
-            "BibliographyData(\n"
-            "  entries={0},\n\n"
-            "  preamble={1})".format(repr_entry, repr(self._preamble))
+        return "BibliographyData(\n  entries={0},\n\n  preamble={1})".format(
+            repr_entry, repr(self._preamble)
         )
 
     def add_to_preamble(self, *values):
@@ -166,9 +164,9 @@ class BibliographyData(object):
         .. versionadded:: 0.19
             Earlier versions used :py:meth:`.get_preamble()`, which is now deprecated.
         '''
-        return ''.join(self._preamble)
+        return "".join(self._preamble)
 
-    @deprecated('0.19', 'use BibliographyData.preamble instead')
+    @deprecated("0.19", "use BibliographyData.preamble instead")
     def get_preamble(self):
         """
         .. deprecated:: 0.19
@@ -180,7 +178,7 @@ class BibliographyData(object):
         return (
             self.wanted_entries is None
             or key in self.wanted_entries
-            or '*' in self.wanted_entries
+            or "*" in self.wanted_entries
         )
 
     def get_canonical_key(self, key):
@@ -193,12 +191,12 @@ class BibliographyData(object):
         if not self.want_entry(key):
             return
         if key in self.entries:
-            report_error(BibliographyDataError('repeated bibliography entry: %s' % key))
+            report_error(BibliographyDataError("repeated bibliography entry: %s" % key))
             return
         entry.key = self.get_canonical_key(key)
         self.entries[entry.key] = entry
         try:
-            crossref = entry.fields['crossref']
+            crossref = entry.fields["crossref"]
         except KeyError:
             pass
         else:
@@ -250,23 +248,29 @@ class BibliographyData(object):
         for citation in citations:
             try:
                 entry = self.entries[citation]
-                crossref = entry.fields['crossref']
+                crossref = entry.fields["crossref"]
             except KeyError:
                 continue
             try:
                 crossref_entry = self.entries[crossref]
             except KeyError:
-                report_error(BibliographyDataError(
-                    'bad cross-reference: entry "{key}" refers to '
-                    'entry "{crossref}" which does not exist.'.format(
-                        key=citation, crossref=crossref,
+                report_error(
+                    BibliographyDataError(
+                        'bad cross-reference: entry "{key}" refers to '
+                        'entry "{crossref}" which does not exist.'.format(
+                            key=citation,
+                            crossref=crossref,
+                        )
                     )
-                ))
+                )
                 continue
 
             canonical_crossref = crossref_entry.key
             crossref_count[canonical_crossref] += 1
-            if crossref_count[canonical_crossref] >= min_crossrefs and canonical_crossref not in citation_set:
+            if (
+                crossref_count[canonical_crossref] >= min_crossrefs
+                and canonical_crossref not in citation_set
+            ):
                 citation_set.add(canonical_crossref)
                 yield canonical_crossref
 
@@ -298,7 +302,7 @@ class BibliographyData(object):
 
         citation_set = CaseInsensitiveSet()
         for citation in citations:
-            if citation == '*':
+            if citation == "*":
                 for key in self.entries:
                     if key not in citation_set:
                         citation_set.add(key)
@@ -310,7 +314,9 @@ class BibliographyData(object):
 
     def add_extra_citations(self, citations, min_crossrefs):
         expanded_citations = list(self._expand_wildcard_citations(citations))
-        crossrefs = list(self._get_crossreferenced_citations(expanded_citations, min_crossrefs))
+        crossrefs = list(
+            self._get_crossreferenced_citations(expanded_citations, min_crossrefs)
+        )
         return expanded_citations + crossrefs
 
     def to_string(self, bib_format, **kwargs):
@@ -321,7 +327,7 @@ class BibliographyData(object):
 
         .. versionadded:: 0.19
         """
-        writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
+        writer = find_plugin("pybtex.database.output", bib_format)(**kwargs)
         return writer.to_string(self)
 
     @classmethod
@@ -343,7 +349,7 @@ class BibliographyData(object):
 
         .. versionadded:: 0.19
         """
-        writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
+        writer = find_plugin("pybtex.database.output", bib_format)(**kwargs)
         return writer.to_bytes(self)
 
     def to_file(self, file, bib_format=None, **kwargs):
@@ -359,8 +365,10 @@ class BibliographyData(object):
         if isinstance(file, str):
             filename = file
         else:
-            filename = getattr(file, 'name', None)
-        writer = find_plugin('pybtex.database.output', bib_format, filename=filename)(**kwargs)
+            filename = getattr(file, "name", None)
+        writer = find_plugin("pybtex.database.output", bib_format, filename=filename)(
+            **kwargs
+        )
         return writer.write_file(self, file)
 
     def lower(self):
@@ -393,7 +401,9 @@ class BibliographyData(object):
 
         '''
 
-        entries_lower = ((key.lower(), entry.lower()) for key, entry in self.entries.items())
+        entries_lower = (
+            (key.lower(), entry.lower()) for key, entry in self.entries.items()
+        )
         return type(self)(
             entries=entries_lower,
             preamble=self._preamble,
@@ -479,8 +489,16 @@ class Entry(object):
         parameters = [repr(self.type)]
 
         if self.fields:
-            parameters.append("fields=[\n    {}]".format(",\n    ".join(
-                ["({!r}, {!r})".format(key, value) for (key, value) in self.fields.items()])))
+            parameters.append(
+                "fields=[\n    {}]".format(
+                    ",\n    ".join(
+                        [
+                            "({!r}, {!r})".format(key, value)
+                            for (key, value) in self.fields.items()
+                        ]
+                    )
+                )
+            )
 
         if self.persons:
             parameters.append("persons={!r}".format(dict(self.persons)))
@@ -499,12 +517,12 @@ class Entry(object):
 
     def _find_person_field(self, role):
         persons = self.persons[role]
-        return ' and '.join(str(person) for person in persons)
+        return " and ".join(str(person) for person in persons)
 
     def _find_crossref_field(self, name, bib_data):
-        if bib_data is None or 'crossref' not in self.fields:
+        if bib_data is None or "crossref" not in self.fields:
             raise KeyError(name)
-        referenced_entry = bib_data.entries[self.fields['crossref']]
+        referenced_entry = bib_data.entries[self.fields["crossref"]]
         return referenced_entry._find_field(name, bib_data)
 
     def _find_field(self, name, bib_data=None):
@@ -537,7 +555,7 @@ class Entry(object):
         :param bib_format: Data format ("bibtex", "yaml", etc.).
 
         """
-        writer = find_plugin('pybtex.database.output', bib_format)(**kwargs)
+        writer = find_plugin("pybtex.database.output", bib_format)(**kwargs)
         return writer.to_string(BibliographyData(entries={self.key: self}))
 
     @classmethod
@@ -610,9 +628,9 @@ class Person(object):
         Earlier versions used :py:meth:`.lineage`, which is now deprecated.
     """
 
-    valid_roles = ['author', 'editor']
-    style1_re = re.compile(r'^(.+),\s*(.+)$')
-    style2_re = re.compile(r'^(.+),\s*(.+),\s*(.+)$')
+    valid_roles = ["author", "editor"]
+    style1_re = re.compile(r"^(.+),\s*(.+)$")
+    style2_re = re.compile(r"^(.+),\s*(.+),\s*(.+)$")
 
     def __init__(self, string="", first="", middle="", prelast="", last="", lineage=""):
         """
@@ -701,6 +719,7 @@ class Person(object):
         >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
         ['Michail'] ['Markovitch'] [] ['Viktorov'] []
         """
+
         def process_first_middle(parts):
             try:
                 self.first_names.append(parts[0])
@@ -748,7 +767,7 @@ class Person(object):
                 for char, brace_level in scan_bibtex_string(string):
                     if brace_level == 0 and char.isalpha():
                         return char.islower()
-                    elif brace_level == 1 and char.startswith('\\'):
+                    elif brace_level == 1 and char.startswith("\\"):
                         return special_char_islower(char)
             return False
 
@@ -763,11 +782,11 @@ class Person(object):
                         return char.islower()
             return False
 
-        parts = split_tex_string(name, ',')
+        parts = split_tex_string(name, ",")
         if len(parts) > 3:
             report_error(InvalidNameString(name))
             last_parts = parts[2:]
-            parts = parts[:2] + [' '.join(last_parts)]
+            parts = parts[:2] + [" ".join(last_parts)]
 
         if len(parts) == 3:  # von Last, Jr, First
             process_von_last(split_tex_string(parts[0]))
@@ -801,17 +820,17 @@ class Person(object):
 
     def __str__(self):
         # von Last, Jr, First
-        von_last = ' '.join(self.prelast_names + self.last_names)
-        jr = ' '.join(self.lineage_names)
-        first = ' '.join(self.first_names + self.middle_names)
-        return ', '.join(part for part in (von_last, jr, first) if part)
+        von_last = " ".join(self.prelast_names + self.last_names)
+        jr = " ".join(self.lineage_names)
+        first = " ".join(self.first_names + self.middle_names)
+        return ", ".join(part for part in (von_last, jr, first) if part)
 
     def __repr__(self):
-        return 'Person({0})'.format(repr(str(self)))
+        return "Person({0})".format(repr(str(self)))
 
     def get_part_as_text(self, type):
-        names = getattr(self, type + '_names')
-        return ' '.join(names)
+        names = getattr(self, type + "_names")
+        return " ".join(names)
 
     def get_part(self, type, abbr=False):
         """Get a list of name parts by `type`.
@@ -823,11 +842,16 @@ class Person(object):
         ['Knuth']
         """
 
-        names = getattr(self, type + '_names')
+        names = getattr(self, type + "_names")
         if abbr:
             import warnings
-            warnings.warn('Person.get_part(abbr=True) is deprecated since 0.19: use pybtex.textutils.abbreviate()', stacklevel=2)
+
+            warnings.warn(
+                "Person.get_part(abbr=True) is deprecated since 0.19: use pybtex.textutils.abbreviate()",
+                stacklevel=2,
+            )
             from pybtex.textutils import abbreviate
+
             names = [abbreviate(name) for name in names]
         return names
 
@@ -877,47 +901,47 @@ class Person(object):
         """
         return [Text.from_latex(name) for name in self.lineage_names]
 
-    @deprecated('0.19', 'use Person.first_names instead')
+    @deprecated("0.19", "use Person.first_names instead")
     def first(self, abbr=False):
         """
         .. deprecated:: 0.19
             Use :py:attr:`.first_names` instead.
         """
-        return self.get_part('first', abbr)
+        return self.get_part("first", abbr)
 
-    @deprecated('0.19', 'use Person.middle_names instead')
+    @deprecated("0.19", "use Person.middle_names instead")
     def middle(self, abbr=False):
         """
         .. deprecated:: 0.19
             Use :py:attr:`.middle_names` instead.
         """
-        return self.get_part('middle', abbr)
+        return self.get_part("middle", abbr)
 
-    @deprecated('0.19', 'use Person.prelast_names instead')
+    @deprecated("0.19", "use Person.prelast_names instead")
     def prelast(self, abbr=False):
         """
         .. deprecated:: 0.19
             Use :py:attr:`.prelast_names` instead.
         """
-        return self.get_part('prelast', abbr)
+        return self.get_part("prelast", abbr)
 
-    @deprecated('0.19', 'use Person.last_names instead')
+    @deprecated("0.19", "use Person.last_names instead")
     def last(self, abbr=False):
         """
         .. deprecated:: 0.19
             Use :py:attr:`.last_names` instead.
         """
-        return self.get_part('last', abbr)
+        return self.get_part("last", abbr)
 
-    @deprecated('0.19', 'use Person.lineage_names instead')
+    @deprecated("0.19", "use Person.lineage_names instead")
     def lineage(self, abbr=False):
         """
         .. deprecated:: 0.19
             Use :py:attr:`.lineage_names` instead.
         """
-        return self.get_part('lineage', abbr)
+        return self.get_part("lineage", abbr)
 
-    @deprecated('0.19', 'use Person.bibtex_first_names instead')
+    @deprecated("0.19", "use Person.bibtex_first_names instead")
     def bibtex_first(self):
         """
         .. deprecated:: 0.19
@@ -940,9 +964,11 @@ def parse_file(file, bib_format=None, **kwargs):
     if isinstance(file, str):
         filename = file
     else:
-        filename = getattr(file, 'name', None)
+        filename = getattr(file, "name", None)
 
-    parser = find_plugin('pybtex.database.input', bib_format, filename=filename)(**kwargs)
+    parser = find_plugin("pybtex.database.input", bib_format, filename=filename)(
+        **kwargs
+    )
     return parser.parse_file(file)
 
 
@@ -956,7 +982,7 @@ def parse_string(value, bib_format, **kwargs):
     .. versionadded:: 0.19
     """
 
-    parser = find_plugin('pybtex.database.input', bib_format)(**kwargs)
+    parser = find_plugin("pybtex.database.input", bib_format)(**kwargs)
     return parser.parse_string(value)
 
 
@@ -970,5 +996,5 @@ def parse_bytes(value, bib_format, **kwargs):
     .. versionadded:: 0.19
     """
 
-    parser = find_plugin('pybtex.database.input', bib_format)(**kwargs)
+    parser = find_plugin("pybtex.database.input", bib_format)(**kwargs)
     return parser.parse_bytes(value)

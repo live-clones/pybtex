@@ -55,22 +55,26 @@ class PybtexDatabaseIO(DatabaseIO):
     def __init__(self, bib_format):
         super(PybtexDatabaseIO, self).__init__()
         self.bib_format = bib_format
-        self.writer = find_plugin('pybtex.database.output', bib_format)(encoding='UTF-8')
-        self.parser = find_plugin('pybtex.database.input', bib_format)(encoding='UTF-8')
+        self.writer = find_plugin("pybtex.database.output", bib_format)(
+            encoding="UTF-8"
+        )
+        self.parser = find_plugin("pybtex.database.input", bib_format)(encoding="UTF-8")
 
-        if bib_format == 'bibtexml':
+        if bib_format == "bibtexml":
             # BibTeXML does not support TeX preambles
             self.reference_data._preamble = []
 
     def __repr__(self):
-        return '{}({!r})'.format(type(self).__name__, self.bib_format)
+        return "{}({!r})".format(type(self).__name__, self.bib_format)
 
 
 class PybtexStreamIO(PybtexDatabaseIO):
     def serialize(self, bib_data):
         stream = BytesIO()
-        unicode_stream = TextIOWrapper(stream, 'UTF-8')
-        self.writer.write_stream(bib_data, unicode_stream if self.writer.unicode_io else stream)
+        unicode_stream = TextIOWrapper(stream, "UTF-8")
+        self.writer.write_stream(
+            bib_data, unicode_stream if self.writer.unicode_io else stream
+        )
         unicode_stream.flush()
         stream.seek(0)
         return unicode_stream
@@ -127,7 +131,7 @@ class PickleIO(DatabaseIO):
         self.protocol = protocol
 
     def __repr__(self):
-        return '{}(protocol={!r})'.format(type(self).__name__, self.protocol)
+        return "{}(protocol={!r})".format(type(self).__name__, self.protocol)
 
     def serialize(self, bib_data):
         return pickle.dumps(bib_data, protocol=self.protocol)
@@ -138,7 +142,7 @@ class PickleIO(DatabaseIO):
 
 class ReprEvalIO(DatabaseIO):
     def __repr__(self):
-        return '{}()'.format(type(self).__name__)
+        return "{}()".format(type(self).__name__)
 
     def serialize(self, bib_data):
         return repr(bib_data)
@@ -146,12 +150,16 @@ class ReprEvalIO(DatabaseIO):
     def deserialize(self, repr_value):
         from pybtex.utils import OrderedCaseInsensitiveDict
         from pybtex.database import BibliographyData, Entry, Person
-        return eval(repr_value, {
-            'OrderedCaseInsensitiveDict': OrderedCaseInsensitiveDict,
-            'BibliographyData': BibliographyData,
-            'Entry': Entry,
-            'Person': Person,
-        })
+
+        return eval(
+            repr_value,
+            {
+                "OrderedCaseInsensitiveDict": OrderedCaseInsensitiveDict,
+                "BibliographyData": BibliographyData,
+                "Entry": Entry,
+                "Person": Person,
+            },
+        )
 
 
 def check_database_io(io_obj):
@@ -160,15 +168,17 @@ def check_database_io(io_obj):
     assert deserialized_data == io_obj.reference_data
 
 
-@pytest.mark.parametrize(["io_cls"], [(PybtexBytesIO,), (PybtexStringIO,), (PybtexEntryStringIO,),(PybtexBytesIO,)])
+@pytest.mark.parametrize(
+    ["io_cls"],
+    [(PybtexBytesIO,), (PybtexStringIO,), (PybtexEntryStringIO,), (PybtexBytesIO,)],
+)
 @pytest.mark.parametrize(["bib_format"], [("bibtex",), ("bibtexml",), ("yaml",)])
 def test_database_io(io_cls, bib_format):
     check_database_io(io_cls(bib_format))
 
 
 @pytest.mark.parametrize(
-    ["protocol"],
-    [(protocol,) for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1)]
+    ["protocol"], [(protocol,) for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1)]
 )
 def test_database_pickling(protocol):
     check_database_io(PickleIO(protocol))

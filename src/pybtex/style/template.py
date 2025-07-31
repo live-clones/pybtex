@@ -100,27 +100,25 @@ class Node(object):
 
         """
         params = []
-        args_repr = ', '.join(repr(arg) for arg in self.args)
+        args_repr = ", ".join(repr(arg) for arg in self.args)
         if args_repr:
             params.append(args_repr)
-        kwargs_repr = ', '.join(
-            '%s=%s' % (key, repr(value)) for (key, value) in self.kwargs.items()
+        kwargs_repr = ", ".join(
+            "%s=%s" % (key, repr(value)) for (key, value) in self.kwargs.items()
         )
         if kwargs_repr:
             params.append(kwargs_repr)
         if params:
-            params_repr = '(%s)' % ', '.join(params)
+            params_repr = "(%s)" % ", ".join(params)
         else:
-            params_repr = ''
+            params_repr = ""
 
         if self.children:
-            children_repr = ' [%s]' % ', '.join(
-                repr(child) for child in self.children
-            )
+            children_repr = " [%s]" % ", ".join(repr(child) for child in self.children)
         else:
-            children_repr = ''
+            children_repr = ""
 
-        return ''.join([self.name, params_repr, children_repr])
+        return "".join([self.name, params_repr, children_repr])
 
     def format_data(self, data):
         """Format the given data into a piece of richtext.Text"""
@@ -155,7 +153,7 @@ def node(f):
 
 
 @node
-def join(children, data, sep='', sep2=None, last_sep=None):
+def join(children, data, sep="", sep2=None, last_sep=None):
     """Join text fragments together.
     >>> print(str(join.format()))
     <BLANKLINE>
@@ -177,14 +175,16 @@ def join(children, data, sep='', sep2=None, last_sep=None):
     elif len(parts) == 2:
         return richtext.Text(sep2).join(parts)
     else:
-        return richtext.Text(last_sep).join([richtext.Text(sep).join(parts[:-1]), parts[-1]])
+        return richtext.Text(last_sep).join(
+            [richtext.Text(sep).join(parts[:-1]), parts[-1]]
+        )
 
 
 @node
-def words(children, data, sep=' '):
+def words(children, data, sep=" "):
     """Join text fragments with spaces or something else."""
 
-    return join(sep) [children].format_data(data)
+    return join(sep)[children].format_data(data)
 
 
 @node
@@ -204,24 +204,34 @@ def together(children, data, last_tie=False):
     chapter 666
     """
     from pybtex.textutils import tie_or_space
+
     tie = richtext.nbsp
-    space = richtext.String(' ')
+    space = richtext.String(" ")
     parts = [part for part in _format_list(children, data) if part]
     if not parts:
         return richtext.Text()
     if len(parts) <= 2:
-        tie2 = tie if last_tie else tie_or_space(parts[0], tie, space, other_word=parts[-1])
+        tie2 = (
+            tie
+            if last_tie
+            else tie_or_space(parts[0], tie, space, other_word=parts[-1])
+        )
         return tie2.join(parts)
     else:
         last_tie = tie if last_tie else tie_or_space(parts[-1], tie, space)
         return richtext.Text(
-            parts[0], tie_or_space(parts[0], tie, space),
-            space.join(parts[1:-1]), last_tie, parts[-1]
+            parts[0],
+            tie_or_space(parts[0], tie, space),
+            space.join(parts[1:-1]),
+            last_tie,
+            parts[-1],
         )
 
 
 @node
-def sentence(children, data, capfirst=False, capitalize=False, add_period=True, sep=', '):
+def sentence(
+    children, data, capfirst=False, capitalize=False, add_period=True, sep=", "
+):
     """Join text fragments, capitalyze the first letter, add a period to the end.
 
     >>> print(str(sentence.format()))
@@ -232,7 +242,7 @@ def sentence(children, data, capfirst=False, capitalize=False, add_period=True, 
     uno, dos, tres
     """
 
-    text = join(sep) [children].format_data(data)
+    text = join(sep)[children].format_data(data)
     if capfirst:
         text = text.capfirst()
     if capitalize:
@@ -246,17 +256,18 @@ class FieldIsMissing(PybtexError):
     def __init__(self, field_name, entry):
         self.field_name = field_name
         super(FieldIsMissing, self).__init__(
-            'missing {0} in {1}'.format(field_name, getattr(entry, 'key', '<unnamed>'))
+            "missing {0} in {1}".format(field_name, getattr(entry, "key", "<unnamed>"))
         )
+
 
 @node
 def field(children, context, name, apply_func=None, raw=False):
     """Return the contents of the bibliography entry field."""
 
     assert not children
-    entry = context['entry']
+    entry = context["entry"]
     try:
-        field = entry._find_field(name, bib_data=context.get('bib_data'))
+        field = entry._find_field(name, bib_data=context.get("bib_data"))
         if not raw:
             field = richtext.Text.from_latex(field)
     except KeyError:
@@ -274,13 +285,15 @@ def names(children, context, role, **kwargs):
     assert not children
 
     try:
-        persons = context['entry'].persons[role]
+        persons = context["entry"].persons[role]
     except KeyError:
-        raise FieldIsMissing(role, context['entry'])
+        raise FieldIsMissing(role, context["entry"])
 
-    style = context['style']
-    formatted_names = [style.format_name(person, style.abbreviate_names) for person in persons]
-    return join(**kwargs) [formatted_names].format_data(context)
+    style = context["style"]
+    formatted_names = [
+        style.format_name(person, style.abbreviate_names) for person in persons
+    ]
+    return join(**kwargs)[formatted_names].format_data(context)
 
 
 @node
@@ -304,7 +317,7 @@ def optional(children, data):
 @node
 def optional_field(children, data, *args, **kwargs):
     assert not children
-    return optional [field(*args, **kwargs)].format_data(data)
+    return optional[field(*args, **kwargs)].format_data(data)
 
 
 @node
@@ -339,9 +352,9 @@ def href(children, data, url=None, external=False):
     parts = _format_list(children, data)
     if url is None:
         warnings.warn(
-            'href [url, text] is deprecated since 0.24: use href(url) [text] instead',
+            "href [url, text] is deprecated since 0.24: use href(url) [text] instead",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         url, *parts = parts
     return richtext.HRef(_format_data(url, data), *parts, external=external)

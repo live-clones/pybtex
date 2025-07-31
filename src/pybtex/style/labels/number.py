@@ -25,10 +25,7 @@ from pybtex.style.labels import BaseLabelStyle
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-
-
 class LabelStyle(BaseLabelStyle):
-
     def format_labels(self, sorted_entries):
         for number, entry in enumerate(sorted_entries):
             yield str(number + 1)

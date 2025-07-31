@@ -39,7 +39,8 @@ class PybtexError(Exception):
             return self.filename
         else:
             from .io import _decode_filename
-            return _decode_filename(self.filename, errors='replace')
+
+            return _decode_filename(self.filename, errors="replace")
 
     def __eq__(self, other):
         return str(self) == str(other)

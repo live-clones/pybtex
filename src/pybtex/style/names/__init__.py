@@ -19,8 +19,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""name formatting styles
-"""
+"""name formatting styles"""
+
 from __future__ import unicode_literals
 
 from pybtex.plugin import Plugin
@@ -35,13 +35,13 @@ class BaseNameStyle(Plugin):
 
 
 @node
-def name_part(children, data, before='', tie=False, abbr=False):
+def name_part(children, data, before="", tie=False, abbr=False):
     if abbr:
         children = [child.abbreviate() for child in children]
-    parts = together(last_tie=True) [children].format_data(data)
+    parts = together(last_tie=True)[children].format_data(data)
     if not parts:
         return Text()
     if tie:
-        return Text(before, parts, tie_or_space(parts, nbsp, ' '))
+        return Text(before, parts, tie_or_space(parts, nbsp, " "))
     else:
         return Text(before, parts)

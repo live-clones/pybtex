@@ -68,6 +68,7 @@ http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 
 """
+
 from __future__ import unicode_literals
 
 import re
@@ -77,28 +78,26 @@ from pybtex import textutils
 from pybtex.bibtex.utils import split_name_list
 from pybtex.database import Entry, Person, BibliographyDataError
 from pybtex.database.input import BaseParser
-from pybtex.scanner import (
-    Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
-)
+from pybtex.scanner import Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
 from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
 
 month_names = {
-    'jan': 'January',
-    'feb': 'February',
-    'mar': 'March',
-    'apr': 'April',
-    'may': 'May',
-    'jun': 'June',
-    'jul': 'July',
-    'aug': 'August',
-    'sep': 'September',
-    'oct': 'October',
-    'nov': 'November',
-    'dec': 'December'
+    "jan": "January",
+    "feb": "February",
+    "mar": "March",
+    "apr": "April",
+    "may": "May",
+    "jun": "June",
+    "jul": "July",
+    "aug": "August",
+    "sep": "September",
+    "oct": "October",
+    "nov": "November",
+    "dec": "December",
 }
 
 
-NAME_CHARS = ascii_letters + u'@!$&*+-./:;<>?[\\]^_`|~\x7f'
+NAME_CHARS = ascii_letters + "@!$&*+-./:;<>?[\\]^_`|~\x7f"
 
 
 class SkipEntry(Exception):
@@ -106,31 +105,34 @@ class SkipEntry(Exception):
 
 
 class UndefinedMacro(PybtexSyntaxError):
-    error_type = 'undefined string'
+    error_type = "undefined string"
 
 
 class DuplicateField(BibliographyDataError):
     def __init__(self, entry_key, field_name):
-        message = 'entry with key {} has a duplicate {} field'.format(
+        message = "entry with key {} has a duplicate {} field".format(
             entry_key, field_name
         )
         super(DuplicateField, self).__init__(message)
 
 
 class LowLevelParser(Scanner):
-    NAME = Pattern(r'[{0}][{1}]*'.format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)), 'a valid name')
-    KEY_PAREN = Pattern(r'[^\s\,]+', 'entry key')
-    KEY_BRACE = Pattern(r'[^\s\,}]+', 'entry key')
-    NUMBER = Pattern(r'[{0}]+'.format(digits), 'a number')
-    LBRACE = Literal(u'{')
-    RBRACE = Literal(u'}')
-    LPAREN = Literal(u'(')
-    RPAREN = Literal(u')')
-    QUOTE = Literal(u'"')
-    COMMA = Literal(u',')
-    EQUALS = Literal(u'=')
-    HASH = Literal(u'#')
-    AT = Literal(u'@')
+    NAME = Pattern(
+        r"[{0}][{1}]*".format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)),
+        "a valid name",
+    )
+    KEY_PAREN = Pattern(r"[^\s\,]+", "entry key")
+    KEY_BRACE = Pattern(r"[^\s\,}]+", "entry key")
+    NUMBER = Pattern(r"[{0}]+".format(digits), "a number")
+    LBRACE = Literal("{")
+    RBRACE = Literal("}")
+    LPAREN = Literal("(")
+    RPAREN = Literal(")")
+    QUOTE = Literal('"')
+    COMMA = Literal(",")
+    EQUALS = Literal("=")
+    HASH = Literal("#")
+    AT = Literal("@")
 
     command_start = None
     current_command = None
@@ -140,12 +142,13 @@ class LowLevelParser(Scanner):
     current_field_value = None
 
     def __init__(
-        self, text,
+        self,
+        text,
         keyless_entries=False,
         macros=month_names,
         handle_error=None,
         want_entry=None,
-        filename=None
+        filename=None,
     ):
         super(LowLevelParser, self).__init__(text, filename)
         self.keyless_entries = keyless_entries
@@ -164,12 +167,12 @@ class LowLevelParser(Scanner):
     def get_error_context(self, context_info):
         error_start, lineno, error_pos = context_info
         before_error = self.text[error_start:error_pos]
-        if not before_error.endswith('\n'):
+        if not before_error.endswith("\n"):
             eol = self.NEWLINE.search(self.text, error_pos)
             error_end = eol.end() if eol else self.end_pos
         else:
             error_end = error_pos
-        context = self.text[error_start:error_end].rstrip('\r\n')
+        context = self.text[error_start:error_end].rstrip("\r\n")
         colno = len(before_error.splitlines()[-1])
         return context, lineno, colno
 
@@ -206,17 +209,23 @@ class LowLevelParser(Scanner):
         body_end = self.RBRACE if body_start.pattern == self.LBRACE else self.RPAREN
 
         command_lower = command.lower()
-        if command_lower == 'string':
+        if command_lower == "string":
             parse_body = self.parse_string_body
-            make_result = lambda: (command, (self.current_field_name, self.current_value))
-        elif command_lower == 'preamble':
+            make_result = lambda: (
+                command,
+                (self.current_field_name, self.current_value),
+            )
+        elif command_lower == "preamble":
             parse_body = self.parse_preamble_body
             make_result = lambda: (command, (self.current_value,))
-        elif command_lower == 'comment':
+        elif command_lower == "comment":
             raise SkipEntry
         else:
             parse_body = self.parse_entry_body
-            make_result = lambda: (command, (self.current_entry_key, self.current_fields))
+            make_result = lambda: (
+                command,
+                (self.current_entry_key, self.current_fields),
+            )
         try:
             parse_body(body_end)
             self.required([body_end])
@@ -231,7 +240,7 @@ class LowLevelParser(Scanner):
         self.current_field_name = self.required([self.NAME]).value
         self.required([self.EQUALS])
         self.parse_value()
-        self.macros[self.current_field_name] = ''.join(self.current_value)
+        self.macros[self.current_field_name] = "".join(self.current_value)
 
     def parse_entry_body(self, body_end):
         if not self.keyless_entries:
@@ -247,7 +256,9 @@ class LowLevelParser(Scanner):
             self.current_value = []
             self.parse_field()
             if self.current_field_name and self.current_value:
-                self.current_fields.append((self.current_field_name, self.current_value))
+                self.current_fields.append(
+                    (self.current_field_name, self.current_value)
+                )
             comma = self.optional([self.COMMA])
             if not comma:
                 return
@@ -276,7 +287,7 @@ class LowLevelParser(Scanner):
     def parse_value_part(self):
         token = self.required(
             [self.QUOTE, self.LBRACE, self.NUMBER, self.NAME],
-            description='field value',
+            description="field value",
         )
         if token.pattern is self.QUOTE:
             value_part = self.flatten_string(self.parse_string(string_end=self.QUOTE))
@@ -289,7 +300,7 @@ class LowLevelParser(Scanner):
         return value_part
 
     def flatten_string(self, parts):
-        return ''.join(part.value for part in parts)[:-1]
+        return "".join(part.value for part in parts)[:-1]
 
     def substitute_macro(self, name):
         try:
@@ -297,11 +308,11 @@ class LowLevelParser(Scanner):
         except KeyError:
             if self.want_current_entry():
                 self.handle_error(UndefinedMacro(name, self))
-            return ''
+            return ""
 
     def parse_string(self, string_end, level=0, max_level=100):
         if level > max_level:
-            raise PybtexSyntaxError('too many nested braces', self)
+            raise PybtexSyntaxError("too many nested braces", self)
 
         special_chars = [self.RBRACE, self.LBRACE]
         if string_end is self.QUOTE:
@@ -318,19 +329,22 @@ class LowLevelParser(Scanner):
                 for subpart in self.parse_string(self.RBRACE, level + 1):
                     yield subpart
             elif part.pattern is self.RBRACE and level == 0:
-                raise PybtexSyntaxError('unbalanced braces', self)
+                raise PybtexSyntaxError("unbalanced braces", self)
 
 
 class BibTeXEntryIterator(LowLevelParser):
     def __init__(self, *args, **kwargs):
         import warnings
-        message = 'BibTeXEntryIterator is deprecated since 0.22: renamed to LowLevelParser'
+
+        message = (
+            "BibTeXEntryIterator is deprecated since 0.22: renamed to LowLevelParser"
+        )
         warnings.warn(message, DeprecationWarning, stacklevel=2)
         super(BibTeXEntryIterator, self).__init__(*args, **kwargs)
 
 
 class Parser(BaseParser):
-    default_suffix = '.bib'
+    default_suffix = ".bib"
     unicode_io = True
 
     macros = None
@@ -341,7 +355,7 @@ class Parser(BaseParser):
         macros=month_names,
         person_fields=Person.valid_roles,
         keyless_entries=False,
-        **kwargs
+        **kwargs,
     ):
         BaseParser.__init__(self, encoding, **kwargs)
 
@@ -353,7 +367,7 @@ class Parser(BaseParser):
         entry = Entry(entry_type)
 
         if key is None:
-            key = 'unnamed-%i' % self.unnamed_entry_counter
+            key = "unnamed-%i" % self.unnamed_entry_counter
             self.unnamed_entry_counter += 1
 
         seen_fields = set()
@@ -362,7 +376,9 @@ class Parser(BaseParser):
                 self.handle_error(DuplicateField(key, field_name))
                 continue
 
-            field_value = textutils.normalize_whitespace(self.flatten_value_list(field_value_list))
+            field_value = textutils.normalize_whitespace(
+                self.flatten_value_list(field_value_list)
+            )
             if field_name in self.person_fields:
                 for name in split_name_list(field_value):
                     entry.add_person(Person(name), field_name)
@@ -376,10 +392,11 @@ class Parser(BaseParser):
         self.data.add_to_preamble(value)
 
     def flatten_value_list(self, value_list):
-        return ''.join(value_list)
+        return "".join(value_list)
 
     def handle_error(self, error):
         from pybtex.errors import report_error
+
         report_error(error)
 
     def parse_string(self, text):
@@ -397,9 +414,9 @@ class Parser(BaseParser):
         for entry in entry_iterator:
             entry_type = entry[0]
             entry_type_lower = entry_type.lower()
-            if entry_type_lower == 'string':
+            if entry_type_lower == "string":
                 pass
-            elif entry_type_lower == 'preamble':
+            elif entry_type_lower == "preamble":
                 self.process_preamble(*entry[1])
             else:
                 self.process_entry(entry_type, *entry[1])

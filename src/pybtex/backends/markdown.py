@@ -39,6 +39,7 @@ Markdown output backend.
 >>> print(HRef('/', 'Non-', 'empty').render(markdown))
 [Non\-empty](/)
 """
+
 from __future__ import unicode_literals
 
 from xml.sax.saxutils import escape
@@ -46,26 +47,26 @@ from xml.sax.saxutils import escape
 from pybtex.backends import BaseBackend, html
 
 SPECIAL_CHARS = [
-    u'\\',  # backslash
-    u'`',   # backtick
-    u'*',   # asterisk
-    u'_',   # underscore
-    u'{',   # curly braces
-    u'}',   # curly braces
-    u'[',   # square brackets
-    u']',   # square brackets
-    u'(',   # parentheses
-    u')',   # parentheses
-    u'#',   # hash mark
-    u'+',   # plus sign
-    u'-',   # minus sign (hyphen)
-    u'.',   # dot
-    u'!',   # exclamation mark
+    "\\",  # backslash
+    "`",  # backtick
+    "*",  # asterisk
+    "_",  # underscore
+    "{",  # curly braces
+    "}",  # curly braces
+    "[",  # square brackets
+    "]",  # square brackets
+    "(",  # parentheses
+    ")",  # parentheses
+    "#",  # hash mark
+    "+",  # plus sign
+    "-",  # minus sign (hyphen)
+    ".",  # dot
+    "!",  # exclamation mark
 ]
 
 
 class Backend(BaseBackend):
-    u""" A backend to support markdown output. It implements the same
+    """A backend to support markdown output. It implements the same
     features as the HTML backend.
 
     In addition to that, you can use the keyword php_extra=True to enable
@@ -82,18 +83,18 @@ class Backend(BaseBackend):
         super(Backend, self).__init__(encoding=encoding)
         self.php_extra = php_extra
 
-    default_suffix = '.md'
+    default_suffix = ".md"
     symbols = {
-        'ndash': u'&ndash;',# or 'ndash': u'–',
-        'newblock': u'\n',
-        'nbsp': u' '
+        "ndash": "&ndash;",  # or 'ndash': u'–',
+        "newblock": "\n",
+        "nbsp": " ",
     }
     tags = {
-        'em'    : u'*',  # emphasize text
-        'strong': u'**', # emphasize text even more
-        'i'     : u'*',  # italicize text: be careful, i is not semantic
-        'b'     : u'**', # embolden text: be careful, b is not semantic
-        'tt'    : u'`',  # make text appear as code (typically typewriter text), a little hacky
+        "em": "*",  # emphasize text
+        "strong": "**",  # emphasize text even more
+        "i": "*",  # italicize text: be careful, i is not semantic
+        "b": "**",  # embolden text: be careful, b is not semantic
+        "tt": "`",  # make text appear as code (typically typewriter text), a little hacky
     }
 
     def format_str(self, text):
@@ -102,29 +103,29 @@ class Backend(BaseBackend):
         """
         text = escape(text)
         for special_char in SPECIAL_CHARS:
-            text = text.replace(special_char, u'\\' + special_char)
+            text = text.replace(special_char, "\\" + special_char)
         return text
 
     def format_tag(self, tag_name, text):
         tag = self.tags.get(tag_name)
         if tag is None:  # fall back on html tags
-            return r'<{0}>{1}</{0}>'.format(tag_name, text) if text else u''
+            return r"<{0}>{1}</{0}>".format(tag_name, text) if text else ""
         else:
-            return r'{0}{1}{0}'.format(tag, text) if text else u''
+            return r"{0}{1}{0}".format(tag, text) if text else ""
 
     def format_href(self, url, text, external=False):
         if not text:
-            return u''
+            return ""
         if external:
             return html.Backend.format_href(url, text, external)
         else:
-            return r'[%s](%s)' % (text, url)
+            return r"[%s](%s)" % (text, url)
 
     def write_entry(self, key, label, text):
         # Support http://www.michelf.com/projects/php-markdown/extra/#def-list
         if self.php_extra:
-            self.output(u'%s\n' % label)
-            self.output(u':   %s\n\n' % text)
+            self.output("%s\n" % label)
+            self.output(":   %s\n\n" % text)
         else:
-            self.output(u'[%s] ' % label)
-            self.output(u'%s  \n' % text)
+            self.output("[%s] " % label)
+            self.output("%s  \n" % text)

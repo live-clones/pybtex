@@ -22,7 +22,6 @@
 
 """Sample Pybtex plugins."""
 
-
 from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.database.output import BaseWriter
@@ -41,10 +40,10 @@ class PythonParser(BaseParser):
 
     def parse_stream(self, stream):
         context = {
-            'BibliographyData': BibliographyData,
-            'OrderedCaseInsensitiveDict': OrderedCaseInsensitiveDict,
-            'Entry': Entry,
-            'Person': Person,
+            "BibliographyData": BibliographyData,
+            "OrderedCaseInsensitiveDict": OrderedCaseInsensitiveDict,
+            "Entry": Entry,
+            "Person": Person,
         }
         code = stream.read()
         self.data = eval(code, context)

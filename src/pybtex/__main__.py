@@ -29,9 +29,9 @@ from pybtex.cmdline import CommandLine, make_option, standard_option
 
 
 class PybtexCommandLine(CommandLine):
-    prog = 'pybtex'
-    args = '[options] auxfile.aux'
-    description = 'BibTeX-compatible bibliography processor in Python'
+    prog = "pybtex"
+    args = "[options] auxfile.aux"
+    description = "BibTeX-compatible bibliography processor in Python"
     long_description = """
 
 Pybtex reads citation information from a LaTeX .aux file and produces a
@@ -47,73 +47,90 @@ It is also possible to define bibliography formatting styles in Python.
     num_args = 1
 
     options = (
-        (None, (
-            standard_option('strict'),
-            make_option(
-                '--terse', dest='verbose', action='store_false',
-                help='ignored for compatibility with BibTeX',
+        (
+            None,
+            (
+                standard_option("strict"),
+                make_option(
+                    "--terse",
+                    dest="verbose",
+                    action="store_false",
+                    help="ignored for compatibility with BibTeX",
+                ),
+                standard_option("min_crossrefs"),
+                standard_option("bib_format"),
+                standard_option("output_backend"),
+                standard_option("style"),
+                make_option(
+                    "-l",
+                    "--style-language",
+                    dest="style_language",
+                    help="style definition language to use (bibtex or python)",
+                    metavar="LANGUAGE",
+                ),
             ),
-            standard_option('min_crossrefs'),
-            standard_option('bib_format'),
-            standard_option('output_backend'),
-            standard_option('style'),
-            make_option(
-                '-l', '--style-language', dest='style_language',
-                help='style definition language to use (bibtex or python)',
-                metavar='LANGUAGE',
+        ),
+        (
+            "Pythonic style options",
+            (
+                standard_option("label_style"),
+                standard_option("name_style"),
+                standard_option("sorting_style"),
+                standard_option("abbreviate_names"),
             ),
-        )),
-        ('Pythonic style options', (
-            standard_option('label_style'),
-            standard_option('name_style'),
-            standard_option('sorting_style'),
-            standard_option('abbreviate_names'),
-        )),
-        ('Encoding options', (
-            standard_option('encoding'),
-            make_option('--bibtex-encoding', dest='bib_encoding', metavar='ENCODING'),
-            make_option('--bst-encoding', dest='bst_encoding', metavar='ENCODING'),
-            standard_option('output_encoding'),
-        )),
+        ),
+        (
+            "Encoding options",
+            (
+                standard_option("encoding"),
+                make_option(
+                    "--bibtex-encoding", dest="bib_encoding", metavar="ENCODING"
+                ),
+                make_option("--bst-encoding", dest="bst_encoding", metavar="ENCODING"),
+                standard_option("output_encoding"),
+            ),
+        ),
     )
     option_defaults = {
-        'style_language': 'bibtex',
-        'min_crossrefs': 2,
+        "style_language": "bibtex",
+        "min_crossrefs": 2,
     }
-    legacy_options = '-help', '-version', '-min-crossrefs', '-terse'
+    legacy_options = "-help", "-version", "-min-crossrefs", "-terse"
 
     def run(self, filename, style_language, encoding, **options):
-        if style_language == 'bibtex':
+        if style_language == "bibtex":
             from pybtex import bibtex as engine
-        elif style_language == 'python':
+        elif style_language == "python":
             import pybtex as engine
         else:
-            self.opt_parser.error('unknown style language %s' % style_language)
+            self.opt_parser.error("unknown style language %s" % style_language)
 
         not_supported_by_bibtex = {
-            'output_backend': 'output backends',
-            'label_style': 'label styles',
-            'name_style': 'name styles',
-            'sorting_style': 'sorting styles',
-            'abbreviate_names': 'abbreviated names',
+            "output_backend": "output backends",
+            "label_style": "label styles",
+            "name_style": "name styles",
+            "sorting_style": "sorting styles",
+            "abbreviate_names": "abbreviated names",
         }
-        if style_language != 'python':
+        if style_language != "python":
             for option, what_is_not_supported in not_supported_by_bibtex.items():
                 if options[option]:
                     self.opt_parser.error(
-                        '%s are only supported by the Pythonic style engine (-l python)' % what_is_not_supported
+                        "%s are only supported by the Pythonic style engine (-l python)"
+                        % what_is_not_supported
                     )
 
-        for encoding_option in 'bib_encoding', 'bst_encoding', 'output_encoding':
+        for encoding_option in "bib_encoding", "bst_encoding", "output_encoding":
             if not options[encoding_option]:
                 options[encoding_option] = encoding
 
         ext = path.splitext(filename)[1]
-        if ext != '.aux':
-            filename = path.extsep.join([filename, 'aux'])
+        if ext != ".aux":
+            filename = path.extsep.join([filename, "aux"])
         engine.make_bibliography(filename, **options)
+
 
 main = PybtexCommandLine()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

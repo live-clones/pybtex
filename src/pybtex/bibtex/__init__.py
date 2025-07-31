@@ -18,8 +18,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""BibTeX unnamed stack language interpreter and related stuff
-"""
+"""BibTeX unnamed stack language interpreter and related stuff"""
+
 from __future__ import unicode_literals
 
 
@@ -40,7 +40,7 @@ class BibTeXEngine(Engine):
         self,
         bib_files_or_filenames,
         style,
-        citations=['*'],
+        citations=["*"],
         bib_format=None,
         bib_encoding=None,
         output_encoding=None,
@@ -48,7 +48,7 @@ class BibTeXEngine(Engine):
         min_crossrefs=2,
         output_filename=None,
         add_output_suffix=False,
-        **kwargs
+        **kwargs,
     ):
         """
         Read the bigliography data from the given files and produce a formated
@@ -76,15 +76,19 @@ class BibTeXEngine(Engine):
 
         if bib_format is None:
             from pybtex.database.input.bibtex import Parser as bib_format
-        bst_filename = style + path.extsep + 'bst'
+        bst_filename = style + path.extsep + "bst"
         bst_script = bst.parse_file(bst_filename, bst_encoding)
         interpreter = Interpreter(bib_format, bib_encoding)
-        bbl_data = interpreter.run(bst_script, citations, bib_files_or_filenames, min_crossrefs=min_crossrefs)
+        bbl_data = interpreter.run(
+            bst_script, citations, bib_files_or_filenames, min_crossrefs=min_crossrefs
+        )
 
         if add_output_suffix:
-            output_filename = output_filename + '.bbl'
+            output_filename = output_filename + ".bbl"
         if output_filename:
-            output_file = pybtex.io.open_unicode(output_filename, 'w', encoding=output_encoding)
+            output_file = pybtex.io.open_unicode(
+                output_filename, "w", encoding=output_encoding
+            )
         else:
             output_file = StringIO()
         with output_file:

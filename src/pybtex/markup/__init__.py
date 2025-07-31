@@ -26,8 +26,8 @@ from pybtex.richtext import String, Text, Protected
 
 
 class LaTeXParser(Scanner):
-    LBRACE = Literal(u'{')
-    RBRACE = Literal(u'}')
+    LBRACE = Literal("{")
+    RBRACE = Literal("}")
 
     def parse(self, level=0):
         """
@@ -51,7 +51,7 @@ class LaTeXParser(Scanner):
                 if remainder:
                     yield String(remainder)
                 if level != 0:
-                    raise PybtexSyntaxError('unbalanced braces', self)
+                    raise PybtexSyntaxError("unbalanced braces", self)
                 break
             elif token.pattern is self.LBRACE:
                 yield String(token.value[:-1])
@@ -59,5 +59,5 @@ class LaTeXParser(Scanner):
             else:  # brace.pattern is self.RBRACE
                 yield String(token.value[:-1])
                 if level == 0:
-                    raise PybtexSyntaxError('unbalanced braces', self)
+                    raise PybtexSyntaxError("unbalanced braces", self)
                 break

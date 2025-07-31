@@ -57,6 +57,7 @@ one~two~\emph{three}
 >>> print(str(t))
 one<nbsp>two<nbsp>three
 """
+
 from __future__ import absolute_import, unicode_literals
 
 import itertools
@@ -77,7 +78,7 @@ def str_repr(string):
     """
 
     result = repr(string)
-    if result.startswith('u'):
+    if result.startswith("u"):
         return result[1:]
     else:
         return result
@@ -90,7 +91,7 @@ def ensure_text(value):
         return value
     else:
         bad_type = type(value).__name__
-        raise ValueError('parts must be strings or BaseText instances, not ' + bad_type)
+        raise ValueError("parts must be strings or BaseText instances, not " + bad_type)
 
 
 class BaseText(object):
@@ -194,7 +195,7 @@ class BaseText(object):
     def isalpha(self):
         raise NotImplementedError
 
-    def add_period(self, period='.'):
+    def add_period(self, period="."):
         """
         Add a period to the end of text, if the last character is not ".", "!" or "?".
 
@@ -221,7 +222,7 @@ class BaseText(object):
                 return word
 
         parts = self.split(textutils.delimiter_re)
-        return String('').join(abbreviate_word(part) for part in parts)
+        return String("").join(abbreviate_word(part) for part in parts)
 
     def capfirst(self):
         """
@@ -274,7 +275,8 @@ class BaseText(object):
 
         """
         from pybtex.plugin import find_plugin
-        backend_cls = find_plugin('pybtex.backends', backend_name)
+
+        backend_cls = find_plugin("pybtex.backends", backend_name)
         return self.render(backend_cls())
 
     def _unpack(self):
@@ -339,7 +341,7 @@ class BaseMultipartText(BaseText):
         self.length = sum(len(part) for part in self.parts)
 
     def __str__(self):
-        return ''.join(str(part) for part in self.parts)
+        return "".join(str(part) for part in self.parts)
 
     def __eq__(self, other):
         """
@@ -352,9 +354,9 @@ class BaseMultipartText(BaseText):
 
         """
         return (
-            isinstance(other, BaseText) and
-            self._typeinfo() == other._typeinfo() and
-            self.parts == other.parts
+            isinstance(other, BaseText)
+            and self._typeinfo() == other._typeinfo()
+            and self.parts == other.parts
         )
 
     def __len__(self):
@@ -429,7 +431,7 @@ class BaseMultipartText(BaseText):
         length = 0
         for part in self.parts:
             if length + len(part) > slice_length:
-                parts.append(part[:slice_length - length])
+                parts.append(part[: slice_length - length])
                 break
             else:
                 parts.append(part)
@@ -446,7 +448,7 @@ class BaseMultipartText(BaseText):
         length = 0
         for part in reversed(self.parts):
             if length + len(part) > slice_length:
-                parts.append(part[len(part) - (slice_length - length):])
+                parts.append(part[len(part) - (slice_length - length) :])
                 break
             else:
                 parts.append(part)
@@ -481,7 +483,7 @@ class BaseMultipartText(BaseText):
         if keep_empty_parts is None:
             keep_empty_parts = sep is not None
 
-        tail = [''] if keep_empty_parts else []
+        tail = [""] if keep_empty_parts else []
         for part in self.parts:
             split_part = part.split(sep, keep_empty_parts=True)
             if not split_part:
@@ -572,8 +574,7 @@ class BaseMultipartText(BaseText):
         """
 
         rendered_list = [part.render(backend) for part in self.parts]
-        assert all(isinstance(item, backend.RenderType)
-                   for item in rendered_list)
+        assert all(isinstance(item, backend.RenderType) for item in rendered_list)
         return backend.render_sequence(rendered_list)
 
     def _typeinfo(self):
@@ -622,11 +623,11 @@ class BaseMultipartText(BaseText):
                 for text in group:
                     yield text
 
-    @deprecated('0.19', 'use __unicode__() instead')
+    @deprecated("0.19", "use __unicode__() instead")
     def plaintext(self):
         return str(self)
 
-    @deprecated('0.19')
+    @deprecated("0.19")
     def enumerate(self):
         for n, child in enumerate(self.parts):
             try:
@@ -635,7 +636,7 @@ class BaseMultipartText(BaseText):
             except AttributeError:
                 yield self, n
 
-    @deprecated('0.19')
+    @deprecated("0.19")
     def reversed(self):
         for n, child in reversed(list(enumerate(self.parts))):
             try:
@@ -644,7 +645,7 @@ class BaseMultipartText(BaseText):
             except AttributeError:
                 yield self, n
 
-    @deprecated('0.19', 'use slicing instead')
+    @deprecated("0.19", "use slicing instead")
     def get_beginning(self):
         try:
             l, i = next(self.enumerate())
@@ -653,7 +654,7 @@ class BaseMultipartText(BaseText):
         else:
             return l.parts[i]
 
-    @deprecated('0.19', 'use slicing instead')
+    @deprecated("0.19", "use slicing instead")
     def get_end(self):
         try:
             l, i = next(self.reversed())
@@ -662,15 +663,15 @@ class BaseMultipartText(BaseText):
         else:
             return l.parts[i]
 
-    @deprecated('0.19', 'use slicing instead')
+    @deprecated("0.19", "use slicing instead")
     def apply_to_start(self, f):
         return self.map(f, lambda index, length: index == 0)
 
-    @deprecated('0.19', 'use slicing instead')
+    @deprecated("0.19", "use slicing instead")
     def apply_to_end(self, f):
         return self.map(f, lambda index, length: index == length - 1)
 
-    @deprecated('0.19')
+    @deprecated("0.19")
     def map(self, f, condition=None):
         if condition is None:
             condition = lambda index, length: True
@@ -678,10 +679,11 @@ class BaseMultipartText(BaseText):
         def iter_map_with_condition():
             length = len(self)
             for index, child in enumerate(self.parts):
-                if hasattr(child, 'map'):
+                if hasattr(child, "map"):
                     yield child.map(f, condition) if condition(index, length) else child
                 else:
                     yield f(child) if condition(index, length) else child
+
         return self._create_similar(iter_map_with_condition())
 
 
@@ -708,7 +710,7 @@ class String(BaseText):
         November, December.
         """
 
-        self.value = ''.join(parts)
+        self.value = "".join(parts)
 
     def __repr__(self):
         return str_repr(self.value)
@@ -742,6 +744,7 @@ class String(BaseText):
 
         if sep is None:
             from .textutils import whitespace_re
+
             parts = whitespace_re.split(self.value)
         elif isinstance(sep, str):
             parts = self.value.split(sep)
@@ -749,7 +752,9 @@ class String(BaseText):
             try:
                 split_method = sep.split
             except AttributeError:
-                raise TypeError('sep must be None, string or compiled regular expression')
+                raise TypeError(
+                    "sep must be None, string or compiled regular expression"
+                )
             else:
                 parts = split_method(self.value)
         return [String(part) for part in parts if part or keep_empty_parts]
@@ -801,7 +806,7 @@ class Text(BaseMultipartText):
     """
 
     def __repr__(self):
-        return 'Text({})'.format(', '.join(repr(part) for part in self.parts))
+        return "Text({})".format(", ".join(repr(part) for part in self.parts))
 
     def _unpack(self):
         for part in self.parts:
@@ -813,7 +818,7 @@ class Text(BaseMultipartText):
         import latexcodec  # noqa
         from pybtex.markup import LaTeXParser
 
-        return LaTeXParser(codecs.decode(latex, 'ulatex')).parse()
+        return LaTeXParser(codecs.decode(latex, "ulatex")).parse()
 
 
 class Tag(BaseMultipartText):
@@ -833,10 +838,10 @@ class Tag(BaseMultipartText):
 
     def __check_name(self, name):
         depr_map = {}
-        depr_map[u'emph'] = u'em'
+        depr_map["emph"] = "em"
         if name in depr_map:
-            msg = u"The tag '%s' is deprecated" % name
-            msg += u", use '%s' instead." % depr_map[name]
+            msg = "The tag '%s' is deprecated" % name
+            msg += ", use '%s' instead." % depr_map[name]
             warnings.warn(msg, DeprecationWarning, stacklevel=3)
             return depr_map[name]
         return name
@@ -844,17 +849,18 @@ class Tag(BaseMultipartText):
     def __init__(self, name, *args):
         if not isinstance(name, (str, Text)):
             raise ValueError(
-                "name must be str or Text (got %s)" % name.__class__.__name__)
+                "name must be str or Text (got %s)" % name.__class__.__name__
+            )
         self.name = self.__check_name(str(name))
-        self.info = self.name,
+        self.info = (self.name,)
         super(Tag, self).__init__(*args)
 
     def __repr__(self):
         if self.parts:
-            reprparts = ', '.join(repr(part) for part in self.parts)
-            return 'Tag({}, {})'.format(str_repr(self.name), reprparts)
+            reprparts = ", ".join(repr(part) for part in self.parts)
+            return "Tag({}, {})".format(str_repr(self.name), reprparts)
         else:
-            return 'Tag({})'.format(str_repr(self.name))
+            return "Tag({})".format(str_repr(self.name))
 
     def render(self, backend):
         text = super(Tag, self).render(backend)
@@ -883,15 +889,16 @@ class HRef(BaseMultipartText):
     def __init__(self, url, *args, external=False):
         if not isinstance(url, (str, BaseText)):
             raise ValueError(
-                "url must be str or Text (got %s)" % url.__class__.__name__)
+                "url must be str or Text (got %s)" % url.__class__.__name__
+            )
         self.url = str(url)
-        self.info = self.url,
+        self.info = (self.url,)
         self.external = external
         super(HRef, self).__init__(*args)
 
     def __repr__(self):
-        reprparts = ', '.join(repr(part) for part in self.parts)
-        return 'HRef({}, {})'.format(str_repr(self.url), reprparts)
+        reprparts = ", ".join(repr(part) for part in self.parts)
+        return "HRef({}, {})".format(str_repr(self.url), reprparts)
 
     def render(self, backend):
         text = super(HRef, self).render(backend)
@@ -929,8 +936,8 @@ class Protected(BaseMultipartText):
         super(Protected, self).__init__(*args)
 
     def __repr__(self):
-        reprparts = ', '.join(repr(part) for part in self.parts)
-        return 'Protected({})'.format(reprparts)
+        reprparts = ", ".join(repr(part) for part in self.parts)
+        return "Protected({})".format(reprparts)
 
     def capfirst(self):
         return self
@@ -963,7 +970,7 @@ class Symbol(BaseText):
 
     def __init__(self, name):
         self.name = name
-        self.info = self.name,
+        self.info = (self.name,)
 
     def __len__(self):
         return 1
@@ -973,7 +980,7 @@ class Symbol(BaseText):
 
     def __str__(self):
         # XXX
-        return u'<%s>' % self.name
+        return "<%s>" % self.name
 
     def __eq__(self, other):
         return self.name == other.name
@@ -984,9 +991,9 @@ class Symbol(BaseText):
     def __getitem__(self, index):
         # mimic the behavior of a 1-element string
         try:
-            result = 'a'[index]
+            result = "a"[index]
         except IndexError:
-            raise IndexError('richtext.Symbol index out of range')
+            raise IndexError("richtext.Symbol index out of range")
         else:
             return self if result else String()
 
@@ -1012,4 +1019,4 @@ class Symbol(BaseText):
         return self
 
 
-nbsp = Symbol('nbsp')
+nbsp = Symbol("nbsp")
