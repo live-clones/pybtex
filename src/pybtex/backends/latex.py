@@ -25,43 +25,47 @@ LaTeX output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> latex = Backend()
->>> print(Tag('em', '').render(latex))
+>>> print(Tag("em", "").render(latex))
 <BLANKLINE>
->>> print(Tag('em', 'Non-', 'empty').render(latex))
+>>> print(Tag("em", "Non-", "empty").render(latex))
 \\emph{Non-empty}
->>> print(HRef('/', '').render(latex))
+>>> print(HRef("/", "").render(latex))
 <BLANKLINE>
->>> print(HRef('/', 'Non-', 'empty').render(latex))
+>>> print(HRef("/", "Non-", "empty").render(latex))
 \\href{/}{Non-empty}
->>> print(HRef('http://example.org/', 'http://example.org/').render(latex))
+>>> print(HRef("http://example.org/", "http://example.org/").render(latex))
 \\url{http://example.org/}
->>> print(Tag('sup', 'hello').render(latex))
+>>> print(Tag("sup", "hello").render(latex))
 \\textsuperscript{hello}
 """
 
-from __future__ import unicode_literals
-
 import codecs
+from types import MappingProxyType
 
-import latexcodec  # noqa
+import latexcodec  # noqa: F401
+
 from pybtex.backends import BaseBackend
 
 
 class Backend(BaseBackend):
     default_suffix = ".bbl"
-    symbols = {"ndash": "--", "newblock": "\n\\newblock ", "nbsp": "~"}
-    tags = {
-        "em": "emph",
-        "strong": None,
-        "i": "textit",
-        "b": "textbf",
-        "tt": "texttt",
-        "sup": "textsuperscript",
-        "sub": "textsubscript",
-    }
+    symbols = MappingProxyType(
+        {"ndash": "--", "newblock": "\n\\newblock ", "nbsp": "~"}
+    )
+    tags = MappingProxyType(
+        {
+            "em": "emph",
+            "strong": None,
+            "i": "textit",
+            "b": "textbf",
+            "tt": "texttt",
+            "sup": "textsuperscript",
+            "sub": "textsubscript",
+        }
+    )
 
     def __init__(self, encoding=None):
-        super(Backend, self).__init__(encoding)
+        super().__init__(encoding)
         self.latex_encoding = "ulatex+" + self.encoding
 
     def format_str(self, str_):
@@ -70,38 +74,36 @@ class Backend(BaseBackend):
     def format_tag(self, tag_name, text):
         tag = self.tags.get(tag_name)
         if tag is None:
-            return "{%s}" % text if text else ""
-        else:
-            return r"\%s{%s}" % (tag, text) if text else ""
+            return f"{{{text}}}" if text else ""
+        return rf"\{tag}{{{text}}}" if text else ""
 
     def format_href(self, url, text, external=False):
         if not text:
             return ""
         opts = "[pdfnewwindow]" if external else ""
         if text == self.format_str(url):
-            return "\\url{%s}" % url
-        else:
-            return r"\href%s{%s}{%s}" % (opts, url, text)
+            return f"\\url{{{url}}}"
+        return rf"\href{opts}{{{url}}}{{{text}}}"
 
     def format_protected(self, text):
         """
         >>> from pybtex.richtext import Protected
-        >>> print(Protected('CTAN').render_as('latex'))
+        >>> print(Protected("CTAN").render_as("latex"))
         {CTAN}
         """
 
-        return "{%s}" % text
+        return f"{{{text}}}"
 
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
             self.output(self.formatted_bibliography.preamble + "\n")
 
         longest_label = self.formatted_bibliography.get_longest_label()
-        self.output("\\begin{thebibliography}{%s}" % longest_label)
+        self.output(f"\\begin{{thebibliography}}{{{longest_label}}}")
 
     def write_epilogue(self):
         self.output("\n\n\\end{thebibliography}\n")
 
     def write_entry(self, key, label, text):
-        self.output("\n\n\\bibitem[%s]{%s}\n" % (label, key))
+        self.output(f"\n\n\\bibitem[{label}]{{{key}}}\n")
         self.output(text)

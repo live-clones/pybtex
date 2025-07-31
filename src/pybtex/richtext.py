@@ -23,42 +23,42 @@ r"""(simple but) rich text formatting tools
 
 Usage:
 
->>> t = Text('this ', 'is a ', Tag('em', 'very'), Text(' rich', ' text'))
->>> print(t.render_as('latex'))
+>>> t = Text("this ", "is a ", Tag("em", "very"), Text(" rich", " text"))
+>>> print(t.render_as("latex"))
 this is a \emph{very} rich text
 >>> print(str(t))
 this is a very rich text
 >>> t = t.capitalize().add_period()
->>> print(t.render_as('latex'))
+>>> print(t.render_as("latex"))
 This is a \emph{very} rich text.
 >>> print(str(t))
 This is a very rich text.
->>> print(Symbol('ndash').render_as('latex'))
+>>> print(Symbol("ndash").render_as("latex"))
 --
->>> t = Text('Some ', Tag('em', Text('nested ', Tag('tt', 'Text', Text(' objects')))), '.')
->>> print(t.render_as('latex'))
+>>> t = Text(
+...     "Some ", Tag("em", Text("nested ", Tag("tt", "Text", Text(" objects")))), "."
+... )
+>>> print(t.render_as("latex"))
 Some \emph{nested \texttt{Text objects}}.
 >>> print(str(t))
 Some nested Text objects.
 >>> t = t.upper()
->>> print(t.render_as('latex'))
+>>> print(t.render_as("latex"))
 SOME \emph{NESTED \texttt{TEXT OBJECTS}}.
 >>> print(str(t))
 SOME NESTED TEXT OBJECTS.
 
->>> t = Text(', ').join(['one', 'two', Tag('em', 'three')])
->>> print(t.render_as('latex'))
+>>> t = Text(", ").join(["one", "two", Tag("em", "three")])
+>>> print(t.render_as("latex"))
 one, two, \emph{three}
 >>> print(str(t))
 one, two, three
->>> t = Text(Symbol('nbsp')).join(['one', 'two', Tag('em', 'three')])
->>> print(t.render_as('latex'))
+>>> t = Text(Symbol("nbsp")).join(["one", "two", Tag("em", "three")])
+>>> print(t.render_as("latex"))
 one~two~\emph{three}
 >>> print(str(t))
 one<nbsp>two<nbsp>three
 """
-
-from __future__ import absolute_import, unicode_literals
 
 import itertools
 import warnings
@@ -71,30 +71,28 @@ from pybtex.utils import collect_iterable, deprecated
 # workaround for doctests in Python 2/3
 def str_repr(string):
     """
-    >>> print(str_repr('test'))
+    >>> print(str_repr("test"))
     'test'
-    >>> print(str_repr(u'test'))
+    >>> print(str_repr("test"))
     'test'
     """
 
     result = repr(string)
     if result.startswith("u"):
         return result[1:]
-    else:
-        return result
+    return result
 
 
 def ensure_text(value):
     if isinstance(value, str):
         return String(value)
-    elif isinstance(value, BaseText):
+    if isinstance(value, BaseText):
         return value
-    else:
-        bad_type = type(value).__name__
-        raise ValueError("parts must be strings or BaseText instances, not " + bad_type)
+    bad_type = type(value).__name__
+    raise TypeError("parts must be strings or BaseText instances, not " + bad_type)
 
 
-class BaseText(object):
+class BaseText:
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -124,7 +122,7 @@ class BaseText(object):
         """
         Concatenate this Text with another Text or string.
 
-        >>> Text('Longcat is ') + Tag('em', 'long')
+        >>> Text("Longcat is ") + Tag("em", "long")
         Text('Longcat is ', Tag('em', 'long'))
         """
 
@@ -137,10 +135,10 @@ class BaseText(object):
         Normally, this is the same as concatenating texts with +,
         but for tags and similar objects the appended text is placed _inside_ the tag.
 
-        >>> text = Tag('em', 'Look here')
-        >>> print((text +  '!').render_as('html'))
+        >>> text = Tag("em", "Look here")
+        >>> print((text + "!").render_as("html"))
         <em>Look here</em>!
-        >>> print(text.append('!').render_as('html'))
+        >>> print(text.append("!").render_as("html"))
         <em>Look here!</em>
         """
 
@@ -149,10 +147,10 @@ class BaseText(object):
     def join(self, parts):
         """Join a list using this text (like string.join)
 
-        >>> letters = ['a', 'b', 'c']
-        >>> print(str(String('-').join(letters)))
+        >>> letters = ["a", "b", "c"]
+        >>> print(str(String("-").join(letters)))
         a-b-c
-        >>> print(str(String('-').join(iter(letters))))
+        >>> print(str(String("-").join(iter(letters))))
         a-b-c
         """
 
@@ -211,15 +209,13 @@ class BaseText(object):
 
         if self and not textutils.is_terminated(self):
             return self.append(period)
-        else:
-            return self
+        return self
 
     def abbreviate(self):
         def abbreviate_word(word):
             if word.isalpha():
                 return word[0].add_period()
-            else:
-                return word
+            return word
 
         parts = self.split(textutils.delimiter_re)
         return String("").join(abbreviate_word(part) for part in parts)
@@ -228,7 +224,7 @@ class BaseText(object):
         """
         Capitalize the first letter of the text.
 
-        >>> Text(Tag('em', 'long Cat')).capfirst()
+        >>> Text(Tag("em", "long Cat")).capfirst()
         Text(Tag('em', 'Long Cat'))
 
         """
@@ -238,7 +234,7 @@ class BaseText(object):
         """
         Capitalize the first letter of the text and lowercase the rest.
 
-        >>> Text(Tag('em', 'LONG CAT')).capitalize()
+        >>> Text(Tag("em", "LONG CAT")).capitalize()
         Text(Tag('em', 'Long cat'))
 
         """
@@ -262,12 +258,12 @@ class BaseText(object):
         This is a wrapper method that loads a formatting backend plugin
         and calls :py:meth:`Text.render`.
 
-        >>> text = Text('Longcat is ', Tag('em', 'looooooong'), '!')
-        >>> print(text.render_as('html'))
+        >>> text = Text("Longcat is ", Tag("em", "looooooong"), "!")
+        >>> print(text.render_as("html"))
         Longcat is <em>looooooong</em>!
-        >>> print(text.render_as('latex'))
+        >>> print(text.render_as("latex"))
         Longcat is \emph{looooooong}!
-        >>> print(text.render_as('text'))
+        >>> print(text.render_as("text"))
         Longcat is looooooong!
 
         :param backend_name: The name of the output backend (like ``"latex"`` or
@@ -313,23 +309,23 @@ class BaseMultipartText(BaseText):
 
         Empty parts are ignored:
 
-        >>> Text() == Text('') == Text('', '', '')
+        >>> Text() == Text("") == Text("", "", "")
         True
-        >>> Text('Word', '') == Text('Word')
+        >>> Text("Word", "") == Text("Word")
         True
 
         Text() objects are unpacked and their children are included directly:
 
-        >>> Text(Text('Multi', ' '), Tag('em', 'part'), Text(' ', Text('text!')))
+        >>> Text(Text("Multi", " "), Tag("em", "part"), Text(" ", Text("text!")))
         Text('Multi ', Tag('em', 'part'), ' text!')
-        >>> Tag('strong', Text('Multi', ' '), Tag('em', 'part'), Text(' ', 'text!'))
+        >>> Tag("strong", Text("Multi", " "), Tag("em", "part"), Text(" ", "text!"))
         Tag('strong', 'Multi ', Tag('em', 'part'), ' text!')
 
         Similar objects are merged together:
 
-        >>> Text('Multi', Tag('em', 'part'), Text(Tag('em', ' ', 'text!')))
+        >>> Text("Multi", Tag("em", "part"), Text(Tag("em", " ", "text!")))
         Text('Multi', Tag('em', 'part text!'))
-        >>> Text('Please ', HRef('/', 'click'), HRef('/', ' here'), '.')
+        >>> Text("Please ", HRef("/", "click"), HRef("/", " here"), ".")
         Text('Please ', HRef('/', 'click here'), '.')
         """
 
@@ -347,9 +343,9 @@ class BaseMultipartText(BaseText):
         """
         Rich text objects support equality comparison:
 
-        >>> Text('Cat') == Text('cat')
+        >>> Text("Cat") == Text("cat")
         False
-        >>> Text('Cat') == Text('Cat')
+        >>> Text("Cat") == Text("Cat")
         True
 
         """
@@ -364,11 +360,11 @@ class BaseMultipartText(BaseText):
         ``len(text)`` returns the number of characters in the text, ignoring
         the markup:
 
-        >>> len(Text('Long cat'))
+        >>> len(Text("Long cat"))
         8
-        >>> len(Text(Tag('em', 'Long'), ' cat'))
+        >>> len(Text(Tag("em", "Long"), " cat"))
         8
-        >>> len(Text(HRef('http://example.com/', 'Long'), ' cat'))
+        >>> len(Text(HRef("http://example.com/", "Long"), " cat"))
         8
 
         """
@@ -379,12 +375,12 @@ class BaseMultipartText(BaseText):
         ``value in text`` returns ``True`` if any part of the ``text``
         contains the substring ``value``:
 
-        >>> 'Long cat' in Text('Long cat!')
+        >>> "Long cat" in Text("Long cat!")
         True
 
         Substrings splitted across multiple text parts are not matched:
 
-        >>> 'Long cat' in Text(Tag('em', 'Long'), 'cat!')
+        >>> "Long cat" in Text(Tag("em", "Long"), "cat!")
         False
 
         """
@@ -397,9 +393,9 @@ class BaseMultipartText(BaseText):
         Slicing and extracting characters works like with regular strings,
         formatting is preserved.
 
-        >>> Text('Longcat is ', Tag('em', 'looooooong!'))[:15]
+        >>> Text("Longcat is ", Tag("em", "looooooong!"))[:15]
         Text('Longcat is ', Tag('em', 'looo'))
-        >>> Text('Longcat is ', Tag('em', 'looooooong!'))[-1]
+        >>> Text("Longcat is ", Tag("em", "looooooong!"))[-1]
         Text(Tag('em', '!'))
         """
 
@@ -433,9 +429,8 @@ class BaseMultipartText(BaseText):
             if length + len(part) > slice_length:
                 parts.append(part[: slice_length - length])
                 break
-            else:
-                parts.append(part)
-                length += len(part)
+            parts.append(part)
+            length += len(part)
         return self._create_similar(parts)
 
     def _slice_end(self, slice_length):
@@ -450,9 +445,8 @@ class BaseMultipartText(BaseText):
             if length + len(part) > slice_length:
                 parts.append(part[len(part) - (slice_length - length) :])
                 break
-            else:
-                parts.append(part)
-                length += len(part)
+            parts.append(part)
+            length += len(part)
         return self._create_similar(reversed(parts))
 
     def append(self, text):
@@ -461,22 +455,22 @@ class BaseMultipartText(BaseText):
 
         For Tags, HRefs, etc. the appended text is placed *inside* the tag.
 
-        >>> text = Tag('strong', 'Chuck Norris')
-        >>> print((text +  ' wins!').render_as('html'))
+        >>> text = Tag("strong", "Chuck Norris")
+        >>> print((text + " wins!").render_as("html"))
         <strong>Chuck Norris</strong> wins!
-        >>> print(text.append(' wins!').render_as('html'))
+        >>> print(text.append(" wins!").render_as("html"))
         <strong>Chuck Norris wins!</strong>
         """
 
-        return self._create_similar(self.parts + [text])
+        return self._create_similar([*self.parts, text])
 
     @collect_iterable
     def split(self, sep=None, keep_empty_parts=None):
         """
-        >>> Text('a + b').split()
+        >>> Text("a + b").split()
         [Text('a'), Text('+'), Text('b')]
 
-        >>> Text('a, b').split(', ')
+        >>> Text("a, b").split(", ")
         [Text('a'), Text('b')]
         """
 
@@ -490,7 +484,7 @@ class BaseMultipartText(BaseText):
                 continue
             for item in split_part[:-1]:
                 if tail:
-                    yield self._create_similar(tail + [item])
+                    yield self._create_similar([*tail, item])
                     tail = []
                 else:
                     if item or keep_empty_parts:
@@ -505,39 +499,37 @@ class BaseMultipartText(BaseText):
         """
         Return True if the text starts with the given prefix.
 
-        >>> Text('Longcat!').startswith('Longcat')
+        >>> Text("Longcat!").startswith("Longcat")
         True
 
         Prefixes split across multiple parts are not matched:
 
-        >>> Text(Tag('em', 'Long'), 'cat!').startswith('Longcat')
+        >>> Text(Tag("em", "Long"), "cat!").startswith("Longcat")
         False
 
         """
 
         if not self.parts:
             return False
-        else:
-            return self.parts[0].startswith(prefix)
+        return self.parts[0].startswith(prefix)
 
     def endswith(self, suffix):
         """
         Return True if the text ends with the given suffix.
 
-        >>> Text('Longcat!').endswith('cat!')
+        >>> Text("Longcat!").endswith("cat!")
         True
 
         Suffixes split across multiple parts are not matched:
 
-        >>> Text('Long', Tag('em', 'cat'), '!').endswith('cat!')
+        >>> Text("Long", Tag("em", "cat"), "!").endswith("cat!")
         False
 
         """
 
         if not self.parts:
             return False
-        else:
-            return self.parts[-1].endswith(suffix)
+        return self.parts[-1].endswith(suffix)
 
     def isalpha(self):
         """
@@ -550,7 +542,7 @@ class BaseMultipartText(BaseText):
         """
         Convert rich text to lowercase.
 
-        >>> Text(Tag('em', 'Long cat')).lower()
+        >>> Text(Tag("em", "Long cat")).lower()
         Text(Tag('em', 'long cat'))
         """
 
@@ -560,7 +552,7 @@ class BaseMultipartText(BaseText):
         """
         Convert rich text to uppsercase.
 
-        >>> Text(Tag('em', 'Long cat')).upper()
+        >>> Text(Tag("em", "Long cat")).upper()
         Text(Tag('em', 'LONG CAT'))
         """
         return self._create_similar(part.upper() for part in self.parts)
@@ -574,14 +566,15 @@ class BaseMultipartText(BaseText):
         """
 
         rendered_list = [part.render(backend) for part in self.parts]
-        assert all(isinstance(item, backend.RenderType) for item in rendered_list)
+        if not all(isinstance(item, backend.RenderType) for item in rendered_list):
+            raise TypeError(rendered_list)
         return backend.render_sequence(rendered_list)
 
     def _typeinfo(self):
         """Return the type and the parameters used to create this text object.
 
-        >>> text = Tag('strong', 'Heavy rain!')
-        >>> text._typeinfo() == (Tag, ('strong',))
+        >>> text = Tag("strong", "Heavy rain!")
+        >>> text._typeinfo() == (Tag, ("strong",))
         True
 
         """
@@ -593,8 +586,8 @@ class BaseMultipartText(BaseText):
         Create a new text object of the same type with the same parameters,
         with different text content.
 
-        >>> text = Tag('strong', 'Bananas!')
-        >>> text._create_similar(['Apples!'])
+        >>> text = Tag("strong", "Bananas!")
+        >>> text._create_similar(["Apples!"])
         Tag('strong', 'Apples!')
         """
 
@@ -606,7 +599,7 @@ class BaseMultipartText(BaseText):
         """Merge adjacent text objects with the same type and parameters together.
 
         >>> text = Text()
-        >>> parts = [Tag('em', 'Breaking'), Tag('em', ' '), Tag('em', 'news!')]
+        >>> parts = [Tag("em", "Breaking"), Tag("em", " "), Tag("em", "news!")]
         >>> list(text._merge_similar(parts))
         [Tag('em', 'Breaking news!')]
         """
@@ -620,8 +613,7 @@ class BaseMultipartText(BaseText):
                 args = list(info) + list(group_parts)
                 yield cls(*args)
             else:
-                for text in group:
-                    yield text
+                yield from group
 
     @deprecated("0.19", "use __unicode__() instead")
     def plaintext(self):
@@ -630,19 +622,17 @@ class BaseMultipartText(BaseText):
     @deprecated("0.19")
     def enumerate(self):
         for n, child in enumerate(self.parts):
-            try:
-                for p in child.enumerate():
-                    yield p
-            except AttributeError:
+            if isinstance(child, BaseMultipartText):
+                yield from child.enumerate()
+            else:
                 yield self, n
 
     @deprecated("0.19")
     def reversed(self):
         for n, child in reversed(list(enumerate(self.parts))):
-            try:
-                for p in child.reversed():
-                    yield p
-            except AttributeError:
+            if isinstance(child, BaseMultipartText):
+                yield from child.reversed()
+            else:
                 yield self, n
 
     @deprecated("0.19", "use slicing instead")
@@ -694,9 +684,9 @@ class String(BaseText):
     A :py:class:`String` is a wrapper for a plain Python string.
 
     >>> from pybtex.richtext import String
-    >>> print(String('Crime & Punishment').render_as('text'))
+    >>> print(String("Crime & Punishment").render_as("text"))
     Crime & Punishment
-    >>> print(String('Crime & Punishment').render_as('html'))
+    >>> print(String("Crime & Punishment").render_as("html"))
     Crime &amp; Punishment
 
     :py:class:`String` supports the same methods as :py:class:`Text`.
@@ -708,7 +698,7 @@ class String(BaseText):
         All arguments must be plain unicode strings.
         Arguments are concatenated together.
 
-        >>> print(str(String('November', ', ', 'December', '.')))
+        >>> print(str(String("November", ", ", "December", ".")))
         November, December.
         """
 
@@ -754,9 +744,8 @@ class String(BaseText):
             try:
                 split_method = sep.split
             except AttributeError:
-                raise TypeError(
-                    "sep must be None, string or compiled regular expression"
-                )
+                msg = "sep must be None, string or compiled regular expression"
+                raise TypeError(msg)
             else:
                 parts = split_method(self.value)
         return [String(part) for part in parts if part or keep_empty_parts]
@@ -811,13 +800,14 @@ class Text(BaseMultipartText):
         return "Text({})".format(", ".join(repr(part) for part in self.parts))
 
     def _unpack(self):
-        for part in self.parts:
-            yield part
+        yield from self.parts
 
     @classmethod
     def from_latex(cls, latex):
         import codecs
-        import latexcodec  # noqa
+
+        import latexcodec  # noqa: F401
+
         from pybtex.markup import LaTeXParser
 
         return LaTeXParser(codecs.decode(latex, "ulatex")).parse()
@@ -829,10 +819,10 @@ class Tag(BaseMultipartText):
     or a LaTeX formatting command:
 
     >>> from pybtex.richtext import Tag
-    >>> tag = Tag('em', 'The TeXbook')
-    >>> print(tag.render_as('html'))
+    >>> tag = Tag("em", "The TeXbook")
+    >>> print(tag.render_as("html"))
     <em>The TeXbook</em>
-    >>> print(tag.render_as('latex'))
+    >>> print(tag.render_as("latex"))
     \emph{The TeXbook}
 
     :py:class:`Tag` supports the same methods as :py:class:`Text`.
@@ -842,30 +832,28 @@ class Tag(BaseMultipartText):
         depr_map = {}
         depr_map["emph"] = "em"
         if name in depr_map:
-            msg = "The tag '%s' is deprecated" % name
-            msg += ", use '%s' instead." % depr_map[name]
+            msg = f"The tag '{name}' is deprecated"
+            msg += f", use '{depr_map[name]}' instead."
             warnings.warn(msg, DeprecationWarning, stacklevel=3)
             return depr_map[name]
         return name
 
     def __init__(self, name, *args):
         if not isinstance(name, (str, Text)):
-            raise ValueError(
-                "name must be str or Text (got %s)" % name.__class__.__name__
-            )
+            msg = f"name must be str or Text (got {name.__class__.__name__})"
+            raise TypeError(msg)
         self.name = self.__check_name(str(name))
         self.info = (self.name,)
-        super(Tag, self).__init__(*args)
+        super().__init__(*args)
 
     def __repr__(self):
         if self.parts:
             reprparts = ", ".join(repr(part) for part in self.parts)
-            return "Tag({}, {})".format(str_repr(self.name), reprparts)
-        else:
-            return "Tag({})".format(str_repr(self.name))
+            return f"Tag({str_repr(self.name)}, {reprparts})"
+        return f"Tag({str_repr(self.name)})"
 
     def render(self, backend):
-        text = super(Tag, self).render(backend)
+        text = super().render(backend)
         return backend.format_tag(self.name, text)
 
 
@@ -874,14 +862,14 @@ class HRef(BaseMultipartText):
     A :py:class:`HRef` represends a hyperlink:
 
     >>> from pybtex.richtext import Tag
-    >>> href = HRef('http://ctan.org/', 'CTAN')
-    >>> print(href.render_as('html'))
+    >>> href = HRef("http://ctan.org/", "CTAN")
+    >>> print(href.render_as("html"))
     <a href="http://ctan.org/">CTAN</a>
-    >>> print(href.render_as('latex'))
+    >>> print(href.render_as("latex"))
     \\href{http://ctan.org/}{CTAN}
 
-    >>> href = HRef(String('http://ctan.org/'), String('http://ctan.org/'))
-    >>> print(href.render_as('latex'))
+    >>> href = HRef(String("http://ctan.org/"), String("http://ctan.org/"))
+    >>> print(href.render_as("latex"))
     \\url{http://ctan.org/}
 
     :py:class:`HRef` supports the same methods as :py:class:`Text`.
@@ -890,20 +878,19 @@ class HRef(BaseMultipartText):
 
     def __init__(self, url, *args, external=False):
         if not isinstance(url, (str, BaseText)):
-            raise ValueError(
-                "url must be str or Text (got %s)" % url.__class__.__name__
-            )
+            msg = f"url must be str or Text (got {url.__class__.__name__})"
+            raise TypeError(msg)
         self.url = str(url)
         self.info = (self.url,)
         self.external = external
-        super(HRef, self).__init__(*args)
+        super().__init__(*args)
 
     def __repr__(self):
         reprparts = ", ".join(repr(part) for part in self.parts)
-        return "HRef({}, {})".format(str_repr(self.url), reprparts)
+        return f"HRef({str_repr(self.url)}, {reprparts})"
 
     def render(self, backend):
-        text = super(HRef, self).render(backend)
+        text = super().render(backend)
         return backend.format_href(self.url, text, self.external)
 
 
@@ -920,14 +907,14 @@ class Protected(BaseMultipartText):
       and plain text backends just output the text as-is.
 
     >>> from pybtex.richtext import Protected
-    >>> text = Protected('The CTAN archive')
+    >>> text = Protected("The CTAN archive")
     >>> text.lower()
     Protected('The CTAN archive')
     >>> text.split()
     [Protected('The CTAN archive')]
-    >>> print(text.render_as('latex'))
+    >>> print(text.render_as("latex"))
     {The CTAN archive}
-    >>> print(text.render_as('html'))
+    >>> print(text.render_as("html"))
     <span class="bibtex-protected">The CTAN archive</span>
 
     .. versionadded:: 0.20
@@ -935,11 +922,11 @@ class Protected(BaseMultipartText):
     """
 
     def __init__(self, *args):
-        super(Protected, self).__init__(*args)
+        super().__init__(*args)
 
     def __repr__(self):
         reprparts = ", ".join(repr(part) for part in self.parts)
-        return "Protected({})".format(reprparts)
+        return f"Protected({reprparts})"
 
     def capfirst(self):
         return self
@@ -957,7 +944,7 @@ class Protected(BaseMultipartText):
         return [self]
 
     def render(self, backend):
-        text = super(Protected, self).render(backend)
+        text = super().render(backend)
         return backend.format_protected(text)
 
 
@@ -978,11 +965,11 @@ class Symbol(BaseText):
         return 1
 
     def __repr__(self):
-        return "Symbol(%s)" % str_repr(self.name)
+        return f"Symbol({str_repr(self.name)})"
 
     def __str__(self):
         # XXX
-        return "<%s>" % self.name
+        return f"<{self.name}>"
 
     def __eq__(self, other):
         return self.name == other.name
@@ -995,7 +982,8 @@ class Symbol(BaseText):
         try:
             result = "a"[index]
         except IndexError:
-            raise IndexError("richtext.Symbol index out of range")
+            msg = "richtext.Symbol index out of range"
+            raise IndexError(msg)
         else:
             return self if result else String()
 

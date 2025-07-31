@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Pybtex documentation build configuration file, created by
 # sphinx-quickstart on Thu Jul 10 21:45:13 2014.
@@ -13,17 +12,17 @@
 # serve to show the default.
 
 
-from pybtex import __version__
 from importlib.util import find_spec
+
+from pybtex import __version__
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 if find_spec("pybtex_doctools") is None:
-    raise ModuleNotFoundError(
-        "pybtex_doctools not found, please run `pip install docs/pybtex_doctools`"
-    )
+    msg = "pybtex_doctools not found, please run `pip install docs/pybtex_doctools`"
+    raise ModuleNotFoundError(msg)
 
 # -- General configuration ------------------------------------------------
 
@@ -64,7 +63,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "Pybtex User’s Guide"
+project = "Pybtex User’s Guide"  # noqa: RUF001
 copyright = "2025, Andrey Golovizin"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -132,7 +131,7 @@ html_theme_path = [".."]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "Pybtex User’s Guide"
+html_title = "Pybtex User’s Guide"  # noqa: RUF001
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 html_short_title = "Docs"

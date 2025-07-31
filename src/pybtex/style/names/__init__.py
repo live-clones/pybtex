@@ -21,12 +21,10 @@
 
 """name formatting styles"""
 
-from __future__ import unicode_literals
-
 from pybtex.plugin import Plugin
-from pybtex.textutils import tie_or_space
 from pybtex.richtext import Text, nbsp
-from pybtex.style.template import together, node
+from pybtex.style.template import node, together
+from pybtex.textutils import tie_or_space
 
 
 class BaseNameStyle(Plugin):
@@ -43,5 +41,4 @@ def name_part(children, data, before="", tie=False, abbr=False):
         return Text()
     if tie:
         return Text(before, parts, tie_or_space(parts, nbsp, " "))
-    else:
-        return Text(before, parts)
+    return Text(before, parts)

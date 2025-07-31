@@ -1,7 +1,4 @@
-from __future__ import absolute_import, unicode_literals
-
 from pybtex.style.labels import BaseLabelStyle
-
 
 # Copyright (c) 2006-2021  Andrey Golovizin
 #

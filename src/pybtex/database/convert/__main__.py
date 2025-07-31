@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import unicode_literals
+from types import MappingProxyType
 
 from pybtex.cmdline import CommandLine, make_option, standard_option
 
@@ -81,10 +79,12 @@ pybtex-convert converts bibliography database files between supported formats
             ),
         ),
     )
-    option_defaults = {
-        "keyless_entries": False,
-        "preserve_case": False,
-    }
+    option_defaults = MappingProxyType(
+        {
+            "keyless_entries": False,
+            "preserve_case": False,
+        }
+    )
 
     def run(
         self,

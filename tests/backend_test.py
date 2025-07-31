@@ -22,20 +22,20 @@
 
 import pytest
 
-from pybtex.database import parse_string
 from pybtex.backends.html import Backend as HtmlBackend
+from pybtex.database import parse_string
 from pybtex.style.formatting.unsrt import Style as UnsrtStyle
 
 article_bib = """
 @article{article,
-  author  = {Peter Adams}, 
+  author  = {Peter Adams},
   title   = {The title of the work},
   journal = {The name of the journal},
   year    = 1993,
   number  = 2,
   pages   = {201-213},
   month   = 7,
-  note    = {An optional note}, 
+  note    = {An optional note},
   volume  = 4
 }
 """
@@ -48,7 +48,7 @@ An optional note.
 """
 
 book_bib = """@book{book,
-  author    = {Peter Babington}, 
+  author    = {Peter Babington},
   title     = {The title of the work},
   publisher = {The name of the publisher},
   year      = 1993,
@@ -74,7 +74,7 @@ An optional note.
 booklet_bib = """
 @booklet{booklet,
   title        = {The title of the work},
-  author       = {Peter Caxton}, 
+  author       = {Peter Caxton},
   howpublished = {How it was published},
   address      = {The address of the publisher},
   month        = jul,
@@ -91,7 +91,7 @@ How it was published, The address of the publisher, July 1993, An optional note.
 
 inbook_bib = """
 @inbook{inbook,
-  author       = {Peter Eston}, 
+  author       = {Peter Eston},
   title        = {The title of the work},
   chapter      = 8,
   pages        = {201-213},
@@ -115,7 +115,7 @@ The name of the publisher, The address of the publisher, 3rd edition, 7 1993, An
 
 incollection_bib = """
 @incollection{incollection,
-  author       = {Peter Farindon}, 
+  author       = {Peter Farindon},
   title        = {The title of the work},
   booktitle    = {The title of the book},
   publisher    = {The name of the publisher},
@@ -142,7 +142,7 @@ The name of the publisher, The address of the publisher, 3rd edition, August 199
 manual_bib = """
 @manual{manual,
   title        = {The title of the work},
-  author       = {Peter Gainsford}, 
+  author       = {Peter Gainsford},
   organization = {The organization},
   address      = {The address of the publisher},
   edition      = {3rd},
@@ -161,7 +161,7 @@ An optional note.
 
 masterthesis_bib = """
 @mastersthesis{mastersthesis,
-  author       = {Peter Harwood}, 
+  author       = {Peter Harwood},
   title        = {The title of the work},
   school       = {The school of the thesis},
   year         = 1993,
@@ -180,7 +180,7 @@ An optional note.
 
 misc_bib = """
 @misc{misc,
-  author       = {Peter Isley}, 
+  author       = {Peter Isley},
   title        = {The title of the work},
   howpublished = {How it was published},
   month        = oct,
@@ -198,7 +198,7 @@ An optional note.
 
 phdthesis_bib = """
 @phdthesis{phdthesis,
-  author       = {Peter Joslin}, 
+  author       = {Peter Joslin},
   title        = {The title of the work},
   school       = {The school of the thesis},
   year         = 1993,
@@ -238,7 +238,7 @@ An optional note.
 
 techreport_bib = """
 @techreport{techreport,
-  author       = {Peter Lambert}, 
+  author       = {Peter Lambert},
   title        = {The title of the work},
   institution  = {The institution that published},
   year         = 1993,
@@ -258,7 +258,7 @@ An optional note.
 
 unpublished_bib = """
 @unpublished{unpublished,
-  author       = {Peter Marcheford}, 
+  author       = {Peter Marcheford},
   title        = {The title of the work},
   note         = {An optional note},
   month        = mar,
@@ -291,7 +291,7 @@ URL: <a href="http://www.google.com/">http://www.google.com/</a> (visited on 199
 
 
 @pytest.mark.parametrize(
-    "bib,html",
+    ("bib", "html"),
     [
         (article_bib, article_html),
         (book_bib, book_html),

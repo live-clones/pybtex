@@ -19,16 +19,13 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import with_statement
-from __future__ import unicode_literals
 
-from __future__ import absolute_import
 import io
 
 import pybtex.io
-from pybtex.plugin import Plugin
 from pybtex.database import BibliographyData
 from pybtex.exceptions import PybtexError
+from pybtex.plugin import Plugin
 
 
 class BaseParser(Plugin):
@@ -62,29 +59,19 @@ class BaseParser(Plugin):
 
     def parse_string(self, value):
         if isinstance(value, bytes):
-            msg = (
-                "unicode string expected. Use {0}.parse_bytes() to parse bytes".format(
-                    type(self).__name__
-                )
-            )
-            raise ValueError(msg)
+            msg = f"unicode string expected. Use {type(self).__name__}.parse_bytes() to parse bytes"
+            raise TypeError(msg)
         if self.unicode_io:
             return self.parse_stream(io.StringIO(value))
-        else:
-            return self.parse_bytes(value.encode(self.encoding))
+        return self.parse_bytes(value.encode(self.encoding))
 
     def parse_bytes(self, value):
         if isinstance(value, str):
-            msg = (
-                "bytes expected. Use {0}.parse_bytes() to parse unicode strings".format(
-                    type(self).__name__
-                )
-            )
-            raise ValueError(msg)
+            msg = f"bytes expected. Use {type(self).__name__}.parse_bytes() to parse unicode strings"
+            raise TypeError(msg)
         if self.unicode_io:
             return self.parse_string(value.decode(self.encoding))
-        else:
-            return self.parse_stream(io.BytesIO(value))
+        return self.parse_stream(io.BytesIO(value))
 
     def parse_stream(self, stream):
         raise NotImplementedError

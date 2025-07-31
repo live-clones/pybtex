@@ -19,26 +19,23 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import, unicode_literals
-
 
 class PybtexError(Exception):
     def __init__(self, message, filename=None):
-        super(PybtexError, self).__init__(message)
+        super().__init__(message)
         self.filename = filename
 
     def get_context(self):
         """Return extra error context info."""
-        return None
+        return
 
     def get_filename(self):
         """Return filename, if relevant."""
         if self.filename is None or isinstance(self.filename, str):
             return self.filename
-        else:
-            from .io import _decode_filename
+        from .io import _decode_filename
 
-            return _decode_filename(self.filename, errors="replace")
+        return _decode_filename(self.filename, errors="replace")
 
     def __eq__(self, other):
         return str(self) == str(other)

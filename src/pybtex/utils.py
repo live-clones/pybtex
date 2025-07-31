@@ -22,14 +22,10 @@
 
 """Miscellaneous small utils."""
 
-from __future__ import print_function, unicode_literals
-
 import itertools
 from collections import OrderedDict, deque
-from functools import wraps
-
 from collections.abc import MutableMapping, MutableSet
-
+from functools import wraps
 from itertools import zip_longest
 
 
@@ -39,9 +35,9 @@ def deprecated(since, reason=None):
         def new_f(*args, **kwargs):
             import warnings
 
-            message = "{0}() is deprecated since {1}".format(f.__name__, since)
+            message = f"{f.__name__}() is deprecated since {since}"
             if reason:
-                message += ": {0}".format(reason)
+                message += f": {reason}"
             warnings.warn(message, DeprecationWarning, stacklevel=2)
             return f(*args, **kwargs)
 
@@ -83,28 +79,28 @@ def pairwise(iterable):
 class CaseInsensitiveDict(MutableMapping):
     """A dict with case-insensitive lookup.
 
-    >>> d = CaseInsensitiveDict(TesT='passed')
+    >>> d = CaseInsensitiveDict(TesT="passed")
     >>> d
     CaseInsensitiveDict({'TesT': 'passed'})
     >>> d.lower()
     CaseInsensitiveDict({'test': 'passed'})
-    >>> print(d['TesT'])
+    >>> print(d["TesT"])
     passed
-    >>> print(d['test'])
+    >>> print(d["test"])
     passed
-    >>> print(d['Test'])
+    >>> print(d["Test"])
     passed
-    >>> print(d.get('test'))
+    >>> print(d.get("test"))
     passed
-    >>> print(d.get('Test'))
+    >>> print(d.get("Test"))
     passed
 
-    >>> d['Test'] = 'passed again'
-    >>> print(d['test'])
+    >>> d["Test"] = "passed again"
+    >>> print(d["test"])
     passed again
-    >>> 'test' in d
+    >>> "test" in d
     True
-    >>> 'Test' in d
+    >>> "Test" in d
     True
     >>> list(d.keys())
     ['Test']
@@ -119,33 +115,31 @@ class CaseInsensitiveDict(MutableMapping):
     >>> len(d)
     1
 
-    >>> del d['test']
+    >>> del d["test"]
     >>> len(d)
     0
     >>> bool(d)
     False
-    >>> 'test' in d
+    >>> "test" in d
     False
-    >>> 'Test' in d
+    >>> "Test" in d
     False
-    >>> print(d.get('test'))
+    >>> print(d.get("test"))
     None
-    >>> print(d.get('Test'))
+    >>> print(d.get("Test"))
     None
-    >>> print(d.get('Test', 'failed'))
+    >>> print(d.get("Test", "failed"))
     failed
 
-    >>> CaseInsensitiveDict(
-    ...     (key, value) for key, value in [('a', 'b')]
-    ... )
+    >>> CaseInsensitiveDict((key, value) for key, value in [("a", "b")])
     CaseInsensitiveDict({'a': 'b'})
 
     """
 
     def __init__(self, *args, **kwargs):
         initial = dict(*args, **kwargs)
-        self._dict = dict((key.lower(), value) for key, value in initial.items())
-        self._keys = dict((key.lower(), key) for key in initial)
+        self._dict = {key.lower(): value for key, value in initial.items()}
+        self._keys = {key.lower(): key for key in initial}
 
     def __len__(self):
         return len(self._dict)
@@ -172,11 +166,8 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self):
         """A caselessDict version of __repr__"""
-        dct = dict((key, self[key]) for key in self)
-        return "{0}({1})".format(
-            type(self).__name__,
-            repr(dct),
-        )
+        dct = {key: self[key] for key in self}
+        return f"{type(self).__name__}({dct!r})"
 
     def items_lower(self):
         return ((key.lower(), value) for key, value in self.items())
@@ -189,29 +180,29 @@ class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
     """CaseInseisitiveDict with default factory, like collections.defaultdict
 
     >>> d = CaseInsensitiveDefaultDict(int)
-    >>> d['a']
+    >>> d["a"]
     0
-    >>> d['a'] += 1
-    >>> d['a']
+    >>> d["a"] += 1
+    >>> d["a"]
     1
-    >>> d['A']
+    >>> d["A"]
     1
-    >>> d['a'] = 3
-    >>> d['a']
+    >>> d["a"] = 3
+    >>> d["a"]
     3
-    >>> d['B'] += 10
-    >>> d['b']
+    >>> d["B"] += 10
+    >>> d["b"]
     10
 
     """
 
     def __init__(self, default_factory):
-        super(CaseInsensitiveDefaultDict, self).__init__()
+        super().__init__()
         self.default_factory = default_factory
 
     def __getitem__(self, key):
         try:
-            return super(CaseInsensitiveDefaultDict, self).__getitem__(key)
+            return super().__getitem__(key)
         except KeyError:
             return self.default_factory()
 
@@ -219,11 +210,13 @@ class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
 class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     """An (incomplete) ordered case-insensitive dict.
 
-    >>> d = OrderedCaseInsensitiveDict([
-    ...     ('Uno', 1),
-    ...     ('Dos', 2),
-    ...     ('Tres', 3),
-    ... ])
+    >>> d = OrderedCaseInsensitiveDict(
+    ...     [
+    ...         ("Uno", 1),
+    ...         ("Dos", 2),
+    ...         ("Tres", 3),
+    ...     ]
+    ... )
     >>> d
     OrderedCaseInsensitiveDict([('Uno', 1), ('Dos', 2), ('Tres', 3)])
     >>> d.lower()
@@ -234,7 +227,7 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     [('Uno', 1), ('Dos', 2), ('Tres', 3)]
     >>> list(d.values())
     [1, 2, 3]
-    >>> d['Cuatro'] = 4
+    >>> d["Cuatro"] = 4
     >>> list(d.keys())
     ['Uno', 'Dos', 'Tres', 'Cuatro']
     >>> list(d.items())
@@ -243,41 +236,41 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
     [1, 2, 3, 4]
     >>> list(d)
     ['Uno', 'Dos', 'Tres', 'Cuatro']
-    >>> 'Uno' in d
+    >>> "Uno" in d
     True
-    >>> 'uno' in d
+    >>> "uno" in d
     True
-    >>> d['Uno']
+    >>> d["Uno"]
     1
-    >>> d['uno']
+    >>> d["uno"]
     1
-    >>> d['UNO']
+    >>> d["UNO"]
     1
-    >>> 'Cuatro' in d
+    >>> "Cuatro" in d
     True
-    >>> 'CUATRO' in d
+    >>> "CUATRO" in d
     True
-    >>> d['Cuatro']
+    >>> d["Cuatro"]
     4
-    >>> d['cuatro']
+    >>> d["cuatro"]
     4
-    >>> d['UNO'] = 'one'
-    >>> d['uno']
+    >>> d["UNO"] = "one"
+    >>> d["uno"]
     'one'
-    >>> d['Uno']
+    >>> d["Uno"]
     'one'
     >>> list(d.keys())
     ['UNO', 'Dos', 'Tres', 'Cuatro']
-    >>> d['cuatro'] = 'four'
-    >>> d['Cuatro']
+    >>> d["cuatro"] = "four"
+    >>> d["Cuatro"]
     'four'
-    >>> d['cuatro']
+    >>> d["cuatro"]
     'four'
     >>> list(d.keys())
     ['UNO', 'Dos', 'Tres', 'cuatro']
     >>> list(d.values())
     ['one', 2, 3, 'four']
-    >>> del d['dos']
+    >>> del d["dos"]
     >>> list(d.keys())
     ['UNO', 'Tres', 'cuatro']
     >>> list(d.values())
@@ -286,14 +279,11 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
 
     def __init__(self, *args, **kwargs):
         initial = OrderedDict(*args, **kwargs)
-        self._dict = dict((key.lower(), value) for key, value in initial.items())
+        self._dict = {key.lower(): value for key, value in initial.items()}
         self._keys = OrderedDict((key.lower(), key) for key in initial)
 
     def __repr__(self):
-        return "{0}({1})".format(
-            type(self).__name__,
-            list(self.items()),
-        )
+        return f"{type(self).__name__}({list(self.items())})"
 
 
 class CaseInsensitiveSet(MutableSet):
@@ -302,43 +292,43 @@ class CaseInsensitiveSet(MutableSet):
     >>> s = CaseInsensitiveSet()
     >>> len(s)
     0
-    >>> 'a' in s
+    >>> "a" in s
     False
-    >>> list(CaseInsensitiveSet(['aaa', 'Aaa', 'AAA']))
+    >>> list(CaseInsensitiveSet(["aaa", "Aaa", "AAA"]))
     ['aaa']
-    >>> s = CaseInsensitiveSet(['Aaa', 'Bbb'])
+    >>> s = CaseInsensitiveSet(["Aaa", "Bbb"])
     >>> s
     CaseInsensitiveSet(['Aaa', 'Bbb'])
     >>> s.lower()
     CaseInsensitiveSet(['aaa', 'bbb'])
     >>> len(s)
     2
-    >>> 'aaa' in s
+    >>> "aaa" in s
     True
-    >>> 'Aaa' in s
+    >>> "Aaa" in s
     True
-    >>> 'AAA' in s
+    >>> "AAA" in s
     True
-    >>> 'bbb' in s
+    >>> "bbb" in s
     True
-    >>> 'Bbb' in s
+    >>> "Bbb" in s
     True
-    >>> 'abc' in s
+    >>> "abc" in s
     False
-    >>> s.add('ccc')
+    >>> s.add("ccc")
     >>> len(s)
     3
-    >>> 'aaa' in s
+    >>> "aaa" in s
     True
-    >>> 'ccc' in s
+    >>> "ccc" in s
     True
-    >>> s.remove('AAA')
+    >>> s.remove("AAA")
     >>> len(s)
     2
-    >>> 'aaa' in s
+    >>> "aaa" in s
     False
 
-    >>> bool(CaseInsensitiveSet(['a']))
+    >>> bool(CaseInsensitiveSet(["a"]))
     True
     >>> bool(CaseInsensitiveSet([]))
     False
@@ -349,7 +339,7 @@ class CaseInsensitiveSet(MutableSet):
 
     def __init__(self, iterable=()):
         self._set = set()
-        self._keys = dict()
+        self._keys = {}
         for item in iterable:
             self.add(item)
 
@@ -364,7 +354,7 @@ class CaseInsensitiveSet(MutableSet):
 
     def __repr__(self):
         """A caselessDict version of __repr__"""
-        return "{0}({1})".format(type(self).__name__, repr(sorted(self._keys.values())))
+        return f"{type(self).__name__}({sorted(self._keys.values())!r})"
 
     def add(self, key):
         key_lower = key.lower()

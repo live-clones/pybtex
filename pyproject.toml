@@ -114,3 +114,64 @@ dev = ["pytest>=7.0.1", "ruff>=0.12.7", "sphinx>=5.3.0"]
 [tool.pytest.ini_options]
 testpaths = ["src", "tests"]
 addopts = ["--doctest-modules"]
+
+[tool.ruff]
+# include = ["src", "tests"]
+lint.select = [
+  "BLE",  # flake8-blind-except
+  "C4",   # flake8-comprehensions
+  "DTZ",  # flake8-datetimez
+  "E",    # pycodestyle warning
+  "EM",   # flakei-errmsg
+  "EXE",  # flakek8-executable
+  "F",    # pyflakes
+  "FA",   # flake8-future-annotations
+  "FLY",  # flynt
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "ISC",  # flake8-implicit-str-concat
+  "LOG",  # flake8-logging
+  "PERF", # Perflint
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "Q",    # flake8-quotes
+  # "S",   # flake8-bandit
+  "RET", # flake8-return
+  "RSE", # flake8-raise
+  "RUF", # Ruff-specific rules
+  "SIM", # flake8-simplify
+  # "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "T100", # debugger
+  # "T20",  # flake8-print
+  "TC",  # flake8-type-checking
+  "TRY", # tryceratops
+  "UP",  # pyupgrade
+  "W",   # pycodestyle errok
+  "YTT", # flake8-2020
+]
+lint.per-file-ignores."tests/*" = [
+  "S101", # allow asserts in tests
+]
+lint.per-file-ignores."docs/*" = ["RUF012"]
+lint.ignore = [
+  # ignore rules conflicting with ruff format
+  "W191",   # tab-indentation
+  "E111",   # indentation-with-invalid-multiple
+  "E114",   # indentation-with-invalid-multiple-comment
+  "E117",   # over-indented
+  "E501",   # line-too-long
+  "D206",   # docstring-tab-indentation
+  "D300",   # triple-single-quotes
+  "Q000",   # bad-quotes-inline-string
+  "Q001",   # bad-quotes-multiline-string
+  "Q002",   # bad-quotes-docstring
+  "Q003",   # avoidable-escaped-quote
+  "COM812", # missing-trailing-comma
+  "COM819", # prohibited-trailing-comma
+  "ISC002", # multi-line-implicit-string-concatenation
+]

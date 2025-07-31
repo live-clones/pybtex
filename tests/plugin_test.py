@@ -20,10 +20,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import unicode_literals
-
-
 import pytest
+
 import pybtex.database.input.bibtex
 import pybtex.plugin
 import pybtex.style.formatting.plain
@@ -114,7 +112,7 @@ def test_bad_register_plugin():
         )
 
     # suffixes must start with a dot
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="a suffix must start with a period"):
         pybtex.plugin.register_plugin(
             "pybtex.style.formatting.suffixes", "notasuffix", TestPlugin1
         )

@@ -19,10 +19,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
-
-class FormattedEntry(object):
+class FormattedEntry:
     """Formatted bibliography entry. Consists of
     - key (which is used for sorting);
     - label (which appears in the resulting bibliography)
@@ -35,7 +33,7 @@ class FormattedEntry(object):
         self.label = label
 
 
-class FormattedBibliography(object):
+class FormattedBibliography:
     def __init__(self, entries, style, preamble=""):
         self.entries = list(entries)
         self.style = style

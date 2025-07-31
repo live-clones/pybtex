@@ -1,4 +1,5 @@
-from __future__ import unicode_literals
+from pybtex.richtext import Protected, String, Text
+
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -19,10 +20,7 @@ from __future__ import unicode_literals
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-from pybtex.scanner import Scanner, Literal, PybtexSyntaxError
-from pybtex.richtext import String, Text, Protected
+from pybtex.scanner import Literal, PybtexSyntaxError, Scanner
 
 
 class LaTeXParser(Scanner):
@@ -31,13 +29,13 @@ class LaTeXParser(Scanner):
 
     def parse(self, level=0):
         """
-        >>> LaTeXParser('abc').parse()
+        >>> LaTeXParser("abc").parse()
         Text('abc')
 
-        >>> LaTeXParser('abc{def}').parse()
+        >>> LaTeXParser("abc{def}").parse()
         Text('abc', Protected('def'))
 
-        >>> LaTeXParser('abc{def {xyz}} !').parse()
+        >>> LaTeXParser("abc{def {xyz}} !").parse()
         Text('abc', Protected('def ', Protected('xyz')), ' !')
         """
 
@@ -51,7 +49,8 @@ class LaTeXParser(Scanner):
                 if remainder:
                     yield String(remainder)
                 if level != 0:
-                    raise PybtexSyntaxError("unbalanced braces", self)
+                    msg = "unbalanced braces"
+                    raise PybtexSyntaxError(msg, self)
                 break
             elif token.pattern is self.LBRACE:
                 yield String(token.value[:-1])
@@ -59,5 +58,6 @@ class LaTeXParser(Scanner):
             else:  # brace.pattern is self.RBRACE
                 yield String(token.value[:-1])
                 if level == 0:
-                    raise PybtexSyntaxError("unbalanced braces", self)
+                    msg = "unbalanced braces"
+                    raise PybtexSyntaxError(msg, self)
                 break

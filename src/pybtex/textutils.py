@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
 import re
 
@@ -39,23 +38,23 @@ def is_terminated(text):
     """
     Return True if text ends with a terminating character.
 
-    >>> is_terminated('')
+    >>> is_terminated("")
     False
-    >>> is_terminated('.')
+    >>> is_terminated(".")
     True
-    >>> is_terminated('Done')
+    >>> is_terminated("Done")
     False
-    >>> is_terminated('Done. ')
+    >>> is_terminated("Done. ")
     False
-    >>> is_terminated('Done.')
+    >>> is_terminated("Done.")
     True
-    >>> is_terminated('Done...')
+    >>> is_terminated("Done...")
     True
-    >>> is_terminated('Done!')
+    >>> is_terminated("Done!")
     True
-    >>> is_terminated('Done?')
+    >>> is_terminated("Done?")
     True
-    >>> is_terminated('Done?!')
+    >>> is_terminated("Done?!")
     True
     """
 
@@ -65,23 +64,23 @@ def is_terminated(text):
 def add_period(text):
     """Add a period to the end of text, if needed.
 
-    >>> print(add_period(''))
+    >>> print(add_period(""))
     <BLANKLINE>
-    >>> print(add_period('.'))
+    >>> print(add_period("."))
     .
-    >>> print(add_period('Done'))
+    >>> print(add_period("Done"))
     Done.
-    >>> print(add_period('Done. '))
+    >>> print(add_period("Done. "))
     Done. .
-    >>> print(add_period('Done.'))
+    >>> print(add_period("Done."))
     Done.
-    >>> print(add_period('Done...'))
+    >>> print(add_period("Done..."))
     Done...
-    >>> print(add_period('Done!'))
+    >>> print(add_period("Done!"))
     Done!
-    >>> print(add_period('Done?'))
+    >>> print(add_period("Done?"))
     Done?
-    >>> print(add_period('Done?!'))
+    >>> print(add_period("Done?!"))
     Done?!
     """
 
@@ -97,15 +96,14 @@ def abbreviate(text, split=delimiter_re.split):
     'N'
     >> abbreviate('Some words')
     'S. w.'
-    >>> abbreviate('First-Second')
+    >>> abbreviate("First-Second")
     'F.-S.'
     """
 
     def abbreviate(part):
         if part.isalpha():
             return part[0] + "."
-        else:
-            return part
+        return part
 
     return "".join(abbreviate(part) for part in split(text))
 
@@ -114,19 +112,19 @@ def normalize_whitespace(string):
     r"""
     Replace every sequence of whitespace characters with a single space.
 
-    >>> print(normalize_whitespace('abc'))
+    >>> print(normalize_whitespace("abc"))
     abc
-    >>> print(normalize_whitespace('Abc def.'))
+    >>> print(normalize_whitespace("Abc def."))
     Abc def.
-    >>> print(normalize_whitespace(' Abc def.'))
+    >>> print(normalize_whitespace(" Abc def."))
     Abc def.
-    >>> print(normalize_whitespace('Abc\ndef.'))
+    >>> print(normalize_whitespace("Abc\ndef."))
     Abc def.
-    >>> print(normalize_whitespace('Abc\r\ndef.'))
+    >>> print(normalize_whitespace("Abc\r\ndef."))
     Abc def.
-    >>> print(normalize_whitespace('Abc    \r\n\tdef.'))
+    >>> print(normalize_whitespace("Abc    \r\n\tdef."))
     Abc def.
-    >>> print(normalize_whitespace('   \nAbc\r\ndef.'))
+    >>> print(normalize_whitespace("   \nAbc\r\ndef."))
     Abc def.
     """
 
@@ -138,11 +136,11 @@ def width(string):
     Get the width of the typeset string, in relative units.  Similar to
     BibTeX's width$, but does not care about any "special characters".
 
-    >>> width('')
+    >>> width("")
     0
-    >>> width('abc')
+    >>> width("abc")
     1500
-    >>> width('ab{c}')
+    >>> width("ab{c}")
     2500
     >>> width(r"ab{\'c}")
     3278
@@ -166,5 +164,4 @@ def tie_or_space(word, tie="~", space=" ", enough_chars=3, other_word=None):
 
     if n_chars < enough_chars:
         return tie
-    else:
-        return space
+    return space

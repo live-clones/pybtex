@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import, print_function, unicode_literals
 
 from contextlib import contextmanager
 
@@ -52,10 +51,10 @@ def format_error(exception, prefix="ERROR: "):
     context = exception.get_context()
     if context:
         lines += context.splitlines()
-    lines.append("{0}{1}".format(prefix, str(exception)))
+    lines.append(f"{prefix}{exception!s}")
     filename = exception.get_filename()
     if filename:
-        lines = ("{0}: {1}".format(filename, line) for line in lines)
+        lines = (f"{filename}: {line}" for line in lines)
     return "\n".join(lines)
 
 
@@ -72,6 +71,5 @@ def report_error(exception):
 
     if strict:
         raise exception
-    else:
-        print_error(exception, "WARNING: ")
-        error_code = 2
+    print_error(exception, "WARNING: ")
+    error_code = 2

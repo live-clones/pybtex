@@ -22,7 +22,7 @@
 """BibTeX parser
 
 >>> parser = Parser()
->>> bib_data = parser.parse_string(u'''
+>>> bib_data = parser.parse_string('''
 ... @String{SCI = "Science"}
 ...
 ... @String{JFernandez = "Fernandez, Julio M."}
@@ -48,11 +48,11 @@
 ... ''')
 
 # entry keys are case-insensitive
->>> bib_data.entries['rief97b'] == bib_data.entries['RIEF97B']
+>>> bib_data.entries["rief97b"] == bib_data.entries["RIEF97B"]
 True
 
->>> rief97b = bib_data.entries['rief97b']
->>> authors = rief97b.persons['author']
+>>> rief97b = bib_data.entries["rief97b"]
+>>> authors = rief97b.persons["author"]
 >>> for author in authors:
 ...     print(str(author))
 Rief, Matthias
@@ -62,21 +62,19 @@ Fernandez, Julio M.
 Gaub, Hermann E.
 
 # field names are case-insensitive
->>> print(rief97b.fields['URL'])
+>>> print(rief97b.fields["URL"])
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
->>> print(rief97b.fields['url'])
+>>> print(rief97b.fields["url"])
 http://www.sciencemag.org/cgi/content/abstract/276/5315/1109
 
 """
-
-from __future__ import unicode_literals
 
 import re
 from string import ascii_letters, digits
 
 from pybtex import textutils
 from pybtex.bibtex.utils import split_name_list
-from pybtex.database import Entry, Person, BibliographyDataError
+from pybtex.database import BibliographyDataError, Entry, Person
 from pybtex.database.input import BaseParser
 from pybtex.scanner import Literal, Pattern, PrematureEOF, PybtexSyntaxError, Scanner
 from pybtex.utils import CaseInsensitiveDict, CaseInsensitiveSet
@@ -110,20 +108,18 @@ class UndefinedMacro(PybtexSyntaxError):
 
 class DuplicateField(BibliographyDataError):
     def __init__(self, entry_key, field_name):
-        message = "entry with key {} has a duplicate {} field".format(
-            entry_key, field_name
-        )
-        super(DuplicateField, self).__init__(message)
+        message = f"entry with key {entry_key} has a duplicate {field_name} field"
+        super().__init__(message)
 
 
 class LowLevelParser(Scanner):
     NAME = Pattern(
-        r"[{0}][{1}]*".format(re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)),
+        rf"[{re.escape(NAME_CHARS)}][{re.escape(NAME_CHARS + digits)}]*",
         "a valid name",
     )
     KEY_PAREN = Pattern(r"[^\s\,]+", "entry key")
     KEY_BRACE = Pattern(r"[^\s\,}]+", "entry key")
-    NUMBER = Pattern(r"[{0}]+".format(digits), "a number")
+    NUMBER = Pattern(rf"[{digits}]+", "a number")
     LBRACE = Literal("{")
     RBRACE = Literal("}")
     LPAREN = Literal("(")
@@ -150,7 +146,7 @@ class LowLevelParser(Scanner):
         want_entry=None,
         filename=None,
     ):
-        super(LowLevelParser, self).__init__(text, filename)
+        super().__init__(text, filename)
         self.keyless_entries = keyless_entries
         self.macros = macros
         if handle_error:
@@ -319,11 +315,12 @@ class LowLevelParser(Scanner):
 
     def parse_string(self, string_end, level=0, max_level=100):
         if level > max_level:
-            raise PybtexSyntaxError("too many nested braces", self)
+            msg = "too many nested braces"
+            raise PybtexSyntaxError(msg, self)
 
         special_chars = [self.RBRACE, self.LBRACE]
         if string_end is self.QUOTE:
-            special_chars = [self.QUOTE] + special_chars
+            special_chars = [self.QUOTE, *special_chars]
         while True:
             part = self.skip_to(special_chars)
             if not part:
@@ -333,10 +330,10 @@ class LowLevelParser(Scanner):
                 break
             elif part.pattern is self.LBRACE:
                 yield part
-                for subpart in self.parse_string(self.RBRACE, level + 1):
-                    yield subpart
+                yield from self.parse_string(self.RBRACE, level + 1)
             elif part.pattern is self.RBRACE and level == 0:
-                raise PybtexSyntaxError("unbalanced braces", self)
+                msg = "unbalanced braces"
+                raise PybtexSyntaxError(msg, self)
 
 
 class BibTeXEntryIterator(LowLevelParser):
@@ -347,7 +344,7 @@ class BibTeXEntryIterator(LowLevelParser):
             "BibTeXEntryIterator is deprecated since 0.22: renamed to LowLevelParser"
         )
         warnings.warn(message, DeprecationWarning, stacklevel=2)
-        super(BibTeXEntryIterator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class Parser(BaseParser):
@@ -374,7 +371,7 @@ class Parser(BaseParser):
         entry = Entry(entry_type)
 
         if key is None:
-            key = "unnamed-%i" % self.unnamed_entry_counter
+            key = f"unnamed-{self.unnamed_entry_counter}"
             self.unnamed_entry_counter += 1
 
         seen_fields = set()

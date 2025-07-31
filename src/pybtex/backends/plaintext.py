@@ -1,7 +1,6 @@
-from __future__ import unicode_literals
+from types import MappingProxyType
 
 from pybtex.backends import BaseBackend
-
 
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
@@ -27,7 +26,7 @@ from pybtex.backends import BaseBackend
 
 class Backend(BaseBackend):
     default_suffix = ".txt"
-    symbols = {"ndash": "-", "newblock": " ", "nbsp": " "}
+    symbols = MappingProxyType({"ndash": "-", "newblock": " ", "nbsp": " "})
 
     def format_tag(self, tag_name, text):
         return text
@@ -36,6 +35,6 @@ class Backend(BaseBackend):
         return text
 
     def write_entry(self, key, label, text):
-        self.output("[%s] " % label)
+        self.output(f"[{label}] ")
         self.output(text)
         self.output("\n")

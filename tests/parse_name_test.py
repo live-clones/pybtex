@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,8 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-from __future__ import unicode_literals
 
 import pytest
 
@@ -279,7 +275,7 @@ sample_names = [
 ]
 
 
-@pytest.mark.parametrize(["name", "correct_result", "expected_errors"], sample_names)
+@pytest.mark.parametrize(("name", "correct_result", "expected_errors"), sample_names)
 def test_parse_name(name, correct_result, expected_errors):
     if expected_errors is None:
         expected_errors = []

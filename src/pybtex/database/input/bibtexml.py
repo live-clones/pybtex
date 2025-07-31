@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
 from xml.etree import ElementTree as ET
 
@@ -32,6 +31,7 @@ bibtexns = "{http://bibtexml.sf.net/}"
 def remove_ns(s):
     if s.startswith(bibtexns):
         return s[len(bibtexns) :]
+    return None
 
 
 class Parser(BaseParser):
@@ -70,7 +70,7 @@ class Parser(BaseParser):
                     e.add_person(Person(**names), role)
 
         id_ = entry.get("id")
-        item = list(entry)[0]
+        item = next(iter(entry))
         type = remove_ns(item.tag)
         e = Entry(type)
         for field in item:

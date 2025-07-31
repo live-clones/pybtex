@@ -1,5 +1,3 @@
-# vim:fileencoding=utf8
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -27,22 +25,20 @@ A template engine for bibliography entries and more.
 Inspired by Brevé -- http://breve.twisty-industries.com/
 
 >>> from pybtex.database import Entry, Person
->>> author = Person(first='First', last='Last', middle='Middle')
+>>> author = Person(first="First", last="Last", middle="Middle")
 >>> fields = {
-...         'title': 'The Book',
-...         'year': '2000',
+...     "title": "The Book",
+...     "year": "2000",
 ... }
->>> e = Entry('book', fields=fields)
->>> book_format = sentence(capfirst=True, sep=', ') [
-...     field('title'), field('year'), optional [field('sdf')]
+>>> e = Entry("book", fields=fields)
+>>> book_format = sentence(capfirst=True, sep=", ")[
+...     field("title"), field("year"), optional[field("sdf")]
 ... ]
->>> print(str(book_format.format_data({'entry': e})))
+>>> print(str(book_format.format_data({"entry": e})))
 The Book, 2000.
->>> print(str(words ['one', 'two', words ['three', 'four']].format_data(e)))
+>>> print(str(words["one", "two", words["three", "four"]].format_data(e)))
 one two three four
 """
-
-from __future__ import unicode_literals
 
 import warnings
 
@@ -52,7 +48,7 @@ from pybtex.exceptions import PybtexError
 __test__ = {}  # for doctest
 
 
-class Node(object):
+class Node:
     def __init__(self, name, f):
         self.name = name
         self.f = f
@@ -83,19 +79,19 @@ class Node(object):
 
     def __repr__(self):
         """
-        >>> join(', ')
+        >>> join(", ")
         join(', ')
         >>> join
         join
-        >>> join ['a']
+        >>> join["a"]
         join ['a']
-        >>> join ['a', 'b', 'c']
+        >>> join["a", "b", "c"]
         join ['a', 'b', 'c']
-        >>> join(' ') ['a', 'b', 'c']
+        >>> join(" ")["a", "b", "c"]
         join(' ') ['a', 'b', 'c']
-        >>> join(sep=' ') ['a', 'b', 'c']
+        >>> join(sep=" ")["a", "b", "c"]
         join(sep=' ') ['a', 'b', 'c']
-        >>> join(sep=' ') [tag('em') ['a', 'b', 'c']]
+        >>> join(sep=" ")[tag("em")["a", "b", "c"]]
         join(sep=' ') [tag('em') ['a', 'b', 'c']]
 
         """
@@ -104,21 +100,20 @@ class Node(object):
         if args_repr:
             params.append(args_repr)
         kwargs_repr = ", ".join(
-            "%s=%s" % (key, repr(value)) for (key, value) in self.kwargs.items()
+            f"{key}={value!r}" for (key, value) in self.kwargs.items()
         )
         if kwargs_repr:
             params.append(kwargs_repr)
-        if params:
-            params_repr = "(%s)" % ", ".join(params)
-        else:
-            params_repr = ""
+        params_repr = "({})".format(", ".join(params)) if params else ""
 
         if self.children:
-            children_repr = " [%s]" % ", ".join(repr(child) for child in self.children)
+            children_repr = " [{}]".format(
+                ", ".join(repr(child) for child in self.children)
+            )
         else:
             children_repr = ""
 
-        return "".join([self.name, params_repr, children_repr])
+        return f"{self.name}{params_repr}{children_repr}"
 
     def format_data(self, data):
         """Format the given data into a piece of richtext.Text"""
@@ -157,11 +152,21 @@ def join(children, data, sep="", sep2=None, last_sep=None):
     """Join text fragments together.
     >>> print(str(join.format()))
     <BLANKLINE>
-    >>> print(str(join ['a', 'b', 'c', 'd', 'e'].format()))
+    >>> print(str(join["a", "b", "c", "d", "e"].format()))
     abcde
-    >>> print(str(join(sep=', ', sep2=' and ', last_sep=', and ') ['Tom', 'Jerry'].format()))
+    >>> print(
+    ...     str(
+    ...         join(sep=", ", sep2=" and ", last_sep=", and ")["Tom", "Jerry"].format()
+    ...     )
+    ... )
     Tom and Jerry
-    >>> print(str(join(sep=', ', sep2=' and ', last_sep=', and ') ['Billy', 'Willy', 'Dilly'].format()))
+    >>> print(
+    ...     str(
+    ...         join(sep=", ", sep2=" and ", last_sep=", and ")[
+    ...             "Billy", "Willy", "Dilly"
+    ...         ].format()
+    ...     )
+    ... )
     Billy, Willy, and Dilly
     """
 
@@ -172,12 +177,11 @@ def join(children, data, sep="", sep2=None, last_sep=None):
     parts = [part for part in _format_list(children, data) if part]
     if len(parts) <= 1:
         return richtext.Text(*parts)
-    elif len(parts) == 2:
+    if len(parts) == 2:
         return richtext.Text(sep2).join(parts)
-    else:
-        return richtext.Text(last_sep).join(
-            [richtext.Text(sep).join(parts[:-1]), parts[-1]]
-        )
+    return richtext.Text(last_sep).join(
+        [richtext.Text(sep).join(parts[:-1]), parts[-1]]
+    )
 
 
 @node
@@ -192,15 +196,15 @@ def together(children, data, last_tie=False):
     """
     Try to keep words together, like BibTeX does.
 
-    >>> print(str(together ['very', 'long', 'road'].format()))
+    >>> print(str(together["very", "long", "road"].format()))
     very long road
-    >>> print(str(together(last_tie=True) ['very', 'long', 'road'].format()))
+    >>> print(str(together(last_tie=True)["very", "long", "road"].format()))
     very long<nbsp>road
-    >>> print(str(together ['a', 'very', 'long', 'road'].format()))
+    >>> print(str(together["a", "very", "long", "road"].format()))
     a<nbsp>very long road
-    >>> print(str(together ['chapter', '8'].format()))
+    >>> print(str(together["chapter", "8"].format()))
     chapter<nbsp>8
-    >>> print(str(together ['chapter', '666'].format()))
+    >>> print(str(together["chapter", "666"].format()))
     chapter 666
     """
     from pybtex.textutils import tie_or_space
@@ -217,15 +221,14 @@ def together(children, data, last_tie=False):
             else tie_or_space(parts[0], tie, space, other_word=parts[-1])
         )
         return tie2.join(parts)
-    else:
-        last_tie = tie if last_tie else tie_or_space(parts[-1], tie, space)
-        return richtext.Text(
-            parts[0],
-            tie_or_space(parts[0], tie, space),
-            space.join(parts[1:-1]),
-            last_tie,
-            parts[-1],
-        )
+    last_tie = tie if last_tie else tie_or_space(parts[-1], tie, space)
+    return richtext.Text(
+        parts[0],
+        tie_or_space(parts[0], tie, space),
+        space.join(parts[1:-1]),
+        last_tie,
+        parts[-1],
+    )
 
 
 @node
@@ -236,9 +239,21 @@ def sentence(
 
     >>> print(str(sentence.format()))
     <BLANKLINE>
-    >>> print(str(sentence(capitalize=True, sep=' ') ['mary', 'had', 'a', 'little', 'lamb'].format()))
+    >>> print(
+    ...     str(
+    ...         sentence(capitalize=True, sep=" ")[
+    ...             "mary", "had", "a", "little", "lamb"
+    ...         ].format()
+    ...     )
+    ... )
     Mary had a little lamb.
-    >>> print(str(sentence(capitalize=False, add_period=False) ['uno', 'dos', 'tres'].format()))
+    >>> print(
+    ...     str(
+    ...         sentence(capitalize=False, add_period=False)[
+    ...             "uno", "dos", "tres"
+    ...         ].format()
+    ...     )
+    ... )
     uno, dos, tres
     """
 
@@ -255,8 +270,8 @@ def sentence(
 class FieldIsMissing(PybtexError):
     def __init__(self, field_name, entry):
         self.field_name = field_name
-        super(FieldIsMissing, self).__init__(
-            "missing {0} in {1}".format(field_name, getattr(entry, "key", "<unnamed>"))
+        super().__init__(
+            "missing {} in {}".format(field_name, getattr(entry, "key", "<unnamed>"))
         )
 
 
@@ -264,7 +279,8 @@ class FieldIsMissing(PybtexError):
 def field(children, context, name, apply_func=None, raw=False):
     """Return the contents of the bibliography entry field."""
 
-    assert not children
+    if children:
+        raise ValueError(children)
     entry = context["entry"]
     try:
         field = entry._find_field(name, bib_data=context.get("bib_data"))
@@ -282,7 +298,8 @@ def field(children, context, name, apply_func=None, raw=False):
 def names(children, context, role, **kwargs):
     """Return formatted names."""
 
-    assert not children
+    if children:
+        raise ValueError(children)
 
     try:
         persons = context["entry"].persons[role]
@@ -302,8 +319,8 @@ def optional(children, data):
     Else return formatted children.
 
     >>> from pybtex.database import Entry
-    >>> template = optional [field('volume'), optional['(', field('number'), ')']]
-    >>> template.format_data({'entry': Entry('article')})
+    >>> template = optional[field("volume"), optional["(", field("number"), ")"]]
+    >>> template.format_data({"entry": Entry("article")})
     Text()
 
     """
@@ -316,7 +333,8 @@ def optional(children, data):
 
 @node
 def optional_field(children, data, *args, **kwargs):
-    assert not children
+    if children:
+        raise ValueError(children)
     return optional[field(*args, **kwargs)].format_data(data)
 
 
@@ -324,11 +342,15 @@ def optional_field(children, data, *args, **kwargs):
 def tag(children, data, name):
     """Wrap text into a tag.
 
-    >>> print(tag('em') ['important'].format().render_as('html'))
+    >>> print(tag("em")["important"].format().render_as("html"))
     <em>important</em>
-    >>> print(sentence ['ready', 'set', tag('em') ['go']].format().render_as('html'))
+    >>> print(sentence["ready", "set", tag("em")["go"]].format().render_as("html"))
     ready, set, <em>go</em>.
-    >>> print(sentence(capitalize=True) ['ready', 'set', tag('em') ['go']].format().render_as('html'))
+    >>> print(
+    ...     sentence(capitalize=True)["ready", "set", tag("em")["go"]]
+    ...     .format()
+    ...     .render_as("html")
+    ... )
     Ready, set, <em>go</em>.
     """
 
@@ -340,13 +362,21 @@ def tag(children, data, name):
 def href(children, data, url=None, external=False):
     """Wrap text into a href.
 
-    >>> print(href('www.test.org') ['important'].format().render_as('html'))
+    >>> print(href("www.test.org")["important"].format().render_as("html"))
     <a href="www.test.org">important</a>
-    >>> print(sentence ['ready', 'set', href('www.test.org') ['go']].format().render_as('html'))
+    >>> print(
+    ...     sentence["ready", "set", href("www.test.org")["go"]]
+    ...     .format()
+    ...     .render_as("html")
+    ... )
     ready, set, <a href="www.test.org">go</a>.
-    >>> print(href('www.test.org', external=True) ['important'].format().render_as('html'))
+    >>> print(
+    ...     href("www.test.org", external=True)["important"].format().render_as("html")
+    ... )
     <a href="www.test.org" target="_blank">important</a>
-    >>> print(href('www.test.org', external=True) ['important'].format().render_as('latex'))
+    >>> print(
+    ...     href("www.test.org", external=True)["important"].format().render_as("latex")
+    ... )
     \\href[pdfnewwindow]{www.test.org}{important}
     """
     parts = _format_list(children, data)

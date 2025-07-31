@@ -19,8 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import with_statement
-from __future__ import unicode_literals
 import io
 
 import pybtex.io
@@ -40,6 +38,7 @@ class BaseWriter(Plugin):
             self.write_stream(bib_data, stream)
             if hasattr(stream, "getvalue"):
                 return stream.getvalue()
+        return None
 
     def write_stream(self, bib_data, stream):
         raise NotImplementedError

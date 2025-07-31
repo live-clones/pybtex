@@ -24,8 +24,6 @@
 CAUTION: functions should PUSH results, not RETURN
 """
 
-from __future__ import print_function, unicode_literals
-
 from functools import update_wrapper
 
 import pybtex.io
@@ -40,7 +38,7 @@ def print_warning(msg):
     report_error(BibTeXError(msg))
 
 
-class Builtin(object):
+class Builtin:
     def __init__(self, function):
         self.f = function
 
@@ -48,7 +46,7 @@ class Builtin(object):
         self.f(interpreter)
 
     def __repr__(self):
-        return "<builtin %s>" % self.f.__name__
+        return f"<builtin {self.f.__name__}>"
 
 
 builtins = {}
@@ -137,9 +135,7 @@ def call_type(interpreter):
         func = interpreter.vars[entry_type]
     except KeyError:
         print_warning(
-            'entry type for "{0}" isn\'t style-file defined'.format(
-                interpreter.current_entry_key,
-            )
+            f'entry type for "{interpreter.current_entry_key}" isn\'t style-file defined'
         )
         try:
             func = interpreter.vars["default.type"]
@@ -154,10 +150,12 @@ def change_case(interpreter):
     string = interpreter.pop()
 
     if not mode:
-        raise BibTeXError("empty mode string passed to change.case$")
+        msg = "empty mode string passed to change.case$"
+        raise BibTeXError(msg)
     mode_letter = mode[0].lower()
     if mode_letter not in ("l", "u", "t"):
-        raise BibTeXError("incorrect change.case$ mode: %s" % mode)
+        msg = f"incorrect change.case$ mode: {mode}"
+        raise BibTeXError(msg)
 
     interpreter.push(utils.change_case(string, mode_letter))
 
@@ -168,7 +166,8 @@ def chr_to_int(interpreter):
     try:
         value = ord(string)
     except TypeError:
-        raise BibTeXError("%s passed to chr.to.int$", string)
+        msg = "%s passed to chr.to.int$"
+        raise BibTeXError(msg, string)
     interpreter.push(value)
 
 
@@ -230,7 +229,8 @@ def int_to_chr(interpreter):
     try:
         char = chr(number)
     except ValueError:
-        raise BibTeXError("%i passed to int.to.chr$", number)
+        msg = "%i passed to int.to.chr$"
+        raise BibTeXError(msg, number)
     interpreter.push(char)
 
 

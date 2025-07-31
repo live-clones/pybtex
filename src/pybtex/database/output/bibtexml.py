@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
 import io
 from xml.sax.saxutils import XMLGenerator
@@ -27,14 +26,13 @@ from xml.sax.xmlreader import AttributesImpl
 
 from pybtex.database.output import BaseWriter
 
-
 doctype = b"""<!DOCTYPE bibtex:file PUBLIC
     "-//BibTeXML//DTD XML for BibTeX v1.0//EN"
         "bibtexml.dtd" >
 """
 
 
-class _PrettyXMLWriter(object):
+class _PrettyXMLWriter:
     def __init__(
         self,
         output,
@@ -128,7 +126,7 @@ class Writer(BaseWriter):
         writer.start("file")
         writer.newline()
         for key, entry in bib_data.entries.items():
-            writer.start("entry", dict(id=key))
+            writer.start("entry", {"id": key})
             writer.start(entry.original_type)
             for field_name, field_value in entry.fields.items():
                 writer.element(field_name, field_value)

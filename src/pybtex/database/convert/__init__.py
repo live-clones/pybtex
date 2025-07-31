@@ -21,9 +21,8 @@
 
 """convert bibliography database from one format to another"""
 
-from __future__ import unicode_literals
-from pybtex.exceptions import PybtexError
 from pybtex import database
+from pybtex.exceptions import PybtexError
 
 
 class ConvertError(PybtexError):
@@ -45,7 +44,8 @@ def convert(
         parser_options = {}
 
     if from_filename == to_filename:
-        raise ConvertError("input and output file can not be the same")
+        msg = "input and output file can not be the same"
+        raise ConvertError(msg)
 
     bib_data = database.parse_file(
         from_filename, bib_format=from_format, encoding=input_encoding, **parser_options

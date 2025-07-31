@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Pybtex documentation build configuration file, created by
 # sphinx-quickstart on Thu Jul 10 21:45:13 2014.
@@ -12,16 +11,16 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 
 from pybtex import __version__
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 
 # -- General configuration ------------------------------------------------
 
@@ -55,7 +54,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Pybtex"
-copyright = "{}, Andrey Golovizin".format(datetime.now().year)
+copyright = f"{datetime.now(tz=timezone.utc).year}, Andrey Golovizin"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -274,13 +273,13 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 stexinfo_no_detailmenu = False
 
-rst_epilog = """
+rst_epilog = f"""
 .. |download_url| replace:: pybtex-{release}.tar.gz
 .. _download_url: https://files.pythonhosted.org/packages/source/p/pybtex/pybtex-{release}.tar.gz
 .. |br| raw:: html
 
    <br />
-""".format(release=release)
+"""
 
 autodoc_member_order = "bysource"
 autoclass_content = "both"
