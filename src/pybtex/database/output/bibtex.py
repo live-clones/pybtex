@@ -123,8 +123,8 @@ class Writer(BaseWriter):
         stream.write(",\n    %s = %s" % (type, self.quote(self._encode(value))))
 
     def _format_name(self, stream, person):
-        def join(l):
-            return " ".join([name for name in l if name])
+        def join(names):
+            return " ".join([name for name in names if name])
 
         first = person.get_part_as_text("first")
         middle = person.get_part_as_text("middle")

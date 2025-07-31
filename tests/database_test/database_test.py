@@ -28,7 +28,7 @@ from copy import deepcopy
 from io import BytesIO, TextIOWrapper
 
 import pytest
-from pybtex.database import parse_bytes, parse_string, BibliographyData, Entry
+from pybtex.database import parse_bytes, BibliographyData, Entry
 from pybtex.plugin import find_plugin
 
 from .data import reference_data

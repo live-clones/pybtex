@@ -22,7 +22,6 @@
 
 from __future__ import unicode_literals
 
-import re
 
 import pytest
 import pybtex.database.input.bibtex

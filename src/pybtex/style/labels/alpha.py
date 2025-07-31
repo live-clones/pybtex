@@ -93,8 +93,8 @@ class LabelStyle(BaseLabelStyle):
 
     def author_key_label(self, entry):
         # see alpha.bst author.key.label
-        if not "author" in entry.persons:
-            if not "key" in entry.fields:
+        if "author" not in entry.persons:
+            if "key" not in entry.fields:
                 return entry.key[:3]  # entry.key is bst cite$
             else:
                 # for entry.key, bst actually uses text.prefix$
@@ -104,9 +104,9 @@ class LabelStyle(BaseLabelStyle):
 
     def author_editor_key_label(self, entry):
         # see alpha.bst author.editor.key.label
-        if not "author" in entry.persons:
-            if not "editor" in entry.persons:
-                if not "key" in entry.fields:
+        if "author" not in entry.persons:
+            if "editor" not in entry.persons:
+                if "key" not in entry.fields:
                     return entry.key[:3]  # entry.key is bst cite$
                 else:
                     # for entry.key, bst actually uses text.prefix$
@@ -117,9 +117,9 @@ class LabelStyle(BaseLabelStyle):
             return self.format_lab_names(entry.persons["author"])
 
     def author_key_organization_label(self, entry):
-        if not "author" in entry.persons:
-            if not "key" in entry.fields:
-                if not "organization" in entry.fields:
+        if "author" not in entry.persons:
+            if "key" not in entry.fields:
+                if "organization" not in entry.fields:
                     return entry.key[:3]  # entry.key is bst cite$
                 else:
                     result = entry.fields["organization"]
@@ -132,9 +132,9 @@ class LabelStyle(BaseLabelStyle):
             return self.format_lab_names(entry.persons["author"])
 
     def editor_key_organization_label(self, entry):
-        if not "editor" in entry.persons:
-            if not "key" in entry.fields:
-                if not "organization" in entry.fields:
+        if "editor" not in entry.persons:
+            if "key" not in entry.fields:
+                if "organization" not in entry.fields:
                     return entry.key[:3]  # entry.key is bst cite$
                 else:
                     result = entry.fields["organization"]

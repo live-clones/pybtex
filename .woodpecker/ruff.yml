@@ -1,8 +1,18 @@
 steps:
-  format-check:
-    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+  check:
+    image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
     commands:
-      - uvx ruff format --check
+      - uv run ruff check
     when:
       - event: push
       - event: pull_request
+    depends_on: []
+
+  format-check:
+    image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+    commands:
+      - uv run ruff format --check
+    when:
+      - event: push
+      - event: pull_request
+    depends_on: []

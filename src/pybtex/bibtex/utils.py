@@ -178,8 +178,11 @@ def change_case(string, mode):
         else:
             return char.lower()
 
-    lower = lambda char, state: char.lower()
-    upper = lambda char, state: char.upper()
+    def lower(char, state):
+        return char.lower()
+
+    def upper(char, state):
+        return char.upper()
 
     convert = {"l": lower, "u": upper, "t": title}[mode]
 

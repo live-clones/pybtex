@@ -63,7 +63,7 @@ class Text(object):
         return "{0}({1})".format(type(self).__name__, repr(self.text))
 
     def __eq__(self, other):
-        return type(self) == type(other) and self.text == other.text
+        return type(self) is type(other) and self.text == other.text
 
     def format(self, person):
         return self.text
@@ -94,10 +94,10 @@ class NamePart(object):
             self.format_char = ""
             self.abbreviate = False
         else:
-            l = len(format_chars)
-            if l == 1:
+            length = len(format_chars)
+            if length == 1:
                 self.abbreviate = True
-            elif l == 2 and format_chars[0] == format_chars[1]:
+            elif length == 2 and format_chars[0] == format_chars[1]:
                 self.abbreviate = False
             else:
                 raise BibTeXNameFormatError("invalid format string")
@@ -110,7 +110,7 @@ class NamePart(object):
 
     def __eq__(self, other):
         return (
-            type(self) == type(other)
+            type(self) is type(other)
             and self.pre_text == other.pre_text
             and self.format_char == other.format_char
             and self.abbreviate == other.abbreviate

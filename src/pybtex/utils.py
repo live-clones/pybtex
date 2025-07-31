@@ -27,12 +27,8 @@ from __future__ import print_function, unicode_literals
 import itertools
 from collections import OrderedDict, deque
 from functools import wraps
-from types import GeneratorType
 
-try:
-    from collections.abc import MutableMapping, MutableSet, Sequence
-except ImportError:
-    from collections import MutableMapping, MutableSet, Sequence
+from collections.abc import MutableMapping, MutableSet
 
 from itertools import zip_longest
 

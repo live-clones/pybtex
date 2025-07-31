@@ -211,21 +211,28 @@ class LowLevelParser(Scanner):
         command_lower = command.lower()
         if command_lower == "string":
             parse_body = self.parse_string_body
-            make_result = lambda: (
-                command,
-                (self.current_field_name, self.current_value),
-            )
+
+            def make_result():
+                return (
+                    command,
+                    (self.current_field_name, self.current_value),
+                )
         elif command_lower == "preamble":
             parse_body = self.parse_preamble_body
-            make_result = lambda: (command, (self.current_value,))
+
+            def make_result():
+                return (command, (self.current_value,))
         elif command_lower == "comment":
             raise SkipEntry
         else:
             parse_body = self.parse_entry_body
-            make_result = lambda: (
-                command,
-                (self.current_entry_key, self.current_fields),
-            )
+
+            def make_result():
+                return (
+                    command,
+                    (self.current_entry_key, self.current_fields),
+                )
+
         try:
             parse_body(body_end)
             self.required([body_end])

@@ -5,8 +5,7 @@ matrix:
     - 3.10
     - 3.11
     - 3.12
-    # not supported due to `six` import
-    # - 3.13
+    - 3.13
 
 steps:
   pytest:

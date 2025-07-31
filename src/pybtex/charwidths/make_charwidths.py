@@ -76,7 +76,7 @@ def iter_charwidths(font_face):
     charcode, gindex = font_face.get_first_char()
     while gindex:
         font_face.load_glyph(gindex, FT_LOAD_NO_SCALE)
-        yield unichr(charcode), font_face.glyph.metrics.horiAdvance
+        yield chr(charcode), font_face.glyph.metrics.horiAdvance
         charcode, gindex = font_face.get_next_char(charcode, gindex)
 
 

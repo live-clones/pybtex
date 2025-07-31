@@ -64,7 +64,7 @@ class Variable(object):
         return "{0}({1})".format(type(self).__name__, repr(self.value()))
 
     def __eq__(self, other):
-        return type(self) == type(other) and self._value == other._value
+        return type(self) is type(other) and self._value == other._value
 
 
 class EntryVariable(Variable):
@@ -171,7 +171,7 @@ class Function(object):
         return "{0}({1})".format(type(self).__name__, repr(self.body))
 
     def __eq__(self, other):
-        return type(self) == type(other) and self.body == other.body
+        return type(self) is type(other) and self.body == other.body
 
     def execute(self, interpreter):
         #        print 'executing function', self.body
