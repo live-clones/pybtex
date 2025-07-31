@@ -33,7 +33,7 @@ from pybtex.exceptions import PybtexError
 
 class BaseParser(Plugin):
     default_suffix = None
-    filename = '<INPUT>'
+    filename = "<INPUT>"
     unicode_io = False
 
     def __init__(self, encoding=None, wanted_entries=None, min_crossrefs=2, **kwargs):
@@ -62,7 +62,11 @@ class BaseParser(Plugin):
 
     def parse_string(self, value):
         if isinstance(value, bytes):
-            msg = 'unicode string expected. Use {0}.parse_bytes() to parse bytes'.format(type(self).__name__)
+            msg = (
+                "unicode string expected. Use {0}.parse_bytes() to parse bytes".format(
+                    type(self).__name__
+                )
+            )
             raise ValueError(msg)
         if self.unicode_io:
             return self.parse_stream(io.StringIO(value))
@@ -71,7 +75,11 @@ class BaseParser(Plugin):
 
     def parse_bytes(self, value):
         if isinstance(value, str):
-            msg = 'bytes expected. Use {0}.parse_bytes() to parse unicode strings'.format(type(self).__name__)
+            msg = (
+                "bytes expected. Use {0}.parse_bytes() to parse unicode strings".format(
+                    type(self).__name__
+                )
+            )
             raise ValueError(msg)
         if self.unicode_io:
             return self.parse_string(value.decode(self.encoding))

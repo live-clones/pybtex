@@ -21,12 +21,14 @@
 
 
 """Miscellaneous small utils."""
+
 from __future__ import print_function, unicode_literals
 
 import itertools
 from collections import OrderedDict, deque
 from functools import wraps
 from types import GeneratorType
+
 try:
     from collections.abc import MutableMapping, MutableSet, Sequence
 except ImportError:
@@ -40,12 +42,15 @@ def deprecated(since, reason=None):
         @wraps(f)
         def new_f(*args, **kwargs):
             import warnings
-            message = u'{0}() is deprecated since {1}'.format(f.__name__, since)
+
+            message = "{0}() is deprecated since {1}".format(f.__name__, since)
             if reason:
-                message += ': {0}'.format(reason)
+                message += ": {0}".format(reason)
             warnings.warn(message, DeprecationWarning, stacklevel=2)
             return f(*args, **kwargs)
+
         return new_f
+
     return decorator
 
 
@@ -61,6 +66,7 @@ def memoize(f, capacity=1024):
             memory[args] = f(*args)
             history.append(args)
         return memory[args]
+
     return new_f
 
 
@@ -68,6 +74,7 @@ def collect_iterable(f):
     @wraps(f)
     def new_f(*args, **kwargs):
         return list(f(*args, **kwargs))
+
     return new_f
 
 
@@ -168,10 +175,11 @@ class CaseInsensitiveDict(MutableMapping):
         return key.lower() in self._dict
 
     def __repr__(self):
-        """A caselessDict version of __repr__ """
+        """A caselessDict version of __repr__"""
         dct = dict((key, self[key]) for key in self)
-        return '{0}({1})'.format(
-            type(self).__name__, repr(dct),
+        return "{0}({1})".format(
+            type(self).__name__,
+            repr(dct),
         )
 
     def items_lower(self):
@@ -200,6 +208,7 @@ class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
     10
 
     """
+
     def __init__(self, default_factory):
         super(CaseInsensitiveDefaultDict, self).__init__()
         self.default_factory = default_factory
@@ -212,7 +221,7 @@ class CaseInsensitiveDefaultDict(CaseInsensitiveDict):
 
 
 class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
-    """ An (incomplete) ordered case-insensitive dict.
+    """An (incomplete) ordered case-insensitive dict.
 
     >>> d = OrderedCaseInsensitiveDict([
     ...     ('Uno', 1),
@@ -285,8 +294,9 @@ class OrderedCaseInsensitiveDict(CaseInsensitiveDict):
         self._keys = OrderedDict((key.lower(), key) for key in initial)
 
     def __repr__(self):
-        return '{0}({1})'.format(
-            type(self).__name__, list(self.items()),
+        return "{0}({1})".format(
+            type(self).__name__,
+            list(self.items()),
         )
 
 
@@ -357,10 +367,8 @@ class CaseInsensitiveSet(MutableSet):
         return len(self._set)
 
     def __repr__(self):
-        """A caselessDict version of __repr__ """
-        return '{0}({1})'.format(
-            type(self).__name__, repr(sorted(self._keys.values()))
-        )
+        """A caselessDict version of __repr__"""
+        return "{0}({1})".format(type(self).__name__, repr(sorted(self._keys.values())))
 
     def add(self, key):
         key_lower = key.lower()

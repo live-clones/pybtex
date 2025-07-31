@@ -47,22 +47,19 @@ def capture():
         captured_errors = None
 
 
-def format_error(exception, prefix='ERROR: '):
+def format_error(exception, prefix="ERROR: "):
     lines = []
     context = exception.get_context()
     if context:
-        lines += (context.splitlines())
-    lines.append(u'{0}{1}'.format(prefix, str(exception)))
+        lines += context.splitlines()
+    lines.append("{0}{1}".format(prefix, str(exception)))
     filename = exception.get_filename()
     if filename:
-        lines = (
-            u'{0}: {1}'.format(filename, line)
-            for line in lines
-        )
-    return '\n'.join(lines)
+        lines = ("{0}: {1}".format(filename, line) for line in lines)
+    return "\n".join(lines)
 
 
-def print_error(exception, prefix='ERROR: '):
+def print_error(exception, prefix="ERROR: "):
     print(format_error(exception, prefix), file=pybtex.io.stderr)
 
 
@@ -76,5 +73,5 @@ def report_error(exception):
     if strict:
         raise exception
     else:
-        print_error(exception, 'WARNING: ')
+        print_error(exception, "WARNING: ")
         error_code = 2

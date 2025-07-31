@@ -19,8 +19,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""Base parser class
-"""
+"""Base parser class"""
+
 from __future__ import unicode_literals
 
 import re
@@ -49,7 +49,7 @@ class Pattern(object):
 class Literal(Pattern):
     def __init__(self, literal):
         pattern = re.compile(re.escape(literal))
-        description = u"'{0}'".format(literal)
+        description = "'{0}'".format(literal)
         super(Literal, self).__init__(pattern, description)
 
 
@@ -57,8 +57,8 @@ class Scanner(object):
     text = None
     lineno = 1
     pos = 0
-    WHITESPACE = Pattern(r'\s+', 'whitespace')
-    NEWLINE = Pattern(r'\n|(\r\n)|\r', 'newline')
+    WHITESPACE = Pattern(r"\s+", "whitespace")
+    NEWLINE = Pattern(r"\n|(\r\n)|\r", "newline")
 
     def __init__(self, text, filename=None):
         self.text = text
@@ -74,7 +74,7 @@ class Scanner(object):
                 end = match.end()
                 winning_pattern = pattern
         if winning_pattern:
-            value = self.text[self.pos: end]
+            value = self.text[self.pos : end]
             self.pos = end
             # print '>>', value
             self.update_lineno(value)
@@ -115,7 +115,7 @@ class Scanner(object):
         token = self.get_token(patterns, allow_eof=allow_eof)
         if token is None:
             if not description:
-                description = ' or '.join(pattern.description for pattern in patterns)
+                description = " or ".join(pattern.description for pattern in patterns)
             raise TokenRequired(description, self)
         else:
             return token
@@ -128,20 +128,20 @@ class Scanner(object):
         if error_lineno is not None:
             error_lineno0 = error_lineno - 1
             lines = self.text.splitlines(True)
-            before_error = ''.join(lines[:error_lineno0])
+            before_error = "".join(lines[:error_lineno0])
             colno = error_pos - len(before_error)
-            context = lines[error_lineno0].rstrip('\r\n')
+            context = lines[error_lineno0].rstrip("\r\n")
         else:
             colno = None
             context = None
         return context, error_lineno, colno
 
     def get_remainder(self):
-        return self.text[self.pos:]
+        return self.text[self.pos :]
 
 
 class PybtexSyntaxError(PybtexError):
-    error_type = 'syntax error'
+    error_type = "syntax error"
 
     def __init__(self, message, parser):
         super(PybtexSyntaxError, self).__init__(message, filename=parser.filename)
@@ -151,8 +151,8 @@ class PybtexSyntaxError(PybtexError):
 
     def __str__(self):
         base_message = super(PybtexSyntaxError, self).__str__()
-        pos = u' in line {0}'.format(self.lineno) if self.lineno is not None else ''
-        return u'{error_type}{pos}: {message}'.format(
+        pos = " in line {0}".format(self.lineno) if self.lineno is not None else ""
+        return "{error_type}{pos}: {message}".format(
             error_type=self.error_type,
             pos=pos,
             message=base_message,
@@ -161,21 +161,21 @@ class PybtexSyntaxError(PybtexError):
 
 class PrematureEOF(PybtexSyntaxError):
     def __init__(self, parser):
-        message = 'premature end of file'
+        message = "premature end of file"
         super(PrematureEOF, self).__init__(message, parser)
 
 
 class TokenRequired(PybtexSyntaxError):
     def __init__(self, description, parser):
-        message = u'{0} expected'.format(description)
+        message = "{0} expected".format(description)
         super(TokenRequired, self).__init__(message, parser)
 
     def get_context(self):
         context, lineno, colno = self.parser.get_error_context(self.error_context_info)
         if context is None:
-            return ''
+            return ""
         if colno == 0:
-            marker = '^^'
+            marker = "^^"
         else:
-            marker = ' ' * (colno - 1) + '^^^'
-        return '\n'.join((context, marker))
+            marker = " " * (colno - 1) + "^^^"
+        return "\n".join((context, marker))

@@ -21,8 +21,7 @@
 
 # Based on autodoc_man.py from bzr-1.16.1.
 
-"""Generate man pages for pybtex and pybtex-convert.
-"""
+"""Generate man pages for pybtex and pybtex-convert."""
 
 from __future__ import print_function, with_statement
 
@@ -35,9 +34,9 @@ from pybtex import __version__
 
 def man_escape(string):
     """Escapes strings for man page compatibility"""
-    result = string.replace("\\","\\\\")
-    result = result.replace("`","\\`")
-    result = result.replace("-","\\-")
+    result = string.replace("\\", "\\\\")
+    result = result.replace("`", "\\`")
+    result = result.replace("-", "\\-")
     return result
 
 
@@ -50,10 +49,10 @@ def format_synopsis(main_obj):
 
 def format_args(main_obj):
     for arg in main_obj.args.split():
-        if arg.startswith('[') and arg.endswith(']'):
-            yield '['
+        if arg.startswith("[") and arg.endswith("]"):
+            yield "["
             yield '.I "%s"' % arg[1:-1]
-            yield ']'
+            yield "]"
         else:
             yield '.I "%s"' % arg
 
@@ -65,10 +64,14 @@ def format_description(main_obj):
 
 def format_help(main_obj):
     opt_parser = main_obj.opt_parser
-    for part in format_option_group(opt_parser, 'general optons', opt_parser.option_list):
+    for part in format_option_group(
+        opt_parser, "general optons", opt_parser.option_list
+    ):
         yield part
     for option_group in opt_parser.option_groups:
-        for part in format_option_group(opt_parser, option_group.title, option_group.option_list):
+        for part in format_option_group(
+            opt_parser, option_group.title, option_group.option_list
+        ):
             yield part
 
 
@@ -80,7 +83,7 @@ def format_option_group(opt_parser, name, options):
 
 
 def format_option(opt_parser, option):
-    yield '.TP'
+    yield ".TP"
     yield '.B "%s"' % opt_parser.formatter.format_option_strings(option)
     if option.help:
         yield opt_parser.formatter.expand_default(option)
@@ -99,20 +102,22 @@ man_head = r"""
 %(cmd)s - %(description)s
 """.strip()
 
+
 def format_head(main_obj):
     now = datetime.utcnow()
     yield man_head % {
-        'cmd': main_obj.prog,
-        'version': __version__,
-        'description': main_obj.description,
-        'datestamp': now.strftime('%Y-%m-%d'),
-        'timestamp': now.strftime('%Y-%m-%d %H:%M:%S +0000'),
+        "cmd": main_obj.prog,
+        "version": __version__,
+        "description": main_obj.description,
+        "datestamp": now.strftime("%Y-%m-%d"),
+        "timestamp": now.strftime("%Y-%m-%d %H:%M:%S +0000"),
     }
+
 
 def format_see_also(main_obj):
     yield '.SH "SEE ALSO"'
-    yield '.UR https://pybtex.org/'
-    yield '.BR https://pybtex.org/'
+    yield ".UR https://pybtex.org/"
+    yield ".BR https://pybtex.org/"
 
 
 def write_manpage(outfile, main_obj):
@@ -127,21 +132,22 @@ def write_manpage(outfile, main_obj):
 def write(outfile, lines, escape=True):
     for line in lines:
         outfile.write(man_escape(line) if escape else line)
-        outfile.write('\n')
+        outfile.write("\n")
 
 
 def generate_manpage(man_dir, main_obj):
-    man_filename = os.path.join(man_dir, '%s.1' % main_obj.prog)
-    print('Writing', man_filename, file=sys.stderr)
-    with open(man_filename, 'w') as man_file:
+    man_filename = os.path.join(man_dir, "%s.1" % main_obj.prog)
+    print("Writing", man_filename, file=sys.stderr)
+    with open(man_filename, "w") as man_file:
         write_manpage(man_file, main_obj)
 
 
 def generate_manpages(doc_dir):
-    man_dir = os.path.join(doc_dir, 'man1')
+    man_dir = os.path.join(doc_dir, "man1")
     from pybtex.__main__ import main as pybtex
     from pybtex.database.convert.__main__ import main as pybtex_convert
     from pybtex.database.format.__main__ import main as pybtex_format
+
     generate_manpage(man_dir, pybtex)
     generate_manpage(man_dir, pybtex_convert)
     generate_manpage(man_dir, pybtex_format)

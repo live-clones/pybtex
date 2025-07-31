@@ -38,6 +38,7 @@ LaTeX output backend.
 >>> print(Tag('sup', 'hello').render(latex))
 \\textsuperscript{hello}
 """
+
 from __future__ import unicode_literals
 
 import codecs
@@ -47,25 +48,21 @@ from pybtex.backends import BaseBackend
 
 
 class Backend(BaseBackend):
-    default_suffix = '.bbl'
-    symbols = {
-        'ndash': u'--',
-        'newblock': u'\n\\newblock ',
-        'nbsp': u'~'
-    }
+    default_suffix = ".bbl"
+    symbols = {"ndash": "--", "newblock": "\n\\newblock ", "nbsp": "~"}
     tags = {
-        u'em': u'emph',
-        u'strong': None,
-        u'i': u'textit',
-        u'b': u'textbf',
-        u'tt': u'texttt',
-        u'sup': u'textsuperscript',
-        u'sub': u'textsubscript',
+        "em": "emph",
+        "strong": None,
+        "i": "textit",
+        "b": "textbf",
+        "tt": "texttt",
+        "sup": "textsuperscript",
+        "sub": "textsubscript",
     }
 
     def __init__(self, encoding=None):
         super(Backend, self).__init__(encoding)
-        self.latex_encoding = 'ulatex+' + self.encoding
+        self.latex_encoding = "ulatex+" + self.encoding
 
     def format_str(self, str_):
         return codecs.encode(str_, self.latex_encoding)
@@ -73,18 +70,18 @@ class Backend(BaseBackend):
     def format_tag(self, tag_name, text):
         tag = self.tags.get(tag_name)
         if tag is None:
-            return u'{%s}' % text if text else u''
+            return "{%s}" % text if text else ""
         else:
-            return r'\%s{%s}' % (tag, text) if text else u''
+            return r"\%s{%s}" % (tag, text) if text else ""
 
     def format_href(self, url, text, external=False):
         if not text:
-            return ''
-        opts = '[pdfnewwindow]' if external else ''
+            return ""
+        opts = "[pdfnewwindow]" if external else ""
         if text == self.format_str(url):
-            return u'\\url{%s}' % url
+            return "\\url{%s}" % url
         else:
-            return r'\href%s{%s}{%s}' % (opts, url, text)
+            return r"\href%s{%s}{%s}" % (opts, url, text)
 
     def format_protected(self, text):
         """
@@ -93,18 +90,18 @@ class Backend(BaseBackend):
         {CTAN}
         """
 
-        return '{%s}' % text
+        return "{%s}" % text
 
     def write_prologue(self):
         if self.formatted_bibliography.preamble:
-            self.output(self.formatted_bibliography.preamble + u'\n')
+            self.output(self.formatted_bibliography.preamble + "\n")
 
         longest_label = self.formatted_bibliography.get_longest_label()
-        self.output(u'\\begin{thebibliography}{%s}' % longest_label)
+        self.output("\\begin{thebibliography}{%s}" % longest_label)
 
     def write_epilogue(self):
-        self.output(u'\n\n\\end{thebibliography}\n')
+        self.output("\n\n\\end{thebibliography}\n")
 
     def write_entry(self, key, label, text):
-        self.output(u'\n\n\\bibitem[%s]{%s}\n' % (label, key))
+        self.output("\n\n\\bibitem[%s]{%s}\n" % (label, key))
         self.output(text)

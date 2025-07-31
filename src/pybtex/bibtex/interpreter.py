@@ -29,11 +29,10 @@ from pybtex.bibtex.utils import wrap
 from pybtex.utils import CaseInsensitiveDict
 
 
-#from pybtex.database.input import bibtex
+# from pybtex.database.input import bibtex
 
 
 class Variable(object):
-
     def _undefined(self):
         raise NotImplementedError
 
@@ -48,16 +47,21 @@ class Variable(object):
             value = self.default
         self.validate(value)
         self._value = value
+
     def validate(self, value):
         if not (isinstance(value, self.value_type) or value is None):
-            raise ValueError('Invalid value for BibTeX %s: %s' % (self.__class__.__name__, value))
+            raise ValueError(
+                "Invalid value for BibTeX %s: %s" % (self.__class__.__name__, value)
+            )
+
     def execute(self, interpreter):
         interpreter.push(self.value())
+
     def value(self):
         return self._value
 
     def __repr__(self):
-        return u'{0}({1})'.format(type(self).__name__, repr(self.value()))
+        return "{0}({1})".format(type(self).__name__, repr(self.value()))
 
     def __eq__(self, other):
         return type(self) == type(other) and self._value == other._value
@@ -68,10 +72,12 @@ class EntryVariable(Variable):
         Variable.__init__(self)
         self.interpreter = interpreter
         self.name = name
+
     def set(self, value):
         if value is not None:
             self.validate(value)
             self.interpreter.current_entry_vars[self.name] = value
+
     def value(self):
         return self.interpreter.current_entry_vars.get(self.name, self.default)
 
@@ -87,7 +93,7 @@ class EntryInteger(Integer, EntryVariable):
 
 class String(Variable):
     value_type = str
-    default = ''
+    default = ""
 
 
 class EntryString(String, EntryVariable):
@@ -99,6 +105,7 @@ class MissingField(str):
         self = str.__new__(cls)
         self.name = name
         return self
+
     def __nonzero__(self):
         return False
 
@@ -121,7 +128,7 @@ class Field(object):
 
 class Crossref(Field):
     def __init__(self, interpreter):
-        super(Crossref, self).__init__(interpreter, 'crossref')
+        super(Crossref, self).__init__(interpreter, "crossref")
 
     def value(self):
         try:
@@ -134,21 +141,23 @@ class Crossref(Field):
 
 class Identifier(Variable):
     value_type = str
+
     def execute(self, interpreter):
         try:
             f = interpreter.vars[self.value()]
         except KeyError:
-            raise BibTeXError('can not execute undefined function %s' % self)
+            raise BibTeXError("can not execute undefined function %s" % self)
         f.execute(interpreter)
 
 
 class QuotedVar(Variable):
     value_type = str
+
     def execute(self, interpreter):
         try:
             var = interpreter.vars[self.value()]
         except KeyError:
-            raise BibTeXError('can not push undefined variable %s' % self.value())
+            raise BibTeXError("can not push undefined variable %s" % self.value())
         interpreter.push(var)
 
 
@@ -159,13 +168,13 @@ class Function(object):
         self.body = body
 
     def __repr__(self):
-        return u'{0}({1})'.format(type(self).__name__, repr(self.body))
+        return "{0}({1})".format(type(self).__name__, repr(self.body))
 
     def __eq__(self, other):
         return type(self) == type(other) and self.body == other.body
 
     def execute(self, interpreter):
-#        print 'executing function', self.body
+        #        print 'executing function', self.body
         for element in self.body:
             element.execute(interpreter)
 
@@ -181,25 +190,26 @@ class Interpreter(object):
         self.bib_encoding = bib_encoding
         self.stack = []
         self.vars = CaseInsensitiveDict(builtins)
-        self.add_variable('global.max$', Integer(20000))  # constants taken from
-        self.add_variable('entry.max$', Integer(250))     # BibTeX 0.99d (TeX Live 2012)
-        self.add_variable('sort.key$', EntryString(self, 'sort.key$'))
+        self.add_variable("global.max$", Integer(20000))  # constants taken from
+        self.add_variable("entry.max$", Integer(250))  # BibTeX 0.99d (TeX Live 2012)
+        self.add_variable("sort.key$", EntryString(self, "sort.key$"))
         self.macros = {}
         self.output_buffer = []
         self.output_lines = []
         self.entry_vars = defaultdict(dict)
 
     def push(self, value):
-#        print 'push <%s>' % value
+        #        print 'push <%s>' % value
         self.stack.append(value)
-#        print 'stack:', self.stack
+
+    #        print 'stack:', self.stack
 
     def pop(self):
         try:
             value = self.stack.pop()
         except IndexError:
-            raise BibTeXError('pop from empty stack')
-#        print 'pop <%s>' % value
+            raise BibTeXError("pop from empty stack")
+        #        print 'pop <%s>' % value
         return value
 
     def get_token(self):
@@ -207,16 +217,20 @@ class Interpreter(object):
 
     def add_variable(self, name, value):
         if name in self.vars:
-            raise BibTeXError('variable "{0}" already declared as {1}'.format(name, type(value).__name__))
+            raise BibTeXError(
+                'variable "{0}" already declared as {1}'.format(
+                    name, type(value).__name__
+                )
+            )
         self.vars[name] = value
 
     def output(self, string):
         self.output_buffer.append(string)
 
     def newline(self):
-        output = wrap(u''.join(self.output_buffer))
+        output = wrap("".join(self.output_buffer))
         self.output_lines.append(output)
-        self.output_lines.append(u'\n')
+        self.output_lines.append("\n")
         self.output_buffer = []
 
     def run(self, bst_script, citations, bib_files, min_crossrefs):
@@ -230,19 +244,19 @@ class Interpreter(object):
         for command in self.bst_script:
             name = command[0]
             args = command[1:]
-            method = 'command_' + name.lower()
+            method = "command_" + name.lower()
             if hasattr(self, method):
                 getattr(self, method)(*args)
             else:
-                print('Unknown command', name)
+                print("Unknown command", name)
 
-        return u''.join(self.output_lines)
+        return "".join(self.output_lines)
 
     def command_entry(self, fields, ints, strings):
         for id in fields:
             name = id.value()
             self.add_variable(name, Field(self, name))
-        self.add_variable('crossref', Crossref(self))
+        self.add_variable("crossref", Crossref(self))
         for id in ints:
             name = id.value()
             self.add_variable(name, EntryInteger(self, name))
@@ -251,7 +265,7 @@ class Interpreter(object):
             self.add_variable(name, EntryString(self, name))
 
     def command_execute(self, command_):
-#        print 'EXECUTE'
+        #        print 'EXECUTE'
         command_[0].execute(self)
 
     def command_function(self, name_, body):
@@ -259,7 +273,7 @@ class Interpreter(object):
         self.add_variable(name, Function(body))
 
     def command_integers(self, identifiers):
-#        print 'INTEGERS'
+        #        print 'INTEGERS'
         for identifier in identifiers:
             self.vars[identifier.value()] = Integer()
 
@@ -282,7 +296,7 @@ class Interpreter(object):
         self.macros[name] = value
 
     def command_read(self):
-#        print 'READ'
+        #        print 'READ'
         p = self.bib_format(
             encoding=self.bib_encoding,
             macros=self.macros,
@@ -290,13 +304,16 @@ class Interpreter(object):
             wanted_entries=self.citations,
         )
         self.bib_data = p.parse_files(self.bib_files)
-        self.citations = self.bib_data.add_extra_citations(self.citations, self.min_crossrefs)
+        self.citations = self.bib_data.add_extra_citations(
+            self.citations, self.min_crossrefs
+        )
         self.citations = list(self.remove_missing_citations(self.citations))
-#        for k, v in self.bib_data.items():
-#            print k
-#            for field, value in v.fields.items():
-#                print '\t', field, value
-#        pass
+
+    #        for k, v in self.bib_data.items():
+    #            print k
+    #            for field, value in v.fields.items():
+    #                print '\t', field, value
+    #        pass
 
     def remove_missing_citations(self, citations):
         for citation in citations:
@@ -311,11 +328,12 @@ class Interpreter(object):
 
     def command_sort(self):
         def key(citation):
-            return self.entry_vars[citation]['sort.key$']
+            return self.entry_vars[citation]["sort.key$"]
+
         self.citations.sort(key=key)
 
     def command_strings(self, identifiers):
-        #print 'STRINGS'
+        # print 'STRINGS'
         for identifier in identifiers:
             self.vars[identifier.value()] = String()
 

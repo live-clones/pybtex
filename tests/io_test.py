@@ -59,18 +59,18 @@ class MockFilesystem(object):
         if path in self.files:
             return MockFile(path, mode)
         else:
-            raise IOError(errno.ENOENT, 'No such file or directory', path)
+            raise IOError(errno.ENOENT, "No such file or directory", path)
 
     def open_write(self, path, mode):
         dirname = posixpath.dirname(path)
         if dirname in self.writable_dirs:
             return MockFile(path, mode)
         else:
-            raise IOError(errno.EACCES, 'Permission denied', path)
+            raise IOError(errno.EACCES, "Permission denied", path)
 
     def open(self, path, mode):
         full_path = posixpath.join(self.pwd, path)
-        if 'w' in mode:
+        if "w" in mode:
             return self.open_write(full_path, mode)
         else:
             return self.open_read(full_path, mode)
@@ -80,50 +80,55 @@ class IOTest(TestCase):
     def setUp(self):
         self.fs = MockFilesystem(
             files=(
-                '/home/test/foo.bib',
-                '/home/test/foo.bbl',
-                '/usr/share/texmf/bibtex/bst/unsrt.bst',
+                "/home/test/foo.bib",
+                "/home/test/foo.bbl",
+                "/usr/share/texmf/bibtex/bst/unsrt.bst",
             ),
-            writable_dirs=('/home/test',),
-            readonly_dirs=('/'),
+            writable_dirs=("/home/test",),
+            readonly_dirs=("/"),
         )
-        self.fs.chdir('/home/test')
+        self.fs.chdir("/home/test")
 
     def test_open_existing(self):
-        file = io._open_existing(self.fs.open, 'foo.bbl', 'rb', locate=self.fs.locate)
-        self.assertEqual(file.name, '/home/test/foo.bbl')
-        self.assertEqual(file.mode, 'rb')
+        file = io._open_existing(self.fs.open, "foo.bbl", "rb", locate=self.fs.locate)
+        self.assertEqual(file.name, "/home/test/foo.bbl")
+        self.assertEqual(file.mode, "rb")
 
     def test_open_missing(self):
         self.assertRaises(
             EnvironmentError,
-            io._open_existing, self.fs.open, 'nosuchfile.bbl', 'rb',
+            io._open_existing,
+            self.fs.open,
+            "nosuchfile.bbl",
+            "rb",
             locate=self.fs.locate,
         )
 
     def test_locate(self):
-        file = io._open_existing(
-            self.fs.open, 'unsrt.bst', 'rb', locate=self.fs.locate
-        )
-        self.assertEqual(file.name, '/usr/share/texmf/bibtex/bst/unsrt.bst')
-        self.assertEqual(file.mode, 'rb')
+        file = io._open_existing(self.fs.open, "unsrt.bst", "rb", locate=self.fs.locate)
+        self.assertEqual(file.name, "/usr/share/texmf/bibtex/bst/unsrt.bst")
+        self.assertEqual(file.mode, "rb")
 
     def test_create(self):
-        file = io._open_or_create(self.fs.open, 'foo.bbl', 'wb', {})
-        self.assertEqual(file.name, '/home/test/foo.bbl')
-        self.assertEqual(file.mode, 'wb')
+        file = io._open_or_create(self.fs.open, "foo.bbl", "wb", {})
+        self.assertEqual(file.name, "/home/test/foo.bbl")
+        self.assertEqual(file.mode, "wb")
 
     def test_create_in_readonly_dir(self):
-        self.fs.chdir('/')
+        self.fs.chdir("/")
         self.assertRaises(
             EnvironmentError,
-            io._open_or_create, self.fs.open, 'foo.bbl', 'wb', {},
+            io._open_or_create,
+            self.fs.open,
+            "foo.bbl",
+            "wb",
+            {},
         )
 
     def test_create_in_fallback_dir(self):
-        self.fs.chdir('/')
+        self.fs.chdir("/")
         file = io._open_or_create(
-            self.fs.open, 'foo.bbl', 'wb', {'TEXMFOUTPUT': '/home/test'}
+            self.fs.open, "foo.bbl", "wb", {"TEXMFOUTPUT": "/home/test"}
         )
-        self.assertEqual(file.name, '/home/test/foo.bbl')
-        self.assertEqual(file.mode, 'wb')
+        self.assertEqual(file.name, "/home/test/foo.bbl")
+        self.assertEqual(file.mode, "wb")

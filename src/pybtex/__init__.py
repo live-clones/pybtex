@@ -19,8 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""bibliography processor
-"""
+"""bibliography processor"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -31,7 +30,9 @@ __version__ = "0.25.1"
 
 
 class Engine(object):
-    def make_bibliography(self, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs):
+    def make_bibliography(
+        self, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs
+    ):
         """
         Read the given ``.aux`` file and produce a formatted bibliography
         using :py:meth:`~.Engine.format_from_files`.
@@ -40,6 +41,7 @@ class Engine(object):
         """
 
         from pybtex import auxfile
+
         if bib_format is None:
             from pybtex.database.input.bibtex import Parser as bib_format
 
@@ -47,7 +49,9 @@ class Engine(object):
         if style is None:
             style = aux_data.style
         base_filename = path.splitext(aux_filename)[0]
-        bib_filenames = [filename + bib_format.default_suffix for filename in aux_data.data]
+        bib_filenames = [
+            filename + bib_format.default_suffix for filename in aux_data.data
+        ]
         return self.format_from_files(
             bib_filenames,
             style=aux_data.style,
@@ -55,7 +59,7 @@ class Engine(object):
             output_encoding=output_encoding,
             output_filename=base_filename,
             add_output_suffix=True,
-            **kwargs
+            **kwargs,
         )
 
     def format_from_string(self, bib_string, *args, **kwargs):
@@ -77,6 +81,7 @@ class Engine(object):
         then calls :py:meth:`~.Engine.format_from_files`.
         """
         from io import StringIO
+
         inputs = [StringIO(bib_string) for bib_string in bib_strings]
         return self.format_from_files(inputs, *args, **kwargs)
 
@@ -113,7 +118,7 @@ class PybtexEngine(Engine):
         self,
         bib_files_or_filenames,
         style,
-        citations=['*'],
+        citations=["*"],
         bib_format=None,
         bib_encoding=None,
         output_backend=None,
@@ -121,7 +126,7 @@ class PybtexEngine(Engine):
         min_crossrefs=2,
         output_filename=None,
         add_output_suffix=False,
-        **kwargs
+        **kwargs,
     ):
         """
         Read the bigliography data from the given files and produce a formated
@@ -146,30 +151,33 @@ class PybtexEngine(Engine):
 
         from pybtex.plugin import find_plugin
 
-        bib_parser = find_plugin('pybtex.database.input', bib_format)
+        bib_parser = find_plugin("pybtex.database.input", bib_format)
         bib_data = bib_parser(
             encoding=bib_encoding,
             wanted_entries=citations,
             min_crossrefs=min_crossrefs,
         ).parse_files(bib_files_or_filenames)
 
-        style_cls = find_plugin('pybtex.style.formatting', style)
+        style_cls = find_plugin("pybtex.style.formatting", style)
         style = style_cls(
-            label_style=kwargs.get('label_style'),
-            name_style=kwargs.get('name_style'),
-            sorting_style=kwargs.get('sorting_style'),
-            abbreviate_names=kwargs.get('abbreviate_names'),
+            label_style=kwargs.get("label_style"),
+            name_style=kwargs.get("name_style"),
+            sorting_style=kwargs.get("sorting_style"),
+            abbreviate_names=kwargs.get("abbreviate_names"),
             min_crossrefs=min_crossrefs,
         )
         formatted_bibliography = style.format_bibliography(bib_data, citations)
 
-        output_backend = find_plugin('pybtex.backends', output_backend)
+        output_backend = find_plugin("pybtex.backends", output_backend)
         if add_output_suffix:
             output_filename = output_filename + output_backend.default_suffix
         if not output_filename:
             import io
+
             output_filename = io.StringIO()
-        return output_backend(output_encoding).write_to_file(formatted_bibliography, output_filename)
+        return output_backend(output_encoding).write_to_file(
+            formatted_bibliography, output_filename
+        )
 
 
 def make_bibliography(*args, **kwargs):

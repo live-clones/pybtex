@@ -53,36 +53,32 @@ _RUNTIME_PLUGINS = {}
 
 
 class PluginGroupNotFound(PybtexError):
-
     def __init__(self, group_name):
-        message = u'plugin group {group_name} not found'.format(
+        message = "plugin group {group_name} not found".format(
             group_name=group_name,
         )
         super(PluginGroupNotFound, self).__init__(message)
 
 
 class PluginNotFound(PybtexError):
-
     def __init__(self, plugin_group, name):
-        if not name.startswith('.'):
-            message = u'plugin {plugin_group}.{name} not found'.format(
+        if not name.startswith("."):
+            message = "plugin {plugin_group}.{name} not found".format(
                 plugin_group=plugin_group,
                 name=name,
             )
         else:
-            assert plugin_group.endswith('.suffixes')
-            message = (
-                u'plugin {plugin_group} for suffix {suffix} not found'.format(
-                    plugin_group=plugin_group,
-                    suffix=name,
-                )
+            assert plugin_group.endswith(".suffixes")
+            message = "plugin {plugin_group} for suffix {suffix} not found".format(
+                plugin_group=plugin_group,
+                suffix=name,
             )
 
         super(PluginNotFound, self).__init__(message)
 
 
 def _load_entry_point(group, name, use_aliases=False):
-    groups = [group, group + '.aliases'] if use_aliases else [group]
+    groups = [group, group + ".aliases"] if use_aliases else [group]
     for search_group in groups:
         # first check in runtime plugins registered via register_plugin
         klass = _RUNTIME_PLUGINS.get(search_group, {}).get(name)
@@ -120,7 +116,7 @@ def find_plugin(plugin_group, name=None, filename=None):
         return _load_entry_point(plugin_group, name, use_aliases=True)
     elif filename:
         suffix = os.path.splitext(filename)[1]
-        return _load_entry_point(plugin_group + '.suffixes', suffix)
+        return _load_entry_point(plugin_group + ".suffixes", suffix)
     else:
         return _load_entry_point(plugin_group, _DEFAULT_PLUGINS[plugin_group])
 
@@ -158,7 +154,7 @@ def register_plugin(plugin_group, name, klass, force=False):
     """
     if plugin_group.endswith(".suffixes"):
         base_group, _ = plugin_group.rsplit(".", 1)
-        if not name.startswith('.'):
+        if not name.startswith("."):
             raise ValueError("a suffix must start with a period")
     elif plugin_group.endswith(".aliases"):
         base_group, _ = plugin_group.rsplit(".", 1)

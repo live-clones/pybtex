@@ -25,7 +25,7 @@ from subprocess import PIPE, Popen
 
 
 def kpsewhich(filename):
-    p = Popen(['kpsewhich', filename], stdout=PIPE, stderr=PIPE)
+    p = Popen(["kpsewhich", filename], stdout=PIPE, stderr=PIPE)
     path = p.communicate()[0].rstrip()
     if p.returncode == 0:
         return path

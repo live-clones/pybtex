@@ -35,15 +35,15 @@ from pybtex.database.output import bibtex
 from pybtex.errors import report_error
 from pybtex.exceptions import PybtexError
 
-writer = bibtex.Writer(encoding='ascii')
+writer = bibtex.Writer(encoding="ascii")
 
 
 def write_aux(filename, citations):
-    with open(filename, 'w') as aux_file:
+    with open(filename, "w") as aux_file:
         for citation in citations:
-            aux_file.write('\\citation{%s}\n' % citation)
-        aux_file.write('\\bibdata{test}\n')
-        aux_file.write('\\bibstyle{test}\n')
+            aux_file.write("\\citation{%s}\n" % citation)
+        aux_file.write("\\bibdata{test}\n")
+        aux_file.write("\\bibstyle{test}\n")
 
 
 def write_bib(filename, database):
@@ -51,24 +51,24 @@ def write_bib(filename, database):
 
 
 def write_bst(filename, style):
-    with open(filename, 'w') as bst_file:
+    with open(filename, "w") as bst_file:
         bst_file.write(style)
-        bst_file.write('\n')
+        bst_file.write("\n")
 
 
 def run_bibtex(style, database, citations=None):
     if citations is None:
         citations = list(database.entries.keys())
-    tmpdir = mkdtemp(prefix='pybtex_test_')
+    tmpdir = mkdtemp(prefix="pybtex_test_")
     try:
-        write_bib(path.join(tmpdir, 'test.bib'), database)
-        write_aux(path.join(tmpdir, 'test.aux'), citations)
-        write_bst(path.join(tmpdir, 'test.bst'), style)
-        bibtex = Popen(('bibtex', 'test'), cwd=tmpdir, stdout=PIPE, stderr=PIPE)
+        write_bib(path.join(tmpdir, "test.bib"), database)
+        write_aux(path.join(tmpdir, "test.aux"), citations)
+        write_bst(path.join(tmpdir, "test.bst"), style)
+        bibtex = Popen(("bibtex", "test"), cwd=tmpdir, stdout=PIPE, stderr=PIPE)
         stdout, stderr = bibtex.communicate()
         if bibtex.returncode:
             report_error(PybtexError(stdout))
-        with open(path.join(tmpdir, 'test.bbl')) as bbl_file:
+        with open(path.join(tmpdir, "test.bbl")) as bbl_file:
             result = bbl_file.read()
         return result
     finally:
@@ -78,8 +78,9 @@ def run_bibtex(style, database, citations=None):
 
 def execute(code, database=None):
     if database is None:
-        database = BibliographyData(entries={'test_entry': Entry('article')})
-    bst = """
+        database = BibliographyData(entries={"test_entry": Entry("article")})
+    bst = (
+        """
         ENTRY {name format} {} {}
         FUNCTION {article}
         {
@@ -87,8 +88,10 @@ def execute(code, database=None):
         }
         READ
         ITERATE {call.type$}
-    """.strip() % code
-    result = ' '.join(run_bibtex(bst, database).splitlines())
+    """.strip()
+        % code
+    )
+    result = " ".join(run_bibtex(bst, database).splitlines())
     return result
 
 
@@ -97,9 +100,9 @@ def format_name(name, format):
 
 
 def parse_name(name):
-    space = re.compile(r'[\s~]+')
-    formatted_name = format_name(name, '{ff}|{vv}|{ll}|{jj}')
-    parts = [space.sub(' ', part.strip()) for part in formatted_name.split('|')]
+    space = re.compile(r"[\s~]+")
+    formatted_name = format_name(name, "{ff}|{vv}|{ll}|{jj}")
+    parts = [space.sub(" ", part.strip()) for part in formatted_name.split("|")]
     first, von, last, junior = parts
     return Person(first=first, prelast=von, last=last, lineage=junior)
 
@@ -113,5 +116,5 @@ def main():
     print(execute(code))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
