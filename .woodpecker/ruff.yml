@@ -1,4 +1,13 @@
 steps:
+  check:
+    image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+    commands:
+      - uv run ruff check
+    when:
+      - event: push
+      - event: pull_request
+    depends_on: []
+
   format-check:
     image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
     commands:
@@ -6,3 +15,4 @@ steps:
     when:
       - event: push
       - event: pull_request
+    depends_on: []
