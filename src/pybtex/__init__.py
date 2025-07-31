@@ -21,15 +21,12 @@
 
 """bibliography processor"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from os import path
-
+from pathlib import Path
 
 __version__ = "0.25.1"
 
 
-class Engine(object):
+class Engine:
     def make_bibliography(
         self, aux_filename, style=None, output_encoding=None, bib_format=None, **kwargs
     ):
@@ -48,7 +45,7 @@ class Engine(object):
         aux_data = auxfile.parse_file(aux_filename, output_encoding)
         if style is None:
             style = aux_data.style
-        base_filename = path.splitext(aux_filename)[0]
+        base_filename = Path(aux_filename).stem
         bib_filenames = [
             filename + bib_format.default_suffix for filename in aux_data.data
         ]

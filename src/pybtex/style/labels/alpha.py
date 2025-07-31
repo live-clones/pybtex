@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,34 +20,26 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import absolute_import, unicode_literals
-
 import re
-import sys
 import unicodedata
+from collections import Counter
 
 from pybtex.style.labels import BaseLabelStyle
 from pybtex.textutils import abbreviate
-
-if sys.version_info < (2, 7):
-    from counter import Counter
-else:
-    from collections import Counter
-
 
 _nonalnum_pattern = re.compile("[^A-Za-z0-9]+", re.UNICODE)
 
 
 def _strip_accents(s):
     return "".join(
-        (c for c in unicodedata.normalize("NFD", s) if not unicodedata.combining(c))
+        c for c in unicodedata.normalize("NFD", s) if not unicodedata.combining(c)
     )
 
 
 def _strip_nonalnum(parts):
     """Strip all non-alphanumerical characters from a list of strings.
 
-    >>> print(_strip_nonalnum([u"ÅA. B. Testing 12+}[.@~_", u" 3%"]))
+    >>> print(_strip_nonalnum(["ÅA. B. Testing 12+}[.@~_", " 3%"]))
     AABTesting123
     """
     s = "".join(parts)
@@ -87,8 +77,7 @@ class LabelStyle(BaseLabelStyle):
             label = self.author_key_label(entry)
         if "year" in entry.fields:
             return label + entry.fields["year"][-2:]
-        else:
-            return label
+        return label
         # bst additionally sets sort.label
 
     def author_key_label(self, entry):
@@ -96,11 +85,9 @@ class LabelStyle(BaseLabelStyle):
         if "author" not in entry.persons:
             if "key" not in entry.fields:
                 return entry.key[:3]  # entry.key is bst cite$
-            else:
-                # for entry.key, bst actually uses text.prefix$
-                return entry.fields["key"][:3]
-        else:
-            return self.format_lab_names(entry.persons["author"])
+            # for entry.key, bst actually uses text.prefix$
+            return entry.fields["key"][:3]
+        return self.format_lab_names(entry.persons["author"])
 
     def author_editor_key_label(self, entry):
         # see alpha.bst author.editor.key.label
@@ -108,53 +95,41 @@ class LabelStyle(BaseLabelStyle):
             if "editor" not in entry.persons:
                 if "key" not in entry.fields:
                     return entry.key[:3]  # entry.key is bst cite$
-                else:
-                    # for entry.key, bst actually uses text.prefix$
-                    return entry.fields["key"][:3]
-            else:
-                return self.format_lab_names(entry.persons["editor"])
-        else:
-            return self.format_lab_names(entry.persons["author"])
+                # for entry.key, bst actually uses text.prefix$
+                return entry.fields["key"][:3]
+            return self.format_lab_names(entry.persons["editor"])
+        return self.format_lab_names(entry.persons["author"])
 
     def author_key_organization_label(self, entry):
         if "author" not in entry.persons:
             if "key" not in entry.fields:
                 if "organization" not in entry.fields:
                     return entry.key[:3]  # entry.key is bst cite$
-                else:
-                    result = entry.fields["organization"]
-                    if result.startswith("The "):
-                        result = result[4:]
-                    return result
-            else:
-                return entry.fields["key"][:3]
-        else:
-            return self.format_lab_names(entry.persons["author"])
+                result = entry.fields["organization"]
+                if result.startswith("The "):
+                    result = result[4:]
+                return result
+            return entry.fields["key"][:3]
+        return self.format_lab_names(entry.persons["author"])
 
     def editor_key_organization_label(self, entry):
         if "editor" not in entry.persons:
             if "key" not in entry.fields:
                 if "organization" not in entry.fields:
                     return entry.key[:3]  # entry.key is bst cite$
-                else:
-                    result = entry.fields["organization"]
-                    if result.startswith("The "):
-                        result = result[4:]
-                    return result
-            else:
-                return entry.fields["key"][:3]
-        else:
-            return self.format_lab_names(entry.persons["editor"])
+                result = entry.fields["organization"]
+                if result.startswith("The "):
+                    result = result[4:]
+                return result
+            return entry.fields["key"][:3]
+        return self.format_lab_names(entry.persons["editor"])
 
     def format_lab_names(self, persons):
         # see alpha.bst format.lab.names
         # s = persons
         numnames = len(persons)
         if numnames > 1:
-            if numnames > 4:
-                namesleft = 3
-            else:
-                namesleft = numnames
+            namesleft = 3 if numnames > 4 else numnames
             result = ""
             nameptr = 1
             while namesleft:

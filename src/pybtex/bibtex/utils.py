@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import, unicode_literals
 
 import re
 
@@ -48,25 +47,25 @@ def wrap(string, width=79, subsequent_indent="  "):
     (3 characters by default), so that each line contains at least one
     non-whitespace character after the indent.
 
-    >>> print(wrap('', width=3))
+    >>> print(wrap("", width=3))
     <BLANKLINE>
-    >>> print(wrap('0123456789 12345', width=10))
+    >>> print(wrap("0123456789 12345", width=10))
     0123456789
       12345
-    >>> print(wrap('01234 6789 12345', width=10))
+    >>> print(wrap("01234 6789 12345", width=10))
     01234 6789
       12345
-    >>> print(wrap('01234 6789 12345', width=11))
+    >>> print(wrap("01234 6789 12345", width=11))
     01234 6789
       12345
-    >>> print(wrap('01234 6789 12345', width=9))
+    >>> print(wrap("01234 6789 12345", width=9))
     01234
       6789
       12345
-    >>> print(wrap(' a b c', width=3))
+    >>> print(wrap(" a b c", width=3))
      a b
       c
-    >>> print(wrap('aa bb c', width=3))
+    >>> print(wrap("aa bb c", width=3))
     aa bb
       c
 
@@ -80,6 +79,7 @@ def wrap(string, width=79, subsequent_indent="  "):
                 match is None or match.start() > width
             ) and prev_match.start() > min_width:
                 return prev_match.start()
+        return None
 
     def iter_lines(string):
         while len(string) > width:
@@ -95,10 +95,11 @@ def wrap(string, width=79, subsequent_indent="  "):
     return "\n".join(line.rstrip() for line in iter_lines(string))
 
 
-class BibTeXString(object):
+class BibTeXString:
     def __init__(self, chars, level=0, max_level=100):
         if level > max_level:
-            raise BibTeXError("too many nested braces")
+            msg = "too many nested braces"
+            raise BibTeXError(msg)
 
         self.level = level
         self.is_closed = False
@@ -133,8 +134,7 @@ class BibTeXString(object):
                     if close is not None:
                         yield close(child)
                 else:
-                    for result in child.traverse(open, f, close):
-                        yield result
+                    yield from child.traverse(open, f, close)
             else:
                 yield f(child, self)
 
@@ -150,33 +150,32 @@ class BibTeXString(object):
 
 def change_case(string, mode):
     r"""
-    >>> print(change_case('aBcD', 'l'))
+    >>> print(change_case("aBcD", "l"))
     abcd
-    >>> print(change_case('aBcD', 'u'))
+    >>> print(change_case("aBcD", "u"))
     ABCD
-    >>> print(change_case('ABcD', 't'))
+    >>> print(change_case("ABcD", "t"))
     Abcd
-    >>> print(change_case(r'The {\TeX book \noop}', 'u'))
+    >>> print(change_case(r"The {\TeX book \noop}", "u"))
     THE {\TeX BOOK \noop}
-    >>> print(change_case(r'And Now: BOOO!!!', 't'))
+    >>> print(change_case(r"And Now: BOOO!!!", "t"))
     And now: Booo!!!
-    >>> print(change_case(r'And {Now: BOOO!!!}', 't'))
+    >>> print(change_case(r"And {Now: BOOO!!!}", "t"))
     And {Now: BOOO!!!}
-    >>> print(change_case(r'And {Now: {BOOO}!!!}', 'l'))
+    >>> print(change_case(r"And {Now: {BOOO}!!!}", "l"))
     and {Now: {BOOO}!!!}
     >>> print(change_case(r'And {\Now: BOOO!!!}', 't'))
     And {\Now: booo!!!}
     >>> print(change_case(r'And {\Now: {BOOO}!!!}', 'l'))
     and {\Now: {booo}!!!}
-    >>> print(change_case(r'{\TeX\ and databases\Dash\TeX DBI}', 't'))
+    >>> print(change_case(r"{\TeX\ and databases\Dash\TeX DBI}", "t"))
     {\TeX\ and databases\Dash\TeX DBI}
     """
 
     def title(char, state):
         if state == "start":
             return char
-        else:
-            return char.lower()
+        return char.lower()
 
     def lower(char, state):
         return char.lower()
@@ -224,21 +223,21 @@ def bibtex_substring(string, start, length):
     start and length are 1-based. If start is < 0, it is counted from the end
     of the string. If start is 0, an empty string is returned.
 
-    >>> print(bibtex_substring('abcdef', 1, 3))
+    >>> print(bibtex_substring("abcdef", 1, 3))
     abc
-    >>> print(bibtex_substring('abcdef', 2, 3))
+    >>> print(bibtex_substring("abcdef", 2, 3))
     bcd
-    >>> print(bibtex_substring('abcdef', 2, 1000))
+    >>> print(bibtex_substring("abcdef", 2, 1000))
     bcdef
-    >>> print(bibtex_substring('abcdef', 0, 1000))
+    >>> print(bibtex_substring("abcdef", 0, 1000))
     <BLANKLINE>
-    >>> print(bibtex_substring('abcdef', -1, 1))
+    >>> print(bibtex_substring("abcdef", -1, 1))
     f
-    >>> print(bibtex_substring('abcdef', -1, 2))
+    >>> print(bibtex_substring("abcdef", -1, 2))
     ef
-    >>> print(bibtex_substring('abcdef', -2, 3))
+    >>> print(bibtex_substring("abcdef", -2, 3))
     cde
-    >>> print(bibtex_substring('abcdef', -2, 1000))
+    >>> print(bibtex_substring("abcdef", -2, 1000))
     abcde
     """
 
@@ -266,23 +265,23 @@ def bibtex_len(string):
     20
     >>> print(bibtex_len(r"de la Vallee Poussin"))
     20
-    >>> print(bibtex_len(r'\ABC 123'))
+    >>> print(bibtex_len(r"\ABC 123"))
     8
-    >>> print(bibtex_len(r'{\abc}'))
+    >>> print(bibtex_len(r"{\abc}"))
     1
-    >>> print(bibtex_len(r'{\abc'))
+    >>> print(bibtex_len(r"{\abc"))
     1
-    >>> print(bibtex_len(r'}\abc'))
+    >>> print(bibtex_len(r"}\abc"))
     4
-    >>> print(bibtex_len(r'\abc}'))
+    >>> print(bibtex_len(r"\abc}"))
     4
-    >>> print(bibtex_len(r'\abc{'))
+    >>> print(bibtex_len(r"\abc{"))
     4
-    >>> print(bibtex_len(r'level 0 {1 {2}}'))
+    >>> print(bibtex_len(r"level 0 {1 {2}}"))
     11
-    >>> print(bibtex_len(r'level 0 {\1 {2}}'))
+    >>> print(bibtex_len(r"level 0 {\1 {2}}"))
     9
-    >>> print(bibtex_len(r'level 0 {1 {\2}}'))
+    >>> print(bibtex_len(r"level 0 {1 {\2}}"))
     12
     """
     length = 0
@@ -296,11 +295,11 @@ def bibtex_width(string):
     r"""
     Determine the width of the given string, in relative units.
 
-    >>> bibtex_width('')
+    >>> bibtex_width("")
     0
-    >>> bibtex_width('abc')
+    >>> bibtex_width("abc")
     1500
-    >>> bibtex_width('ab{c}')
+    >>> bibtex_width("ab{c}")
     2500
     >>> bibtex_width(r"ab{\'c}")
     1500
@@ -333,19 +332,19 @@ def bibtex_prefix(string, num_chars):
     resulting prefix ends at brace level > 0, missing closing braces are
     appended.
 
-    >>> print(bibtex_prefix('abc', 1))
+    >>> print(bibtex_prefix("abc", 1))
     a
-    >>> print(bibtex_prefix('abc', 5))
+    >>> print(bibtex_prefix("abc", 5))
     abc
-    >>> print(bibtex_prefix('ab{c}d', 3))
+    >>> print(bibtex_prefix("ab{c}d", 3))
     ab{c}
-    >>> print(bibtex_prefix('ab{cd}', 3))
+    >>> print(bibtex_prefix("ab{cd}", 3))
     ab{c}
-    >>> print(bibtex_prefix('ab{cd', 3))
+    >>> print(bibtex_prefix("ab{cd", 3))
     ab{c}
-    >>> print(bibtex_prefix(r'ab{\cd}', 3))
+    >>> print(bibtex_prefix(r"ab{\cd}", 3))
     ab{\cd}
-    >>> print(bibtex_prefix(r'ab{\cd', 3))
+    >>> print(bibtex_prefix(r"ab{\cd", 3))
     ab{\cd}
 
     """
@@ -367,33 +366,33 @@ def bibtex_prefix(string, num_chars):
 def bibtex_purify(string):
     r"""Strip special characters from the string.
 
-    >>> print(bibtex_purify('Abc 1234'))
+    >>> print(bibtex_purify("Abc 1234"))
     Abc 1234
-    >>> print(bibtex_purify('Abc  1234'))
+    >>> print(bibtex_purify("Abc  1234"))
     Abc  1234
-    >>> print(bibtex_purify('Abc-Def'))
+    >>> print(bibtex_purify("Abc-Def"))
     Abc Def
-    >>> print(bibtex_purify('Abc-~-Def'))
+    >>> print(bibtex_purify("Abc-~-Def"))
     Abc   Def
-    >>> print(bibtex_purify('{XXX YYY}'))
+    >>> print(bibtex_purify("{XXX YYY}"))
     XXX YYY
-    >>> print(bibtex_purify('{XXX {YYY}}'))
+    >>> print(bibtex_purify("{XXX {YYY}}"))
     XXX YYY
-    >>> print(bibtex_purify(r'XXX {\YYY} XXX'))
+    >>> print(bibtex_purify(r"XXX {\YYY} XXX"))
     XXX  XXX
-    >>> print(bibtex_purify(r'{XXX {\YYY} XXX}'))
+    >>> print(bibtex_purify(r"{XXX {\YYY} XXX}"))
     XXX YYY XXX
-    >>> print(bibtex_purify(r'\\abc def'))
+    >>> print(bibtex_purify(r"\\abc def"))
     abc def
-    >>> print(bibtex_purify('a@#$@#$b@#$@#$c'))
+    >>> print(bibtex_purify("a@#$@#$b@#$@#$c"))
     abc
-    >>> print(bibtex_purify(r'{\noopsort{1973b}}1973'))
+    >>> print(bibtex_purify(r"{\noopsort{1973b}}1973"))
     1973b1973
-    >>> print(bibtex_purify(r'{sort{1973b}}1973'))
+    >>> print(bibtex_purify(r"{sort{1973b}}1973"))
     sort1973b1973
-    >>> print(bibtex_purify(r'{sort{\abc1973b}}1973'))
+    >>> print(bibtex_purify(r"{sort{\abc1973b}}1973"))
     sortabc1973b1973
-    >>> print(bibtex_purify(r'{\noopsort{1973a}}{\switchargs{--90}{1968}}'))
+    >>> print(bibtex_purify(r"{\noopsort{1973a}}{\switchargs{--90}{1968}}"))
     1973a901968
     """
 
@@ -430,21 +429,21 @@ def split_name_list(string):
     r"""
     Split a list of names, separated by ' and '.
 
-    >>> split_name_list('Johnson and Peterson')
+    >>> split_name_list("Johnson and Peterson")
     ['Johnson', 'Peterson']
-    >>> split_name_list('Johnson AND Peterson')
+    >>> split_name_list("Johnson AND Peterson")
     ['Johnson', 'Peterson']
-    >>> split_name_list('Johnson AnD Peterson')
+    >>> split_name_list("Johnson AnD Peterson")
     ['Johnson', 'Peterson']
-    >>> split_name_list('Armand and Peterson')
+    >>> split_name_list("Armand and Peterson")
     ['Armand', 'Peterson']
-    >>> split_name_list('Armand and anderssen')
+    >>> split_name_list("Armand and anderssen")
     ['Armand', 'anderssen']
-    >>> split_name_list('{Armand and Anderssen}')
+    >>> split_name_list("{Armand and Anderssen}")
     ['{Armand and Anderssen}']
-    >>> split_name_list('What a Strange{ }and Bizzare Name! and Peterson')
+    >>> split_name_list("What a Strange{ }and Bizzare Name! and Peterson")
     ['What a Strange{ }and Bizzare Name!', 'Peterson']
-    >>> split_name_list('What a Strange and{ }Bizzare Name! and Peterson')
+    >>> split_name_list("What a Strange and{ }Bizzare Name! and Peterson")
     ['What a Strange and{ }Bizzare Name!', 'Peterson']
     """
     return split_tex_string(string, " [Aa][Nn][Dd] ")
@@ -452,17 +451,17 @@ def split_name_list(string):
 
 def _find_closing_brace(string):
     r"""
-    >>> _find_closing_brace('')
+    >>> _find_closing_brace("")
     ('', '')
-    >>> _find_closing_brace('no braces')
+    >>> _find_closing_brace("no braces")
     ('no braces', '')
-    >>> _find_closing_brace('brace at the end}')
+    >>> _find_closing_brace("brace at the end}")
     ('brace at the end}', '')
-    >>> _find_closing_brace('two closing braces}}')
+    >>> _find_closing_brace("two closing braces}}")
     ('two closing braces}', '}')
-    >>> _find_closing_brace('two closing} braces} and some text')
+    >>> _find_closing_brace("two closing} braces} and some text")
     ('two closing}', ' braces} and some text')
-    >>> _find_closing_brace('more {nested{}}{braces}} and the rest}')
+    >>> _find_closing_brace("more {nested{}}{braces}} and the rest}")
     ('more {nested{}}{braces}}', ' and the rest}')
     """
     up_to_brace = []
@@ -500,27 +499,27 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
 
     Everything at brace level > 0 is ignored.
 
-    >>> split_tex_string('')
+    >>> split_tex_string("")
     []
-    >>> split_tex_string('     ')
+    >>> split_tex_string("     ")
     []
-    >>> split_tex_string('.a.b.c.', r'\.')
+    >>> split_tex_string(".a.b.c.", r"\.")
     ['', 'a', 'b', 'c', '']
-    >>> split_tex_string('.a.b.c.{d.}.', r'\.')
+    >>> split_tex_string(".a.b.c.{d.}.", r"\.")
     ['', 'a', 'b', 'c', '{d.}', '']
-    >>> split_tex_string('Matsui      Fuuka')
+    >>> split_tex_string("Matsui      Fuuka")
     ['Matsui', 'Fuuka']
-    >>> split_tex_string('{Matsui      Fuuka}')
+    >>> split_tex_string("{Matsui      Fuuka}")
     ['{Matsui      Fuuka}']
-    >>> split_tex_string(r'Matsui\ Fuuka')
+    >>> split_tex_string(r"Matsui\ Fuuka")
     ['Matsui', 'Fuuka']
-    >>> split_tex_string(r'{Matsui\ Fuuka}')
+    >>> split_tex_string(r"{Matsui\ Fuuka}")
     ['{Matsui\\ Fuuka}']
-    >>> split_tex_string('a')
+    >>> split_tex_string("a")
     ['a']
-    >>> split_tex_string('on a')
+    >>> split_tex_string("on a")
     ['on', 'a']
-    >>> split_tex_string(r'Qui\~{n}onero-Candela, J.')
+    >>> split_tex_string(r"Qui\~{n}onero-Candela, J.")
     ['Qui\\~{n}onero-Candela,', 'J.']
     """
 
@@ -539,7 +538,7 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
         if head:
             head_parts = sep.split(head)
             for word in head_parts[:-1]:
-                result.append("".join(word_parts + [word]))
+                result.append("".join([*word_parts, word]))
                 word_parts = []
             word_parts.append(head_parts[-1])
 
@@ -563,27 +562,27 @@ def split_tex_string(string, sep=None, strip=True, filter_empty=False):
 def bibtex_first_letter(string):
     r"""Return the first letter or special character of the string.
 
-    >>> print(bibtex_first_letter('Andrew Blake'))
+    >>> print(bibtex_first_letter("Andrew Blake"))
     A
-    >>> print(bibtex_first_letter('{Andrew} Blake'))
+    >>> print(bibtex_first_letter("{Andrew} Blake"))
     A
-    >>> print(bibtex_first_letter('1Andrew'))
+    >>> print(bibtex_first_letter("1Andrew"))
     A
-    >>> print(bibtex_first_letter(r'{\TeX} markup'))
+    >>> print(bibtex_first_letter(r"{\TeX} markup"))
     {\TeX}
-    >>> print(bibtex_first_letter(''))
+    >>> print(bibtex_first_letter(""))
     <BLANKLINE>
-    >>> print(bibtex_first_letter('123 123 123 {}'))
+    >>> print(bibtex_first_letter("123 123 123 {}"))
     <BLANKLINE>
-    >>> print(bibtex_first_letter(r'\LaTeX Project Team'))
+    >>> print(bibtex_first_letter(r"\LaTeX Project Team"))
     L
 
     """
 
     for char in BibTeXString(string):
         if char.startswith("\\") and char != "\\":
-            return "{{{0}}}".format(char)
-        elif char.isalpha():
+            return f"{{{char}}}"
+        if char.isalpha():
             return char
     return ""
 
@@ -592,11 +591,11 @@ def bibtex_abbreviate(string, delimiter=None, separator="-"):
     r"""
     Abbreviate string.
 
-    >>> print(bibtex_abbreviate('Andrew Blake'))
+    >>> print(bibtex_abbreviate("Andrew Blake"))
     A
-    >>> print(bibtex_abbreviate('Jean-Pierre'))
+    >>> print(bibtex_abbreviate("Jean-Pierre"))
     J.-P
-    >>> print(bibtex_abbreviate('Jean--Pierre'))
+    >>> print(bibtex_abbreviate("Jean--Pierre"))
     J.-P
 
     """

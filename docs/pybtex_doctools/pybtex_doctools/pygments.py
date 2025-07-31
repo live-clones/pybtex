@@ -20,12 +20,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import absolute_import
-
 import re
 from string import digits
-
-from pybtex.database.input.bibtex import NAME_CHARS
 
 from pygments.lexer import ExtendedRegexLexer, RegexLexer, default, include, words
 from pygments.style import Style
@@ -42,6 +38,8 @@ from pygments.token import (
     String,
     Text,
 )
+
+from pybtex.database.input.bibtex import NAME_CHARS
 
 
 class PybtexStyle(Style):
@@ -95,9 +93,7 @@ class BibTeXLexer(ExtendedRegexLexer):
     filenames = ["*.bib"]
     flags = re.IGNORECASE
 
-    IDENTIFIER = r"[{0}][{1}]*".format(
-        re.escape(NAME_CHARS), re.escape(NAME_CHARS + digits)
-    )
+    IDENTIFIER = rf"[{re.escape(NAME_CHARS)}][{re.escape(NAME_CHARS + digits)}]*"
 
     def open_brace_callback(self, match, ctx):
         opening_brace = match.group()
@@ -107,11 +103,8 @@ class BibTeXLexer(ExtendedRegexLexer):
 
     def close_brace_callback(self, match, ctx):
         closing_brace = match.group()
-        if (
-            ctx.opening_brace == "{"
-            and closing_brace != "}"
-            or ctx.opening_brace == "("
-            and closing_brace != ")"
+        if (ctx.opening_brace == "{" and closing_brace != "}") or (
+            ctx.opening_brace == "(" and closing_brace != ")"
         ):
             yield match.start(), Error, closing_brace
         else:

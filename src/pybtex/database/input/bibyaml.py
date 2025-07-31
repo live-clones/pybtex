@@ -19,11 +19,12 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import, unicode_literals
 
+import contextlib
 from collections import OrderedDict
 
 import yaml
+
 from pybtex.database import Entry, Person
 from pybtex.database.input import BaseParser
 
@@ -46,7 +47,7 @@ class OrderedDictSafeLoader(yaml.SafeLoader):
             raise yaml.constructor.ConstructorError(
                 None,
                 None,
-                "expected a mapping node, but found %s" % node.id,
+                f"expected a mapping node, but found {node.id}",
                 node.start_mark,
             )
 
@@ -56,10 +57,11 @@ class OrderedDictSafeLoader(yaml.SafeLoader):
             try:
                 hash(key)
             except TypeError as exc:
+                msg = "while constructing a mapping"
                 raise yaml.constructor.ConstructorError(
-                    "while constructing a mapping",
+                    msg,
                     node.start_mark,
-                    "found unacceptable key (%s)" % exc,
+                    f"found unacceptable key ({exc})",
                     key_node.start_mark,
                 )
             value = self.construct_object(value_node, deep=deep)
@@ -86,10 +88,8 @@ class Parser(BaseParser):
             (key, self.process_entry(entry)) for (key, entry) in t["entries"].items()
         )
 
-        try:
+        with contextlib.suppress(KeyError):
             self.data.add_to_preamble(t["preamble"])
-        except KeyError:
-            pass
 
         self.data.add_entries(entries)
         return self.data

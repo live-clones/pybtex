@@ -21,8 +21,6 @@
 
 """parse LaTeX aux file"""
 
-from __future__ import unicode_literals, with_statement
-
 import re
 
 import pybtex.io
@@ -32,22 +30,23 @@ from pybtex.exceptions import PybtexError
 
 class AuxDataError(PybtexError):
     def __init__(self, message, context=None):
-        super(AuxDataError, self).__init__(message, context.filename)
+        super().__init__(message, context.filename)
         self.context = context
 
     def get_context(self):
         if self.context.line:
             marker = "^" * len(self.context.line)
             return self.context.line + "\n" + marker
+        return None
 
     def __str__(self):
         base_message = super().__str__()
         lineno = self.context.lineno
-        location = "in line {0}: ".format(lineno) if lineno else ""
+        location = f"in line {lineno}: " if lineno else ""
         return location + base_message
 
 
-class AuxDataContext(object):
+class AuxDataContext:
     lineno = None
     line = None
     filename = None
@@ -56,7 +55,7 @@ class AuxDataContext(object):
         self.filename = filename
 
 
-class AuxData(object):
+class AuxData:
     command_re = re.compile(r"\\(citation|bibdata|bibstyle|@input){(.*)}")
     context = None
     style = None
@@ -101,7 +100,7 @@ class AuxData(object):
         self.parse_file(filename, toplevel=False)
 
     def handle_command(self, command, value):
-        action = getattr(self, "handle_%s" % command.lstrip("@"))
+        action = getattr(self, "handle_{}".format(command.lstrip("@")))
         action(value)
 
     def parse_line(self, line, lineno):
@@ -129,9 +128,11 @@ class AuxData(object):
         # these errors are fatal - always raise an exception instead of using
         # erorrs.report_error()
         if toplevel and self.data is None:
-            raise AuxDataError(r"found no \bibdata command", self.context)
+            msg = r"found no \bibdata command"
+            raise AuxDataError(msg, self.context)
         if toplevel and self.style is None:
-            raise AuxDataError(r"found no \bibstyle command", self.context)
+            msg = r"found no \bibstyle command"
+            raise AuxDataError(msg, self.context)
 
 
 def parse_file(filename, encoding=None):

@@ -19,9 +19,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
 import re
+from types import MappingProxyType
 
 import pybtex.io
 from pybtex.bibtex.interpreter import (
@@ -33,7 +33,6 @@ from pybtex.bibtex.interpreter import (
 )
 from pybtex.scanner import Literal, Pattern, PybtexSyntaxError, Scanner, TokenRequired
 
-
 # ParserElement.enablePackrat()
 
 
@@ -42,16 +41,15 @@ def process_int_literal(value):
 
 
 def process_string_literal(value):
-    assert value.startswith('"')
-    assert value.endswith('"')
+    if not value.startswith('"') or not value.endswith('"'):
+        raise ValueError(value)
     return String(value[1:-1])
 
 
 def process_identifier(name):
     if name[0] == "'":
         return QuotedVar(name[1:])
-    else:
-        return Identifier(name)
+    return Identifier(name)
 
 
 def process_function(toks):
@@ -64,15 +62,15 @@ quote_or_comment = re.compile(r'[%"]')
 def strip_comment(line):
     """Strip the commented part of the line."
 
-    >>> print(strip_comment('a normal line'))
+    >>> print(strip_comment("a normal line"))
     a normal line
-    >>> print(strip_comment('%'))
+    >>> print(strip_comment("%"))
     <BLANKLINE>
-    >>> print(strip_comment('%comment'))
+    >>> print(strip_comment("%comment"))
     <BLANKLINE>
-    >>> print(strip_comment('trailing%'))
+    >>> print(strip_comment("trailing%"))
     trailing
-    >>> print(strip_comment('a normal line% and a comment'))
+    >>> print(strip_comment("a normal line% and a comment"))
     a normal line
     >>> print(strip_comment('"100% compatibility" is a myth'))
     "100% compatibility" is a myth
@@ -89,7 +87,7 @@ def strip_comment(line):
             break
         if match.group() == "%" and not in_string:
             return line[: match.start()]
-        elif match.group() == '"':
+        if match.group() == '"':
             in_string = not in_string
         pos = match.end()
     return line
@@ -102,34 +100,37 @@ class BstParser(Scanner):
     INTEGER = Pattern(r"#-?\d+", "integer")
     NAME = Pattern(r"[^#\"\{\}\s]+", "name")
 
-    COMMANDS = {
-        "ENTRY": 3,
-        "EXECUTE": 1,
-        "FUNCTION": 2,
-        "INTEGERS": 1,
-        "ITERATE": 1,
-        "MACRO": 2,
-        "READ": 0,
-        "REVERSE": 1,
-        "SORT": 0,
-        "STRINGS": 1,
-    }
+    COMMANDS = MappingProxyType(
+        {
+            "ENTRY": 3,
+            "EXECUTE": 1,
+            "FUNCTION": 2,
+            "INTEGERS": 1,
+            "ITERATE": 1,
+            "MACRO": 2,
+            "READ": 0,
+            "REVERSE": 1,
+            "SORT": 0,
+            "STRINGS": 1,
+        }
+    )
 
-    LITERAL_TYPES = {
-        STRING: process_string_literal,
-        INTEGER: process_int_literal,
-        NAME: process_identifier,
-    }
+    LITERAL_TYPES = MappingProxyType(
+        {
+            STRING: process_string_literal,
+            INTEGER: process_int_literal,
+            NAME: process_identifier,
+        }
+    )
 
     def parse(self):
         while True:
             try:
                 yield list(self.parse_command())
-            except EOFError:
+            except EOFError:  # noqa: PERF203
                 break
             except PybtexSyntaxError:
                 raise
-                break
 
     def parse_group(self):
         while True:
@@ -148,7 +149,8 @@ class BstParser(Scanner):
         try:
             arity = self.COMMANDS[command_name.upper()]
         except KeyError:
-            raise TokenRequired("BST command", self)
+            msg = "BST command"
+            raise TokenRequired(msg, self)
         yield command_name
         for i in range(arity):
             brace = self.optional([self.LBRACE])

@@ -22,8 +22,6 @@
 
 """Unicode-aware IO routines."""
 
-from __future__ import absolute_import, unicode_literals
-
 import io
 import posixpath
 import sys
@@ -60,29 +58,28 @@ def _open_existing(opener, filename, mode, locate, **kwargs):
 def _open_or_create(opener, filename, mode, environ, **kwargs):
     try:
         return opener(filename, mode, **kwargs)
-    except EnvironmentError as error:
+    except OSError:
         if "TEXMFOUTPUT" in environ:
             new_filename = posixpath.join(environ["TEXMFOUTPUT"], filename)
             try:
                 return opener(new_filename, mode, **kwargs)
-            except EnvironmentError:
+            except OSError:
                 pass
-        raise error
+        raise
 
 
 def _open(opener, filename_or_file, mode, **kwargs):
     if hasattr(filename_or_file, "read") and hasattr(filename_or_file, "close"):
         return filename_or_file
-    else:
-        filename = filename_or_file
+    filename = filename_or_file
     write_mode = "w" in mode
     try:
         if write_mode:
             return _open_or_create(opener, filename, mode, environ, **kwargs)
-        else:
-            return _open_existing(opener, filename, mode, locate=kpsewhich, **kwargs)
-    except EnvironmentError as error:
-        raise PybtexError("unable to open %s. %s" % (filename, error.strerror))
+        return _open_existing(opener, filename, mode, locate=kpsewhich, **kwargs)
+    except OSError as error:
+        msg = f"unable to open {filename}. {error.strerror}"
+        raise PybtexError(msg)
 
 
 def open_raw(filename, mode="rb", encoding=None):

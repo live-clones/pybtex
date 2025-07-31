@@ -1,5 +1,3 @@
-# vim: fileencoding=utf-8
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -27,23 +25,21 @@ HTML output backend.
 
 >>> from pybtex.richtext import Tag, HRef
 >>> html = Backend()
->>> print(Tag('em', '').render(html))
+>>> print(Tag("em", "").render(html))
 <BLANKLINE>
->>> print(Tag('em', 'Hard &', ' heavy').render(html))
+>>> print(Tag("em", "Hard &", " heavy").render(html))
 <em>Hard &amp; heavy</em>
->>> print(HRef('/', '').render(html))
+>>> print(HRef("/", "").render(html))
 <BLANKLINE>
->>> print(HRef('/', 'Hard & heavy').render(html))
+>>> print(HRef("/", "Hard & heavy").render(html))
 <a href="/">Hard &amp; heavy</a>
 """
 
-from __future__ import unicode_literals
-
+from types import MappingProxyType
 from xml.sax.saxutils import escape
 
 import pybtex.io
 from pybtex.backends import BaseBackend
-
 
 PROLOGUE = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
@@ -59,27 +55,27 @@ PROLOGUE = """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 class Backend(BaseBackend):
     """
     >>> from pybtex.richtext import Text, Tag, Symbol
-    >>> print(Tag('em', Text(u'Л.:', Symbol('nbsp'), u'<<Химия>>')).render(Backend()))
+    >>> print(Tag("em", Text("Л.:", Symbol("nbsp"), "<<Химия>>")).render(Backend()))
     <em>Л.:&nbsp;&lt;&lt;Химия&gt;&gt;</em>
 
     """
 
     default_suffix = ".html"
-    symbols = {"ndash": "&ndash;", "newblock": "\n", "nbsp": "&nbsp;"}
+    symbols = MappingProxyType({"ndash": "&ndash;", "newblock": "\n", "nbsp": "&nbsp;"})
 
     def format_str(self, text):
         return escape(text)
 
     def format_protected(self, text):
-        return r'<span class="bibtex-protected">{}</span>'.format(text)
+        return rf'<span class="bibtex-protected">{text}</span>'
 
     def format_tag(self, tag, text):
-        return r"<{0}>{1}</{0}>".format(tag, text) if text else ""
+        return rf"<{tag}>{text}</{tag}>" if text else ""
 
     @staticmethod
     def format_href(url, text, external=False):
         target = ' target="_blank"' if external else ""
-        return r'<a href="{0}"{1}>{2}</a>'.format(url, target, text) if text else ""
+        return rf'<a href="{url}"{target}>{text}</a>' if text else ""
 
     def write_prologue(self):
         encoding = self.encoding or pybtex.io.get_default_encoding()
@@ -89,5 +85,5 @@ class Backend(BaseBackend):
         self.output("</dl></body></html>\n")
 
     def write_entry(self, key, label, text):
-        self.output("<dt>%s</dt>\n" % label)
-        self.output("<dd>%s</dd>\n" % text)
+        self.output(f"<dt>{label}</dt>\n")
+        self.output(f"<dd>{text}</dd>\n")

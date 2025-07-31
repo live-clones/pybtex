@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import unicode_literals
+from types import MappingProxyType
 
 from pybtex.cmdline import CommandLine, standard_option
 
@@ -67,10 +65,12 @@ pybtex-format formats bibliography database as human-readable text.
             ),
         ),
     )
-    option_defaults = {
-        "keyless_entries": False,
-        "min_crossrefs": 2,
-    }
+    option_defaults = MappingProxyType(
+        {
+            "keyless_entries": False,
+            "min_crossrefs": 2,
+        }
+    )
 
     def run(
         self,

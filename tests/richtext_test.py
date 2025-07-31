@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -22,8 +20,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-from __future__ import absolute_import, unicode_literals
-
 import re
 from abc import ABCMeta, abstractmethod
 from unittest import TestCase
@@ -34,7 +30,7 @@ from pybtex import textutils
 from pybtex.richtext import HRef, Protected, String, Symbol, Tag, Text, nbsp
 
 
-class TextTestMixin(object):
+class TextTestMixin:
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -125,23 +121,27 @@ class TestText(TextTestMixin, TestCase):
         text = str(Text("a", Text("b", "c"), Tag("em", "x"), Symbol("nbsp"), "d"))
         assert text == "abcx<nbsp>d"
 
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            TypeError, match="parts must be strings or BaseText instances, not dict"
+        ):
             Text({})
 
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            TypeError, match="parts must be strings or BaseText instances, not int"
+        ):
             Text(0, 0)
 
     def test__eq__(self):
         assert Text() == Text()
-        assert not (Text() != Text())
+        assert Text() == Text()
 
         assert Text("Cat") == Text("Cat")
-        assert not (Text("Cat") != Text("Cat"))
+        assert Text("Cat") == Text("Cat")
         assert Text("Cat", " tail") == Text("Cat tail")
-        assert not (Text("Cat", " tail") != Text("Cat tail"))
+        assert Text("Cat", " tail") == Text("Cat tail")
 
         assert Text("Cat") != Text("Dog")
-        assert not (Text("Cat") == Text("Dog"))
+        assert Text("Cat") != Text("Dog")
 
     def test__len__(self):
         assert len(Text()) == 0
@@ -491,7 +491,7 @@ class TestTag(TextTestMixin, TestCase):
         assert Tag("em", "good") != Tag("em", "bad")
         assert Tag("em", "good") != Text("good")
         assert Tag("em", "good") == Tag("em", "good")
-        assert not (Tag("em", "good") != Tag("em", "good"))
+        assert Tag("em", "good") == Tag("em", "good")
 
     def test__len__(self):
         val = "Tomato apple!"
@@ -780,7 +780,7 @@ class TestHRef(TextTestMixin, TestCase):
         assert HRef("/", "good") != HRef("", "bad")
         assert HRef("/", "good") != Text("good")
         assert HRef("/", "good") == HRef("/", "good")
-        assert not (HRef("/", "good") != HRef("/", "good"))
+        assert HRef("/", "good") == HRef("/", "good")
 
         assert HRef("strong", "") != Tag("strong", "")
 
@@ -1122,23 +1122,27 @@ class TestProtected(TextTestMixin, TestCase):
         )
         assert text == "abcx<nbsp>d"
 
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            TypeError, match="parts must be strings or BaseText instances, not dict"
+        ):
             Protected({})
 
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            TypeError, match="parts must be strings or BaseText instances, not int"
+        ):
             Protected(0, 0)
 
     def test__eq__(self):
         assert Protected() == Protected()
-        assert not (Protected() != Protected())
+        assert Protected() == Protected()
 
         assert Protected("Cat") == Protected("Cat")
-        assert not (Protected("Cat") != Protected("Cat"))
+        assert Protected("Cat") == Protected("Cat")
         assert Protected("Cat", " tail") == Protected("Cat tail")
-        assert not (Protected("Cat", " tail") != Protected("Cat tail"))
+        assert Protected("Cat", " tail") == Protected("Cat tail")
 
         assert Protected("Cat") != Protected("Dog")
-        assert not (Protected("Cat") == Protected("Dog"))
+        assert Protected("Cat") != Protected("Dog")
 
     def test__len__(self):
         assert len(Protected()) == 0
@@ -1331,9 +1335,9 @@ class TestSymbol(TextTestMixin, TestCase):
 
     def test__eq__(self):
         assert Symbol("nbsp") == Symbol("nbsp")
-        assert not Symbol("nbsp") != Symbol("nbsp")
+        assert Symbol("nbsp") == Symbol("nbsp")
 
-        assert not Symbol("nbsp") == Symbol("ndash")
+        assert Symbol("nbsp") != Symbol("ndash")
         assert Symbol("nbsp") != Symbol("ndash")
 
         assert Text(nbsp, nbsp) == Text(Symbol("nbsp"), Symbol("nbsp"))

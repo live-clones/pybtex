@@ -20,11 +20,7 @@
 
 """BibTeX unnamed stack language interpreter and related stuff"""
 
-from __future__ import unicode_literals
-
-
 from os import path
-
 
 from pybtex import Engine
 
@@ -70,6 +66,7 @@ class BibTeXEngine(Engine):
         """
 
         from io import StringIO
+
         import pybtex.io
         from pybtex.bibtex import bst
         from pybtex.bibtex.interpreter import Interpreter
@@ -95,6 +92,7 @@ class BibTeXEngine(Engine):
             output_file.write(bbl_data)
             if isinstance(output_file, StringIO):
                 return output_file.getvalue()
+        return None
 
 
 def make_bibliography(*args, **kwargs):

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,9 +19,10 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
-from os import path
+from pathlib import Path
+from types import MappingProxyType
+from typing import ClassVar
 
 from pybtex.cmdline import CommandLine, make_option, standard_option
 
@@ -91,10 +90,12 @@ It is also possible to define bibliography formatting styles in Python.
             ),
         ),
     )
-    option_defaults = {
-        "style_language": "bibtex",
-        "min_crossrefs": 2,
-    }
+    option_defaults: ClassVar[dict] = MappingProxyType(
+        {
+            "style_language": "bibtex",
+            "min_crossrefs": 2,
+        }
+    )
     legacy_options = "-help", "-version", "-min-crossrefs", "-terse"
 
     def run(self, filename, style_language, encoding, **options):
@@ -103,7 +104,7 @@ It is also possible to define bibliography formatting styles in Python.
         elif style_language == "python":
             import pybtex as engine
         else:
-            self.opt_parser.error("unknown style language %s" % style_language)
+            self.opt_parser.error(f"unknown style language {style_language}")
 
         not_supported_by_bibtex = {
             "output_backend": "output backends",
@@ -116,17 +117,16 @@ It is also possible to define bibliography formatting styles in Python.
             for option, what_is_not_supported in not_supported_by_bibtex.items():
                 if options[option]:
                     self.opt_parser.error(
-                        "%s are only supported by the Pythonic style engine (-l python)"
-                        % what_is_not_supported
+                        f"{what_is_not_supported} are only supported by the Pythonic style engine (-l python)"
                     )
 
         for encoding_option in "bib_encoding", "bst_encoding", "output_encoding":
             if not options[encoding_option]:
                 options[encoding_option] = encoding
 
-        ext = path.splitext(filename)[1]
-        if ext != ".aux":
-            filename = path.extsep.join([filename, "aux"])
+        file_path = Path(filename)
+        if file_path.suffix != ".aux":
+            filename = str(file_path.with_suffix(".aux"))
         engine.make_bibliography(filename, **options)
 
 

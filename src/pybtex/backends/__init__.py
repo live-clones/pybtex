@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -19,7 +18,6 @@ from __future__ import unicode_literals
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 import pybtex.io
 from pybtex.plugin import Plugin
 
@@ -100,6 +98,7 @@ class BaseBackend(Plugin):
             self.write_to_stream(formatted_entries, stream)
             if hasattr(stream, "getvalue"):
                 return stream.getvalue()
+        return None
 
     def write_to_stream(self, formatted_bibliography, stream):
         self.output = stream.write

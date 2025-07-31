@@ -1,4 +1,3 @@
-# vim: fileencoding=utf-8
 # Copyright (c) 2006-2021  Andrey Golovizin
 # Copyright (c)      2022  Julian Rüth
 #
@@ -20,38 +19,30 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+from __future__ import annotations
 
-from __future__ import unicode_literals
-from __future__ import print_function
 import re
-from typing import Iterable, Tuple
-
-try:
-    from collections.abc import Mapping
-except ImportError:
-    from collections import Mapping
-
 import textwrap
+from collections.abc import Iterable, Mapping
 
+from pybtex.bibtex.utils import scan_bibtex_string, split_tex_string
+from pybtex.errors import report_error
 from pybtex.exceptions import PybtexError
+from pybtex.plugin import find_plugin
+from pybtex.richtext import Text
 from pybtex.utils import (
-    deprecated,
-    OrderedCaseInsensitiveDict,
     CaseInsensitiveDefaultDict,
     CaseInsensitiveSet,
+    OrderedCaseInsensitiveDict,
+    deprecated,
 )
-from pybtex.richtext import Text
-from pybtex.bibtex.utils import split_tex_string, scan_bibtex_string
-from pybtex.errors import report_error
-from pybtex.plugin import find_plugin
 
 
 # for python2 compatibility
 def indent(text, prefix):
     if hasattr(textwrap, "indent"):
         return textwrap.indent(text, prefix)
-    else:
-        return "".join(prefix + line for line in text.splitlines(True))
+    return "".join(prefix + line for line in text.splitlines(True))
 
 
 class BibliographyDataError(PybtexError):
@@ -60,11 +51,11 @@ class BibliographyDataError(PybtexError):
 
 class InvalidNameString(PybtexError):
     def __init__(self, name_string):
-        message = "Too many commas in {}".format(repr(name_string))
-        super(InvalidNameString, self).__init__(message)
+        message = f"Too many commas in {name_string!r}"
+        super().__init__(message)
 
 
-class BibliographyData(object):
+class BibliographyData:
     def __init__(
         self, entries=None, preamble=None, wanted_entries=None, min_crossrefs=2
     ):
@@ -112,7 +103,7 @@ class BibliographyData(object):
 
     def __eq__(self, other):
         if not isinstance(other, BibliographyData):
-            return super(BibliographyData, self) == other
+            return super() == other
         return self.entries == other.entries and self._preamble == other._preamble
 
     def __repr__(self):
@@ -126,9 +117,7 @@ class BibliographyData(object):
         repr_entry = indent(repr_entry, prefix="    ")
         repr_entry = repr_entry[4:]  # drop 1st indent
 
-        return "BibliographyData(\n  entries={0},\n\n  preamble={1})".format(
-            repr_entry, repr(self._preamble)
-        )
+        return f"BibliographyData(\n  entries={repr_entry},\n\n  preamble={self._preamble!r})"
 
     def add_to_preamble(self, *values):
         self._preamble.extend(values)
@@ -138,10 +127,13 @@ class BibliographyData(object):
         r'''
         LaTeX preamble as list of strings
 
-        >>> bib_data = parse_string(r"""
+        >>> bib_data = parse_string(
+        ...     r"""
         ...     @PREAMBLE{"\newcommand{\noopsort}[1]{}"}
         ...     @PREAMBLE{"\newcommand{\nooptilde}[1]{}"}
-        ... """, 'bibtex')
+        ... """,
+        ...     "bibtex",
+        ... )
         >>> print(bib_data.preamble_list)
         ['\\newcommand{\\noopsort}[1]{}', '\\newcommand{\\nooptilde}[1]{}']
 
@@ -155,9 +147,12 @@ class BibliographyData(object):
         r'''
         LaTeX preamble.
 
-        >>> bib_data = parse_string(r"""
+        >>> bib_data = parse_string(
+        ...     r"""
         ...     @PREAMBLE{"\newcommand{\noopsort}[1]{}"}
-        ... """, 'bibtex')
+        ... """,
+        ...     "bibtex",
+        ... )
         >>> print(bib_data.preamble)
         \newcommand{\noopsort}[1]{}
 
@@ -184,14 +179,13 @@ class BibliographyData(object):
     def get_canonical_key(self, key):
         if key in self.citations:
             return self.citations.get_canonical_key(key)
-        else:
-            return key
+        return key
 
     def add_entry(self, key, entry):
         if not self.want_entry(key):
             return
         if key in self.entries:
-            report_error(BibliographyDataError("repeated bibliography entry: %s" % key))
+            report_error(BibliographyDataError(f"repeated bibliography entry: {key}"))
             return
         entry.key = self.get_canonical_key(key)
         self.entries[entry.key] = entry
@@ -203,7 +197,7 @@ class BibliographyData(object):
             if self.wanted_entries is not None:
                 self.wanted_entries.add(crossref)
 
-    def add_entries(self, entries: Iterable[Tuple[str, "Entry"]]) -> None:
+    def add_entries(self, entries: Iterable[tuple[str, Entry]]) -> None:
         for key, entry in entries:
             self.add_entry(key, entry)
 
@@ -212,33 +206,47 @@ class BibliographyData(object):
         Get cititations not cited explicitly but referenced by other citations.
 
         >>> from pybtex.database import Entry
-        >>> data = BibliographyData({
-        ...     'main_article': Entry('article', {'crossref': 'xrefd_arcicle'}),
-        ...     'xrefd_arcicle': Entry('article'),
-        ... })
+        >>> data = BibliographyData(
+        ...     {
+        ...         "main_article": Entry("article", {"crossref": "xrefd_arcicle"}),
+        ...         "xrefd_arcicle": Entry("article"),
+        ...     }
+        ... )
         >>> list(data._get_crossreferenced_citations([], min_crossrefs=1))
         []
-        >>> list(data._get_crossreferenced_citations(['main_article'], min_crossrefs=1))
+        >>> list(data._get_crossreferenced_citations(["main_article"], min_crossrefs=1))
         ['xrefd_arcicle']
-        >>> list(data._get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
+        >>> list(data._get_crossreferenced_citations(["Main_article"], min_crossrefs=1))
         ['xrefd_arcicle']
-        >>> list(data._get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        >>> list(data._get_crossreferenced_citations(["main_article"], min_crossrefs=2))
         []
-        >>> list(data._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        >>> list(
+        ...     data._get_crossreferenced_citations(["xrefd_arcicle"], min_crossrefs=1)
+        ... )
         []
 
         >>> data2 = BibliographyData(data.entries, wanted_entries=data.entries.keys())
         >>> list(data2._get_crossreferenced_citations([], min_crossrefs=1))
         []
-        >>> list(data2._get_crossreferenced_citations(['main_article'], min_crossrefs=1))
+        >>> list(
+        ...     data2._get_crossreferenced_citations(["main_article"], min_crossrefs=1)
+        ... )
         ['xrefd_arcicle']
-        >>> list(data2._get_crossreferenced_citations(['Main_article'], min_crossrefs=1))
+        >>> list(
+        ...     data2._get_crossreferenced_citations(["Main_article"], min_crossrefs=1)
+        ... )
         ['xrefd_arcicle']
-        >>> list(data2._get_crossreferenced_citations(['main_article'], min_crossrefs=2))
+        >>> list(
+        ...     data2._get_crossreferenced_citations(["main_article"], min_crossrefs=2)
+        ... )
         []
-        >>> list(data2._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        >>> list(
+        ...     data2._get_crossreferenced_citations(["xrefd_arcicle"], min_crossrefs=1)
+        ... )
         []
-        >>> list(data2._get_crossreferenced_citations(['xrefd_arcicle'], min_crossrefs=1))
+        >>> list(
+        ...     data2._get_crossreferenced_citations(["xrefd_arcicle"], min_crossrefs=1)
+        ... )
         []
 
         """
@@ -256,11 +264,8 @@ class BibliographyData(object):
             except KeyError:
                 report_error(
                     BibliographyDataError(
-                        'bad cross-reference: entry "{key}" refers to '
-                        'entry "{crossref}" which does not exist.'.format(
-                            key=citation,
-                            crossref=crossref,
-                        )
+                        f'bad cross-reference: entry "{citation}" refers to '
+                        f'entry "{crossref}" which does not exist.'
                     )
                 )
                 continue
@@ -279,23 +284,25 @@ class BibliographyData(object):
         Expand wildcard citations (\citation{*} in .aux file).
 
         >>> from pybtex.database import Entry
-        >>> data = BibliographyData((
-        ...     ('uno', Entry('article')),
-        ...     ('dos', Entry('article')),
-        ...     ('tres', Entry('article')),
-        ...     ('cuatro', Entry('article')),
-        ... ))
+        >>> data = BibliographyData(
+        ...     (
+        ...         ("uno", Entry("article")),
+        ...         ("dos", Entry("article")),
+        ...         ("tres", Entry("article")),
+        ...         ("cuatro", Entry("article")),
+        ...     )
+        ... )
         >>> list(data._expand_wildcard_citations([]))
         []
-        >>> list(data._expand_wildcard_citations(['*']))
+        >>> list(data._expand_wildcard_citations(["*"]))
         ['uno', 'dos', 'tres', 'cuatro']
-        >>> list(data._expand_wildcard_citations(['uno', '*']))
+        >>> list(data._expand_wildcard_citations(["uno", "*"]))
         ['uno', 'dos', 'tres', 'cuatro']
-        >>> list(data._expand_wildcard_citations(['dos', '*']))
+        >>> list(data._expand_wildcard_citations(["dos", "*"]))
         ['dos', 'uno', 'tres', 'cuatro']
-        >>> list(data._expand_wildcard_citations(['*', 'uno']))
+        >>> list(data._expand_wildcard_citations(["*", "uno"]))
         ['uno', 'dos', 'tres', 'cuatro']
-        >>> list(data._expand_wildcard_citations(['*', 'DOS']))
+        >>> list(data._expand_wildcard_citations(["*", "DOS"]))
         ['uno', 'dos', 'tres', 'cuatro']
 
         """
@@ -362,10 +369,7 @@ class BibliographyData(object):
 
         .. versionadded:: 0.19
         """
-        if isinstance(file, str):
-            filename = file
-        else:
-            filename = getattr(file, "name", None)
+        filename = file if isinstance(file, str) else getattr(file, "name", None)
         writer = find_plugin("pybtex.database.output", bib_format, filename=filename)(
             **kwargs
         )
@@ -375,7 +379,8 @@ class BibliographyData(object):
         '''
         Return another :py:class:`.BibliographyData` with all identifiers converted to lowercase.
 
-        >>> data = parse_string("""
+        >>> data = parse_string(
+        ...     """
         ...     @BOOK{Obrazy,
         ...         title = "Obrazy z Rus",
         ...         author = "Karel Havlíček Borovský",
@@ -384,7 +389,9 @@ class BibliographyData(object):
         ...         title = "Tirolské elegie",
         ...         author = "Karel Havlíček Borovský",
         ...     }
-        ... """, 'bibtex')
+        ... """,
+        ...     "bibtex",
+        ... )
         >>> data_lower = data.lower()
         >>> list(data_lower.entries.keys())
         ['obrazy', 'elegie']
@@ -429,7 +436,7 @@ class RichFieldProxyDict(Mapping):
         return Text.from_latex(self._fields[key])
 
 
-class Entry(object):
+class Entry:
     """A bibliography entry."""
 
     type = None
@@ -463,7 +470,7 @@ class Entry(object):
 
     def __eq__(self, other):
         if not isinstance(other, Entry):
-            return super(Entry, self) == other
+            return super() == other
         return (
             self.type == other.type
             and self.fields == other.fields
@@ -478,7 +485,14 @@ class Entry(object):
         >>> Entry("article")
         Entry('article')
 
-        >>> Entry("article", fields={"title": "An article about journals", "journal": "Royal Society of Journals"}, persons={"editor": Person("Donald E. Knuth")})
+        >>> Entry(
+        ...     "article",
+        ...     fields={
+        ...         "title": "An article about journals",
+        ...         "journal": "Royal Society of Journals",
+        ...     },
+        ...     persons={"editor": Person("Donald E. Knuth")},
+        ... )
         Entry('article',
           fields=[
             ('title', 'An article about journals'),
@@ -493,7 +507,7 @@ class Entry(object):
                 "fields=[\n    {}]".format(
                     ",\n    ".join(
                         [
-                            "({!r}, {!r})".format(key, value)
+                            f"({key!r}, {value!r})"
                             for (key, value) in self.fields.items()
                         ]
                     )
@@ -501,7 +515,7 @@ class Entry(object):
             )
 
         if self.persons:
-            parameters.append("persons={!r}".format(dict(self.persons)))
+            parameters.append(f"persons={dict(self.persons)!r}")
 
         return "Entry({})".format(",\n  ".join(parameters))
 
@@ -575,10 +589,10 @@ class Entry(object):
         return bibdata.entries[key]
 
 
-class Person(object):
+class Person:
     """A person or some other person-like entity.
 
-    >>> knuth = Person('Donald E. Knuth')
+    >>> knuth = Person("Donald E. Knuth")
     >>> knuth.first_names
     ['Donald']
     >>> knuth.middle_names
@@ -628,7 +642,7 @@ class Person(object):
         Earlier versions used :py:meth:`.lineage`, which is now deprecated.
     """
 
-    valid_roles = ["author", "editor"]
+    valid_roles = ("author", "editor")
     style1_re = re.compile(r"^(.+),\s*(.+)$")
     style2_re = re.compile(r"^(.+),\s*(.+),\s*(.+)$")
 
@@ -672,7 +686,7 @@ class Person(object):
             Earlier versions used :py:meth:`Person.bibtex_first`, which is now deprecated.
 
 
-        >>> knuth = Person('Donald E. Knuth')
+        >>> knuth = Person("Donald E. Knuth")
         >>> knuth.bibtex_first_names
         ['Donald', 'E.']
         """
@@ -681,7 +695,7 @@ class Person(object):
     def _parse_string(self, name):
         """Extract various parts of the name from a string.
 
-        >>> p = Person('Avinash K. Dixit')
+        >>> p = Person("Avinash K. Dixit")
         >>> print(p.first_names)
         ['Avinash']
         >>> print(p.middle_names)
@@ -696,7 +710,7 @@ class Person(object):
         Dixit, Avinash K.
         >>> p == Person(str(p))
         True
-        >>> p = Person('Dixit, Jr, Avinash K. ')
+        >>> p = Person("Dixit, Jr, Avinash K. ")
         >>> print(p.first_names)
         ['Avinash']
         >>> print(p.middle_names)
@@ -712,11 +726,23 @@ class Person(object):
         >>> p == Person(str(p))
         True
 
-        >>> p = Person('abc')
-        >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
+        >>> p = Person("abc")
+        >>> print(
+        ...     p.first_names,
+        ...     p.middle_names,
+        ...     p.prelast_names,
+        ...     p.last_names,
+        ...     p.lineage_names,
+        ... )
         [] [] [] ['abc'] []
-        >>> p = Person('Viktorov, Michail~Markovitch')
-        >>> print(p.first_names, p.middle_names, p.prelast_names, p.last_names, p.lineage_names)
+        >>> p = Person("Viktorov, Michail~Markovitch")
+        >>> print(
+        ...     p.first_names,
+        ...     p.middle_names,
+        ...     p.prelast_names,
+        ...     p.last_names,
+        ...     p.lineage_names,
+        ... )
         ['Michail'] ['Markovitch'] [] ['Viktorov'] []
         """
 
@@ -763,12 +789,11 @@ class Person(object):
                 return False
             if string[0].islower():
                 return True
-            else:
-                for char, brace_level in scan_bibtex_string(string):
-                    if brace_level == 0 and char.isalpha():
-                        return char.islower()
-                    elif brace_level == 1 and char.startswith("\\"):
-                        return special_char_islower(char)
+            for char, brace_level in scan_bibtex_string(string):
+                if brace_level == 0 and char.isalpha():
+                    return char.islower()
+                if brace_level == 1 and char.startswith("\\"):
+                    return special_char_islower(char)
             return False
 
         def special_char_islower(special_char):
@@ -786,7 +811,7 @@ class Person(object):
         if len(parts) > 3:
             report_error(InvalidNameString(name))
             last_parts = parts[2:]
-            parts = parts[:2] + [" ".join(last_parts)]
+            parts = [*parts[:2], " ".join(last_parts)]
 
         if len(parts) == 3:  # von Last, Jr, First
             process_von_last(split_tex_string(parts[0]))
@@ -809,7 +834,7 @@ class Person(object):
 
     def __eq__(self, other):
         if not isinstance(other, Person):
-            return super(Person, self) == other
+            return super() == other
         return (
             self.first_names == other.first_names
             and self.middle_names == other.middle_names
@@ -826,7 +851,7 @@ class Person(object):
         return ", ".join(part for part in (von_last, jr, first) if part)
 
     def __repr__(self):
-        return "Person({0})".format(repr(str(self)))
+        return f"Person({str(self)!r})"
 
     def get_part_as_text(self, type):
         names = getattr(self, type + "_names")
@@ -835,10 +860,10 @@ class Person(object):
     def get_part(self, type, abbr=False):
         """Get a list of name parts by `type`.
 
-        >>> knuth = Person('Donald E. Knuth')
-        >>> knuth.get_part('first')
+        >>> knuth = Person("Donald E. Knuth")
+        >>> knuth.get_part("first")
         ['Donald']
-        >>> knuth.get_part('last')
+        >>> knuth.get_part("last")
         ['Knuth']
         """
 
@@ -961,10 +986,7 @@ def parse_file(file, bib_format=None, **kwargs):
     .. versionadded:: 0.19
     """
 
-    if isinstance(file, str):
-        filename = file
-    else:
-        filename = getattr(file, "name", None)
+    filename = file if isinstance(file, str) else getattr(file, "name", None)
 
     parser = find_plugin("pybtex.database.input", bib_format, filename=filename)(
         **kwargs

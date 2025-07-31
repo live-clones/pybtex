@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
 import re
 
@@ -55,8 +54,7 @@ class Style(BaseStyle):
         formatted_names = names(role, sep=", ", sep2=" and ", last_sep=", and ")
         if as_sentence:
             return sentence[formatted_names]
-        else:
-            return formatted_names
+        return formatted_names
 
     def get_article_template(self, e):
         volume_and_pages = first_of[
@@ -67,14 +65,13 @@ class Style(BaseStyle):
             # pages only
             words["pages", pages],
         ]
-        template = toplevel[
+        return toplevel[
             self.format_names("author"),
             self.format_title(e, "title"),
             sentence[tag("em")[field("journal")], optional[volume_and_pages], date],
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def format_author_or_editor(self, e):
         return first_of[
@@ -89,15 +86,11 @@ class Style(BaseStyle):
             # will be thrown anyway; no need to do anything now,
             # just return the template that will throw the exception
             return editors
-        if len(e.persons["editor"]) > 1:
-            word = "editors"
-        else:
-            word = "editor"
+        word = "editors" if len(e.persons["editor"]) > 1 else "editor"
         result = join(sep=", ")[editors, word]
         if as_sentence:
             return sentence[result]
-        else:
-            return result
+        return result
 
     def format_volume_and_series(self, e, as_sentence=True):
         volume_and_series = optional[
@@ -122,8 +115,7 @@ class Style(BaseStyle):
         ]
         if as_sentence:
             return sentence(capfirst=True)[result]
-        else:
-            return result
+        return result
 
     def format_chapter_and_pages(self, e):
         return join(sep=", ")[
@@ -143,15 +135,13 @@ class Style(BaseStyle):
         formatted_title = field(which_field, apply_func=lambda text: text.capitalize())
         if as_sentence:
             return sentence[formatted_title]
-        else:
-            return formatted_title
+        return formatted_title
 
     def format_btitle(self, e, which_field, as_sentence=True):
         formatted_title = tag("em")[field(which_field)]
         if as_sentence:
             return sentence[formatted_title]
-        else:
-            return formatted_title
+        return formatted_title
 
     def format_address_organization_publisher_date(self, e, include_organization=True):
         """Format address, organization, publisher, and date.
@@ -160,10 +150,7 @@ class Style(BaseStyle):
         # small difference from unsrt.bst here: unsrt.bst
         # starts a new sentence only if the address is missing;
         # for simplicity here we always start a new sentence
-        if include_organization:
-            organization = optional_field("organization")
-        else:
-            organization = None
+        organization = optional_field("organization") if include_organization else None
         return first_of[
             # this will be rendered if there is an address
             optional[
@@ -187,7 +174,7 @@ class Style(BaseStyle):
         ]
 
     def get_book_template(self, e):
-        template = toplevel[
+        return toplevel[
             self.format_author_or_editor(e),
             self.format_btitle(e, "title"),
             self.format_volume_and_series(e),
@@ -201,10 +188,9 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_booklet_template(self, e):
-        template = toplevel[
+        return toplevel[
             self.format_names("author"),
             self.format_title(e, "title"),
             sentence[
@@ -215,13 +201,12 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_dataset_template(self, e):
         return self.get_misc_template(e)
 
     def get_inbook_template(self, e):
-        template = toplevel[
+        return toplevel[
             self.format_author_or_editor(e),
             sentence[
                 self.format_btitle(e, "title", as_sentence=False),
@@ -237,10 +222,9 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_incollection_template(self, e):
-        template = toplevel[
+        return toplevel[
             sentence[self.format_names("author")],
             self.format_title(e, "title"),
             words[
@@ -260,10 +244,9 @@ class Style(BaseStyle):
             ],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_inproceedings_template(self, e):
-        template = toplevel[
+        return toplevel[
             sentence[self.format_names("author")],
             self.format_title(e, "title"),
             words[
@@ -279,12 +262,11 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_manual_template(self, e):
         # TODO this only corresponds to the bst style if author is non-empty
         # for empty author we should put the organization first
-        template = toplevel[
+        return toplevel[
             optional[sentence[self.format_names("author")]],
             self.format_btitle(e, "title"),
             sentence[
@@ -296,10 +278,9 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_mastersthesis_template(self, e):
-        template = toplevel[
+        return toplevel[
             sentence[self.format_names("author")],
             self.format_title(e, "title"),
             sentence[
@@ -311,10 +292,9 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_misc_template(self, e):
-        template = toplevel[
+        return toplevel[
             optional[sentence[self.format_names("author")]],
             optional[self.format_title(e, "title")],
             sentence[
@@ -324,7 +304,6 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_online_template(self, e):
         return self.get_misc_template(e)
@@ -333,7 +312,7 @@ class Style(BaseStyle):
         return self.get_misc_template(e)
 
     def get_phdthesis_template(self, e):
-        template = toplevel[
+        return toplevel[
             sentence[self.format_names("author")],
             self.format_btitle(e, "title"),
             sentence[
@@ -348,7 +327,6 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_proceedings_template(self, e):
         if "editor" in e.persons:
@@ -371,20 +349,15 @@ class Style(BaseStyle):
                     ),
                 ],
             ]
-        template = toplevel[
-            main_part
-            + [
-                sentence[optional_field("note")],
-                self.format_web_refs(e),
-            ]
+        return toplevel[
+            [*main_part, sentence[optional_field("note")], self.format_web_refs(e)]
         ]
-        return template
 
     def get_software_template(self, e):
         return self.get_misc_template(e)
 
     def get_techreport_template(self, e):
-        template = toplevel[
+        return toplevel[
             sentence[self.format_names("author")],
             self.format_title(e, "title"),
             sentence[
@@ -402,16 +375,14 @@ class Style(BaseStyle):
             sentence[optional_field("note")],
             self.format_web_refs(e),
         ]
-        return template
 
     def get_unpublished_template(self, e):
-        template = toplevel[
+        return toplevel[
             sentence[self.format_names("author")],
             self.format_title(e, "title"),
             sentence[field("note"), optional[date]],
             self.format_web_refs(e),
         ]
-        return template
 
     def format_web_refs(self, e):
         # based on urlbst output.web.refs

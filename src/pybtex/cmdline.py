@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,10 +19,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
 import optparse
 import sys
+from types import MappingProxyType
+from typing import ClassVar
 
 from pybtex import __version__, errors
 from pybtex.plugin import enumerate_plugin_names, find_plugin
@@ -36,10 +35,12 @@ def check_plugin(option, option_string, value):
 
 
 class PybtexOption(optparse.Option):
-    ATTRS = optparse.Option.ATTRS + ["plugin_group"]
-    TYPES = optparse.Option.TYPES + ("load_plugin",)
-    TYPE_CHECKER = dict(optparse.Option.TYPE_CHECKER, load_plugin=check_plugin)
-    STANDARD_OPTIONS = {}
+    ATTRS = (*optparse.Option.ATTRS, "plugin_group")
+    TYPES = (*optparse.Option.TYPES, "load_plugin")
+    TYPE_CHECKER = MappingProxyType(
+        dict(optparse.Option.TYPE_CHECKER, load_plugin=check_plugin)
+    )
+    STANDARD_OPTIONS: ClassVar[dict] = {}
 
 
 make_option = PybtexOption
@@ -182,7 +183,7 @@ class PybtexHelpFormatter(BaseHelpFormatter):
         return result
 
 
-class CommandLine(object):
+class CommandLine:
     options = ()
     option_defaults = None
     legacy_options = ()
@@ -210,7 +211,7 @@ class CommandLine(object):
             formatter=PybtexHelpFormatter(),
             usage="%prog " + self.args,
             description=add_period(self.description.capitalize()),
-            version="%%prog-%s" % __version__,
+            version=f"%prog-{__version__}",
         )
         for option_group, option_list in self.options:
             if option_group is None:
@@ -244,15 +245,14 @@ class CommandLine(object):
 
         if unicode_arg.split("=", 1)[0] in self.legacy_options:
             return type(arg)("-") + arg
-        else:
-            return arg
+        return arg
 
     def _extract_kwargs(self, options):
-        return dict(
-            (option.dest, getattr(options, option.dest))
+        return {
+            option.dest: getattr(options, option.dest)
             for option_group, option_list in self.options
             for option in option_list
-        )
+        }
 
     def main(self):
         errors.set_strict_mode(False)

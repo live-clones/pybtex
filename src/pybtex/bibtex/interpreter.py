@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 
@@ -28,11 +27,10 @@ from pybtex.bibtex.exceptions import BibTeXError
 from pybtex.bibtex.utils import wrap
 from pybtex.utils import CaseInsensitiveDict
 
-
 # from pybtex.database.input import bibtex
 
 
-class Variable(object):
+class Variable:
     def _undefined(self):
         raise NotImplementedError
 
@@ -50,9 +48,8 @@ class Variable(object):
 
     def validate(self, value):
         if not (isinstance(value, self.value_type) or value is None):
-            raise ValueError(
-                "Invalid value for BibTeX %s: %s" % (self.__class__.__name__, value)
-            )
+            msg = f"Invalid value for BibTeX {self.__class__.__name__}: {value}"
+            raise ValueError(msg)
 
     def execute(self, interpreter):
         interpreter.push(self.value())
@@ -61,7 +58,7 @@ class Variable(object):
         return self._value
 
     def __repr__(self):
-        return "{0}({1})".format(type(self).__name__, repr(self.value()))
+        return f"{type(self).__name__}({self.value()!r})"
 
     def __eq__(self, other):
         return type(self) is type(other) and self._value == other._value
@@ -101,6 +98,8 @@ class EntryString(String, EntryVariable):
 
 
 class MissingField(str):
+    __slots__ = ("name",)
+
     def __new__(cls, name):
         self = str.__new__(cls)
         self.name = name
@@ -110,7 +109,7 @@ class MissingField(str):
         return False
 
 
-class Field(object):
+class Field:
     def __init__(self, interpreter, name):
         self.interpreter = interpreter
         self.name = name
@@ -128,7 +127,7 @@ class Field(object):
 
 class Crossref(Field):
     def __init__(self, interpreter):
-        super(Crossref, self).__init__(interpreter, "crossref")
+        super().__init__(interpreter, "crossref")
 
     def value(self):
         try:
@@ -146,7 +145,8 @@ class Identifier(Variable):
         try:
             f = interpreter.vars[self.value()]
         except KeyError:
-            raise BibTeXError("can not execute undefined function %s" % self)
+            msg = f"can not execute undefined function {self}"
+            raise BibTeXError(msg)
         f.execute(interpreter)
 
 
@@ -157,18 +157,19 @@ class QuotedVar(Variable):
         try:
             var = interpreter.vars[self.value()]
         except KeyError:
-            raise BibTeXError("can not push undefined variable %s" % self.value())
+            msg = f"can not push undefined variable {self.value()}"
+            raise BibTeXError(msg)
         interpreter.push(var)
 
 
-class Function(object):
+class Function:
     def __init__(self, body=None):
         if body is None:
             body = []
         self.body = body
 
     def __repr__(self):
-        return "{0}({1})".format(type(self).__name__, repr(self.body))
+        return f"{type(self).__name__}({self.body!r})"
 
     def __eq__(self, other):
         return type(self) is type(other) and self.body == other.body
@@ -184,7 +185,7 @@ class FunctionLiteral(Function):
         interpreter.push(Function(self.body))
 
 
-class Interpreter(object):
+class Interpreter:
     def __init__(self, bib_format, bib_encoding):
         self.bib_format = bib_format
         self.bib_encoding = bib_encoding
@@ -208,7 +209,8 @@ class Interpreter(object):
         try:
             value = self.stack.pop()
         except IndexError:
-            raise BibTeXError("pop from empty stack")
+            msg = "pop from empty stack"
+            raise BibTeXError(msg)
         #        print 'pop <%s>' % value
         return value
 
@@ -217,11 +219,8 @@ class Interpreter(object):
 
     def add_variable(self, name, value):
         if name in self.vars:
-            raise BibTeXError(
-                'variable "{0}" already declared as {1}'.format(
-                    name, type(value).__name__
-                )
-            )
+            msg = f'variable "{name}" already declared as {type(value).__name__}'
+            raise BibTeXError(msg)
         self.vars[name] = value
 
     def output(self, string):
@@ -320,7 +319,7 @@ class Interpreter(object):
             if citation in self.bib_data.entries:
                 yield citation
             else:
-                print_warning('missing database entry for "{0}"'.format(citation))
+                print_warning(f'missing database entry for "{citation}"')
 
     def command_reverse(self, function_group):
         function = function_group[0].value()

@@ -19,12 +19,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import unicode_literals
 
-from pybtex.style import FormattedEntry, FormattedBibliography
-from pybtex.style.template import node, join
-from pybtex.richtext import Symbol
 from pybtex.plugin import Plugin, find_plugin
+from pybtex.richtext import Symbol
+from pybtex.style import FormattedBibliography, FormattedEntry
+from pybtex.style.template import join, node
 
 
 @node
@@ -78,7 +77,7 @@ class BaseStyle(Plugin):
             "bib_data": bib_data,
         }
         try:
-            get_template = getattr(self, "get_{}_template".format(entry.type))
+            get_template = getattr(self, f"get_{entry.type}_template")
         except AttributeError:
             format_method = getattr(self, "format_" + entry.type)
             text = format_method(context)
@@ -100,7 +99,6 @@ class BaseStyle(Plugin):
         citations = bib_data.add_extra_citations(citations, self.min_crossrefs)
         entries = [bib_data.entries[key] for key in citations]
         formatted_entries = self.format_entries(entries)
-        formatted_bibliography = FormattedBibliography(
+        return FormattedBibliography(
             formatted_entries, style=self, preamble=bib_data.preamble
         )
-        return formatted_bibliography

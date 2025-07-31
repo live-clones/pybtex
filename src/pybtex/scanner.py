@@ -21,14 +21,12 @@
 
 """Base parser class"""
 
-from __future__ import unicode_literals
-
 import re
 
 from pybtex.exceptions import PybtexError
 
 
-class Token(object):
+class Token:
     def __init__(self, value, pattern):
         self.value = value
         self.pattern = pattern
@@ -37,7 +35,7 @@ class Token(object):
         return repr(self.value)
 
 
-class Pattern(object):
+class Pattern:
     def __init__(self, regexp, description, flags=0):
         self.description = description
         compiled_regexp = re.compile(regexp, flags=flags)
@@ -49,11 +47,11 @@ class Pattern(object):
 class Literal(Pattern):
     def __init__(self, literal):
         pattern = re.compile(re.escape(literal))
-        description = "'{0}'".format(literal)
-        super(Literal, self).__init__(pattern, description)
+        description = f"'{literal}'"
+        super().__init__(pattern, description)
 
 
-class Scanner(object):
+class Scanner:
     text = None
     lineno = 1
     pos = 0
@@ -79,6 +77,7 @@ class Scanner(object):
             # print '>>', value
             self.update_lineno(value)
             return Token(value, winning_pattern)
+        return None
 
     def update_lineno(self, value):
         num_newlines = value.count("\n") + value.count("\r") - value.count("\r\n")
@@ -98,8 +97,7 @@ class Scanner(object):
         if self.eof():
             if allow_eof:
                 raise EOFError
-            else:
-                raise PrematureEOF(self)
+            raise PrematureEOF(self)
         for pattern in patterns:
             match = pattern.match(self.text, self.pos)
             if match:
@@ -107,6 +105,7 @@ class Scanner(object):
                 self.pos = match.end()
                 # print '->', value
                 return Token(value, pattern)
+        return None
 
     def optional(self, patterns, allow_eof=False):
         return self.get_token(patterns, allow_eof=allow_eof)
@@ -117,8 +116,7 @@ class Scanner(object):
             if not description:
                 description = " or ".join(pattern.description for pattern in patterns)
             raise TokenRequired(description, self)
-        else:
-            return token
+        return token
 
     def get_error_context_info(self):
         return self.lineno, self.pos
@@ -144,38 +142,31 @@ class PybtexSyntaxError(PybtexError):
     error_type = "syntax error"
 
     def __init__(self, message, parser):
-        super(PybtexSyntaxError, self).__init__(message, filename=parser.filename)
+        super().__init__(message, filename=parser.filename)
         self.lineno = parser.lineno
         self.parser = parser
         self.error_context_info = parser.get_error_context_info()
 
     def __str__(self):
-        base_message = super(PybtexSyntaxError, self).__str__()
-        pos = " in line {0}".format(self.lineno) if self.lineno is not None else ""
-        return "{error_type}{pos}: {message}".format(
-            error_type=self.error_type,
-            pos=pos,
-            message=base_message,
-        )
+        base_message = super().__str__()
+        pos = f" in line {self.lineno}" if self.lineno is not None else ""
+        return f"{self.error_type}{pos}: {base_message}"
 
 
 class PrematureEOF(PybtexSyntaxError):
     def __init__(self, parser):
         message = "premature end of file"
-        super(PrematureEOF, self).__init__(message, parser)
+        super().__init__(message, parser)
 
 
 class TokenRequired(PybtexSyntaxError):
     def __init__(self, description, parser):
-        message = "{0} expected".format(description)
-        super(TokenRequired, self).__init__(message, parser)
+        message = f"{description} expected"
+        super().__init__(message, parser)
 
     def get_context(self):
         context, lineno, colno = self.parser.get_error_context(self.error_context_info)
         if context is None:
             return ""
-        if colno == 0:
-            marker = "^^"
-        else:
-            marker = " " * (colno - 1) + "^^^"
-        return "\n".join((context, marker))
+        marker = "^^" if colno == 0 else " " * (colno - 1) + "^^^"
+        return f"{context}\n{marker}"

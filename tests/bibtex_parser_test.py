@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 # Copyright (c) 2006-2021  Andrey Golovizin
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -29,11 +27,9 @@ https://github.com/matthew-brett/babybib
 
 """
 
-from __future__ import absolute_import, unicode_literals
-
-from unittest import TestCase
-
 from itertools import zip_longest
+from types import MappingProxyType
+from unittest import TestCase
 
 from pybtex.database import BibliographyData, Entry, Person
 from pybtex.database.input.bibtex import Parser
@@ -41,19 +37,19 @@ from pybtex.database.input.bibtex import Parser
 
 class _TestParser(Parser):
     def __init__(self, *args, **kwargs):
-        super(_TestParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.errors = []
 
     def handle_error(self, error):
         self.errors.append(error)
 
 
-class ParserTest(object):
+class ParserTest:
     input_string = None
-    input_strings = []
+    input_strings = ()
     correct_result = None
-    parser_options = {}
-    errors = []
+    parser_options = MappingProxyType({})
+    errors = ()
 
     def setUp(self):
         if not self.input_strings:
@@ -168,9 +164,7 @@ class AtTest(ParserTest, TestCase):
             ("Me2009", Entry("article", [("title", "A @tey short story")])),
         ]
     )
-    errors = [
-        "syntax error in line 2: '(' or '{' expected",
-    ]
+    errors = ("syntax error in line 2: '(' or '{' expected",)
 
 
 class EntryTypesTest(ParserTest, TestCase):
@@ -199,12 +193,12 @@ class EntryTypesTest(ParserTest, TestCase):
             ("aa2_id", Entry("_t")),
         ]
     )
-    errors = [
+    errors = (
         "syntax error in line 12: a valid name expected",
         "syntax error in line 13: '(' or '{' expected",
         "syntax error in line 14: '(' or '{' expected",
         "syntax error in line 15: '(' or '{' expected",
-    ]
+    )
 
 
 class FieldNamesTest(ParserTest, TestCase):
@@ -241,11 +235,11 @@ class FieldNamesTest(ParserTest, TestCase):
             ("2017", Entry("article", [("@name", "Myself")])),
         ]
     )
-    errors = [
+    errors = (
         "syntax error in line 5: '}' expected",
         "syntax error in line 11: '=' expected",
         "syntax error in line 14: '}' expected",
-    ]
+    )
 
 
 class InlineCommentTest(ParserTest, TestCase):
@@ -283,10 +277,10 @@ class InlineCommentTest(ParserTest, TestCase):
             ("Me2013", Entry("article")),
         ]
     )
-    errors = [
+    errors = (
         "syntax error in line 10: '}' expected",
         "syntax error in line 12: '}' expected",
-    ]
+    )
 
 
 class SimpleEntryTest(ParserTest, TestCase):
@@ -354,13 +348,11 @@ class KeyParsingTest(ParserTest, TestCase):
             ("test(braces2)", Entry("article")),
         ]
     )
-    errors = [
-        "syntax error in line 5: ')' expected",
-    ]
+    errors = ("syntax error in line 5: ')' expected",)
 
 
 class KeylessEntriesTest(ParserTest, TestCase):
-    parser_options = {"keyless_entries": True}
+    parser_options = MappingProxyType({"keyless_entries": True})
     input_string = """
         @BOOK(
             title="I Am Jackie Chan: My Life in Action",
@@ -421,13 +413,11 @@ class MacrosTest(ParserTest, TestCase):
             ),
         ]
     )
-    errors = [
-        "undefined string in line 6: nobody",
-    ]
+    errors = ("undefined string in line 6: nobody",)
 
 
 class WantedEntriesTest(ParserTest, TestCase):
-    parser_options = {"wanted_entries": ["GSL"]}
+    parser_options = MappingProxyType({"wanted_entries": ("GSL",)})
     input_string = """
         @Article(
             gsl,
@@ -441,7 +431,7 @@ class WantedEntriesTest(ParserTest, TestCase):
 
 
 class CrossrefTest(ParserTest, TestCase):
-    parser_options = {"wanted_entries": ["GSL", "GSL2"]}
+    parser_options = MappingProxyType({"wanted_entries": ("GSL", "GSL2")})
     input_string = """
         @Article(gsl, crossref="the_journal")
         @Article(gsl2, crossref="The_Journal")
@@ -459,7 +449,9 @@ class CrossrefTest(ParserTest, TestCase):
 class CrossrefWantedTest(ParserTest, TestCase):
     """When cross-referencing an explicitly cited, the key from .aux file should be used."""
 
-    parser_options = {"wanted_entries": ["GSL", "GSL2", "The_Journal"]}
+    parser_options = MappingProxyType(
+        {"wanted_entries": ("GSL", "GSL2", "The_Journal")}
+    )
     input_string = """
         @Article(gsl, crossref="the_journal")
         @Article(gsl2, crossref="The_Journal")
@@ -475,7 +467,7 @@ class CrossrefWantedTest(ParserTest, TestCase):
 
 
 class UnusedEntryTest(ParserTest, TestCase):
-    parser_options = {"wanted_entries": []}
+    parser_options = MappingProxyType({"wanted_entries": ()})
     input_string = """
         @Article(
             gsl,
@@ -486,7 +478,7 @@ class UnusedEntryTest(ParserTest, TestCase):
 
 
 class CrossFileMacrosTest(ParserTest, TestCase):
-    input_strings = [
+    input_strings = (
         '@string{jackie = "Jackie Chan"}',
         """,
             @Book{
@@ -495,7 +487,7 @@ class CrossFileMacrosTest(ParserTest, TestCase):
                 title = "I Am " # jackie # ": My Life in Action",
             }
         """,
-    ]
+    )
     correct_result = BibliographyData(
         {
             "i_am_jackie": Entry(
@@ -508,14 +500,14 @@ class CrossFileMacrosTest(ParserTest, TestCase):
 
 
 class AtCharacterTest(ParserTest, TestCase):
-    input_strings = [
+    input_strings = (
         r""",
             @proceedings{acc,
                 title = {Proc.\@ of the American Control Conference},
                 notes = "acc@example.org"
             }
         """,
-    ]
+    )
     correct_result = BibliographyData(
         {
             "acc": Entry(
@@ -530,20 +522,20 @@ class AtCharacterTest(ParserTest, TestCase):
 
 
 class AtCharacterInUnwantedEntryTest(ParserTest, TestCase):
-    parser_options = {"wanted_entries": []}
-    input_strings = [
+    parser_options = MappingProxyType({"wanted_entries": ()})
+    input_strings = (
         r""",
             @proceedings{acc,
                 title = {Proc.\@ of the American Control Conference},
                 notes = "acc@example.org"
             }
         """,
-    ]
+    )
     correct_result = BibliographyData()
 
 
 class CaseSensitivityTest(ParserTest, TestCase):
-    input_strings = [
+    input_strings = (
         r""",
             @Article{CamelCase,
                 Title = {To CamelCase or Under score},
@@ -551,7 +543,7 @@ class CaseSensitivityTest(ParserTest, TestCase):
                 NOTES = "none"
             }
         """,
-    ]
+    )
     correct_result = BibliographyData(
         {
             "CamelCase": Entry(
@@ -567,15 +559,13 @@ class CaseSensitivityTest(ParserTest, TestCase):
 
 
 class WindowsNewlineTest(ParserTest, TestCase):
-    input_strings = [
-        """'@Article\r\n\r\n\r\n}\r\n'""",
-    ]
+    input_strings = ("""'@Article\r\n\r\n\r\n}\r\n'""",)
     correct_result = BibliographyData()
-    errors = ["syntax error in line 4: '(' or '{' expected"]
+    errors = ("syntax error in line 4: '(' or '{' expected",)
 
 
 class DuplicateFieldTest(ParserTest, TestCase):
-    input_strings = [
+    input_strings = (
         r"""
             @MASTERSTHESIS{
                 Mastering,
@@ -585,8 +575,8 @@ class DuplicateFieldTest(ParserTest, TestCase):
                 TITLE = "No One Reads Master's Theses Anyway LOL",
                 TiTlE = "Well seriously, lol.",
             }
-        """
-    ]
+        """,
+    )
     correct_result = BibliographyData(
         {
             "Mastering": Entry(
@@ -599,10 +589,10 @@ class DuplicateFieldTest(ParserTest, TestCase):
             ),
         }
     )
-    errors = [
+    errors = (
         "entry with key Mastering has a duplicate TITLE field",
         "entry with key Mastering has a duplicate TiTlE field",
-    ]
+    )
 
 
 class DuplicatePersonFieldTest(ParserTest, TestCase):
@@ -621,6 +611,4 @@ class DuplicatePersonFieldTest(ParserTest, TestCase):
             ),
         ]
     )
-    errors = [
-        "entry with key Me2009 has a duplicate AUTHoR field",
-    ]
+    errors = ("entry with key Me2009 has a duplicate AUTHoR field",)

@@ -1,4 +1,5 @@
 import pytest
+
 from pybtex.style.template import href, words
 
 

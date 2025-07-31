@@ -1,7 +1,3 @@
-# vim:fileencoding=utf-8
-
-from __future__ import unicode_literals
-
 from pybtex.database import BibliographyData, Entry, Person
 
 reference_data = BibliographyData(
