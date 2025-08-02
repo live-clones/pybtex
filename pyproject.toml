@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pybtex"
-version = "0.25.0"
+version = "0.26.0"
 description = "A BibTeX-compatible bibliography processor in Python"
 readme = "README.rst"
 authors = [{ name = "Andrey Golovizin", email = "ag@sologoc.com" }]
