@@ -56,17 +56,17 @@ Pybtex can be also installed with pip:
 
     pip install pybtex
 
-Development sources are available from our `Git repository at Bitbucket
-<Bitbucket page_>`_:
+Development sources are available from our `Git repository at Codeberg
+<Codeberg page_>`_:
 
 .. sourcecode:: bash
 
-    git clone https://bitbucket.org/pybtex-devs/pybtex
+    git clone https://codeberg.org/pybtex/pybtex
 
 If something goes wrong, just `file a bug report`_.
 
 Have fun!
 
 
-.. _file a bug report: https://bitbucket.org/pybtex-devs/pybtex/issues?status=new&status=open
-.. _Bitbucket page: https://bitbucket.org/pybtex-devs/pybtex
+.. _file a bug report: https://codeberg.org/pybtex/pybtex/issues
+.. _Codeberg page: https://codeberg.org/pybtex/pybtex

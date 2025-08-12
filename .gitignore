@@ -4,8 +4,7 @@
 *.orig
 *.egg-info
 /docs/man1/*.1
-/build
-/docs/build
+**/build
 /dist
 /venv*/
 /.venv/

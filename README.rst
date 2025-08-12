@@ -44,6 +44,6 @@ See also
 
 - `Home page <https://pybtex.org/>`_
 
-- `Pybtex at Bitbucket <https://bitbucket.org/pybtex-devs/pybtex>`_
+- `Pybtex at Codeberg <https://codeberg.org/pybtex/pybtex>`_
 
 - `Pybtex at PyPI <https://pypi.org/project/pybtex>`_
