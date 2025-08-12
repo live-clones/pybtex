@@ -4,8 +4,9 @@ steps:
     commands:
       - uv run ruff check
     when:
-      - event: push
       - event: pull_request
+      - event: push
+        branch: main
     depends_on: []
 
   format-check:
@@ -13,6 +14,7 @@ steps:
     commands:
       - uv run ruff format --check
     when:
-      - event: push
       - event: pull_request
+      - event: push
+        branch: main
     depends_on: []

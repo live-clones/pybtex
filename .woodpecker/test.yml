@@ -14,5 +14,7 @@ steps:
       - uv sync --frozen
       - uv run pytest -vvv
     when:
-      - event: push
       - event: pull_request
+      - event: push
+        branch: main
+    depends_on: []
