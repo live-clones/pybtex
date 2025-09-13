@@ -1,3 +1,8 @@
+depends_on:
+  - test
+  - ruff
+when:
+  - event: tag
 steps:
   pypi:
     image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
@@ -6,12 +11,10 @@ steps:
       UV_PUBLISH_TOKEN:
         from_secret: uv_publish_token
       # https://upload.pypi.org/legacy/ or https://test.pypi.org/legacy/
-      UV_PUBLISH_URL: 
+      UV_PUBLISH_URL:
         from_secret: uv_publish_url
     commands:
       - export PACKAGE_VERSION_NUMBER="$(uv version --short)"
       - uv build
       - echo "Publishing version ${PACKAGE_VERSION_NUMBER} to ${UV_PUBLISH_URL}"
       - uv publish
-    when:
-      - event: tag
