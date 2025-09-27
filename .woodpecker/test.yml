@@ -16,5 +16,5 @@ steps:
     when:
       - event: pull_request
       - event: push
-        branch: main
+        branch: master
     depends_on: []
