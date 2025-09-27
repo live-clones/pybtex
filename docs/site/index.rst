@@ -4,9 +4,9 @@ Pybtex!
 
 .. container:: download-links
 
-    - `Bitbucket page`_
-    - |download_url|_ (:doc:`what's new <docs:history>`)
-    - :doc:`docs <docs:index>`
+    - `Codeberg page`_
+    - |download_url|_ (`what's new`_)
+    - docs_
 
 
 .. meta::
@@ -19,7 +19,7 @@ You can simply type ``pybtex`` instead of ``bibtex``.
 
 .. rst-class:: doc-links
 
-    For more details, see the :doc:`docs:index`.
+    For more details, see the docs_.
 
 
 How Pybtex is different from BibTeX
@@ -34,13 +34,13 @@ Additionally,
 
 * Pybtex is Unicode-aware.
 
-* Pybtex supports :doc:`bibliography formats <docs:formats>` other than BibTeX.
+* Pybtex supports `bibliography formats`_ other than BibTeX.
 
 * It is possible to write formatting styles in Python.\ |br|
   As a bonus, Pythonic styles can produce HTML, Markdown and other markup
   besides the usual LaTeX.
 
-Pybtex also includes a :doc:`Python API <docs:api/index>` for managing
+Pybtex also includes a `Python API`_ for managing
 bibliographies from Python.
 
 
@@ -70,3 +70,7 @@ Have fun!
 
 .. _file a bug report: https://codeberg.org/pybtex/pybtex/issues
 .. _Codeberg page: https://codeberg.org/pybtex/pybtex
+.. _docs: https://docs.pybtex.org/
+.. _what's new: https://docs.pybtex.org/history.html
+.. _Bibliography formats: https://docs.pybtex.org/formats.html
+.. _Python API: https://docs.pybtex.org/api/index.html

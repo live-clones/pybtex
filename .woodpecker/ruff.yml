@@ -1,20 +1,17 @@
+when:
+  - event: pull_request
+  - event: push
+    branch: master
+  - event: tag
 steps:
   check:
     image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
     commands:
       - uv run ruff check
-    when:
-      - event: pull_request
-      - event: push
-        branch: main
     depends_on: []
 
   format-check:
     image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
     commands:
       - uv run ruff format --check
-    when:
-      - event: pull_request
-      - event: push
-        branch: main
     depends_on: []

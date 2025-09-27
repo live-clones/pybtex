@@ -1,3 +1,9 @@
+when:
+  - event: pull_request
+  - event: push
+    branch: master
+  - event: tag
+
 matrix:
   PYVERSION:
     - 3.8
@@ -13,8 +19,4 @@ steps:
     commands:
       - uv sync --frozen
       - uv run pytest -vvv
-    when:
-      - event: pull_request
-      - event: push
-        branch: main
     depends_on: []

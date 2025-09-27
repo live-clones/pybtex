@@ -29,7 +29,7 @@ See the `BibTeX tutorial`_ by Andrew Roberts for a basic explanation of how to u
 BibTeX.
 
 
-.. _BibTeX tutorial: https://www.andy-roberts.net/writing/latex/bibliographies
+.. _BibTeX tutorial: https://www.andy-roberts.net/latex/bibliographies
 
 
 Bibliography formats other then BibTeX
@@ -69,7 +69,7 @@ will tell Pybtex to look for a YAML-formatted file :file:`mybook.yaml` instead o
 
 Support for additional bibliography formats can be added by :doc:`plugins <api/plugins>`.
 
-    
+
 Pythonic bibliography styles
 ----------------------------
 

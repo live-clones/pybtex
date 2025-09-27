@@ -1,11 +1,17 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.8"
 resolution-markers = [
     "python_full_version >= '3.11'",
     "python_full_version == '3.10.*'",
     "python_full_version == '3.9.*'",
     "python_full_version < '3.9'",
+]
+
+[manifest]
+members = [
+    "pybtex",
+    "pybtex-doctools",
 ]
 
 [[package]]
@@ -479,6 +485,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "pybtex-doctools" },
     { name = "pytest", version = "8.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "pytest", version = "8.4.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
     { name = "ruff" },
@@ -497,10 +504,22 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "pybtex-doctools", editable = "docs/pybtex_doctools" },
     { name = "pytest", specifier = ">=7.0.1" },
     { name = "ruff", specifier = ">=0.12.7" },
     { name = "sphinx", specifier = ">=5.3.0" },
 ]
+
+[[package]]
+name = "pybtex-doctools"
+version = "0.1.0"
+source = { editable = "docs/pybtex_doctools" }
+dependencies = [
+    { name = "pygments" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pygments" }]
 
 [[package]]
 name = "pygments"

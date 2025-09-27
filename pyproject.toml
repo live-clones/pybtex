@@ -109,7 +109,7 @@ alpha = "pybtex.style.formatting.alpha:Style"
 unsrtalpha = "pybtex.style.formatting.unsrtalpha:Style"
 
 [dependency-groups]
-dev = ["pytest>=7.0.1", "ruff>=0.12.7", "sphinx>=5.3.0"]
+dev = ["pybtex-doctools", "pytest>=7.0.1", "ruff>=0.12.7", "sphinx>=5.3.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["src", "tests"]
@@ -175,3 +175,9 @@ lint.ignore = [
   "COM819", # prohibited-trailing-comma
   "ISC002", # multi-line-implicit-string-concatenation
 ]
+
+[tool.uv.workspace]
+members = ["docs/pybtex_doctools"]
+
+[tool.uv.sources]
+pybtex-doctools = { workspace = true }

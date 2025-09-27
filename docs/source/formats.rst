@@ -88,7 +88,7 @@ into YAML:
         year: 1979
 
 
-.. _BibTeXML: http://bibtexml.sourceforge.net
+.. _BibTeXML: https://bibtexml.sourceforge.net
 
 Bibliography style formats
 ==========================
@@ -116,5 +116,5 @@ and `sphinxcontrib-bibtex`_ by the same author, integrating Pybtex with Sphinx_.
 
 .. _pybtex-docutils: https://github.com/mcmtroffaes/pybtex-docutils
 .. _sphinxcontrib-bibtex: https://github.com/mcmtroffaes/sphinxcontrib-bibtex
-.. _Docutils: http://docutils.sourceforge.net/
-.. _Sphinx: http://sphinx-doc.org/
+.. _Docutils: https://docutils.sourceforge.net/
+.. _Sphinx: https://www.sphinx-doc.org/
