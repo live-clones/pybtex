@@ -765,6 +765,7 @@ class Person:
             self.last_names.extend(definitely_not_von)
 
         def find_pos(lst, pred):
+            i = 0
             for i, item in enumerate(lst):
                 if pred(item):
                     return i
