@@ -28,6 +28,8 @@ from pybtex.database import InvalidNameString, Person
 # name, (bibtex_first, prelast, last, lineage
 # as parsed by the bibtex program itself
 sample_names = [
+    ("", ([], [], [], []), None),
+    ("   ", ([], [], [], []), None),
     ("A. E.                   Siegman", (["A.", "E."], [], ["Siegman"], []), None),
     ("A. G. W. Cameron", (["A.", "G.", "W."], [], ["Cameron"], []), None),
     ("A. Hoenig", (["A."], [], ["Hoenig"], []), None),
