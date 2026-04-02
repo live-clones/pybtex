@@ -1,5 +1,0 @@
-===============
-Version history
-===============
-
-.. include:: ../../CHANGES
